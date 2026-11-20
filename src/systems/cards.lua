@@ -89,10 +89,14 @@ function Cards.play(enc,index)
     return finishAction(enc,result)
 end
 
+local function freeAction()
+    return {cardId="pass",score=0,trust=0,chemistry=0,
+        text="Tomar un respiro: Rudy escucha y deja que el maná se calme. Sin coste."}
+end
+
 function Cards.pass(enc)
     if enc.finished then return nil,"El encuentro ya terminó." end
-    return finishAction(enc,{cardId="pass",score=0,trust=0,chemistry=0,
-        text="Tomar un respiro: Rudy escucha y deja que el maná se calme. Sin coste."})
+    return finishAction(enc,freeAction())
 end
 
 -- A saved encounter must conserve the exact cards and action history. Invalid
@@ -119,7 +123,7 @@ function Cards.restore(snapshot,deck,context)
         if type(entry)~="table" then return nil end
         local result
         if entry.cardId=="pass" then
-            result={cardId="pass",score=0,trust=0,chemistry=0,text="Tomar un respiro: sin coste."}
+            result=freeAction()
         else
             played=played+1
             if enc.discard[played]~=entry.cardId then return nil end

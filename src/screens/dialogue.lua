@@ -72,6 +72,7 @@ function DialogueScreen.new(app)
         if b==1 then self:advance() end
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.advance,key) then self:advance()
         elseif Controls.matches(Controls.back,key) then app:overlay("pause")
         elseif Controls.matches(Controls.journal,key) then app:overlay("journal")

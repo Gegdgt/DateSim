@@ -1,6 +1,6 @@
 # Entrega completa de la Fase 1
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los recursos provisionales se dibujan desde Lua y no requieren archivos binarios.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. La Fase 1 comprende los días uno y dos; los capítulos restantes siguen pendientes.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -40,6 +40,78 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 
 ````
 
+## assets/cards/extras/ejemplo_love2d.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/assets/cards/extras/ejemplo_love2d.lua`
+
+````lua
+-- Ejemplo ilustrativo LÖVE 2D (sustituye la ruta base por la de tu proyecto)
+local raiz = 'Mushoku_Tensei_Cartas_Del_Destino/'
+local img = {}
+function love.load()
+  love.graphics.setDefaultFilter('nearest', 'nearest')
+  img.base = love.graphics.newImage(raiz .. 'bases/fondo_pergamino.png')
+  img.marco = love.graphics.newImage(raiz .. 'marcos/marco_empatia.png')
+  img.icono = love.graphics.newImage(raiz .. 'iconos/escuchar.png')
+  img.reverso = love.graphics.newImage(raiz .. 'reverso/reverso_espejo.png')
+  img.fuente = love.graphics.newFont(12)
+  love.graphics.setFont(img.fuente)
+end
+function love.draw()
+  local x, y, escala = 45, 30, 3
+  love.graphics.setColor(1,1,1,1)
+  love.graphics.draw(img.base, x, y, 0, escala, escala)
+  love.graphics.draw(img.marco, x, y, 0, escala, escala)
+  love.graphics.draw(img.icono, x + 28*escala, y + 31*escala, 0, escala, escala)
+  love.graphics.setColor(0.14, 0.13, 0.22, 1)
+  love.graphics.print('Escuchar', x + 12*escala, y + 12*escala, 0, 1, 1)
+  love.graphics.print('Coste: 0', x + 12*escala, y + 94*escala, 0, 1, 1)
+  love.graphics.setColor(1,1,1,1)
+  love.graphics.draw(img.reverso, x + 90*escala, y, 0, escala, escala)
+end
+````
+
+## assets/cards/LEEME.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/assets/cards/LEEME.md`
+
+````markdown
+# Mushoku Tensei: Las Cartas del Destino — Recursos de cartas
+
+Paquete original de **pixel art básico**, preparado para **LÖVE 2D / Lua** y edición con **LibreSprite**. Los elementos NO llevan texto grabado.
+
+## Carpeta y archivos
+
+- `marcos/`: 4 marcos de **80 × 112 px**, según categoría (Empatía: verde; Humor: naranja; Sinceridad: azul; Magia/Iniciativa: violeta); tienen **interior transparente**.
+- `reverso/`: reverso completo de 80 × 112 px, con el **Espejo de las Posibilidades**.
+- `bases/fondo_pergamino.png`: fondo claro de 80 × 112 px, dibujado debajo del marco en el juego.
+- `iconos/`: 16 iconos para cartas jugables, 4 iconos de categoría y un icono de coste de maná, todos de **24 × 24 px** transparentes.
+- `extras/cartas_atlas_5x1.png`: atlas horizontal en orden Empatía, Humor, Sinceridad, Magia/Iniciativa, Reverso; cada celda ocupa 80 × 112 px.
+- `extras/iconos_atlas.png`: atlas de iconos de 5 columnas, celdas de 24 × 24 px. El orden exacto está en `extras/manifest.json`.
+- `extras/vista_previa.png`: imagen de previsualización, **no** recurso del juego.
+
+Cada elemento individual conserva **dos archivos homónimos en árboles separados**: los `.png` permanecen aquí para LÖVE 2D; los `.ase` nativos están en `sprite_sources/cards/`, desde la raíz del repositorio, con las mismas subcarpetas `bases/`, `marcos/`, `iconos/` y `reverso/`. Todos los `.ase` contienen capas editables; no son PNG renombrados. Se conservaron sus bytes originales durante el traslado.
+
+## Cartas definidas e iconos
+
+| Categoría | Cartas | Iconos PNG/ASE |
+| --- | --- | --- |
+| Empatía | Escuchar; Dar ánimo; Recordar un detalle | `escuchar`, `dar_animo`, `recordar_un_detalle` |
+| Humor | Broma ligera; Cambiar de tema; Reírse de uno mismo | `broma_ligera`, `cambiar_de_tema`, `reirse_de_uno_mismo` |
+| Sinceridad | Hablar con honestidad; Reconocer un error; Compartir un miedo; Elegir Juntos | `hablar_con_honestidad`, `reconocer_un_error`, `compartir_un_miedo`, `elegir_juntos` |
+| Magia/Iniciativa | Proponer un plan; Analizar runas; Barrera de Tierra; Magia Compartida; Conjuro Combinado; Espada y Magia | `proponer_un_plan`, `analizar_runas`, `barrera_de_tierra`, `magia_compartida`, `conjuro_combinado`, `espada_y_magia` |
+
+## Implementación en Lua
+
+El juego integra estos recursos mediante `src/data/assets.lua` y `src/systems/resources.lua`. La categoría real proviene de `src/data/cards.lua`: `Elegir Juntos` usa Sinceridad. Los identificadores de `Recordar un detalle` y `Reírse de uno mismo` son `remember` y `self_joke`; el manifiesto los vincula con sus nombres de archivo españoles sin alterar partidas guardadas.
+
+Se dibuja primero `fondo_pergamino.png`, después el marco de categoría, y luego el nombre, icono, coste y disponibilidad con Lua. La descripción y los efectos se consultan en un panel separado. **Filtrado `nearest`** y escalas enteras conservan los píxeles. El archivo `extras/ejemplo_love2d.lua` es solo una demostración independiente; los datos y costes del juego están en `src/data/cards.lua`.
+
+## Edición
+
+Abre el `.ase` correspondiente en `sprite_sources/cards/` desde LibreSprite y exporta el PNG con canal alfa a su subcarpeta homónima de `assets/cards/`. No redimensiones con suavizado. Conserva ambos archivos versionados. Los atlas, manifiestos originales y la vista previa siguen en `extras/` como auxiliares; el cargador usa las imágenes individuales.
+````
+
 ## assets/characters/.gitkeep
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/assets/characters/.gitkeep`
@@ -63,24 +135,56 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Recursos de pixel art
 
-La Fase 1 funciona sin PNG. `src/systems/resources.lua` dibuja recursos provisionales originales en lienzos de baja resolución. No contiene recursos extraídos del anime. `src/ui/font.lua` contiene una fuente bitmap original con caracteres españoles.
+LÖVE utiliza los PNG existentes de estas carpetas. Las rutas y dimensiones esperadas se centralizan en [`src/data/assets.lua`](../src/data/assets.lua); [`src/systems/resources.lua`](../src/systems/resources.lua) valida cada imagen y aplica `nearest`. Los PNG originales no se renombraron ni redibujaron.
 
-Los PNG válidos sustituyen automáticamente los recursos provisionales al volver a iniciar el juego. Los PNG ausentes, ilegibles o con tamaño incorrecto utilizan el recurso provisional.
+| Carpeta de ejecución | Contenido | Fuente editable desde la raíz |
+| --- | --- | --- |
+| `assets/characters/` | 7 hojas PNG de 256 × 64 | `sprite_sources/characters/` |
+| `assets/backgrounds/` | 8 fondos PNG de 320 × 180 | `sprite_sources/backgrounds/` |
+| `assets/cards/bases/` | Pergamino de 80 × 112 | `sprite_sources/cards/bases/` |
+| `assets/cards/marcos/` | 4 marcos de 80 × 112 | `sprite_sources/cards/marcos/` |
+| `assets/cards/reverso/` | Reverso de 80 × 112 | `sprite_sources/cards/reverso/` |
+| `assets/cards/iconos/` | 16 iconos de carta y 5 auxiliares de 24 × 24 | `sprite_sources/cards/iconos/` |
+| `assets/cards/extras/` | Atlas, vista previa, manifiestos y ejemplo independientes | Se conservan como auxiliares |
+| `assets/audio/` | Reservada; esta versión no contiene audio | Pendiente |
 
-| Carpeta | Archivos y dimensiones |
+Los 42 ASE se trasladaron conservando subcarpetas y contenido, comprobado mediante SHA-256 antes y después. Siguen siendo parte versionada del proyecto. `assets/source/` es una carpeta histórica vacía conservada; los nuevos editables pertenecen a `sprite_sources/`.
+
+## Personajes
+
+Las hojas son `rudeus.png`, `sylphiette.png`, `roxy.png`, `eris.png`, `nanahoshi.png`, `zanoba.png` y `cliff.png`. Cada una contiene cuatro cuadros horizontales de **64 × 64**, sin espacios, en este orden: `neutral=0`, `happy=1`, `worried=2`, `angry=3`. El recorte comienza en `x = índice × 64`, `y = 0`.
+
+Conserva el canal alfa y la alineación original de los cuatro cuadros. Una expresión desconocida utiliza el cuadro neutral. El cargador no recoloca las expresiones ni adapta hojas de otras dimensiones. Los retratos se dibujan con escalas enteras.
+
+## Escenarios
+
+El canvas lógico mide 640 × 360: cada fondo de 320 × 180 se dibuja a escala 2. Los identificadores de la historia permanecen en inglés; no es necesario renombrar PNG:
+
+| Identificador | PNG en `assets/backgrounds/` |
 | --- | --- |
-| `characters/` | `rudeus.png`, `sylphiette.png`, `roxy.png`, `eris.png`, `nanahoshi.png`, `zanoba.png`, `cliff.png`: **256 × 64**, fondo transparente |
-| `backgrounds/` | `courtyard.png`, `library.png`, `laboratory.png`, `garden.png`, `training.png`, `ruins.png`: **320 × 180** |
-| `icons/` | Un archivo por identificador de carta, por ejemplo `listen.png`: **24 × 24** |
-| `cards/` | `frame.png`: **80 × 112** |
-| `source/` | Archivos editables `.ase` de LibreSprite; el juego no los carga |
-| `audio/` | Reservada para audio original o autorizado de la Fase 4; no hay audio obligatorio |
+| `laboratory` | `laboratorio.png` |
+| `courtyard` | `patio_universidad.png` |
+| `library` | `biblioteca.png` |
+| `ruins` | `ruinas.png` |
+| `garden` | `patio_universidad.png` (reutilización temporal) |
+| `training` | `bosque.png` (reutilización temporal) |
+| `forest` | `bosque.png` |
+| `observatory` | `observatorio.png` |
+| `mirror_dimension` | `dimension_espejo.png` |
+| `festival` | `festival.png` |
 
-Cada hoja de personaje tiene cuatro cuadros horizontales de **64 × 64**, en este orden e índices: `neutral=0`, `happy=1`, `worried=2`, `angry=3`. El cuadro comienza en `x = índice × 64`, siempre en `y = 0`. Conserva la posición de ojos, cara y hombros en los cuatro cuadros para evitar saltos. Exporta desde LibreSprite a PNG, sin aumentar la resolución ni añadir espacios entre cuadros. Todos los PNG cargados usan `image:setFilter("nearest", "nearest")`. Los fondos se muestran a escala entera 2; los retratos, iconos y marcos mantienen sus píxeles definidos.
+## Cartas y mantenimiento
 
-Las hojas del formato anterior de **384 × 128** se consideran de tamaño incorrecto y activan el recurso provisional. Exporta una hoja nueva de **256 × 64** para sustituirlo; el cargador no recorta ni deforma automáticamente una hoja antigua.
+Las cartas combinan pergamino, marco de categoría, nombre, icono, coste y disponibilidad. Los textos siguen en Lua y los detalles se muestran fuera del área de 80 × 112. Consulta [`cards/LEEME.md`](cards/LEEME.md) y el mapa completo de iconos en [`docs/RECURSOS.md`](../docs/RECURSOS.md).
 
-Los recursos provisionales son dibujos hechos por código: no se presentan como archivos `.ase` exportados. Puedes crear los recursos definitivos en LibreSprite y guardarlos en estas rutas sin modificar el motor.
+Para incorporar un recurso nuevo:
+
+1. Guarda el editable ASE en la subcarpeta de `sprite_sources/` correspondiente.
+2. Exporta el PNG al árbol de `assets/`, con dimensiones nativas y transparencia donde corresponda.
+3. Declara su identificador, ruta y tamaño en `src/data/assets.lua`; conserva los identificadores narrativos y de cartas existentes.
+4. Reinicia el juego para renovar la caché y ejecuta `./probar.ps1`.
+
+Los PNG válidos tienen prioridad. Un archivo ausente, ilegible o de tamaño incorrecto activa el dibujo provisional existente y un diagnóstico con la ruta y la causa. Usa `lovec.exe` para ver los mensajes de consola. No se generan ni sobrescriben PNG cuando se activa ese respaldo.
 ````
 
 ## assets/source/.gitkeep
@@ -110,6 +214,146 @@ function love.conf(t)
 end
 ````
 
+## docs/FASE_2.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_2.md`
+
+````markdown
+# Preparación de los siguientes capítulos
+
+La implementación jugable termina en el resumen del día dos. Los fondos de bosque, observatorio, dimensión del espejo y festival ya tienen rutas en `src/data/assets.lua`; su presencia no significa que las escenas de esos capítulos estén escritas.
+
+## Arquitectura existente y límite actual
+
+`src/data/story.lua` concentra diálogos, decisiones y encuentros. `src/systems/cards.lua` trabaja con datos de efectos, contextos y afinidades; `src/systems/events.lua` registra efectos una sola vez. Esta separación permite añadir contenido sin mezclar texto con dibujo ni alterar las reglas del encuentro.
+
+La progresión aún depende de ramas específicas de la Fase 1 en `src/systems/progression.lua`. `src/systems/save.lua` mantiene su propio conjunto de checkpoints, días y decisiones permitidas. Añadir cinco capítulos directamente a ambas listas duplicaría reglas de navegación y dificultaría las migraciones. La siguiente fase debe convertir esas listas en un registro compartido, conservando los identificadores y guardados actuales.
+
+## Cambios propuestos, todavía no implementados
+
+| Módulo | Cambio para la siguiente fase |
+| --- | --- |
+| `src/data/chapters.lua` (nuevo) | Registro de capítulos con día, checkpoint inicial, escenas, encuentros y cierre. Derivar los checkpoints válidos de este registro. |
+| `src/data/chapters/day3.lua` y sucesivos (nuevos) | Tablas narrativas por capítulo; identificadores estables, fondos del manifiesto y decisiones con efectos explícitos. |
+| `src/data/story.lua` | Agregar las tablas de capítulos detrás de su API actual; mantener las claves de la Fase 1 para no invalidar partidas. |
+| `src/systems/progression.lua` | Interpretar transiciones declaradas (`next`, resultado de encuentro, requisitos, efectos de salida); conservar la comprobación del checkpoint activo. |
+| `src/systems/conditions.lua` (nuevo) | Evaluador pequeño para requisitos por evento, decisión, ruta y vínculo; validación de operadores y referencias. Evitar fragmentos de Lua ejecutables desde datos. |
+| `src/systems/events.lua` | Reutilizar claves estables e idempotencia para sellos, desbloqueos, elecciones y confesiones. |
+| `src/systems/save.lua` | Consultar el registro compartido de capítulos; generalizar validación de decisiones y acompañantes; añadir migración si cambia el esquema. |
+| `src/data/cards.lua` | Declarar desbloqueos y cartas especiales; conservar costes 0–2, mazo de diez y reglas actuales salvo cambio de diseño explícito. |
+| `src/screens/overlays.lua` o `src/screens/deck.lua` | Editor de mazo separado de la colección, limitado a diez cartas distintas y desbloqueadas mediante `Cards.validateDeck`. |
+| `src/screens/hub.lua` | Consumir los lugares y requisitos del capítulo activo; evitar asumir siempre tres visitas del día dos. |
+| `src/systems/relationships.lua` | Reutilizar requisitos de romance y siete IDs de final; separar acompañante de encuentro, ruta y confesión. |
+| `tests/story.lua`, `tests/gameplay.lua`, integración | Comprobar todas las ramas, cargas entre decisiones, migración, rechazos de condiciones y aplicación única de efectos. |
+
+Las transiciones deberían contener identificadores de destino y condiciones limitadas a datos, por ejemplo `next="day3_ruins"`, `requires={event="seal_truth"}` y `onComplete={event="day3_complete"}`. Antes de incorporar capítulos nuevos, un validador debe rechazar destinos, personajes, cartas y fondos desconocidos. El cierre de la Fase 1 debe seguir funcionando durante esa migración.
+
+## Contenido previsto
+
+| Día | Escenarios y objetivo | Estado |
+| --- | --- | --- |
+| 3 | `forest`, `ruins`; investigación del Sello de la Verdad | Fondos listos; narrativa, encuentros y transiciones pendientes |
+| 4 | `observatory`; Sello de la Voluntad | Fondo listo; contenido pendiente |
+| 5 | Elección explícita de Sylphiette, Roxy o Eris y desbloqueo de su carta especial | Definiciones e iconos de las tres cartas listos; elección y escenas pendientes |
+| 6 | `mirror_dimension`; conflicto de ruta y desafío final | Fondo y evaluador de efectos listos; escenas y requisitos narrativos pendientes |
+| 7 | `festival`; confesión/decisión final y uno de siete desenlaces | Fondo e IDs de final listos; escenas de los siete finales pendientes |
+
+El siguiente incremento recomendado es extraer el registro de capítulos y migrar la Fase 1 sin cambiar su comportamiento. Una vez que pase el recorrido completo existente, implementar el día tres con el Sello de la Verdad y pruebas de continuación desde guardados del día dos. Audio y distribución independiente pueden esperar a que las rutas narrativas estén completas.
+````
+
+## docs/RECURSOS.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/RECURSOS.md`
+
+````markdown
+# Manifiesto y cargador de recursos
+
+`src/data/assets.lua` relaciona identificadores de juego con rutas completas relativas a la raíz que contiene `main.lua`. El juego conserva los identificadores de personajes, cartas y escenas; los PNG mantienen sus nombres originales. No hay búsquedas heurísticas por traducción ni renombrados automáticos.
+
+## Estructura del manifiesto
+
+| Campo | Contenido |
+| --- | --- |
+| `characters` | ID de personaje → hoja PNG, 7 entradas |
+| `backgrounds` | ID de escenario → PNG, 10 entradas para 8 imágenes distintas |
+| `cardIcons` | ID real de carta → PNG de icono, 16 entradas |
+| `cardFrames` | Categoría → PNG de marco, 4 entradas |
+| `categoryIcons` | Categoría → icono auxiliar, 4 entradas |
+| `cardBase`, `cardBack`, `manaIcon` | Rutas del pergamino, reverso y coste de maná |
+| `sizes` | Dimensiones de `character`, `background`, `card` e `icon` |
+
+Los escenarios se documentan en [assets/README.md](../assets/README.md). Los alias `garden` y `courtyard` comparten `patio_universidad.png`; `training` y `forest` comparten `bosque.png`. La caché por ruta evita cargar dos veces una imagen compartida. Los alias temporales no son recursos provisionales dibujados por código.
+
+## Iconos de cartas
+
+Cada ruta parte de `assets/cards/iconos/`. Los nombres de las cartas y sus efectos siguen definidos en `src/data/cards.lua`.
+
+| ID real | PNG |
+| --- | --- |
+| `listen` | `escuchar.png` |
+| `encourage` | `dar_animo.png` |
+| `remember` | `recordar_un_detalle.png` |
+| `light_joke` | `broma_ligera.png` |
+| `change_subject` | `cambiar_de_tema.png` |
+| `self_joke` | `reirse_de_uno_mismo.png` |
+| `be_honest` | `hablar_con_honestidad.png` |
+| `admit_error` | `reconocer_un_error.png` |
+| `share_fear` | `compartir_un_miedo.png` |
+| `propose_plan` | `proponer_un_plan.png` |
+| `analyze_runes` | `analizar_runas.png` |
+| `earth_barrier` | `barrera_de_tierra.png` |
+| `shared_magic` | `magia_compartida.png` |
+| `combined_spell` | `conjuro_combinado.png` |
+| `sword_magic` | `espada_y_magia.png` |
+| `choose_together` | `elegir_juntos.png` |
+
+`remember_detail` y `laugh_at_self` no son IDs del repositorio. El mapa utiliza `remember` y `self_joke` para conservar la compatibilidad con mazos, desbloqueos y guardados existentes.
+
+## Marcos y composición
+
+| Categoría de `cards.lua` | Marco en `assets/cards/marcos/` |
+| --- | --- |
+| `empathy` | `marco_empatia.png` |
+| `humor` | `marco_humor.png` |
+| `sincerity` | `marco_sinceridad.png` |
+| `initiative` | `marco_magia_iniciativa.png` |
+
+`choose_together` pertenece a `sincerity` en los datos de juego y usa ese marco. La selección del marco depende de `card.category`, nunca del nombre del icono ni de una lista visual separada.
+
+`src/ui/card.lua` comparte la composición entre mano y colección: dibuja `bases/fondo_pergamino.png`, el marco y después nombre, categoría breve, icono y coste. Nombre y coste usan la fuente bitmap Lua en texto oscuro sobre el pergamino; la disponibilidad se muestra debajo sobre una banda oscura. La categoría breve «Magia» cabe dentro de la carta; el panel muestra «Magia e iniciativa» completo. La descripción y los efectos se muestran en ese panel separado para mantener legible el área de 80 × 112. La colección también muestra los iconos auxiliares de categoría y maná. El reverso es `reverso/reverso_espejo.png`: se precarga y tiene API de dibujo, aunque todavía no se usa en una animación de robo. Los atlas y vistas previas de `extras/` se conservan, pero no se cargan para construir las cartas.
+
+## API de `Resources`
+
+`Resources.new()` crea una caché independiente. `preload()` carga y valida los 42 PNG únicos del manifiesto sin dibujarlos; `App.new()` lo invoca al iniciar. Los métodos de dibujo reciben coordenadas lógicas; la escala se normaliza a un entero de al menos 1 y las coordenadas se ajustan a píxeles enteros.
+
+| Método | Uso |
+| --- | --- |
+| `background(id)` | Dibuja el fondo a escala 2 en 640 × 360 |
+| `portrait(id, expression, x, y, scale)` | Recorta un cuadro de la hoja y conserva transparencia |
+| `cardBase(x, y, scale)` | Pergamino de 80 × 112 |
+| `cardFrame(category, x, y, scale)` | Marco transparente de la categoría |
+| `icon(cardId, x, y, scale)` | Icono de carta de 24 × 24 |
+| `cardBack(x, y, scale)` | Reverso de 80 × 112 |
+| `categoryIcon(category, x, y, scale)` | Icono auxiliar de categoría de 24 × 24 |
+| `manaIcon(x, y, scale)` | Icono auxiliar de maná de 24 × 24 |
+
+Los métodos `getBackground`, `getPortrait`, `getCardBase`, `getCardFrame`, `getIcon`, `getCardBack`, `getCategoryIcon` y `getManaIcon` permiten consultar recursos sin dibujarlos. Las hojas usan cuadros `neutral=0`, `happy=1`, `worried=2`, `angry=3`, siempre con origen `(índice × 64, 0)` y tamaño 64 × 64. Una expresión desconocida usa neutral; el PNG completo debe medir 256 × 64.
+
+## Errores y diagnóstico
+
+El cargador verifica existencia, decodificación protegida y dimensiones antes de aceptar un PNG. Un fallo conserva la partida abierta y activa el recurso provisional existente. No modifica el archivo original. Un PNG válido se registra con `status="png"`; los respaldos usan `status="fallback"`.
+
+`resources.sources[path]` expone el estado, dimensiones y, cuando corresponde, `reason`. `resources.warnings` conserva los mensajes en español. El cargador imprime cada aviso una sola vez por ruta, indicando archivo y motivo: inexistente, inválido o dimensiones incorrectas. Los identificadores sin mapa se registran como `unmapped:<tipo>:<id>`. La aplicación muestra un aviso si la precarga encontró respaldos. Ejecutar mediante `lovec.exe` permite leer los detalles en consola.
+
+Todos los objetos Image y Canvas utilizan `nearest`. La ventana normal tiene un mínimo de 640 × 360; el canvas mantiene escala entera de al menos 1. Una pantalla físicamente menor puede recortar contenido en lugar de interpolar el pixel art. La ausencia de interpolación no sustituye las comprobaciones de tamaño: una hoja antigua o un icono exportado a otra resolución se considera inválido. El manifiesto tiene 7 hojas, 8 fondos, 1 base, 4 marcos, 1 reverso, 16 iconos y 5 auxiliares: 42 PNG únicos.
+
+## Fuentes editables
+
+Los 42 ASE originales están en `sprite_sources/characters/`, `sprite_sources/backgrounds/` y `sprite_sources/cards/`. La rama de cartas conserva las subcarpetas originales. Se verificaron 42 coincidencias SHA-256 antes y después del traslado (175 114 bytes en total); no se regeneraron imágenes ni fuentes. `.gitignore` no excluye los ASE.
+
+Al editar en LibreSprite, exporta al PNG homónimo dentro de `assets/`, conserva dimensiones y canal alfa, reinicia el juego para descartar su caché y ejecuta `./probar.ps1`. Los diagnósticos, las pruebas de recursos y las capturas ayudan a distinguir un archivo defectuoso de un problema de composición de UI.
+````
+
 ## docs/SISTEMAS.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/SISTEMAS.md`
@@ -123,11 +367,17 @@ Los módulos usan Lua compatible con LÖVE 11.5. Cartas y relaciones no dependen
 
 `src/data/cards.lua` exporta `list` (16 definiciones ordenadas), `byId`, `categories` y `starterDeck` (10 identificadores distintos). Cada carta tiene `id`, `name`, `category`, `cost`, `description`, `icon`, `effects`, `contexts`, `affinities`, `conditions` y `unlockedAt`. Los efectos base se suman a los del contexto y a los de afinidad del personaje. `unlockedAt` documenta la intención de contenido; los desbloqueos reales se conceden mediante eventos de historia.
 
-Las categorías son `empathy`, `humor`, `sincerity` e `initiative`. Los contextos implementados son `conversation`, `investigation` y `magic`. `conditions.character` restringe las tres cartas exclusivas a su acompañante. `conditions.kind` permite restringir una futura carta a un contexto. El icono usa el identificador de la carta.
+Las categorías son `empathy`, `humor`, `sincerity` e `initiative`. Los contextos implementados son `conversation`, `investigation` y `magic`. `conditions.character` restringe las tres cartas exclusivas a su acompañante. `conditions.kind` permite restringir una futura carta a un contexto. El icono usa el identificador de la carta y `src/data/assets.lua` lo vincula a su PNG español. Los IDs existentes son `remember` y `self_joke`; `choose_together` conserva la categoría `sincerity`.
 
 El mazo inicial contiene Escuchar, Dar ánimo, Broma ligera, Cambiar de tema, Hablar con honestidad, Reconocer un error, Compartir un miedo, Proponer un plan, Analizar runas y Barrera de Tierra. La Fase 1 desbloquea Reírse de uno mismo y Recordar un detalle para la colección, pero no incorpora edición de mazo. Las cartas exclusivas y Elegir Juntos tienen definiciones y condiciones, y no se desbloquean durante estos dos días.
 
 `src/data/characters.lua` exporta `list`, `byId`, `romanceIds`, `spriteWidth`, `spriteHeight`, `expressionCount` y `expressions`. Las expresiones usan índices desde cero: `neutral=0`, `happy=1`, `worried=2` y `angry=3`, correspondientes a los cuatro fotogramas de izquierda a derecha. Cada fotograma mide **64 × 64** y la hoja completa mide **256 × 64**. El recorte comienza en `índice × 64, 0`; una expresión desconocida utiliza el cuadro neutral. `src/systems/resources.lua` aplica `image:setFilter("nearest", "nearest")` a los PNG válidos. Las hojas ausentes, ilegibles o con otras dimensiones utilizan el retrato provisional, incluidas las del formato anterior.
+
+## Recursos: manifiesto y cargador
+
+`src/data/assets.lua` centraliza las rutas, dimensiones, diez identificadores de escenario, dieciséis iconos de cartas y cuatro categorías visuales. `src/systems/resources.lua` carga los 42 PNG únicos, conserva el alfa y utiliza `nearest`. Los alias de escenario comparten la imagen cargada. Solo un recurso ausente, ilegible o de dimensiones incorrectas activa un provisional, con diagnóstico registrado en `sources` y `warnings`. La documentación de rutas, composición por capas y API está en [RECURSOS.md](RECURSOS.md).
+
+Los PNG siguen en `assets/`; los 42 ASE editables se conservan en `sprite_sources/` con el árbol equivalente. Las fuentes no son necesarias para ejecutar LÖVE y deben permanecer versionadas.
 
 ## Encuentros: `src/systems/cards.lua`
 
@@ -178,6 +428,12 @@ Se guardan día, punto narrativo, índice del diálogo, relaciones, cartas desbl
 ## Verificación
 
 `tests/gameplay.lua` exporta `run()`. Comprueba reglas de cartas, energía cero, índices inválidos, acción gratuita, finalización, preferencias y exclusivas; los siete resultados lógicos de relación; guardados parciales y corruptos, copia de respaldo, opciones, errores de escritura y conservación exacta de encuentros. El sistema de archivos de estas pruebas es una tabla en memoria: no cambia las partidas del jugador.
+
+`tests/resources.lua` verifica el manifiesto contra los PNG existentes, expresiones, dimensiones, transparencia, filtrado y respaldos ante fallos. `tests/story.lua` comprueba decisiones, acompañantes y progresión de ambos días. `tests/ui.lua` comprueba composición, píxeles de texto, disponibilidad y controles de mouse/teclado. `tests/run.lua` integra las pantallas reales, guarda en una identidad de prueba separada, alterna resoluciones y pantalla completa, y produce capturas. Los resultados y límites de cada ejecución se documentan en [VERIFICACION.md](VERIFICACION.md).
+
+## Ampliación narrativa
+
+Las tablas actuales separan contenido de motor, pero `progression.lua` y `save.lua` todavía contienen transiciones y checkpoints específicos de la Fase 1. La ampliación requiere un registro compartido de capítulos y condiciones declarativas, no solo añadir diálogos. [FASE_2.md](FASE_2.md) detalla los módulos, migraciones y pruebas pendientes para los días tres a siete. El evaluador de finales y los fondos preparados no equivalen a capítulos implementados.
 ````
 
 ## docs/VERIFICACION.md
@@ -185,36 +441,93 @@ Se guardan día, punto narrativo, índice del diálogo, relaciones, cartas desbl
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación de la Fase 1
+# Auditoría y verificación de la Fase 1
 
-Ejecutada el 20 de noviembre de 2026 con **LÖVE 11.5 (Mysterious Mysteries)** instalado en Windows, no solamente con un intérprete simulado.
+Ejecutada el **20 de noviembre de 2026** en Windows con **LÖVE 11.5 (Mysterious Mysteries)** real, usando `C:\Program Files\LOVE\lovec.exe`. Se revisaron `main.lua`, `conf.lua`, `src/app.lua`, datos, pantallas, sistemas, UI, recursos, pruebas y documentación antes de implementar los cambios.
+
+## Hallazgos y correcciones
+
+- La lógica existente ya implementaba los días uno y dos, cinco encuentros, decisiones, vínculos, diario, colección, pausa y guardado. Se conservaron las reglas de diez cartas, tres en mano, tres turnos, cuatro puntos de energía por encuentro y costes de cero a dos.
+- El cargador buscaba fondos con nombres ingleses y cartas en rutas antiguas. Por eso usaba provisionales aunque los PNG definitivos estaban presentes. `src/data/assets.lua` ahora resuelve explícitamente las rutas españolas, sin renombrar PNG ni cambiar identificadores narrativos o de guardado.
+- Las pruebas antiguas aceptaban imágenes de reserva con las dimensiones correctas. Las nuevas exigen objetos Image provenientes de los 42 PNG reales, sin avisos de reserva, y comparan las 28 expresiones con sus píxeles originales.
+- La UI dibujaba un marco genérico y colores de texto pensados para ese provisional. `src/ui/card.lua` compone pergamino, marco de categoría, nombre, categoría breve, icono y coste; usa tinta oscura y deja la disponibilidad debajo y la descripción en un panel separado. Mano y colección comparten esa composición.
+- El texto del registro de «Tomar un respiro» cambiaba al restaurar el encuentro. `Cards.pass` y `Cards.restore` ahora comparten su constructor; pausa y carga conservan el estado completo.
+- Faltaba navegación general por teclado. Se añadió foco visible para botones y selección de cartas con flechas, manteniendo mouse, atajos y protección contra entradas duplicadas. Los controles están centralizados en `src/config/controls.lua`.
+- Los ASE estaban mezclados con los recursos de ejecución. Se trasladaron 42 archivos a `sprite_sources/`, conservando exactamente sus SHA-256 y 175 114 bytes. Los PNG y los recursos auxiliares permanecen intactos; `.gitignore` sigue permitiendo versionar los ASE.
+
+## Ejecuciones reales
+
+La suite original pasó antes de modificar el código: 64 comprobaciones de lógica, 871 de narrativa, 27 de recursos, 4 de disco y 91 de integración. Ese resultado no detectaba el uso incorrecto de provisionales.
+
+La ejecución final se realizó con:
 
 ```powershell
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-Resultado: código de salida 0. Resumen de la suite:
+Resultado: **código de salida 0, 2 116 comprobaciones aprobadas**.
 
 ```text
-OK: 64 comprobaciones de cartas, relaciones, JSON y guardado.
-OK: 871 comprobaciones de narrativa, progresión y carga intermedia.
-Resources: 27 checks passed (64x64 frames, PNG and fallback).
-Filesystem: 4 checks passed in isolated test identity.
-Integration: 91 checks passed; 70 screen steps.
+OK: 340 comprobaciones de cartas, relaciones, JSON y guardado.
+OK: 880 comprobaciones de narrativa, progresión y carga intermedia.
+Resources: 412 checks passed (42 real PNGs, mappings, expressions, transparency and diagnosed fallbacks).
+OK: 374 comprobaciones de composición de cartas, márgenes e interacción.
+Filesystem: 6 checks passed in isolated test identity.
+Integration: 104 checks passed; 70 screen steps.
 ALL TESTS PASSED
 ```
 
-Las comprobaciones cubren conservación de las diez cartas, Fisher–Yates, costes, energía agotada, acción gratuita, tres turnos exactos, índices incorrectos, contexto y exclusividad, recuperación de encuentros, límites de vínculos, requisitos de romance, siete resultados lógicos, parsing seguro y respaldo. Se recorrieron las tres variantes de compañía con puntuación alta y baja, comprobando decisiones y eventos sin duplicación.
+El registro completo local está en `tests/artifacts/test.log`. Sus avisos de imágenes ausentes, de 1 × 1 o corruptas pertenecen a fallos inyectados deliberadamente en memoria. No indican errores de los PNG del repositorio. Ninguna prueba modifica esos PNG.
 
-Los retratos usan cuadros de 64 × 64 y hojas de 256 × 64. Una prueba con PNG generado en memoria verifica los cuatro recortes con índices 0–3, la expresión neutral por defecto, los límites de cada cuadro y el filtro `nearest`. También comprueba los siete personajes y el recurso provisional ante imágenes ausentes, corruptas o con dimensiones antiguas. Se revisaron nuevamente las capturas de menú, diálogo, encuentro y mapa tras ajustar las posiciones y escalas.
+En el entorno de auditoría, el primer intento dentro del sandbox falló al inicializar el sistema de archivos de LÖVE. Las ejecuciones anteriores se realizaron después mediante la ejecución autorizada fuera de ese aislamiento. No se trató el intento fallido como una prueba aprobada.
 
-La integración ejecuta las pantallas reales sobre el renderer de LÖVE, utiliza clics transformados al espacio lógico y avance de diálogo, y recorre 70 pasos desde Nueva partida hasta el resumen del día dos. Comprueba la restauración exacta del encuentro tanto al pausar como al continuar, el ajuste de los diálogos, la escala entera, el centrado y el rechazo de clics en las bandas.
+## Cobertura
 
-El guardado físico usa `%APPDATA%\LOVE\cartas_del_destino_tests`; las pruebas no alteran `cartas_del_destino`. El resto de recorridos usa guardado en memoria.
+| Requisito | Evidencia |
+| --- | --- |
+| Siete personajes y hojas de 256 × 64 | Decodificación real, Image, nearest, alfa y comparación de los cuatro cuadros de cada personaje |
+| Ocho fondos de 320 × 180 | Diez identificadores con mapas esperados; caché compartida de jardín/patio y entrenamiento/bosque |
+| Dieciséis iconos y cuatro marcos | Rutas exactas por ID real y categoría de `cards.lua`; dimensiones, filtros y transparencia |
+| Base, reverso y cinco auxiliares | Precarga real incluida en los 42 PNG únicos |
+| Provisionales solo ante error | PNG válido nunca sustituido; ausente, corrupto, tamaño incorrecto e ID desconocido generan diagnóstico y reserva |
+| Cartas legibles | Medición de todos los nombres, categorías, costes y descripciones; inspección de los píxeles dibujados dentro de márgenes y orden de capas |
+| Reglas y efectos únicos | Dieciséis cartas en tres contextos, previsión sin mutación, energía, condiciones, pilas, acción gratuita y restauraciones repetidas |
+| Guardado y decisiones | JSON validado, copias de respaldo y restauración de decisiones y encuentro exacto, también mediante archivos físicos |
+| Pausa y continuación | Encuentros guardados después de cartas y acción gratuita; comparación del estado completo al volver y cargar |
+| Fase 1 completa | Pantallas reales desde Nueva partida hasta el resumen del día dos en 70 pasos; variantes narrativas de los tres acompañantes con resultados altos y bajos |
+| Mouse y teclado | Hitboxes transformadas, clics en bandas rechazados, foco visible, cartas deshabilitadas, coste cero sin energía y protección contra doble entrada |
+| Ventana y pantalla completa | Cambios reales a 640 × 360, 960 × 540 y 1280 × 720; F11 entra/sale de pantalla completa, escala entera y transformación inversa del mouse |
 
-Se inspeccionaron las ocho capturas generadas en `tests/artifacts/`: menú, diálogo, encuentro, mapa, resumen, diario, colección y opciones. Se corrigieron la etiqueta de vínculo para mostrar español y la posición del icono dentro del marco. Las imágenes son regenerables y no forman parte de los recursos obligatorios del juego.
+El guardado físico usa `%APPDATA%\LOVE\cartas_del_destino_tests`; las pruebas no escriben en `cartas_del_destino`. Las pruebas de UI y el recorrido de integración sustituyen el guardado por memoria.
 
-Alcance: esta verificación cubre la Fase 1. No afirma que existan o hayan sido probadas escenas de días tres a siete, música, sprites definitivos, un editor de mazo o una distribución ejecutable independiente de LÖVE.
+## Revisión visual
+
+Se inspeccionaron las diez capturas renderizadas por LÖVE en `tests/artifacts/`: menú, diálogo, encuentro, mapa, resumen, diario, colección, opciones, galería de siete personajes con sus cuatro expresiones y galería de las dieciséis cartas. Se comprobaron las capas reales, las proporciones, el contraste, los márgenes y la separación entre personajes, cartas, detalles y botones. Los pies de pantalla y etiquetas de disponibilidad tienen fondo opaco para seguir siendo legibles sobre los escenarios reales.
+
+Las capturas y logs son artefactos regenerables ignorados por Git, no recursos del juego. La inspección visual se realizó sobre capturas; el recorrido de pantallas, entradas y cambios de ventana fue automatizado mediante LÖVE. No se presenta como una sesión manual de juego prolongada.
+
+La comprobación final contra los blobs originales de Git confirmó SHA-256 idénticos para los **45 PNG** (42 de ejecución y tres auxiliares) y los **42 ASE** trasladados. `git diff --check` terminó sin errores.
+
+## Archivos de la entrega
+
+| Área | Archivos creados o modificados |
+| --- | --- |
+| Recursos | `src/data/assets.lua` (nuevo), `src/systems/resources.lua` |
+| Coordinación y controles | `src/app.lua`, `src/config/controls.lua` |
+| UI | `src/ui/card.lua` (nuevo), `src/ui/screen.lua`; `src/screens/encounter.lua`, `overlays.lua`, `dialogue.lua`, `hub.lua`, `summary.lua` |
+| Lógica | `src/systems/cards.lua` |
+| Pruebas | `tests/gameplay.lua`, `story.lua`, `resources.lua`, `run.lua`, `ui.lua` (nuevo) |
+| Documentación | `README.md`, `assets/README.md`, `assets/cards/LEEME.md`, `docs/SISTEMAS.md`, `docs/VERIFICACION.md`, `docs/RECURSOS.md` (nuevo), `docs/FASE_2.md` (nuevo), `docs/CODIGO_COMPLETO.md` regenerado |
+| Herramientas | `tools/export_source.py` |
+| Fuentes | 42 movimientos desde `assets/` hacia el mismo árbol relativo dentro de `sprite_sources/` |
+
+`main.lua`, `conf.lua`, las definiciones de cartas y personajes, la narrativa, el esquema de guardado y `.gitignore` se revisaron y se conservaron.
+
+## Límites y siguiente fase
+
+La verificación cubre la Fase 1 y los recursos preparados. No implementa ni valida escenas de días tres a siete. Permanecen pendientes el editor de mazo, audio, elección de ruta y confesiones, escenas de los siete finales y distribución autónoma para Windows. Jardín y entrenamiento reutilizan temporalmente patio y bosque.
+
+Las transiciones y checkpoints todavía contienen casos específicos de la Fase 1. [FASE_2.md](FASE_2.md) detalla su migración a un registro declarativo compartido antes de incorporar el día tres. No se modificaron sus reglas narrativas durante esta integración visual.
 ````
 
 ## ejecutar.ps1
@@ -302,22 +615,26 @@ La **Fase 1 está implementada**: menú, introducción, día uno completo, reenc
 
 También puedes arrastrar la carpeta que contiene `main.lua` sobre `love.exe`, o ejecutar `./ejecutar.ps1` si tu configuración permite scripts locales. No requiere Lua por separado, Python para jugar, conexión, paquetes, imágenes descargadas ni compilación.
 
-Ventana inicial 1280×720. Canvas lógico 640×360, filtro `nearest`, escalado entero y centrado con bandas cuando el tamaño de la ventana no coincide. F11 alterna pantalla completa. Fondos provisionales a 320×180 y retratos de 64×64 en hojas de 256×64 con cuatro expresiones.
+Ventana inicial 1280×720. Canvas lógico 640×360, filtro `nearest`, escalado entero y centrado con bandas cuando el tamaño de la ventana no coincide. F11 alterna pantalla completa. Los ocho escenarios PNG existentes miden 320×180 y se dibujan al doble dentro del canvas; los siete personajes utilizan cuadros de 64×64 en hojas de 256×64 con cuatro expresiones.
+
+Los **recursos definitivos existentes están integrados** mediante `src/data/assets.lua`: personajes, escenarios, pergamino, cuatro marcos por categoría, reverso y dieciséis iconos de cartas. Se conservaron los PNG originales. Los 42 archivos editables `.ase` se encuentran en `sprite_sources/`, separados de los recursos que carga LÖVE. Los dibujos provisionales solo cubren archivos ausentes o inválidos y generan un diagnóstico.
 
 ## Controles
 
 | Acción | Control |
 | --- | --- |
 | Seleccionar botones y cartas | Clic izquierdo |
+| Recorrer botones habilitados | Tab, Arriba o Abajo; Enter/Espacio activa el foco |
 | Mostrar texto completo / siguiente fragmento | Clic, Enter o Espacio |
 | Jugar carta de la mano | Clic o teclas 1, 2, 3 |
+| Inspeccionar y jugar la carta seleccionada | Izquierda/Derecha y después Enter/Espacio |
 | Acción gratuita | Botón «Tomar un respiro» o P |
 | Diario / colección | J / M |
 | Pausa / volver | Esc |
 | Guardar | F5 |
 | Pantalla completa | F11 |
 
-Una pulsación revela el texto en curso; la siguiente avanza una sola línea. Se ignora la repetición del teclado. Las decisiones narrativas se eligen con el mouse. Al terminar tres acciones, «Ver resultado» confirma los efectos del encuentro sobre las relaciones.
+Una pulsación revela el texto en curso; la siguiente avanza una sola línea. Se ignora la repetición del teclado. Las decisiones narrativas se eligen con mouse o recorriendo sus botones por teclado. Al terminar tres acciones, «Ver resultado» confirma los efectos del encuentro sobre las relaciones.
 
 ## Reglas implementadas
 
@@ -368,7 +685,9 @@ Prueba manual recomendada:
 7. Cambia tamaño de ventana y usa F11: imagen proporcionada y clics alineados. Pulsa en las bandas: no debe activarse ningún botón.
 8. Cambia volumen/silencio, cierra y abre el juego para verificar persistencia. No habrá sonido hasta incorporar audio.
 
-Para comprobar PNG opcionales, consulta [assets/README.md](assets/README.md). Una imagen ausente, ilegible o de tamaño incorrecto se sustituye por pixel art provisional.
+Consulta los resultados reales de la auditoría y sus límites en [docs/VERIFICACION.md](docs/VERIFICACION.md). La suite verifica también las dimensiones, recortes, rutas y filtrado de los PNG existentes, el respaldo ante recursos inválidos y los márgenes de los textos de cartas.
+
+Para añadir o editar recursos, consulta [assets/README.md](assets/README.md) y [docs/RECURSOS.md](docs/RECURSOS.md). Los nombres internos de la historia no necesitan coincidir con los nombres españoles de los PNG: el manifiesto resuelve esa relación explícitamente. Una imagen ausente, ilegible o de tamaño incorrecto activa un provisional con diagnóstico; un PNG válido tiene prioridad.
 
 ## Arquitectura y ampliación
 
@@ -379,19 +698,22 @@ Para comprobar PNG opcionales, consulta [assets/README.md](assets/README.md). Un
 | `src/data/story.lua` | Diálogos, elecciones, lugares y encuentros |
 | `src/data/cards.lua` | Las 16 cartas, costes, iconos, condiciones, efectos, mazo inicial |
 | `src/data/characters.lua` | Personajes, nombres, temas, colores e identificadores |
+| `src/data/assets.lua` | Rutas PNG, dimensiones y mapeo explícito de escenarios, cartas y categorías |
 | `src/systems/progression.lua` | Conexiones entre escenas, días, visitas y acompañante |
 | `src/systems/events.lua` | Aplicación única de decisiones, desbloqueos y eventos |
 | `src/systems/dialogue.lua` | Índice de diálogo y avance |
 | `src/systems/cards.lua` | Reglas, barajado, previsión, juego y restauración |
 | `src/systems/relationships.lua` | Vínculos, límites y evaluación de finales |
 | `src/systems/save.lua`, `json.lua` | Esquema validado, lectura/escritura y respaldo |
-| `src/systems/resources.lua` | Carga PNG y dibujos provisionales |
+| `src/systems/resources.lua` | Carga y validación de PNG, recortes, caché y diagnósticos; respaldo provisional |
 | `src/screens/` | Menú, diálogo, mapa, cartas, pantallas auxiliares y resumen |
-| `src/ui/` | Paleta, fuente bitmap original, marcos, botones, barras e hitboxes |
+| `src/ui/card.lua` | Composición compartida de cartas en mano y colección; márgenes, textos y capas |
+| `src/ui/` | Paleta, fuente bitmap original, botones, foco de teclado, barras e hitboxes |
 | `src/config/controls.lua` | Configuración de atajos |
 | `tests/` | Pruebas de lógica y recorrido real de pantallas |
+| `sprite_sources/` | Fuentes editables ASE de personajes, escenarios y cartas, versionadas |
 
-Para añadir líneas a una escena, edita solo `story.lua`. Una nueva carta se define en `cards.lua`; los efectos existentes no requieren cambios del motor. Un capítulo nuevo requiere sus tablas, transiciones en `progression.lua`, checkpoints reconocidos en `save.lua` y pruebas de progreso. Los sprites se reemplazan sin cambiar diálogos ni pantallas. Las expresiones usan `neutral=0`, `happy=1`, `worried=2`, `angry=3`, de izquierda a derecha en la hoja. Las hojas del formato anterior no cumplen el tamaño esperado y se sustituyen por el recurso provisional hasta exportarlas al formato nuevo.
+Para añadir líneas a una escena, edita solo `story.lua`. Una nueva carta se define en `cards.lua` y vincula su PNG en `assets.lua`; los efectos existentes no requieren cambios del motor. La Fase 1 todavía tiene transiciones y checkpoints específicos en `progression.lua` y `save.lua`. Antes de ampliar a siete días conviene convertirlos en un registro compartido de capítulos y transiciones declarativas; el plan concreto está en [docs/FASE_2.md](docs/FASE_2.md). Los sprites se reemplazan sin cambiar diálogos ni pantallas. Las expresiones usan `neutral=0`, `happy=1`, `worried=2`, `angry=3`, de izquierda a derecha en la hoja.
 
 El contenido completo de cada archivo y su ruta exacta están en [docs/CODIGO_COMPLETO.md](docs/CODIGO_COMPLETO.md). Se regenera con `python tools/export_source.py`. Detalle de APIs en [docs/SISTEMAS.md](docs/SISTEMAS.md).
 
@@ -399,9 +721,9 @@ El contenido completo de cada archivo y su ruta exacta están en [docs/CODIGO_CO
 
 - **Fase 2:** días tres y cuatro, desafíos adicionales, editor de mazo e integración de cartas desbloqueadas en mazos personalizados.
 - **Fase 3:** elección de ruta, conflictos de días cinco y seis, escenas de confesión y los siete desenlaces del día siete.
-- **Fase 4:** sprites y archivos `.ase` definitivos, audio original/licenciado, pulido, pruebas de la historia completa y distribución autónoma para Windows.
+- **Fase 4:** audio original/licenciado, pulido, pruebas de la historia completa y distribución autónoma para Windows.
 
-Los recursos actuales son pixel art provisional dibujado por el proyecto. No se entregan sprites definitivos ni se presentan archivos generados como exportaciones de LibreSprite.
+La integración visual no implementa los días tres a siete. Hay escenarios preparados para esos capítulos, pero faltan sus escenas, encuentros, elección de ruta, confesiones y desenlaces. También siguen pendientes el editor de mazo, audio y distribución autónoma. `garden` reutiliza temporalmente el patio y `training` el bosque hasta contar con escenarios propios.
 ````
 
 ## src/app.lua
@@ -423,20 +745,23 @@ function App.new()
     local self = setmetatable({},App)
     self.canvas=love.graphics.newCanvas(640,360)
     self.canvas:setFilter("nearest","nearest")
-    self.resources=Resources.new()
+    self.resources=Resources.new():preload()
     self.options=Save.readOptions and Save.readOptions() or {volume=.6,muted=false}
     self.manager=Manager.new(self)
     self.toast,self.toastTime="",0
     self:resize()
     self:applyAudio()
     self:menu()
+    if #self.resources.warnings>0 then
+        self:notify("Aviso: "..#self.resources.warnings.." recursos provisionales. Consulta la consola.")
+    end
     return self
 end
 
 function App:resize()
     local w,h=love.graphics.getDimensions()
     local fit=math.min(w/640,h/360)
-    self.scale=fit>=1 and math.floor(fit) or fit
+    self.scale=math.max(1,math.floor(fit))
     self.offsetX=math.floor((w-640*self.scale)/2)
     self.offsetY=math.floor((h-360*self.scale)/2)
 end
@@ -564,6 +889,10 @@ return {
     fullscreen = { "f11" },
     freeAction = { "p" },
     cards = { "1", "2", "3" },
+    nextButton = { "tab", "down" },
+    previousButton = { "up" },
+    nextCard = { "right" },
+    previousCard = { "left" },
     matches = function(keys, key)
         for _, candidate in ipairs(keys) do if candidate == key then return true end end
         return false
@@ -613,6 +942,72 @@ function Manager:keypressed(key)
 end
 
 return Manager
+````
+
+## src/data/assets.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/assets.lua`
+
+````lua
+-- Manifiesto de PNG de ejecución. Los ASE editables viven en sprite_sources/.
+-- Los identificadores son los de las tablas narrativas y src/data/cards.lua.
+return {
+    characters={
+        rudeus="assets/characters/rudeus.png",
+        sylphiette="assets/characters/sylphiette.png",
+        roxy="assets/characters/roxy.png",
+        eris="assets/characters/eris.png",
+        nanahoshi="assets/characters/nanahoshi.png",
+        zanoba="assets/characters/zanoba.png",
+        cliff="assets/characters/cliff.png",
+    },
+    backgrounds={
+        laboratory="assets/backgrounds/laboratorio.png",
+        courtyard="assets/backgrounds/patio_universidad.png",
+        library="assets/backgrounds/biblioteca.png",
+        ruins="assets/backgrounds/ruinas.png",
+        garden="assets/backgrounds/patio_universidad.png", -- Reutilización temporal.
+        training="assets/backgrounds/bosque.png", -- Reutilización temporal.
+        forest="assets/backgrounds/bosque.png",
+        observatory="assets/backgrounds/observatorio.png",
+        mirror_dimension="assets/backgrounds/dimension_espejo.png",
+        festival="assets/backgrounds/festival.png",
+    },
+    cardIcons={
+        listen="assets/cards/iconos/escuchar.png",
+        encourage="assets/cards/iconos/dar_animo.png",
+        remember="assets/cards/iconos/recordar_un_detalle.png",
+        light_joke="assets/cards/iconos/broma_ligera.png",
+        change_subject="assets/cards/iconos/cambiar_de_tema.png",
+        self_joke="assets/cards/iconos/reirse_de_uno_mismo.png",
+        be_honest="assets/cards/iconos/hablar_con_honestidad.png",
+        admit_error="assets/cards/iconos/reconocer_un_error.png",
+        share_fear="assets/cards/iconos/compartir_un_miedo.png",
+        propose_plan="assets/cards/iconos/proponer_un_plan.png",
+        analyze_runes="assets/cards/iconos/analizar_runas.png",
+        earth_barrier="assets/cards/iconos/barrera_de_tierra.png",
+        shared_magic="assets/cards/iconos/magia_compartida.png",
+        combined_spell="assets/cards/iconos/conjuro_combinado.png",
+        sword_magic="assets/cards/iconos/espada_y_magia.png",
+        choose_together="assets/cards/iconos/elegir_juntos.png",
+    },
+    cardFrames={
+        empathy="assets/cards/marcos/marco_empatia.png",
+        humor="assets/cards/marcos/marco_humor.png",
+        sincerity="assets/cards/marcos/marco_sinceridad.png",
+        initiative="assets/cards/marcos/marco_magia_iniciativa.png",
+    },
+    categoryIcons={
+        empathy="assets/cards/iconos/categoria_empatia.png",
+        humor="assets/cards/iconos/categoria_humor.png",
+        sincerity="assets/cards/iconos/categoria_sinceridad.png",
+        initiative="assets/cards/iconos/categoria_magia_iniciativa.png",
+    },
+    cardBase="assets/cards/bases/fondo_pergamino.png",
+    cardBack="assets/cards/reverso/reverso_espejo.png",
+    manaIcon="assets/cards/iconos/coste_mana.png",
+    sizes={character={256,64},background={320,180},card={80,112},icon={24,24}},
+}
 ````
 
 ## src/data/cards.lua
@@ -991,6 +1386,7 @@ function DialogueScreen.new(app)
         if b==1 then self:advance() end
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.advance,key) then self:advance()
         elseif Controls.matches(Controls.back,key) then app:overlay("pause")
         elseif Controls.matches(Controls.journal,key) then app:overlay("journal")
@@ -1014,6 +1410,7 @@ local Characters=require("src.data.characters")
 local Cards=require("src.systems.cards")
 local Progression=require("src.systems.progression")
 local Controls=require("src.config.controls")
+local CardView=require("src.ui.card")
 local Encounter={}
 
 function Encounter.new(app)
@@ -1034,6 +1431,7 @@ function Encounter.new(app)
         if index then result,err=Cards.play(self.enc,index) else result,err=Cards.pass(self.enc) end
         if not result then app:notify(err); return end
         self.feedback=result.text
+        self.selected=math.min(self.selected,#self.enc.hand)
         self.age=0
         app:save()
     end
@@ -1073,44 +1471,45 @@ function Encounter.new(app)
         W.bar(28,286,90,6,enc.score,def.targetScore,P.gold)
         self:text("Robo "..#enc.drawPile.."\nDescarte "..#enc.discard,28,301,90,P.muted)
         local mx,my=app:mouse()
+        local mouseMoved=mx~=self.lastMouseX or my~=self.lastMouseY
+        self.lastMouseX,self.lastMouseY=mx,my
         for i,id in ipairs(enc.hand) do
-            local x,y=143+(i-1)*94,203+math.floor(math.max(0,.18-self.age)*35)
+            local x,y=143+(i-1)*94,199
             local card=Data.byId[id]
             local can=Cards.canPlay(enc,i)
             local hover=mx and mx>=x and mx<x+80 and my>=y and my<y+112
-            if hover then self.selected=i; y=y-4 end
-            app.resources:cardFrame(x,y,1)
-            local categoryColor=({empathy=P.teal,humor=P.gold,sincerity=P.rose,initiative=P.lavender})[card.category]
-            love.graphics.setColor(unpack(categoryColor))
-            love.graphics.rectangle("fill",x+4,y+4,72,3)
-            self:text(card.name,x+7,y+13,66,P.ink)
-            app.resources:icon(card.icon,x+28,y+35,1)
-            self:text("COSTE "..card.cost,x+6,y+83,68,P.gold,1,"center")
-            self:text("["..i.."] "..(can and "JUGAR" or (enc.finished and "FIN" or "NO DISP.")),x+5,y+99,70,can and P.teal or P.muted,1,"center")
-            if not can then
-                love.graphics.setColor(.025,.035,.07,.42)
-                love.graphics.rectangle("fill",x+3,y+9,74,69)
-            end
+            if hover and mouseMoved then self.selected=i; self.keyboardFocus=nil end
+            CardView.draw(app.resources,card,x,y,{selected=self.selected==i,disabled=not can,
+                status="["..i.."] "..(can and "JUGAR" or (enc.finished and "FIN" or "NO DISP."))})
             self.buttons[#self.buttons+1]={x=x,y=y,w=80,h=112,disabled=not can,action=function() self:act(i) end}
         end
         W.panel(429,196,193,128)
         local card=Data.byId[enc.hand[self.selected] or enc.hand[1]]
         if card then
-            self:text(Data.categories[card.category],439,207,173,P.teal)
-            self:text(card.description,439,225,173,P.ink)
+            self:text(Data.categories[card.category],439,203,173,P.teal)
+            self:text(card.description,439,227,173,P.ink)
             local preview=Cards.preview(enc,self.selected)
-            if preview then self:text("Aquí: +"..preview.score.." avance\n+"..preview.trust.." conf. +"..preview.chemistry.." química",439,292,173,P.gold) end
+            local can,reason=Cards.canPlay(enc,self.selected)
+            if can and preview then
+                self:text("Aquí: +"..preview.score.." avance\n+"..preview.trust.." conf. +"..preview.chemistry.." química",439,296,173,P.gold)
+            elseif reason then self:text(reason,439,291,173,P.muted) end
         end
-        self:text("Mazo: 10 cartas · energía sin recarga",18,340,360,P.muted)
+        W.panel(18,333,361,21,{shadow=false})
+        self:text("Flechas: elegir · Enter: jugar · 1/2/3",24,340,349,P.muted)
         self:button(enc.finished and "Ver resultado >" or "Tomar un respiro [P]",387,331,235,23,function()
             if enc.finished then self:finish() else self:act() end
         end)
     end
     function s:keypressed(key)
-        if Controls.matches(Controls.back,key) then app:overlay("pause")
+        if self:navigate(key) then return end
+        if Controls.matches(Controls.previousCard,key) or Controls.matches(Controls.nextCard,key) then
+            self.keyboardFocus=nil
+            self.selected=(self.selected-1+(Controls.matches(Controls.nextCard,key) and 1 or -1))%#self.enc.hand+1
+        elseif Controls.matches(Controls.back,key) then app:overlay("pause")
         elseif Controls.matches(Controls.journal,key) then app:overlay("journal")
         elseif Controls.matches(Controls.deck,key) then app:overlay("deck")
         elseif self.enc.finished and Controls.matches(Controls.advance,key) then self:finish()
+        elseif Controls.matches(Controls.advance,key) then self:act(self.selected)
         elseif Controls.matches(Controls.freeAction,key) then self:act()
         else for i,k in ipairs(Controls.cards) do if key==k then self:act(i); return end end end
     end
@@ -1161,9 +1560,11 @@ function Hub.new(app)
                 if nextId then app:save(); app:resume() else app:notify(err) end
             end,visited and not ready)
         end
-        self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",18,343,604,P.ink)
+        W.panel(18,336,604,20,{shadow=false})
+        self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink)
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.back,key) then app:overlay("pause")
         elseif Controls.matches(Controls.journal,key) then app:overlay("journal")
         elseif Controls.matches(Controls.deck,key) then app:overlay("deck") end
@@ -1232,6 +1633,7 @@ local Data=require("src.data.cards")
 local Characters=require("src.data.characters")
 local Save=require("src.systems.save")
 local Controls=require("src.config.controls")
+local CardView=require("src.ui.card")
 local Overlays={}
 
 function Overlays.new(app,kind)
@@ -1304,15 +1706,18 @@ function Overlays.new(app,kind)
             end
             W.panel(336,49,286,293)
             local card=Data.list[self.selected]
-            app.resources:icon(card.icon,354,66,2)
-            self:text(card.name,414,70,194,P.gold)
-            self:text("Coste "..card.cost.."\n"..Data.categories[card.category],414,100,194,P.teal)
-            self:text(card.description,352,139,254,P.ink)
-            self:text(app.session.unlocked[card.id] and (equipped[card.id] and "EN EL MAZO" or "DESBLOQUEADA") or "BLOQUEADA · CAPÍTULOS FUTUROS",352,202,254,P.gold)
-            self:text("* Equipada   + Desbloqueada   - Bloqueada\n\nEl editor de mazo llegará en la Fase 2. Aquí puedes revisar las 16 cartas y sus costes.",352,235,254,P.muted)
+            CardView.draw(app.resources,card,350,62)
+            app.resources:categoryIcon(card.category,442,64,1)
+            self:text(Data.categories[card.category],474,70,134,P.teal)
+            app.resources:manaIcon(442,99,1)
+            self:text("Energía: "..card.cost,474,105,134,P.ink)
+            self:text(app.session.unlocked[card.id] and (equipped[card.id] and "EN EL MAZO" or "DESBLOQUEADA") or "BLOQUEADA\nCapítulos futuros",442,139,166,P.gold)
+            self:text(card.description,352,188,254,P.ink)
+            self:text("* Equipada   + Desbloqueada\n- Bloqueada\n\nEl editor de mazo llegará en la Fase 2. Revisa aquí las 16 cartas.",352,249,254,P.muted)
         end
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.back,key) then app:resume() end
     end
     return s
@@ -1355,6 +1760,7 @@ function Summary.new(app)
         self:text("Las cartas no deciden por ti. Tú eliges los vínculos que construyes.",26,345,588,P.ink,1,"center")
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.back,key) then app:overlay("pause") end
     end
     return s
@@ -1458,10 +1864,14 @@ function Cards.play(enc,index)
     return finishAction(enc,result)
 end
 
+local function freeAction()
+    return {cardId="pass",score=0,trust=0,chemistry=0,
+        text="Tomar un respiro: Rudy escucha y deja que el maná se calme. Sin coste."}
+end
+
 function Cards.pass(enc)
     if enc.finished then return nil,"El encuentro ya terminó." end
-    return finishAction(enc,{cardId="pass",score=0,trust=0,chemistry=0,
-        text="Tomar un respiro: Rudy escucha y deja que el maná se calme. Sin coste."})
+    return finishAction(enc,freeAction())
 end
 
 -- A saved encounter must conserve the exact cards and action history. Invalid
@@ -1488,7 +1898,7 @@ function Cards.restore(snapshot,deck,context)
         if type(entry)~="table" then return nil end
         local result
         if entry.cardId=="pass" then
-            result={cardId="pass",score=0,trust=0,chemistry=0,text="Tomar un respiro: sin coste."}
+            result=freeAction()
         else
             played=played+1
             if enc.discard[played]~=entry.cardId then return nil end
@@ -1988,10 +2398,14 @@ local Resources = {}
 Resources.__index = Resources
 local P = require("src.ui.palette")
 local Characters = require("src.data.characters")
+local Assets = require("src.data.assets")
 local SPRITE_WIDTH = Characters.spriteWidth
 local SPRITE_HEIGHT = Characters.spriteHeight
 local EXPRESSIONS = Characters.expressions
 local SHEET_WIDTH = SPRITE_WIDTH * Characters.expressionCount
+local BACKGROUND_WIDTH,BACKGROUND_HEIGHT=unpack(Assets.sizes.background)
+local CARD_WIDTH,CARD_HEIGHT=unpack(Assets.sizes.card)
+local ICON_WIDTH,ICON_HEIGHT=unpack(Assets.sizes.icon)
 local function color(hex)
     if type(hex) == "table" then love.graphics.setColor(hex); return end
     love.graphics.setColor(tonumber(hex:sub(1,2),16)/255,tonumber(hex:sub(3,4),16)/255,tonumber(hex:sub(5,6),16)/255,1)
@@ -2012,11 +2426,17 @@ local function canvas(w,h,draw)
     return c
 end
 local function image(path,w,h)
-    if not love.filesystem.getInfo(path,"file") then return nil end
+    if not path then return nil,"identificador sin entrada en src/data/assets.lua" end
+    if not love.filesystem.getInfo(path,"file") then return nil,"archivo inexistente" end
     local ok,img=pcall(love.graphics.newImage,path)
-    if ok and img:getWidth()==w and img:getHeight()==h then img:setFilter("nearest","nearest"); return img end
-    -- Un tamaño incorrecto tampoco debe interrumpir la partida.
-    return nil
+    if not ok then return nil,"PNG inválido: "..tostring(img) end
+    if img:getWidth()~=w or img:getHeight()~=h then
+        local reason=string.format("dimensiones %dx%d; se esperaban %dx%d",img:getWidth(),img:getHeight(),w,h)
+        img:release()
+        return nil,reason
+    end
+    img:setFilter("nearest","nearest")
+    return img
 end
 local function stars()
     for i=1,24 do local x=(i*53+19)%320; local y=(i*17)%73; r("CAC1CB",x,y,1,1) end
@@ -2307,45 +2727,127 @@ local function icon(id)
     end
 end
 function Resources.new()
-    return setmetatable({backgrounds={},portraits={},icons={},quads={},warnings={}},Resources)
+    return setmetatable({backgrounds={},portraits={},icons={},frames={},categoryIcons={},quads={},
+        images={},sources={},warnings={}},Resources)
 end
-function Resources:background(id)
-    id=backgrounds[id] and id or "courtyard"
-    if not self.backgrounds[id] then self.backgrounds[id]=image("assets/backgrounds/"..id..".png",320,180) or canvas(320,180,backgrounds[id]) end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.backgrounds[id],0,0,0,2,2)
+-- Una única carga por ruta: garden/courtyard y training/forest comparten imagen.
+-- sources permite inspeccionar cada sustitución; nunca se oculta un fallo de PNG.
+function Resources:_load(path,w,h,fallback,id)
+    local key=path or ("unmapped:"..id)
+    if not self.images[key] then
+        local img,reason=image(path,w,h)
+        if img then
+            self.sources[key]={status="png",path=path,width=w,height=h}
+        else
+            local message="[Recursos] "..key..": "..reason.."; usando recurso provisional."
+            self.warnings[#self.warnings+1]=message
+            print(message)
+            self.sources[key]={status="fallback",path=path,reason=reason,width=w,height=h}
+            img=canvas(w,h,fallback)
+        end
+        self.images[key]=img
+    end
+    return self.images[key]
 end
-function Resources:portrait(id,expression,x,y,scale)
-    id=profiles[id] and id or "rudeus";expression=expression or "neutral";scale=scale or 1
-    local frame=EXPRESSIONS[expression] or 0
+local function integerScale(scale) return math.max(1,math.floor(tonumber(scale) or 1)) end
+local function draw(img,x,y,scale)
+    scale=integerScale(scale)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(img,math.floor(x or 0),math.floor(y or 0),0,scale,scale)
+    return img
+end
+function Resources:getBackground(id)
+    id=id or "courtyard"
+    if not self.backgrounds[id] then
+        self.backgrounds[id]=self:_load(Assets.backgrounds[id],BACKGROUND_WIDTH,BACKGROUND_HEIGHT,backgrounds[id] or courtyard,"background:"..id)
+    end
+    return self.backgrounds[id]
+end
+function Resources:background(id) return draw(self:getBackground(id),0,0,2) end
+function Resources:getPortrait(id)
+    id=id or "rudeus"
     if not self.portraits[id] then
-        self.portraits[id]=image("assets/characters/"..id..".png",SHEET_WIDTH,SPRITE_HEIGHT) or canvas(SHEET_WIDTH,SPRITE_HEIGHT,function()
+        self.portraits[id]=self:_load(Assets.characters[id],SHEET_WIDTH,SPRITE_HEIGHT,function()
             for name,index in pairs(EXPRESSIONS) do
                 love.graphics.push()
                 love.graphics.translate(index*SPRITE_WIDTH,0)
-                portrait(id,name)
+                portrait(profiles[id] and id or "rudeus",name)
                 love.graphics.pop()
             end
-        end)
+        end,"character:"..id)
     end
+    return self.portraits[id]
+end
+function Resources:portrait(id,expression,x,y,scale)
+    local img=self:getPortrait(id)
+    local frame=EXPRESSIONS[expression or "neutral"] or 0
     if not self.quads[frame] then
-        self.quads[frame]=love.graphics.newQuad(frame*SPRITE_WIDTH,0,SPRITE_WIDTH,SPRITE_HEIGHT,self.portraits[id]:getDimensions())
+        self.quads[frame]=love.graphics.newQuad(frame*SPRITE_WIDTH,0,SPRITE_WIDTH,SPRITE_HEIGHT,SHEET_WIDTH,SPRITE_HEIGHT)
     end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.portraits[id],self.quads[frame],math.floor(x),math.floor(y),0,scale,scale)
+    scale=integerScale(scale)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(img,self.quads[frame],math.floor(x),math.floor(y),0,scale,scale)
+    return img
 end
-function Resources:icon(id,x,y,scale)
-    id=id or "magic";scale=scale or 1
-    if not self.icons[id] then self.icons[id]=image("assets/icons/"..id..".png",24,24) or canvas(24,24,function() icon(id) end) end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.icons[id],math.floor(x),math.floor(y),0,scale,scale)
+function Resources:getIcon(id)
+    id=id or "magic"
+    if not self.icons[id] then
+        self.icons[id]=self:_load(Assets.cardIcons[id],ICON_WIDTH,ICON_HEIGHT,function() icon(id) end,"card-icon:"..id)
+    end
+    return self.icons[id]
 end
-function Resources:cardFrame(x,y,scale)
-    scale=scale or 1
-    if not self.frame then self.frame=image("assets/cards/frame.png",80,112) or canvas(80,112,function()
-        r("101A2B",1,0,78,112);r("101A2B",0,1,80,110);r("BBA78A",1,1,78,110);r("E2CC9F",2,2,76,108)
-        r("344B60",4,4,72,104);r("21344B",6,6,68,100);r("51627B",7,23,66,44);r("3B536B",9,25,62,40)
-        r("D0B686",6,69,68,1);r("A58F77",7,108,66,1)
-        for _,xx in ipairs({6,71}) do r("E3CCA0",xx,6,3,3);r("E3CCA0",xx,102,3,3) end
-    end) end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.frame,math.floor(x),math.floor(y),0,scale,scale)
+function Resources:icon(id,x,y,scale) return draw(self:getIcon(id),x,y,scale) end
+function Resources:getCardBase()
+    self.base=self.base or self:_load(Assets.cardBase,CARD_WIDTH,CARD_HEIGHT,function()
+        r("E2CC9F",1,1,78,110);r("D5BD92",3,3,74,106)
+    end,"card-base")
+    return self.base
+end
+function Resources:cardBase(x,y,scale) return draw(self:getCardBase(),x,y,scale) end
+function Resources:getCardFrame(category)
+    category=category or "empathy"
+    if not self.frames[category] then
+        self.frames[category]=self:_load(Assets.cardFrames[category],CARD_WIDTH,CARD_HEIGHT,function()
+            local tint=({empathy=P.teal,humor=P.gold,sincerity=P.rose,initiative=P.lavender})[category] or P.gold
+            r("101A2B",0,0,80,3);r("101A2B",0,109,80,3)
+            r("101A2B",0,0,3,112);r("101A2B",77,0,3,112)
+            r(tint,3,3,74,3);r(tint,3,106,74,3)
+            r(tint,3,3,3,106);r(tint,74,3,3,106)
+        end,"card-frame:"..category)
+    end
+    return self.frames[category]
+end
+function Resources:cardFrame(category,x,y,scale) return draw(self:getCardFrame(category),x,y,scale) end
+function Resources:getCardBack()
+    self.back=self.back or self:_load(Assets.cardBack,CARD_WIDTH,CARD_HEIGHT,function()
+        r("21344B",0,0,80,112);r("BBA78A",4,4,72,104);r("344B60",7,7,66,98)
+        r("83C6BA",25,31,30,50);r("D5E2BF",29,35,22,42)
+    end,"card-back")
+    return self.back
+end
+function Resources:cardBack(x,y,scale) return draw(self:getCardBack(),x,y,scale) end
+function Resources:getCategoryIcon(category)
+    category=category or "empathy"
+    if not self.categoryIcons[category] then
+        local representative=({empathy="listen",humor="light_joke",sincerity="be_honest",initiative="shared_magic"})[category]
+        self.categoryIcons[category]=self:_load(Assets.categoryIcons[category],ICON_WIDTH,ICON_HEIGHT,function() icon(representative) end,"category-icon:"..category)
+    end
+    return self.categoryIcons[category]
+end
+function Resources:categoryIcon(category,x,y,scale) return draw(self:getCategoryIcon(category),x,y,scale) end
+function Resources:getManaIcon()
+    self.mana=self.mana or self:_load(Assets.manaIcon,ICON_WIDTH,ICON_HEIGHT,function() icon("magic") end,"mana-icon")
+    return self.mana
+end
+function Resources:manaIcon(x,y,scale) return draw(self:getManaIcon(),x,y,scale) end
+-- Valida todos los PNG sin dibujarlos ni exigir que la historia ya los visite.
+function Resources:preload()
+    for id in pairs(Assets.characters) do self:getPortrait(id) end
+    for id in pairs(Assets.backgrounds) do self:getBackground(id) end
+    for id in pairs(Assets.cardIcons) do self:getIcon(id) end
+    for category in pairs(Assets.cardFrames) do self:getCardFrame(category); self:getCategoryIcon(category) end
+    self:getCardBase(); self:getCardBack(); self:getManaIcon()
+    return self
 end
 return Resources
 ````
@@ -2533,6 +3035,57 @@ end
 return Save
 ````
 
+## src/ui/card.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/ui/card.lua`
+
+````lua
+-- Composición compartida por la mano y la colección. Todas las medidas son
+-- píxeles lógicos; el texto se mantiene fuera del icono y del borde del PNG.
+local Font = require("src.ui.font")
+local P = require("src.ui.palette")
+local Card = {width=80,height=112}
+local ink = {.17,.14,.21,1}
+local categoryNames = {empathy="Empatía",humor="Humor",sincerity="Sinceridad",initiative="Magia"}
+Card.regions = {
+    name={x=8,y=11,w=64,h=33},
+    category={x=8,y=47,w=64,h=11},
+    icon={x=28,y=65,w=24,h=24},
+    cost={x=10,y=95,w=60,h=11},
+}
+
+function Card.labels(card)
+    return {name=card.name,category=categoryNames[card.category],cost="Coste "..card.cost}
+end
+
+function Card.draw(resources,card,x,y,opts)
+    opts=opts or {}
+    x,y=math.floor(x),math.floor(y)
+    if opts.selected then
+        love.graphics.setColor(P.gold)
+        love.graphics.rectangle("fill",x-2,y-2,84,116)
+    end
+    resources:cardBase(x,y,1)
+    resources:cardFrame(card.category,x,y,1)
+    local labels=Card.labels(card)
+    local function label(key)
+        local box=Card.regions[key]
+        Font.draw(labels[key],x+box.x,y+box.y,{maxWidth=box.w,align="center",color=ink})
+    end
+    label("name")
+    label("category")
+    resources:icon(card.id,x+Card.regions.icon.x,y+Card.regions.icon.y,1)
+    label("cost")
+    if opts.status then
+        love.graphics.setColor(P.panel)
+        love.graphics.rectangle("fill",x,y+112,80,13)
+        Font.draw(opts.status,x,y+114,{maxWidth=80,align="center",color=opts.disabled and P.muted or P.gold})
+    end
+end
+
+return Card
+````
+
 ## src/ui/font.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/ui/font.lua`
@@ -2690,6 +3243,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 local Font = require("src.ui.font")
 local W = require("src.ui.widgets")
 local P = require("src.ui.palette")
+local Controls = require("src.config.controls")
 local Screen = {}
 Screen.__index = Screen
 
@@ -2708,18 +3262,43 @@ end
 function Screen:button(label,x,y,w,h,action,disabled,selected)
     local mx,my = self.app:mouse()
     local hover = mx and mx >= x and mx < x+w and my >= y and my < y+h
-    W.button(label,x,y,w,h,{hover=hover,disabled=disabled,selected=selected})
+    W.button(label,x,y,w,h,{hover=hover,disabled=disabled,selected=selected or self.keyboardFocus==#self.buttons+1})
     self.buttons[#self.buttons+1]={label=label,x=x,y=y,w=w,h=h,action=action,disabled=disabled}
     return hover
 end
 
 function Screen:click(x,y,button)
     if button ~= 1 then return false end
+    self.keyboardFocus=nil
     for _,b in ipairs(self.buttons) do
         if x >= b.x and x < b.x+b.w and y >= b.y and y < b.y+b.h then
             if not b.disabled then b.action() end
             return true
         end
+    end
+    return false
+end
+
+-- Reutiliza las mismas acciones e hitboxes del mouse. Tab y flechas verticales
+-- recorren botones habilitados; Enter/Espacio activan únicamente el foco visible.
+function Screen:navigate(key)
+    local direction=(Controls.matches(Controls.previousButton,key) and -1)
+        or (Controls.matches(Controls.nextButton,key) and 1)
+    if direction then
+        local count=#self.buttons
+        if count==0 then return true end
+        local current=self.keyboardFocus or (direction==1 and 0 or count+1)
+        for _=1,count do
+            current=(current-1+direction)%count+1
+            local button=self.buttons[current]
+            if button.label and not button.disabled then self.keyboardFocus=current; return true end
+        end
+        return true
+    end
+    if self.keyboardFocus and Controls.matches(Controls.advance,key) then
+        local button=self.buttons[self.keyboardFocus]
+        if button and not button.disabled then button.action() end
+        return true
     end
     return false
 end
@@ -2737,6 +3316,7 @@ function Screen:header(title,back)
 end
 
 function Screen:mousepressed(x,y,button) self:click(x,y,button) end
+function Screen:keypressed(key) self:navigate(key) end
 return Screen
 ````
 
@@ -2778,14 +3358,6 @@ end
 function W.label(text,x,y,opts) return Font.draw(text,x,y,opts) end
 function W.divider(x,y,w,color) rect(color or P.border,x,y,w,1) end
 return W
-````
-
-## tests/artifacts/.gitkeep
-
-Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/artifacts/.gitkeep`
-
-````text
-
 ````
 
 ## tests/gameplay.lua
@@ -2848,6 +3420,46 @@ function Suite.run()
     check(a.chemistry>b.chemistry,"Preferencias modifican los efectos")
     local fresh=Cards.new(Data.starterDeck,{kind="magic"},function(n) return n end)
     check(fresh.energy==4 and fresh.turn==1 and #fresh.discard==0,"Cada encuentro reinicia mazo y energía")
+
+    -- Every real card must apply exactly once, and inspecting its effect must
+    -- leave the encounter untouched. Exercise all three narrative contexts.
+    for _,card in ipairs(Data.list) do
+        check(card.cost>=0 and card.cost<=2 and card.cost%1==0,"Coste permitido: "..card.id)
+        for _,kind in ipairs({"conversation","investigation","magic"}) do
+            local deck={}
+            local position
+            for i,id in ipairs(Data.starterDeck) do deck[i]=id; if id==card.id then position=i end end
+            if position then deck[position],deck[10]=deck[10],deck[position] else deck[10]=card.id end
+            local context={kind=kind,character=card.exclusive or "roxy"}
+            local action=Cards.new(deck,context,function(n) return n end)
+            local beforePreview=assert(Json.encode(action))
+            local preview=Cards.preview(action,1)
+            check(Json.encode(action)==beforePreview,"Vista previa no aplica efectos: "..card.id.."/"..kind)
+            check(Cards.canPlay(action,1),"Carta jugable con su acompañante: "..card.id)
+            local result=assert(Cards.play(action,1))
+            check(action.score==preview.score and result.trust==preview.trust and result.chemistry==preview.chemistry,
+                "Efectos aplicados una vez: "..card.id.."/"..kind)
+            check(action.energy==4-card.cost and action.turn==2 and #action.log==1 and action.discard[1]==card.id,
+                "Una sola acción y un solo pago: "..card.id)
+            local snapshot=assert(Json.encode(action))
+            for _=1,3 do action=assert(Cards.restore(action,deck,context)) end
+            check(Json.encode(action)==snapshot,"Restaurar no duplica efectos: "..card.id.."/"..kind)
+        end
+    end
+
+    local resting=Cards.new(Data.starterDeck,{kind="magic"},function(n) return n end)
+    for turn=1,3 do
+        local hand,pile=table.concat(resting.hand,","),table.concat(resting.drawPile,",")
+        Cards.pass(resting)
+        local snapshot=assert(Json.encode(resting))
+        resting=assert(Cards.restore(resting,Data.starterDeck,{kind="magic"}))
+        check(Json.encode(resting)==snapshot,"Acción gratuita conserva incluso su registro al continuar")
+        check(resting.energy==4 and resting.turn==turn+1 and #resting.log==turn and #resting.discard==0,
+            "Acción gratuita gasta solo un turno")
+        check(table.concat(resting.hand,",")==hand and table.concat(resting.drawPile,",")==pile,
+            "Acción gratuita no roba ni descarta")
+    end
+    check(resting.finished and not Cards.pass(resting),"Continuar encuentro gratuito terminado no concede otro turno")
 
     local all=Relationships.new()
     Relationships.apply(all,"sylphiette",{trust=30,chemistry=-2})
@@ -2925,9 +3537,29 @@ function Suite.run()
         files[Save.filename]="truncated{"
         local backup,message=Save.load()
         check(backup and backup.checkpoint=="intro" and message~=nil,"Recuperar backup si archivo está truncado")
+        local active=Save.newSession()
+        active.checkpoint="encounter_roxy"
+        active.decisions.choice_meet_roxy="compare_notes"
+        active.decisions.roxy_equality="colleagues"
+        active.events.choice_meet_roxy=true
+        active.relationships.roxy.trust=1
+        active.encounter=Cards.new(active.deck,{kind="investigation",character="roxy"},function(n) return n end)
+        Cards.pass(active.encounter)
+        Cards.play(active.encounter,2)
+        local expectedEncounter=assert(Json.encode(active.encounter))
+        check(Save.write(active),"Guardar decisión y encuentro con acción gratuita")
+        for _=1,3 do
+            active=assert(Save.load())
+            check(Json.encode(active.encounter)==expectedEncounter,"Carga mantiene mano, pilas, energía, turnos y registro")
+            check(active.events.choice_meet_roxy and active.decisions.choice_meet_roxy=="compare_notes"
+                and active.decisions.roxy_equality=="colleagues" and active.relationships.roxy.trust==1,
+                "Carga conserva decisiones sin anticipar ni duplicar efectos del encuentro")
+            check(Save.write(active),"Volver a guardar encuentro restaurado")
+        end
         check(Save.writeOptions({volume=0.2,muted=true}),"Guardar opciones")
         local prefs=Save.readOptions()
         check(prefs.volume==0.2 and prefs.muted,"Cargar opciones")
+        files[Save.filename]="truncated{"
         files[Save.backup]=nil
         check(Save.load()==nil and not Save.exists(),"Guardado corrupto no provoca cierre")
         love.filesystem.write=function() return false,"sin espacio" end
@@ -2946,81 +3578,188 @@ return Suite
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/resources.lua`
 
 ````lua
--- Pruebas de recorte con un PNG real generado en memoria; no modifica assets.
+-- Se decodifican los PNG del repositorio y se prueba la reserva con fallos
+-- inyectados en memoria. No modifica ningún recurso ni archivo del usuario.
 local Suite={}
 function Suite.run()
     local Resources=require("src.systems.resources")
+    local Assets=require("src.data.assets")
     local Characters=require("src.data.characters")
+    local Cards=require("src.data.cards")
     local count=0
     local function check(ok,message) count=count+1; assert(ok,message) end
-    local originalInfo,originalImage=love.filesystem.getInfo,love.graphics.newImage
-    local path="assets/characters/rudeus.png"
-    local colors={{1,0,0,1},{0,1,0,1},{0,0,1,1},{1,1,0,1}}
-    local pixels=love.image.newImageData(256,64)
-    pixels:mapPixel(function(x) return unpack(colors[math.floor(x/64)+1]) end)
-    local png=pixels:encode("png")
-    local oldPng=love.image.newImageData(384,128):encode("png")
-    local mode="valid"
-    love.filesystem.getInfo=function(candidate,...)
-        if candidate==path then return mode~="missing" and {type="file"} or nil end
-        return originalInfo(candidate,...)
-    end
-    love.graphics.newImage=function(candidate,...)
-        if candidate==path then
-            local file=mode=="invalid_size" and oldPng or png
-            if mode=="corrupt" then file=love.filesystem.newFileData("invalid PNG","invalid.png") end
-            local img=originalImage(file)
-            img:setFilter("linear","linear") -- El cargador debe sustituirlo por nearest.
-            return img
-        end
-        return originalImage(candidate,...)
-    end
+    local originalInfo,originalImage,originalDraw=love.filesystem.getInfo,love.graphics.newImage,love.graphics.draw
     love.graphics.push("all")
     local ok,err=xpcall(function()
-        local resources=Resources.new()
+        local resources=Resources.new():preload()
+        check(#resources.warnings==0,"Todos los PNG definitivos cargan sin reservas")
+        local loaded=0
+        for path,source in pairs(resources.sources) do
+            loaded=loaded+1
+            check(source.status=="png" and resources.images[path]:typeOf("Image"),"Nunca sustituir silenciosamente: "..path)
+            local min,mag=resources.images[path]:getFilter()
+            check(min=="nearest" and mag=="nearest","Filtrado nearest: "..path)
+            local data=love.image.newImageData(path)
+            local w,h=data:getDimensions()
+            check(w==source.width and h==source.height,"Dimensiones reales: "..path)
+        end
+        check(loaded==42,"42 PNG únicos: 7 personajes, 8 fondos, 27 capas e iconos de cartas")
+        local expectedBackgrounds={laboratory="laboratorio",courtyard="patio_universidad",library="biblioteca",
+            ruins="ruinas",garden="patio_universidad",training="bosque",forest="bosque",observatory="observatorio",
+            mirror_dimension="dimension_espejo",festival="festival"}
+        local unique={}
+        for id,name in pairs(expectedBackgrounds) do
+            local path="assets/backgrounds/"..name..".png"
+            unique[path]=true
+            check(Assets.backgrounds[id]==path,"Mapa explícito del escenario "..id)
+            check(resources:getBackground(id)==resources.images[path],"Escenario usa su PNG: "..id)
+        end
+        local backgroundCount=0; for _ in pairs(unique) do backgroundCount=backgroundCount+1 end
+        check(backgroundCount==8,"Ocho fondos distintos para diez IDs")
+        check(resources.backgrounds.garden==resources.backgrounds.courtyard,"Jardín reutiliza la misma imagen del patio")
+        check(resources.backgrounds.training==resources.backgrounds.forest,"Entrenamiento reutiliza la misma imagen del bosque")
+        local expectedIcons={listen="escuchar",encourage="dar_animo",remember="recordar_un_detalle",
+            light_joke="broma_ligera",change_subject="cambiar_de_tema",self_joke="reirse_de_uno_mismo",
+            be_honest="hablar_con_honestidad",admit_error="reconocer_un_error",share_fear="compartir_un_miedo",
+            propose_plan="proponer_un_plan",analyze_runes="analizar_runas",earth_barrier="barrera_de_tierra",
+            shared_magic="magia_compartida",combined_spell="conjuro_combinado",sword_magic="espada_y_magia",
+            choose_together="elegir_juntos"}
+        local expectedFrames={empathy="empatia",humor="humor",sincerity="sinceridad",initiative="magia_iniciativa"}
+        check(#Cards.list==16,"Dieciséis cartas jugables definidas")
+        for _,card in ipairs(Cards.list) do
+            local path="assets/cards/iconos/"..expectedIcons[card.id]..".png"
+            check(Assets.cardIcons[card.id]==path,"Icono español para el ID real "..card.id)
+            check(resources:getIcon(card.id)==resources.images[path],"Carta usa icono definitivo: "..card.id)
+            check(Assets.cardFrames[card.category]=="assets/cards/marcos/marco_"..expectedFrames[card.category]..".png",
+                "Marco depende de la categoría real: "..card.id)
+        end
+        check(Cards.byId.choose_together.category=="sincerity","Elegir Juntos conserva la categoría del código")
+        for category in pairs(Cards.categories) do
+            check(resources:getCardFrame(category)==resources.images[Assets.cardFrames[category]],"Marco definitivo: "..category)
+        end
+        -- La transparencia se comprueba en el archivo y tras el dibujo real.
         local target=love.graphics.newCanvas(72,72)
-        local function render(expression)
-            love.graphics.setCanvas(target)
-            love.graphics.origin()
-            love.graphics.clear(0,0,0,0)
-            resources:portrait("rudeus",expression,4,4,1)
+        local function renderPortrait(id,expression)
+            love.graphics.setCanvas(target); love.graphics.origin(); love.graphics.clear(0,0,0,0)
+            resources:portrait(id,expression,4,4,1)
             love.graphics.setCanvas()
             return target:newImageData()
         end
-        for index,expression in ipairs({"neutral","happy","worried","angry"}) do
-            local result=render(expression)
-            local r,g,b,a=result:getPixel(4,4)
-            local color=colors[index]
-            check(r==color[1] and g==color[2] and b==color[3] and a==1,"Seleccionar cuadro: "..expression)
-            local x,y,w,h=resources.quads[index-1]:getViewport()
-            check(x==(index-1)*64 and y==0 and w==64 and h==64,"Recorte 64x64: "..expression)
-            local _,_,_,inside=result:getPixel(67,67)
-            local _,_,_,outside=result:getPixel(68,67)
-            check(inside==1 and outside==0,"No invadir el siguiente cuadro: "..expression)
+        for _,character in ipairs(Characters.list) do
+            local path=Assets.characters[character.id]
+            local source=love.image.newImageData(path)
+            check(resources:getPortrait(character.id):typeOf("Image"),"PNG de personaje real: "..character.id)
+            for index,expression in ipairs({"neutral","happy","worried","angry"}) do
+                local rendered=renderPortrait(character.id,expression)
+                local matches,transparent=true,false
+                for y=0,63 do for x=0,63 do
+                    local sr,sg,sb,sa=source:getPixel((index-1)*64+x,y)
+                    local rr,rg,rb,ra=rendered:getPixel(x+4,y+4)
+                    if sa==0 then transparent=true end
+                    if math.abs(sa-ra)>.005 or (sa>0 and
+                        (math.abs(sr-rr)>.005 or math.abs(sg-rg)>.005 or math.abs(sb-rb)>.005)) then matches=false end
+                end end
+                check(matches,"Expresión exacta y alfa intacto: "..character.id.."/"..expression)
+                check(transparent,"La expresión conserva fondo transparente: "..character.id.."/"..expression)
+                local x,y,w,h=resources.quads[index-1]:getViewport()
+                check(x==(index-1)*64 and y==0 and w==64 and h==64,"Quad estable: "..expression)
+                local _,_,_,outside=rendered:getPixel(68,67)
+                check(outside==0,"El recorte no invade el cuadro vecino")
+            end
         end
-        local r,g,b=render("desconocida"):getPixel(4,4)
+        for _,card in ipairs(Cards.list) do
+            local source=love.image.newImageData(Assets.cardIcons[card.id])
+            love.graphics.setCanvas(target); love.graphics.clear(0,0,0,0)
+            resources:icon(card.id,4,4,1)
+            love.graphics.setCanvas()
+            local rendered=target:newImageData()
+            local matches,transparent=true,false
+            for y=0,23 do for x=0,23 do
+                local _,_,_,sa=source:getPixel(x,y)
+                local _,_,_,ra=rendered:getPixel(x+4,y+4)
+                if sa==0 then transparent=true end
+                if math.abs(sa-ra)>.005 then matches=false end
+            end end
+            check(matches and transparent,"Icono conserva transparencia al dibujarse: "..card.id)
+        end
+        -- Ni escalas fraccionarias ni posiciones subpíxel llegan al renderer.
+        local calls={}
+        love.graphics.draw=function(...) calls[#calls+1]={...} end
+        resources:portrait("rudeus","neutral",4.8,5.6,2.75)
+        resources:icon("listen",4.8,5.6,2.75)
+        resources:cardBase(4.8,5.6,2.75)
+        resources:cardFrame("empathy",4.8,5.6,2.75)
+        resources:cardBack(4.8,5.6,2.75)
+        love.graphics.draw=originalDraw
+        check(calls[1][3]==4 and calls[1][4]==5 and calls[1][6]==2 and calls[1][7]==2,"Retratos a escala y posición enteras")
+        for i=2,#calls do
+            check(calls[i][2]==4 and calls[i][3]==5 and calls[i][5]==2 and calls[i][6]==2,"Capas a escala y posición enteras")
+        end
+        -- Los colores detectan cuadros cambiados incluso con expresiones iguales.
+        local path=Assets.characters.rudeus
+        local colors={{1,0,0,1},{0,1,0,1},{0,0,1,1},{1,1,0,1}}
+        local pixels=love.image.newImageData(256,64)
+        pixels:mapPixel(function(x) return unpack(colors[math.floor(x/64)+1]) end)
+        local png=pixels:encode("png")
+        love.graphics.newImage=function(candidate,...)
+            if candidate==path then
+                local img=originalImage(png); img:setFilter("linear","linear"); return img
+            end
+            return originalImage(candidate,...)
+        end
+        resources=Resources.new()
+        for index,expression in ipairs({"neutral","happy","worried","angry"}) do
+            local r,g,b,a=renderPortrait("rudeus",expression):getPixel(4,4)
+            local color=colors[index]
+            check(r==color[1] and g==color[2] and b==color[3] and a==1,"Orden horizontal fijo: "..expression)
+        end
+        local r,g,b=renderPortrait("rudeus","desconocida"):getPixel(4,4)
         check(r==1 and g==0 and b==0,"Expresión desconocida utiliza neutral")
         local min,mag=resources.portraits.rudeus:getFilter()
-        check(min=="nearest" and mag=="nearest","PNG cargado utiliza nearest")
-        for _,variant in ipairs({"missing","invalid_size","corrupt"}) do
-            mode=variant
-            resources=Resources.new()
-            render("angry")
-            local w,h=resources.portraits.rudeus:getDimensions()
-            check(w==256 and h==64,"Fallback con hoja 256x64: "..variant)
-            check(resources.portraits.rudeus:typeOf("Canvas"),"Usar dibujo provisional: "..variant)
+        check(min=="nearest" and mag=="nearest","El cargador fuerza nearest")
+        local wrongSize=love.image.newImageData(1,1):encode("png")
+        local corrupt=love.filesystem.newFileData("invalid PNG","invalid.png")
+        local failingPath,mode
+        love.filesystem.getInfo=function(candidate,...)
+            if candidate==failingPath and mode=="missing" then return nil end
+            return originalInfo(candidate,...)
         end
-        for _,character in ipairs(Characters.list) do
-            resources:portrait(character.id,"worried",0,0,1)
-            local w,h=resources.portraits[character.id]:getDimensions()
-            check(w==256 and h==64,"Dimensiones de "..character.id)
+        love.graphics.newImage=function(candidate,...)
+            if candidate==failingPath then return originalImage(mode=="wrong_size" and wrongSize or corrupt) end
+            return originalImage(candidate,...)
         end
+        local cases={
+            {path=Assets.characters.rudeus,w=256,h=64,get=function(res) return res:getPortrait("rudeus") end},
+            {path=Assets.backgrounds.library,w=320,h=180,get=function(res) return res:getBackground("library") end},
+            {path=Assets.cardIcons.listen,w=24,h=24,get=function(res) return res:getIcon("listen") end},
+            {path=Assets.cardFrames.empathy,w=80,h=112,get=function(res) return res:getCardFrame("empathy") end},
+        }
+        for _,case in ipairs(cases) do
+            failingPath=case.path
+            for _,variant in ipairs({"missing","wrong_size","corrupt"}) do
+                mode=variant
+                resources=Resources.new()
+                local fallback=case.get(resources)
+                check(fallback:typeOf("Canvas"),"Reserva sin cierre: "..variant.."/"..failingPath)
+                local w,h=fallback:getDimensions()
+                check(w==case.w and h==case.h,"Reserva mantiene dimensiones esperadas")
+                check(resources.sources[failingPath].status=="fallback" and resources.sources[failingPath].reason,
+                    "La reserva conserva diagnóstico consultable")
+                check(#resources.warnings==1 and resources.warnings[1]:find(failingPath,1,true),"Diagnóstico identifica la ruta")
+                check(case.get(resources)==fallback and #resources.warnings==1,"No repetir carga ni avisos por fotograma")
+            end
+        end
+        love.filesystem.getInfo,love.graphics.newImage=originalInfo,originalImage
+        resources=Resources.new()
+        resources:getBackground("unknown_scene")
+        check(#resources.warnings==1 and resources.sources["unmapped:background:unknown_scene"].status=="fallback",
+            "Un ID no registrado se diagnostica sin fingir un escenario definitivo")
     end,debug.traceback)
-    love.graphics.setCanvas()
-    love.graphics.pop()
-    love.filesystem.getInfo,love.graphics.newImage=originalInfo,originalImage
+    love.filesystem.getInfo,love.graphics.newImage,love.graphics.draw=originalInfo,originalImage,originalDraw
+    love.graphics.setCanvas(); love.graphics.pop()
     assert(ok,err)
-    print("Resources: "..count.." checks passed (64x64 frames, PNG and fallback).")
+    print("Resources: "..count.." checks passed (42 real PNGs, mappings, expressions, transparency and diagnosed fallbacks).")
+    return count
 end
 return Suite
 ````
@@ -3037,22 +3776,30 @@ return function()
     require("tests.gameplay").run()
     require("tests.story").run()
     require("tests.resources").run()
+    require("tests.ui").run()
     local Save=require("src.systems.save")
     local Json=require("src.systems.json")
     local Story=require("src.data.story")
     local Cards=require("src.systems.cards")
     local Controls=require("src.config.controls")
     local Font=require("src.ui.font")
+    local Progression=require("src.systems.progression")
+    local diskChecks=0
+    local function diskCheck(ok,message) assert(ok,message); diskChecks=diskChecks+1 end
     local diskSession=Save.newSession()
-    diskSession.checkpoint="day1_tutorial"
-    diskSession.encounter=Cards.new(diskSession.deck,{kind="magic"})
+    diskSession.day,diskSession.checkpoint=2,"meet_roxy"
+    assert(Progression.choose(diskSession,"meet_roxy","compare_notes"))
+    assert(Progression.next(diskSession)=="encounter_roxy")
+    diskSession.encounter=Cards.new(diskSession.deck,{kind="investigation",character="roxy"})
     Cards.pass(diskSession.encounter)
-    assert(Save.write(diskSession),"Escritura real de love.filesystem")
+    diskCheck(Save.write(diskSession),"Escritura real de love.filesystem")
     local diskLoaded=assert(Save.load())
-    assert(diskLoaded.encounter.turn==2 and diskLoaded.encounter.energy==4,"Roundtrip real de guardado")
-    assert(Save.writeOptions({volume=.3,muted=true}))
-    assert(Save.readOptions().muted==true and Save.readOptions().volume==.3,"Opciones reales en disco")
-    print("Filesystem: 4 checks passed in isolated test identity.")
+    diskCheck(diskLoaded.encounter.turn==2 and diskLoaded.encounter.energy==4,"Roundtrip real de guardado")
+    diskCheck(Json.encode(diskLoaded.decisions)==Json.encode(diskSession.decisions),"Decisiones reales conservadas en disco")
+    diskCheck(Json.encode(diskLoaded.encounter)==Json.encode(diskSession.encounter),"Encuentro exacto conservado en disco")
+    diskCheck(Save.writeOptions({volume=.3,muted=true}),"Escribir opciones reales")
+    diskCheck(Save.readOptions().muted==true and Save.readOptions().volume==.3,"Opciones reales en disco")
+    print("Filesystem: "..diskChecks.." checks passed in isolated test identity.")
     local old={write=Save.write,load=Save.load,exists=Save.exists,readOptions=Save.readOptions,writeOptions=Save.writeOptions}
     local stored
     Save.write=function(session) stored=assert(Json.encode(assert(Save.validate(session)))); return true end
@@ -3072,6 +3819,11 @@ return function()
             local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/"..name..".png","wb"))
             file:write(data:getString()); file:close()
         end
+    end
+    local function captureCanvas(target,name)
+        local data=target:newImageData():encode("png")
+        local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/"..name..".png","wb"))
+        file:write(data:getString()); file:close()
     end
     local function clickLabel(label)
         render()
@@ -3115,7 +3867,8 @@ return function()
             if not s.enc.finished then
                 local idx
                 for i in ipairs(s.enc.hand) do if Cards.canPlay(s.enc,i) then idx=i; break end end
-                s:act(idx)
+                -- Incluir la acción gratuita en pausa/carga sobre pantallas reales.
+                if cp=="day1_tutorial" and s.enc.turn==1 then s:act() else s:act(idx) end
                 local before=assert(Json.encode(s.enc))
                 app:overlay("journal"); render()
                 app:resume(); render()
@@ -3149,6 +3902,25 @@ return function()
     check(lx==100 and ly==100,"Ratón usa la transformación inversa")
     love.graphics.getDimensions=dimensions
     app:resize()
+    -- Comprobar también la ventana real, además de la transformación aislada.
+    local originalWidth,originalHeight,originalFlags=love.window.getMode()
+    for _,size in ipairs({{640,360},{960,540},{1280,720}}) do
+        check(love.window.setMode(size[1],size[2],{resizable=true,minwidth=640,minheight=360}),"Cambiar resolución real")
+        app:resize()
+        local w,h=love.graphics.getDimensions()
+        check(app.scale==math.max(1,math.floor(math.min(w/640,h/360))),"Escala entera en ventana real")
+        local x,y=app:logical(app.offsetX+320*app.scale,app.offsetY+180*app.scale)
+        check(x==320 and y==180,"Mouse centrado en ventana real")
+        render()
+    end
+    app:keypressed("f11")
+    check(love.window.getFullscreen(),"F11 activa pantalla completa real")
+    check(app.scale>=1 and app.scale%1==0,"Pantalla completa conserva escala entera")
+    render()
+    app:keypressed("f11")
+    check(not love.window.getFullscreen(),"F11 vuelve a ventana")
+    check(love.window.setMode(originalWidth,originalHeight,originalFlags),"Restaurar ventana tras pruebas")
+    app:resize()
     for id,scene in pairs(Story.scenes) do
         local resolved=require("src.systems.progression").scene(app.session,id)
         for _,line in ipairs(resolved.lines) do
@@ -3158,6 +3930,27 @@ return function()
             for _,choice in ipairs(scene.choices) do check(Font.height(choice.label,419,1)<=22,"Elección cabe: "..id) end
         end
     end
+    -- Galerías de QA: todas las expresiones y cartas, incluidos capítulos futuros.
+    love.graphics.push("all")
+    local gallery=love.graphics.newCanvas(640,360)
+    love.graphics.setCanvas(gallery); love.graphics.origin(); love.graphics.clear(.1,.15,.23,1)
+    local Characters=require("src.data.characters")
+    for i,character in ipairs(Characters.list) do
+        local x=14+(i-1)*89
+        Font.draw(character.shortName,x,10,{maxWidth=84,align="center"})
+        for j,expression in ipairs({"neutral","happy","worried","angry"}) do
+            app.resources:portrait(character.id,expression,x+10,32+(j-1)*80,1)
+            Font.draw(expression,x,96+(j-1)*80,{maxWidth=84,align="center"})
+        end
+    end
+    love.graphics.setCanvas(); captureCanvas(gallery,"09-characters")
+    gallery=love.graphics.newCanvas(716,290)
+    love.graphics.setCanvas(gallery); love.graphics.origin(); love.graphics.clear(.1,.15,.23,1)
+    for i,card in ipairs(require("src.data.cards").list) do
+        require("src.ui.card").draw(app.resources,card,10+((i-1)%8)*88,12+math.floor((i-1)/8)*140)
+    end
+    love.graphics.setCanvas(); captureCanvas(gallery,"10-all-cards")
+    love.graphics.pop()
     for key,value in pairs(old) do Save[key]=value end
     print("Integration: "..count.." checks passed; "..steps.." screen steps.")
 end
@@ -3309,7 +4102,236 @@ function Suite.run()
     check(lostChoice.relationships.roxy.trust == 4, "Recuperar decisión sin volver a aplicar puntos")
     check(Progression.next(lostChoice) == "encounter_roxy", "Continuar después de recuperar elección")
 
+    -- A completed encounter can be saved before confirming its result. The
+    -- restored actions, including the free action, grant their effects once.
+    local resumed=Save.newSession()
+    resumed.day,resumed.checkpoint=2,"meet_roxy"
+    check(Progression.choose(resumed,"meet_roxy","compare_notes"),"Elegir antes del encuentro real")
+    check(Progression.next(resumed)=="encounter_roxy","Abrir encuentro real")
+    resumed.encounter=Cards.new(resumed.deck,{kind="investigation",character="roxy"},function(n) return n end)
+    Cards.play(resumed.encounter,2)
+    resumed=roundtrip(resumed)
+    Cards.pass(resumed.encounter)
+    resumed=roundtrip(resumed)
+    Cards.play(resumed.encounter,2)
+    resumed=roundtrip(resumed)
+    check(resumed.encounter.finished and #resumed.encounter.log==3,"Cargar encuentro finalizado antes del resultado")
+    check(resumed.relationships.roxy.trust==1 and resumed.relationships.roxy.chemistry==0,
+        "Guardar acciones no aplica todavía los vínculos")
+    local result={score=resumed.encounter.score,trust=0,chemistry=0}
+    for _,entry in ipairs(resumed.encounter.log) do
+        result.trust=result.trust+entry.trust
+        result.chemistry=result.chemistry+entry.chemistry
+    end
+    check(Progression.next(resumed,"encounter_roxy",result)=="result_roxy","Confirmar resultado restaurado")
+    check(resumed.relationships.roxy.trust==1+result.trust and resumed.relationships.roxy.chemistry==result.chemistry,
+        "Aplicar exactamente los vínculos registrados")
+    resumed=roundtrip(resumed)
+    local afterResult=assert(Json.encode(resumed.relationships))
+    check(not Progression.next(resumed,"encounter_roxy",result),"Rechazar confirmación repetida tras cargar")
+    check(Json.encode(resumed.relationships)==afterResult,"Confirmación repetida no duplica vínculos")
+    check(Progression.next(resumed)=="hub" and resumed.events.meeting_roxy,"Volver al mapa tras encuentro restaurado")
+
     print("OK: " .. checked .. " comprobaciones de narrativa, progresión y carga intermedia.")
+    return checked
+end
+
+return Suite
+````
+
+## tests/ui.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/ui.lua`
+
+````lua
+-- Ejecutar dentro de LÖVE. Usa las pantallas reales con guardado en memoria.
+local Suite={}
+
+function Suite.run()
+    local CardView=require("src.ui.card")
+    local Font=require("src.ui.font")
+    local Data=require("src.data.cards")
+    local Cards=require("src.systems.cards")
+    local Save=require("src.systems.save")
+    local Json=require("src.systems.json")
+    local checked=0
+    local function check(ok,message) assert(ok,message); checked=checked+1 end
+    local function overlaps(a,b)
+        return a.x<b.x+b.w and a.x+a.w>b.x and a.y<b.y+b.h and a.y+a.h>b.y
+    end
+
+    for name,region in pairs(CardView.regions) do
+        check(region.x>=6 and region.y>=6 and region.x+region.w<=74 and region.y+region.h<=106,
+            "Región dentro del margen del marco: "..name)
+        for other,otherRegion in pairs(CardView.regions) do
+            if name<other then check(not overlaps(region,otherRegion),"Regiones separadas: "..name.."/"..other) end
+        end
+    end
+    for _,card in ipairs(Data.list) do
+        for key,label in pairs(CardView.labels(card)) do
+            local region=CardView.regions[key]
+            check(Font.height(label,region.w)<=region.h,"Texto cabe en carta: "..card.id.."/"..key)
+            for _,line in ipairs(Font.wrap(label,region.w)) do
+                check(Font.width(line)<=region.w,"Línea respeta margen: "..card.id.."/"..key)
+            end
+        end
+        check(Font.height(card.description,173)<=64,"Descripción cabe en panel del encuentro: "..card.id)
+        check(Font.height(Data.categories[card.category],173)<=22,"Categoría completa cabe en detalles: "..card.id)
+    end
+
+    -- Observe the actual draw calls, including the individual bitmap glyph
+    -- pixels. A clipping rectangle cannot hide an overflowing label here.
+    local originalDraw,originalRectangle=Font.draw,love.graphics.rectangle
+    local ok,err=xpcall(function()
+        for _,card in ipairs(Data.list) do
+            local labels=CardView.labels(card)
+            local order,bounds={},{}
+            local active
+            local function record(kind) order[#order+1]=kind end
+            local resources={
+                cardBase=function(_,x,y,scale)
+                    check(x==20 and y==10 and scale==1,"Pergamino en coordenadas enteras")
+                    record("base")
+                end,
+                cardFrame=function(_,category,x,y,scale)
+                    check(category==card.category and x==20 and y==10 and scale==1,"Marco corresponde a categoría")
+                    record("frame")
+                end,
+                icon=function(_,id,x,y,scale)
+                    check(id==card.id and x==48 and y==75 and scale==1,"Icono propio sin escala fraccionaria")
+                    record("icon")
+                end,
+            }
+            Font.draw=function(text,x,y,opts)
+                local key
+                for candidate,label in pairs(labels) do if text==label then key=candidate end end
+                check(key~=nil,"Texto reconocido de la carta")
+                local region=CardView.regions[key]
+                check(x==20+region.x and y==10+region.y,"Texto colocado en su región")
+                active={x=x,y=y,w=region.w,h=region.h,inside=true,pixels=0}
+                bounds[key]=active
+                record(key)
+                local height=originalDraw(text,x,y,opts)
+                active=nil
+                return height
+            end
+            love.graphics.rectangle=function(mode,x,y,w,h,...)
+                if active then
+                    active.pixels=active.pixels+1
+                    active.inside=active.inside and x>=active.x and y>=active.y
+                        and x+w<=active.x+active.w and y+h<=active.y+active.h
+                        and x%1==0 and y%1==0 and w%1==0 and h%1==0
+                end
+            end
+            CardView.draw(resources,card,20.75,10.75)
+            for key,box in pairs(bounds) do
+                check(box.inside and box.pixels>0,"Píxeles del texto dentro de región: "..card.id.."/"..key)
+            end
+            local index={}; for i,kind in ipairs(order) do index[kind]=i end
+            check(index.base<index.frame and index.frame<index.name and index.name<index.icon and index.icon<index.cost,
+                "Capas: pergamino, marco, nombre, icono, coste: "..card.id)
+        end
+    end,debug.traceback)
+    Font.draw,love.graphics.rectangle=originalDraw,originalRectangle
+    assert(ok,err)
+
+    local old={write=Save.write,load=Save.load,exists=Save.exists,readOptions=Save.readOptions,writeOptions=Save.writeOptions}
+    local volume=love.audio.getVolume()
+    local stored
+    Save.write=function(session) stored=assert(Json.encode(assert(Save.validate(session)))); return true end
+    Save.load=function() return stored and Save.validate(assert(Json.decode(stored))) end
+    Save.exists=function() return stored~=nil end
+    Save.readOptions=function() return {volume=.6,muted=false} end
+    Save.writeOptions=function() return true end
+    ok,err=xpcall(function()
+        local app=require("src.app").new()
+        local mx,my
+        app.mouse=function() return mx,my end
+        local function render() app:update(.3); app:draw() end
+        local function click(x,y)
+            app:mousepressed(app.offsetX+x*app.scale,app.offsetY+y*app.scale,1)
+        end
+        render()
+        app:keypressed("tab")
+        app:keypressed("down")
+        check(app.manager.current.buttons[app.manager.current.keyboardFocus].label=="Opciones",
+            "Teclado del menú salta Continuar deshabilitado")
+        app:keypressed("return")
+        check(app.manager.current.kind=="options","Enter abre opción enfocada")
+        render()
+        app:keypressed("escape")
+        render()
+        app:keypressed("tab")
+        app:keypressed("return")
+        check(app.session and app.session.checkpoint=="intro","Nueva partida accesible por teclado")
+        app:keypressed("return")
+        click(100,300)
+        check(app.session.dialogueIndex==1 and app.manager.current.visible==0,
+            "Entrada repetida durante transición no salta texto nuevo")
+
+        app.session=Save.newSession()
+        app.session.day,app.session.checkpoint=2,"encounter_roxy"
+        -- Two legal cards costing two leave the third turn with no energy.
+        app.session.deck[9]="combined_spell"
+        app.session.unlocked.combined_spell=true
+        app.session.encounter=Cards.new(app.session.deck,{kind="investigation",character="roxy"},function(n) return n end)
+        app:resume()
+        mx,my=341,220
+        render()
+        local screen=app.manager.current
+        check(screen.selected==3,"Ratón selecciona tercera carta para ver detalles")
+        app:keypressed("left")
+        app:draw()
+        check(screen.selected==2,"Ratón inmóvil no deshace selección de teclado")
+        app:keypressed("left")
+        app:keypressed("return")
+        check(screen.enc.turn==2 and screen.enc.energy==2 and screen.enc.discard[1]=="earth_barrier",
+            "Enter juega carta seleccionada una vez")
+        app:keypressed("return")
+        click(153,209)
+        check(screen.enc.turn==2 and #screen.enc.discard==1,"Doble entrada de teclado/ratón no juega carta recién robada")
+        render()
+        click(153,209)
+        check(screen.enc.turn==3 and screen.enc.energy==0 and screen.enc.discard[2]=="combined_spell",
+            "Ratón usa hitbox de carta y respeta su coste")
+        render()
+        local textSeen={}
+        Font.draw=function(text,...)
+            textSeen[text]=true
+            return originalDraw(text,...)
+        end
+        app:draw()
+        Font.draw=originalDraw
+        check(textSeen["[1] NO DISP."] and textSeen["No hay energía suficiente."],
+            "Carta sin energía informa disponibilidad y motivo")
+        local before=assert(Json.encode(screen.enc))
+        click(153,209)
+        app:keypressed("return")
+        check(Json.encode(screen.enc)==before,"Carta deshabilitada no consume turno ni cambia pilas")
+        app:keypressed("right")
+        app:keypressed("right")
+        app:keypressed("return")
+        check(screen.enc.finished and screen.enc.energy==0 and screen.enc.discard[3]=="admit_error",
+            "Carta de coste cero disponible al agotarse energía")
+        app:overlay("deck")
+        mx,my=nil,nil
+        render()
+        screen=app.manager.current
+        app:keypressed("tab")
+        app:keypressed("down")
+        app:keypressed("down")
+        app:keypressed("return")
+        check(screen.selected==2,"Colección permite inspeccionar cartas con teclado")
+        app:draw()
+        click(40,79+15*16+7)
+        check(screen.selected==16,"Colección permite inspeccionar una carta futura bloqueada")
+        app:draw()
+    end,debug.traceback)
+    Font.draw=originalDraw
+    for key,value in pairs(old) do Save[key]=value end
+    love.audio.setVolume(volume)
+    assert(ok,err)
+    print("OK: "..checked.." comprobaciones de composición de cartas, márgenes e interacción.")
     return checked
 end
 
@@ -3329,11 +4351,13 @@ destination = root / "docs" / "CODIGO_COMPLETO.md"
 extensions = {".lua": "lua", ".ps1": "powershell", ".py": "python", ".md": "markdown"}
 files = sorted(p for p in root.rglob("*") if p.is_file()
                and (p.suffix in extensions or p.name in {".gitignore", ".gitkeep"}) and p != destination
-               and not any(part in {".git", "dist", ".codex", ".agents"} for part in p.relative_to(root).parts))
+               and not any(part in {".git", "dist", ".codex", ".agents", "sprite_sources", "artifacts"} for part in p.relative_to(root).parts))
 chunks = ["# Entrega completa de la Fase 1\n\n"
           "Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. "
           "Los archivos reales ya están creados; no es necesario copiarlos desde aquí. "
-          "Los recursos provisionales se dibujan desde Lua y no requieren archivos binarios.\n\n"
+          "Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; "
+          "los archivos binarios no se incluyen en este documento. "
+          "La Fase 1 comprende los días uno y dos; los capítulos restantes siguen pendientes.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

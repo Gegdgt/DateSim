@@ -12,20 +12,23 @@ function App.new()
     local self = setmetatable({},App)
     self.canvas=love.graphics.newCanvas(640,360)
     self.canvas:setFilter("nearest","nearest")
-    self.resources=Resources.new()
+    self.resources=Resources.new():preload()
     self.options=Save.readOptions and Save.readOptions() or {volume=.6,muted=false}
     self.manager=Manager.new(self)
     self.toast,self.toastTime="",0
     self:resize()
     self:applyAudio()
     self:menu()
+    if #self.resources.warnings>0 then
+        self:notify("Aviso: "..#self.resources.warnings.." recursos provisionales. Consulta la consola.")
+    end
     return self
 end
 
 function App:resize()
     local w,h=love.graphics.getDimensions()
     local fit=math.min(w/640,h/360)
-    self.scale=fit>=1 and math.floor(fit) or fit
+    self.scale=math.max(1,math.floor(fit))
     self.offsetX=math.floor((w-640*self.scale)/2)
     self.offsetY=math.floor((h-360*self.scale)/2)
 end

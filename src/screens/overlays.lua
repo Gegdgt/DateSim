@@ -5,6 +5,7 @@ local Data=require("src.data.cards")
 local Characters=require("src.data.characters")
 local Save=require("src.systems.save")
 local Controls=require("src.config.controls")
+local CardView=require("src.ui.card")
 local Overlays={}
 
 function Overlays.new(app,kind)
@@ -77,15 +78,18 @@ function Overlays.new(app,kind)
             end
             W.panel(336,49,286,293)
             local card=Data.list[self.selected]
-            app.resources:icon(card.icon,354,66,2)
-            self:text(card.name,414,70,194,P.gold)
-            self:text("Coste "..card.cost.."\n"..Data.categories[card.category],414,100,194,P.teal)
-            self:text(card.description,352,139,254,P.ink)
-            self:text(app.session.unlocked[card.id] and (equipped[card.id] and "EN EL MAZO" or "DESBLOQUEADA") or "BLOQUEADA · CAPÍTULOS FUTUROS",352,202,254,P.gold)
-            self:text("* Equipada   + Desbloqueada   - Bloqueada\n\nEl editor de mazo llegará en la Fase 2. Aquí puedes revisar las 16 cartas y sus costes.",352,235,254,P.muted)
+            CardView.draw(app.resources,card,350,62)
+            app.resources:categoryIcon(card.category,442,64,1)
+            self:text(Data.categories[card.category],474,70,134,P.teal)
+            app.resources:manaIcon(442,99,1)
+            self:text("Energía: "..card.cost,474,105,134,P.ink)
+            self:text(app.session.unlocked[card.id] and (equipped[card.id] and "EN EL MAZO" or "DESBLOQUEADA") or "BLOQUEADA\nCapítulos futuros",442,139,166,P.gold)
+            self:text(card.description,352,188,254,P.ink)
+            self:text("* Equipada   + Desbloqueada\n- Bloqueada\n\nEl editor de mazo llegará en la Fase 2. Revisa aquí las 16 cartas.",352,249,254,P.muted)
         end
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.back,key) then app:resume() end
     end
     return s

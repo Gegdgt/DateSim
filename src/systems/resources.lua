@@ -4,10 +4,14 @@ local Resources = {}
 Resources.__index = Resources
 local P = require("src.ui.palette")
 local Characters = require("src.data.characters")
+local Assets = require("src.data.assets")
 local SPRITE_WIDTH = Characters.spriteWidth
 local SPRITE_HEIGHT = Characters.spriteHeight
 local EXPRESSIONS = Characters.expressions
 local SHEET_WIDTH = SPRITE_WIDTH * Characters.expressionCount
+local BACKGROUND_WIDTH,BACKGROUND_HEIGHT=unpack(Assets.sizes.background)
+local CARD_WIDTH,CARD_HEIGHT=unpack(Assets.sizes.card)
+local ICON_WIDTH,ICON_HEIGHT=unpack(Assets.sizes.icon)
 local function color(hex)
     if type(hex) == "table" then love.graphics.setColor(hex); return end
     love.graphics.setColor(tonumber(hex:sub(1,2),16)/255,tonumber(hex:sub(3,4),16)/255,tonumber(hex:sub(5,6),16)/255,1)
@@ -28,11 +32,17 @@ local function canvas(w,h,draw)
     return c
 end
 local function image(path,w,h)
-    if not love.filesystem.getInfo(path,"file") then return nil end
+    if not path then return nil,"identificador sin entrada en src/data/assets.lua" end
+    if not love.filesystem.getInfo(path,"file") then return nil,"archivo inexistente" end
     local ok,img=pcall(love.graphics.newImage,path)
-    if ok and img:getWidth()==w and img:getHeight()==h then img:setFilter("nearest","nearest"); return img end
-    -- Un tamaño incorrecto tampoco debe interrumpir la partida.
-    return nil
+    if not ok then return nil,"PNG inválido: "..tostring(img) end
+    if img:getWidth()~=w or img:getHeight()~=h then
+        local reason=string.format("dimensiones %dx%d; se esperaban %dx%d",img:getWidth(),img:getHeight(),w,h)
+        img:release()
+        return nil,reason
+    end
+    img:setFilter("nearest","nearest")
+    return img
 end
 local function stars()
     for i=1,24 do local x=(i*53+19)%320; local y=(i*17)%73; r("CAC1CB",x,y,1,1) end
@@ -323,44 +333,126 @@ local function icon(id)
     end
 end
 function Resources.new()
-    return setmetatable({backgrounds={},portraits={},icons={},quads={},warnings={}},Resources)
+    return setmetatable({backgrounds={},portraits={},icons={},frames={},categoryIcons={},quads={},
+        images={},sources={},warnings={}},Resources)
 end
-function Resources:background(id)
-    id=backgrounds[id] and id or "courtyard"
-    if not self.backgrounds[id] then self.backgrounds[id]=image("assets/backgrounds/"..id..".png",320,180) or canvas(320,180,backgrounds[id]) end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.backgrounds[id],0,0,0,2,2)
+-- Una única carga por ruta: garden/courtyard y training/forest comparten imagen.
+-- sources permite inspeccionar cada sustitución; nunca se oculta un fallo de PNG.
+function Resources:_load(path,w,h,fallback,id)
+    local key=path or ("unmapped:"..id)
+    if not self.images[key] then
+        local img,reason=image(path,w,h)
+        if img then
+            self.sources[key]={status="png",path=path,width=w,height=h}
+        else
+            local message="[Recursos] "..key..": "..reason.."; usando recurso provisional."
+            self.warnings[#self.warnings+1]=message
+            print(message)
+            self.sources[key]={status="fallback",path=path,reason=reason,width=w,height=h}
+            img=canvas(w,h,fallback)
+        end
+        self.images[key]=img
+    end
+    return self.images[key]
 end
-function Resources:portrait(id,expression,x,y,scale)
-    id=profiles[id] and id or "rudeus";expression=expression or "neutral";scale=scale or 1
-    local frame=EXPRESSIONS[expression] or 0
+local function integerScale(scale) return math.max(1,math.floor(tonumber(scale) or 1)) end
+local function draw(img,x,y,scale)
+    scale=integerScale(scale)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(img,math.floor(x or 0),math.floor(y or 0),0,scale,scale)
+    return img
+end
+function Resources:getBackground(id)
+    id=id or "courtyard"
+    if not self.backgrounds[id] then
+        self.backgrounds[id]=self:_load(Assets.backgrounds[id],BACKGROUND_WIDTH,BACKGROUND_HEIGHT,backgrounds[id] or courtyard,"background:"..id)
+    end
+    return self.backgrounds[id]
+end
+function Resources:background(id) return draw(self:getBackground(id),0,0,2) end
+function Resources:getPortrait(id)
+    id=id or "rudeus"
     if not self.portraits[id] then
-        self.portraits[id]=image("assets/characters/"..id..".png",SHEET_WIDTH,SPRITE_HEIGHT) or canvas(SHEET_WIDTH,SPRITE_HEIGHT,function()
+        self.portraits[id]=self:_load(Assets.characters[id],SHEET_WIDTH,SPRITE_HEIGHT,function()
             for name,index in pairs(EXPRESSIONS) do
                 love.graphics.push()
                 love.graphics.translate(index*SPRITE_WIDTH,0)
-                portrait(id,name)
+                portrait(profiles[id] and id or "rudeus",name)
                 love.graphics.pop()
             end
-        end)
+        end,"character:"..id)
     end
+    return self.portraits[id]
+end
+function Resources:portrait(id,expression,x,y,scale)
+    local img=self:getPortrait(id)
+    local frame=EXPRESSIONS[expression or "neutral"] or 0
     if not self.quads[frame] then
-        self.quads[frame]=love.graphics.newQuad(frame*SPRITE_WIDTH,0,SPRITE_WIDTH,SPRITE_HEIGHT,self.portraits[id]:getDimensions())
+        self.quads[frame]=love.graphics.newQuad(frame*SPRITE_WIDTH,0,SPRITE_WIDTH,SPRITE_HEIGHT,SHEET_WIDTH,SPRITE_HEIGHT)
     end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.portraits[id],self.quads[frame],math.floor(x),math.floor(y),0,scale,scale)
+    scale=integerScale(scale)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(img,self.quads[frame],math.floor(x),math.floor(y),0,scale,scale)
+    return img
 end
-function Resources:icon(id,x,y,scale)
-    id=id or "magic";scale=scale or 1
-    if not self.icons[id] then self.icons[id]=image("assets/icons/"..id..".png",24,24) or canvas(24,24,function() icon(id) end) end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.icons[id],math.floor(x),math.floor(y),0,scale,scale)
+function Resources:getIcon(id)
+    id=id or "magic"
+    if not self.icons[id] then
+        self.icons[id]=self:_load(Assets.cardIcons[id],ICON_WIDTH,ICON_HEIGHT,function() icon(id) end,"card-icon:"..id)
+    end
+    return self.icons[id]
 end
-function Resources:cardFrame(x,y,scale)
-    scale=scale or 1
-    if not self.frame then self.frame=image("assets/cards/frame.png",80,112) or canvas(80,112,function()
-        r("101A2B",1,0,78,112);r("101A2B",0,1,80,110);r("BBA78A",1,1,78,110);r("E2CC9F",2,2,76,108)
-        r("344B60",4,4,72,104);r("21344B",6,6,68,100);r("51627B",7,23,66,44);r("3B536B",9,25,62,40)
-        r("D0B686",6,69,68,1);r("A58F77",7,108,66,1)
-        for _,xx in ipairs({6,71}) do r("E3CCA0",xx,6,3,3);r("E3CCA0",xx,102,3,3) end
-    end) end
-    love.graphics.setColor(1,1,1,1);love.graphics.draw(self.frame,math.floor(x),math.floor(y),0,scale,scale)
+function Resources:icon(id,x,y,scale) return draw(self:getIcon(id),x,y,scale) end
+function Resources:getCardBase()
+    self.base=self.base or self:_load(Assets.cardBase,CARD_WIDTH,CARD_HEIGHT,function()
+        r("E2CC9F",1,1,78,110);r("D5BD92",3,3,74,106)
+    end,"card-base")
+    return self.base
+end
+function Resources:cardBase(x,y,scale) return draw(self:getCardBase(),x,y,scale) end
+function Resources:getCardFrame(category)
+    category=category or "empathy"
+    if not self.frames[category] then
+        self.frames[category]=self:_load(Assets.cardFrames[category],CARD_WIDTH,CARD_HEIGHT,function()
+            local tint=({empathy=P.teal,humor=P.gold,sincerity=P.rose,initiative=P.lavender})[category] or P.gold
+            r("101A2B",0,0,80,3);r("101A2B",0,109,80,3)
+            r("101A2B",0,0,3,112);r("101A2B",77,0,3,112)
+            r(tint,3,3,74,3);r(tint,3,106,74,3)
+            r(tint,3,3,3,106);r(tint,74,3,3,106)
+        end,"card-frame:"..category)
+    end
+    return self.frames[category]
+end
+function Resources:cardFrame(category,x,y,scale) return draw(self:getCardFrame(category),x,y,scale) end
+function Resources:getCardBack()
+    self.back=self.back or self:_load(Assets.cardBack,CARD_WIDTH,CARD_HEIGHT,function()
+        r("21344B",0,0,80,112);r("BBA78A",4,4,72,104);r("344B60",7,7,66,98)
+        r("83C6BA",25,31,30,50);r("D5E2BF",29,35,22,42)
+    end,"card-back")
+    return self.back
+end
+function Resources:cardBack(x,y,scale) return draw(self:getCardBack(),x,y,scale) end
+function Resources:getCategoryIcon(category)
+    category=category or "empathy"
+    if not self.categoryIcons[category] then
+        local representative=({empathy="listen",humor="light_joke",sincerity="be_honest",initiative="shared_magic"})[category]
+        self.categoryIcons[category]=self:_load(Assets.categoryIcons[category],ICON_WIDTH,ICON_HEIGHT,function() icon(representative) end,"category-icon:"..category)
+    end
+    return self.categoryIcons[category]
+end
+function Resources:categoryIcon(category,x,y,scale) return draw(self:getCategoryIcon(category),x,y,scale) end
+function Resources:getManaIcon()
+    self.mana=self.mana or self:_load(Assets.manaIcon,ICON_WIDTH,ICON_HEIGHT,function() icon("magic") end,"mana-icon")
+    return self.mana
+end
+function Resources:manaIcon(x,y,scale) return draw(self:getManaIcon(),x,y,scale) end
+-- Valida todos los PNG sin dibujarlos ni exigir que la historia ya los visite.
+function Resources:preload()
+    for id in pairs(Assets.characters) do self:getPortrait(id) end
+    for id in pairs(Assets.backgrounds) do self:getBackground(id) end
+    for id in pairs(Assets.cardIcons) do self:getIcon(id) end
+    for category in pairs(Assets.cardFrames) do self:getCardFrame(category); self:getCategoryIcon(category) end
+    self:getCardBase(); self:getCardBack(); self:getManaIcon()
+    return self
 end
 return Resources

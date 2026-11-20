@@ -28,6 +28,7 @@ function Summary.new(app)
         self:text("Las cartas no deciden por ti. Tú eliges los vínculos que construyes.",26,345,588,P.ink,1,"center")
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.back,key) then app:overlay("pause") end
     end
     return s

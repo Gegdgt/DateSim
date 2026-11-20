@@ -8,6 +8,10 @@ return {
     fullscreen = { "f11" },
     freeAction = { "p" },
     cards = { "1", "2", "3" },
+    nextButton = { "tab", "down" },
+    previousButton = { "up" },
+    nextCard = { "right" },
+    previousCard = { "left" },
     matches = function(keys, key)
         for _, candidate in ipairs(keys) do if candidate == key then return true end end
         return false

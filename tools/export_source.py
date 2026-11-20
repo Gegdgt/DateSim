@@ -6,11 +6,13 @@ destination = root / "docs" / "CODIGO_COMPLETO.md"
 extensions = {".lua": "lua", ".ps1": "powershell", ".py": "python", ".md": "markdown"}
 files = sorted(p for p in root.rglob("*") if p.is_file()
                and (p.suffix in extensions or p.name in {".gitignore", ".gitkeep"}) and p != destination
-               and not any(part in {".git", "dist", ".codex", ".agents"} for part in p.relative_to(root).parts))
+               and not any(part in {".git", "dist", ".codex", ".agents", "sprite_sources", "artifacts"} for part in p.relative_to(root).parts))
 chunks = ["# Entrega completa de la Fase 1\n\n"
           "Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. "
           "Los archivos reales ya están creados; no es necesario copiarlos desde aquí. "
-          "Los recursos provisionales se dibujan desde Lua y no requieren archivos binarios.\n\n"
+          "Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; "
+          "los archivos binarios no se incluyen en este documento. "
+          "La Fase 1 comprende los días uno y dos; los capítulos restantes siguen pendientes.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

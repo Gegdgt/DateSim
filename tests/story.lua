@@ -139,6 +139,36 @@ function Suite.run()
     check(lostChoice.relationships.roxy.trust == 4, "Recuperar decisión sin volver a aplicar puntos")
     check(Progression.next(lostChoice) == "encounter_roxy", "Continuar después de recuperar elección")
 
+    -- A completed encounter can be saved before confirming its result. The
+    -- restored actions, including the free action, grant their effects once.
+    local resumed=Save.newSession()
+    resumed.day,resumed.checkpoint=2,"meet_roxy"
+    check(Progression.choose(resumed,"meet_roxy","compare_notes"),"Elegir antes del encuentro real")
+    check(Progression.next(resumed)=="encounter_roxy","Abrir encuentro real")
+    resumed.encounter=Cards.new(resumed.deck,{kind="investigation",character="roxy"},function(n) return n end)
+    Cards.play(resumed.encounter,2)
+    resumed=roundtrip(resumed)
+    Cards.pass(resumed.encounter)
+    resumed=roundtrip(resumed)
+    Cards.play(resumed.encounter,2)
+    resumed=roundtrip(resumed)
+    check(resumed.encounter.finished and #resumed.encounter.log==3,"Cargar encuentro finalizado antes del resultado")
+    check(resumed.relationships.roxy.trust==1 and resumed.relationships.roxy.chemistry==0,
+        "Guardar acciones no aplica todavía los vínculos")
+    local result={score=resumed.encounter.score,trust=0,chemistry=0}
+    for _,entry in ipairs(resumed.encounter.log) do
+        result.trust=result.trust+entry.trust
+        result.chemistry=result.chemistry+entry.chemistry
+    end
+    check(Progression.next(resumed,"encounter_roxy",result)=="result_roxy","Confirmar resultado restaurado")
+    check(resumed.relationships.roxy.trust==1+result.trust and resumed.relationships.roxy.chemistry==result.chemistry,
+        "Aplicar exactamente los vínculos registrados")
+    resumed=roundtrip(resumed)
+    local afterResult=assert(Json.encode(resumed.relationships))
+    check(not Progression.next(resumed,"encounter_roxy",result),"Rechazar confirmación repetida tras cargar")
+    check(Json.encode(resumed.relationships)==afterResult,"Confirmación repetida no duplica vínculos")
+    check(Progression.next(resumed)=="hub" and resumed.events.meeting_roxy,"Volver al mapa tras encuentro restaurado")
+
     print("OK: " .. checked .. " comprobaciones de narrativa, progresión y carga intermedia.")
     return checked
 end

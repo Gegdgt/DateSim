@@ -1,0 +1,59 @@
+-- Manifiesto de PNG de ejecución. Los ASE editables viven en sprite_sources/.
+-- Los identificadores son los de las tablas narrativas y src/data/cards.lua.
+return {
+    characters={
+        rudeus="assets/characters/rudeus.png",
+        sylphiette="assets/characters/sylphiette.png",
+        roxy="assets/characters/roxy.png",
+        eris="assets/characters/eris.png",
+        nanahoshi="assets/characters/nanahoshi.png",
+        zanoba="assets/characters/zanoba.png",
+        cliff="assets/characters/cliff.png",
+    },
+    backgrounds={
+        laboratory="assets/backgrounds/laboratorio.png",
+        courtyard="assets/backgrounds/patio_universidad.png",
+        library="assets/backgrounds/biblioteca.png",
+        ruins="assets/backgrounds/ruinas.png",
+        garden="assets/backgrounds/patio_universidad.png", -- Reutilización temporal.
+        training="assets/backgrounds/bosque.png", -- Reutilización temporal.
+        forest="assets/backgrounds/bosque.png",
+        observatory="assets/backgrounds/observatorio.png",
+        mirror_dimension="assets/backgrounds/dimension_espejo.png",
+        festival="assets/backgrounds/festival.png",
+    },
+    cardIcons={
+        listen="assets/cards/iconos/escuchar.png",
+        encourage="assets/cards/iconos/dar_animo.png",
+        remember="assets/cards/iconos/recordar_un_detalle.png",
+        light_joke="assets/cards/iconos/broma_ligera.png",
+        change_subject="assets/cards/iconos/cambiar_de_tema.png",
+        self_joke="assets/cards/iconos/reirse_de_uno_mismo.png",
+        be_honest="assets/cards/iconos/hablar_con_honestidad.png",
+        admit_error="assets/cards/iconos/reconocer_un_error.png",
+        share_fear="assets/cards/iconos/compartir_un_miedo.png",
+        propose_plan="assets/cards/iconos/proponer_un_plan.png",
+        analyze_runes="assets/cards/iconos/analizar_runas.png",
+        earth_barrier="assets/cards/iconos/barrera_de_tierra.png",
+        shared_magic="assets/cards/iconos/magia_compartida.png",
+        combined_spell="assets/cards/iconos/conjuro_combinado.png",
+        sword_magic="assets/cards/iconos/espada_y_magia.png",
+        choose_together="assets/cards/iconos/elegir_juntos.png",
+    },
+    cardFrames={
+        empathy="assets/cards/marcos/marco_empatia.png",
+        humor="assets/cards/marcos/marco_humor.png",
+        sincerity="assets/cards/marcos/marco_sinceridad.png",
+        initiative="assets/cards/marcos/marco_magia_iniciativa.png",
+    },
+    categoryIcons={
+        empathy="assets/cards/iconos/categoria_empatia.png",
+        humor="assets/cards/iconos/categoria_humor.png",
+        sincerity="assets/cards/iconos/categoria_sinceridad.png",
+        initiative="assets/cards/iconos/categoria_magia_iniciativa.png",
+    },
+    cardBase="assets/cards/bases/fondo_pergamino.png",
+    cardBack="assets/cards/reverso/reverso_espejo.png",
+    manaIcon="assets/cards/iconos/coste_mana.png",
+    sizes={character={256,64},background={320,180},card={80,112},icon={24,24}},
+}

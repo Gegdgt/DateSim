@@ -35,9 +35,11 @@ function Hub.new(app)
                 if nextId then app:save(); app:resume() else app:notify(err) end
             end,visited and not ready)
         end
-        self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",18,343,604,P.ink)
+        W.panel(18,336,604,20,{shadow=false})
+        self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink)
     end
     function s:keypressed(key)
+        if self:navigate(key) then return end
         if Controls.matches(Controls.back,key) then app:overlay("pause")
         elseif Controls.matches(Controls.journal,key) then app:overlay("journal")
         elseif Controls.matches(Controls.deck,key) then app:overlay("deck") end

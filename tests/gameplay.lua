@@ -54,6 +54,46 @@ function Suite.run()
     local fresh=Cards.new(Data.starterDeck,{kind="magic"},function(n) return n end)
     check(fresh.energy==4 and fresh.turn==1 and #fresh.discard==0,"Cada encuentro reinicia mazo y energía")
 
+    -- Every real card must apply exactly once, and inspecting its effect must
+    -- leave the encounter untouched. Exercise all three narrative contexts.
+    for _,card in ipairs(Data.list) do
+        check(card.cost>=0 and card.cost<=2 and card.cost%1==0,"Coste permitido: "..card.id)
+        for _,kind in ipairs({"conversation","investigation","magic"}) do
+            local deck={}
+            local position
+            for i,id in ipairs(Data.starterDeck) do deck[i]=id; if id==card.id then position=i end end
+            if position then deck[position],deck[10]=deck[10],deck[position] else deck[10]=card.id end
+            local context={kind=kind,character=card.exclusive or "roxy"}
+            local action=Cards.new(deck,context,function(n) return n end)
+            local beforePreview=assert(Json.encode(action))
+            local preview=Cards.preview(action,1)
+            check(Json.encode(action)==beforePreview,"Vista previa no aplica efectos: "..card.id.."/"..kind)
+            check(Cards.canPlay(action,1),"Carta jugable con su acompañante: "..card.id)
+            local result=assert(Cards.play(action,1))
+            check(action.score==preview.score and result.trust==preview.trust and result.chemistry==preview.chemistry,
+                "Efectos aplicados una vez: "..card.id.."/"..kind)
+            check(action.energy==4-card.cost and action.turn==2 and #action.log==1 and action.discard[1]==card.id,
+                "Una sola acción y un solo pago: "..card.id)
+            local snapshot=assert(Json.encode(action))
+            for _=1,3 do action=assert(Cards.restore(action,deck,context)) end
+            check(Json.encode(action)==snapshot,"Restaurar no duplica efectos: "..card.id.."/"..kind)
+        end
+    end
+
+    local resting=Cards.new(Data.starterDeck,{kind="magic"},function(n) return n end)
+    for turn=1,3 do
+        local hand,pile=table.concat(resting.hand,","),table.concat(resting.drawPile,",")
+        Cards.pass(resting)
+        local snapshot=assert(Json.encode(resting))
+        resting=assert(Cards.restore(resting,Data.starterDeck,{kind="magic"}))
+        check(Json.encode(resting)==snapshot,"Acción gratuita conserva incluso su registro al continuar")
+        check(resting.energy==4 and resting.turn==turn+1 and #resting.log==turn and #resting.discard==0,
+            "Acción gratuita gasta solo un turno")
+        check(table.concat(resting.hand,",")==hand and table.concat(resting.drawPile,",")==pile,
+            "Acción gratuita no roba ni descarta")
+    end
+    check(resting.finished and not Cards.pass(resting),"Continuar encuentro gratuito terminado no concede otro turno")
+
     local all=Relationships.new()
     Relationships.apply(all,"sylphiette",{trust=30,chemistry=-2})
     check(all.sylphiette.trust==10 and all.sylphiette.chemistry==0,"Límites de relación")
@@ -130,9 +170,29 @@ function Suite.run()
         files[Save.filename]="truncated{"
         local backup,message=Save.load()
         check(backup and backup.checkpoint=="intro" and message~=nil,"Recuperar backup si archivo está truncado")
+        local active=Save.newSession()
+        active.checkpoint="encounter_roxy"
+        active.decisions.choice_meet_roxy="compare_notes"
+        active.decisions.roxy_equality="colleagues"
+        active.events.choice_meet_roxy=true
+        active.relationships.roxy.trust=1
+        active.encounter=Cards.new(active.deck,{kind="investigation",character="roxy"},function(n) return n end)
+        Cards.pass(active.encounter)
+        Cards.play(active.encounter,2)
+        local expectedEncounter=assert(Json.encode(active.encounter))
+        check(Save.write(active),"Guardar decisión y encuentro con acción gratuita")
+        for _=1,3 do
+            active=assert(Save.load())
+            check(Json.encode(active.encounter)==expectedEncounter,"Carga mantiene mano, pilas, energía, turnos y registro")
+            check(active.events.choice_meet_roxy and active.decisions.choice_meet_roxy=="compare_notes"
+                and active.decisions.roxy_equality=="colleagues" and active.relationships.roxy.trust==1,
+                "Carga conserva decisiones sin anticipar ni duplicar efectos del encuentro")
+            check(Save.write(active),"Volver a guardar encuentro restaurado")
+        end
         check(Save.writeOptions({volume=0.2,muted=true}),"Guardar opciones")
         local prefs=Save.readOptions()
         check(prefs.volume==0.2 and prefs.muted,"Cargar opciones")
+        files[Save.filename]="truncated{"
         files[Save.backup]=nil
         check(Save.load()==nil and not Save.exists(),"Guardado corrupto no provoca cierre")
         love.filesystem.write=function() return false,"sin espacio" end

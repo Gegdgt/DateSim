@@ -15,22 +15,26 @@ La **Fase 1 está implementada**: menú, introducción, día uno completo, reenc
 
 También puedes arrastrar la carpeta que contiene `main.lua` sobre `love.exe`, o ejecutar `./ejecutar.ps1` si tu configuración permite scripts locales. No requiere Lua por separado, Python para jugar, conexión, paquetes, imágenes descargadas ni compilación.
 
-Ventana inicial 1280×720. Canvas lógico 640×360, filtro `nearest`, escalado entero y centrado con bandas cuando el tamaño de la ventana no coincide. F11 alterna pantalla completa. Fondos provisionales a 320×180 y retratos de 64×64 en hojas de 256×64 con cuatro expresiones.
+Ventana inicial 1280×720. Canvas lógico 640×360, filtro `nearest`, escalado entero y centrado con bandas cuando el tamaño de la ventana no coincide. F11 alterna pantalla completa. Los ocho escenarios PNG existentes miden 320×180 y se dibujan al doble dentro del canvas; los siete personajes utilizan cuadros de 64×64 en hojas de 256×64 con cuatro expresiones.
+
+Los **recursos definitivos existentes están integrados** mediante `src/data/assets.lua`: personajes, escenarios, pergamino, cuatro marcos por categoría, reverso y dieciséis iconos de cartas. Se conservaron los PNG originales. Los 42 archivos editables `.ase` se encuentran en `sprite_sources/`, separados de los recursos que carga LÖVE. Los dibujos provisionales solo cubren archivos ausentes o inválidos y generan un diagnóstico.
 
 ## Controles
 
 | Acción | Control |
 | --- | --- |
 | Seleccionar botones y cartas | Clic izquierdo |
+| Recorrer botones habilitados | Tab, Arriba o Abajo; Enter/Espacio activa el foco |
 | Mostrar texto completo / siguiente fragmento | Clic, Enter o Espacio |
 | Jugar carta de la mano | Clic o teclas 1, 2, 3 |
+| Inspeccionar y jugar la carta seleccionada | Izquierda/Derecha y después Enter/Espacio |
 | Acción gratuita | Botón «Tomar un respiro» o P |
 | Diario / colección | J / M |
 | Pausa / volver | Esc |
 | Guardar | F5 |
 | Pantalla completa | F11 |
 
-Una pulsación revela el texto en curso; la siguiente avanza una sola línea. Se ignora la repetición del teclado. Las decisiones narrativas se eligen con el mouse. Al terminar tres acciones, «Ver resultado» confirma los efectos del encuentro sobre las relaciones.
+Una pulsación revela el texto en curso; la siguiente avanza una sola línea. Se ignora la repetición del teclado. Las decisiones narrativas se eligen con mouse o recorriendo sus botones por teclado. Al terminar tres acciones, «Ver resultado» confirma los efectos del encuentro sobre las relaciones.
 
 ## Reglas implementadas
 
@@ -81,7 +85,9 @@ Prueba manual recomendada:
 7. Cambia tamaño de ventana y usa F11: imagen proporcionada y clics alineados. Pulsa en las bandas: no debe activarse ningún botón.
 8. Cambia volumen/silencio, cierra y abre el juego para verificar persistencia. No habrá sonido hasta incorporar audio.
 
-Para comprobar PNG opcionales, consulta [assets/README.md](assets/README.md). Una imagen ausente, ilegible o de tamaño incorrecto se sustituye por pixel art provisional.
+Consulta los resultados reales de la auditoría y sus límites en [docs/VERIFICACION.md](docs/VERIFICACION.md). La suite verifica también las dimensiones, recortes, rutas y filtrado de los PNG existentes, el respaldo ante recursos inválidos y los márgenes de los textos de cartas.
+
+Para añadir o editar recursos, consulta [assets/README.md](assets/README.md) y [docs/RECURSOS.md](docs/RECURSOS.md). Los nombres internos de la historia no necesitan coincidir con los nombres españoles de los PNG: el manifiesto resuelve esa relación explícitamente. Una imagen ausente, ilegible o de tamaño incorrecto activa un provisional con diagnóstico; un PNG válido tiene prioridad.
 
 ## Arquitectura y ampliación
 
@@ -92,19 +98,22 @@ Para comprobar PNG opcionales, consulta [assets/README.md](assets/README.md). Un
 | `src/data/story.lua` | Diálogos, elecciones, lugares y encuentros |
 | `src/data/cards.lua` | Las 16 cartas, costes, iconos, condiciones, efectos, mazo inicial |
 | `src/data/characters.lua` | Personajes, nombres, temas, colores e identificadores |
+| `src/data/assets.lua` | Rutas PNG, dimensiones y mapeo explícito de escenarios, cartas y categorías |
 | `src/systems/progression.lua` | Conexiones entre escenas, días, visitas y acompañante |
 | `src/systems/events.lua` | Aplicación única de decisiones, desbloqueos y eventos |
 | `src/systems/dialogue.lua` | Índice de diálogo y avance |
 | `src/systems/cards.lua` | Reglas, barajado, previsión, juego y restauración |
 | `src/systems/relationships.lua` | Vínculos, límites y evaluación de finales |
 | `src/systems/save.lua`, `json.lua` | Esquema validado, lectura/escritura y respaldo |
-| `src/systems/resources.lua` | Carga PNG y dibujos provisionales |
+| `src/systems/resources.lua` | Carga y validación de PNG, recortes, caché y diagnósticos; respaldo provisional |
 | `src/screens/` | Menú, diálogo, mapa, cartas, pantallas auxiliares y resumen |
-| `src/ui/` | Paleta, fuente bitmap original, marcos, botones, barras e hitboxes |
+| `src/ui/card.lua` | Composición compartida de cartas en mano y colección; márgenes, textos y capas |
+| `src/ui/` | Paleta, fuente bitmap original, botones, foco de teclado, barras e hitboxes |
 | `src/config/controls.lua` | Configuración de atajos |
 | `tests/` | Pruebas de lógica y recorrido real de pantallas |
+| `sprite_sources/` | Fuentes editables ASE de personajes, escenarios y cartas, versionadas |
 
-Para añadir líneas a una escena, edita solo `story.lua`. Una nueva carta se define en `cards.lua`; los efectos existentes no requieren cambios del motor. Un capítulo nuevo requiere sus tablas, transiciones en `progression.lua`, checkpoints reconocidos en `save.lua` y pruebas de progreso. Los sprites se reemplazan sin cambiar diálogos ni pantallas. Las expresiones usan `neutral=0`, `happy=1`, `worried=2`, `angry=3`, de izquierda a derecha en la hoja. Las hojas del formato anterior no cumplen el tamaño esperado y se sustituyen por el recurso provisional hasta exportarlas al formato nuevo.
+Para añadir líneas a una escena, edita solo `story.lua`. Una nueva carta se define en `cards.lua` y vincula su PNG en `assets.lua`; los efectos existentes no requieren cambios del motor. La Fase 1 todavía tiene transiciones y checkpoints específicos en `progression.lua` y `save.lua`. Antes de ampliar a siete días conviene convertirlos en un registro compartido de capítulos y transiciones declarativas; el plan concreto está en [docs/FASE_2.md](docs/FASE_2.md). Los sprites se reemplazan sin cambiar diálogos ni pantallas. Las expresiones usan `neutral=0`, `happy=1`, `worried=2`, `angry=3`, de izquierda a derecha en la hoja.
 
 El contenido completo de cada archivo y su ruta exacta están en [docs/CODIGO_COMPLETO.md](docs/CODIGO_COMPLETO.md). Se regenera con `python tools/export_source.py`. Detalle de APIs en [docs/SISTEMAS.md](docs/SISTEMAS.md).
 
@@ -112,6 +121,6 @@ El contenido completo de cada archivo y su ruta exacta están en [docs/CODIGO_CO
 
 - **Fase 2:** días tres y cuatro, desafíos adicionales, editor de mazo e integración de cartas desbloqueadas en mazos personalizados.
 - **Fase 3:** elección de ruta, conflictos de días cinco y seis, escenas de confesión y los siete desenlaces del día siete.
-- **Fase 4:** sprites y archivos `.ase` definitivos, audio original/licenciado, pulido, pruebas de la historia completa y distribución autónoma para Windows.
+- **Fase 4:** audio original/licenciado, pulido, pruebas de la historia completa y distribución autónoma para Windows.
 
-Los recursos actuales son pixel art provisional dibujado por el proyecto. No se entregan sprites definitivos ni se presentan archivos generados como exportaciones de LibreSprite.
+La integración visual no implementa los días tres a siete. Hay escenarios preparados para esos capítulos, pero faltan sus escenas, encuentros, elección de ruta, confesiones y desenlaces. También siguen pendientes el editor de mazo, audio y distribución autónoma. `garden` reutiliza temporalmente el patio y `training` el bosque hasta contar con escenarios propios.
