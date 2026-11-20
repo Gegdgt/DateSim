@@ -1,0 +1,86 @@
+{
+  "game": "Mushoku Tensei: Las Cartas del Destino",
+  "format": "RGBA 32 bits; pixel art sin antialias",
+  "marcos": {
+    "size": [
+      80,
+      112
+    ],
+    "categorias": [
+      "empatia",
+      "humor",
+      "sinceridad",
+      "magia_iniciativa"
+    ],
+    "interior": "transparente"
+  },
+  "reverso": {
+    "size": [
+      80,
+      112
+    ],
+    "simbolo": "Espejo de las Posibilidades"
+  },
+  "iconos": {
+    "size": [
+      24,
+      24
+    ],
+    "nombres": [
+      "analizar_runas",
+      "barrera_de_tierra",
+      "broma_ligera",
+      "cambiar_de_tema",
+      "categoria_empatia",
+      "categoria_humor",
+      "categoria_magia_iniciativa",
+      "categoria_sinceridad",
+      "compartir_un_miedo",
+      "conjuro_combinado",
+      "coste_mana",
+      "dar_animo",
+      "elegir_juntos",
+      "escuchar",
+      "espada_y_magia",
+      "hablar_con_honestidad",
+      "magia_compartida",
+      "proponer_un_plan",
+      "reconocer_un_error",
+      "recordar_un_detalle",
+      "reirse_de_uno_mismo"
+    ]
+  },
+  "atlas": {
+    "cartas_atlas_5x1.png": [
+      "marco_empatia",
+      "marco_humor",
+      "marco_sinceridad",
+      "marco_magia_iniciativa",
+      "reverso_espejo"
+    ],
+    "iconos_atlas.png": [
+      "analizar_runas",
+      "barrera_de_tierra",
+      "broma_ligera",
+      "cambiar_de_tema",
+      "categoria_empatia",
+      "categoria_humor",
+      "categoria_magia_iniciativa",
+      "categoria_sinceridad",
+      "compartir_un_miedo",
+      "conjuro_combinado",
+      "coste_mana",
+      "dar_animo",
+      "elegir_juntos",
+      "escuchar",
+      "espada_y_magia",
+      "hablar_con_honestidad",
+      "magia_compartida",
+      "proponer_un_plan",
+      "reconocer_un_error",
+      "recordar_un_detalle",
+      "reirse_de_uno_mismo"
+    ],
+    "iconos_columnas": 5
+  }
+}

@@ -1,0 +1,326 @@
+[
+  {
+    "file": "fondo_pergamino.ase",
+    "w": 80,
+    "h": 112,
+    "layers": [
+      "Papel",
+      "Sombra inferior"
+    ],
+    "cel_count": 2,
+    "colors": 3
+  },
+  {
+    "file": "analizar_runas.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "barrera_de_tierra.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "broma_ligera.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "cambiar_de_tema.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 2,
+    "colors": 4
+  },
+  {
+    "file": "categoria_empatia.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 4
+  },
+  {
+    "file": "categoria_humor.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 3
+  },
+  {
+    "file": "categoria_magia_iniciativa.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 2,
+    "colors": 3
+  },
+  {
+    "file": "categoria_sinceridad.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 4
+  },
+  {
+    "file": "compartir_un_miedo.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "conjuro_combinado.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "coste_mana.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 4
+  },
+  {
+    "file": "dar_animo.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 4
+  },
+  {
+    "file": "elegir_juntos.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 6
+  },
+  {
+    "file": "escuchar.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "espada_y_magia.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "hablar_con_honestidad.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 4
+  },
+  {
+    "file": "magia_compartida.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "proponer_un_plan.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 7
+  },
+  {
+    "file": "reconocer_un_error.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 6
+  },
+  {
+    "file": "recordar_un_detalle.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 6
+  },
+  {
+    "file": "reirse_de_uno_mismo.ase",
+    "w": 24,
+    "h": 24,
+    "layers": [
+      "Contorno",
+      "Color principal",
+      "Detalle"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "marco_empatia.ase",
+    "w": 80,
+    "h": 112,
+    "layers": [
+      "Contorno",
+      "Color",
+      "Barras y detalles"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "marco_humor.ase",
+    "w": 80,
+    "h": 112,
+    "layers": [
+      "Contorno",
+      "Color",
+      "Barras y detalles"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "marco_magia_iniciativa.ase",
+    "w": 80,
+    "h": 112,
+    "layers": [
+      "Contorno",
+      "Color",
+      "Barras y detalles"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "marco_sinceridad.ase",
+    "w": 80,
+    "h": 112,
+    "layers": [
+      "Contorno",
+      "Color",
+      "Barras y detalles"
+    ],
+    "cel_count": 3,
+    "colors": 5
+  },
+  {
+    "file": "reverso_espejo.ase",
+    "w": 80,
+    "h": 112,
+    "layers": [
+      "Contorno",
+      "Fondo violeta",
+      "Espejo",
+      "Destellos"
+    ],
+    "cel_count": 4,
+    "colors": 8
+  }
+]

@@ -1,0 +1,5 @@
+tests/artifacts/*.png
+tests/artifacts/*.log
+dist/
+*.love
+__pycache__/
