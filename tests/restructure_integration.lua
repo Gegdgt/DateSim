@@ -75,7 +75,9 @@ function Suite.run()
             capture("agenda-day"..app.session.day)
             if app.session.daily.active_activity then
                 capture("daily-activity")
-                click(require("src.data.activities").byId[app.session.daily.active_activity.id].choices[1].label.." (+2 amor / +1 conf.)")
+                local def=require("src.data.activities").byId[app.session.daily.active_activity.id]
+                local delta=require("src.systems.relationship_budget").preview(app.session,def.character,def.choices[1].effects)
+                click(def.choices[1].label.." (+"..delta.love.." amor / +"..delta.trust.." conf.)")
             elseif Daily.remaining(app.session)>0 and not app.session.daily.activities_locked then
                 local id=({"sylphiette","roxy","eris"})[app.session.daily.interactions_used+1]
                 check(Daily.startActivity(app.session,"time_"..id)~=nil,"Agenda permite repetir actividades")

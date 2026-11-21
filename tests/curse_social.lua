@@ -38,7 +38,7 @@ function Suite.run()
         return Cards.preview({hand={id},context={kind="conversation",character=character}},1)
     end
     local eris,sylphy=preview("bold_reply","eris"),preview("bold_reply","sylphiette")
-    check(eris.trust>0 and sylphy.trust<0,"Misma carta, consecuencias distintas por personaje")
+    check(eris.chemistry>0 and eris.trust==0 and sylphy.trust<0,"Respuesta audaz mejora solo amor; el contexto inapropiado conserva su penalización")
     check(eris.expression=="happy" and sylphy.expression=="angry","Reacciones coherentes con la decisión")
     check(preview("subtle_flirt","roxy").phrase~=preview("subtle_flirt","eris").phrase,"Frases por interlocutor")
     local nano=preview("subtle_flirt","nanahoshi")

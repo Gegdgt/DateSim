@@ -122,11 +122,11 @@ function Collection.details(card,session)
     end
     local condition=card.conditions and card.conditions.character
     local requirement=condition and ("Requiere a "..Characters.byId[condition].shortName..".") or "Sin requisito de compañía."
-    local e=card.effects
+    local view=require("src.systems.card_collection").view(session,card.id)
     return {
-        name=card.name,category=Data.categories[card.category],cost="Energía: "..card.cost,
+        name=card.name,category=Data.categories[card.category].." · N"..view.level,cost="Energía: "..card.cost,
         state=state,stateLabel=stateNames[state],description=card.description,
-        base="La frase y los cambios de relación dependen de cada conversación.",
+        base=signed(view.effect.love).." amor / "..signed(view.effect.trust).." conf.\nCopias: "..view.copies.." · El contexto puede penalizar.",
         contexts=#recommended>0 and table.concat(recommended," / ") or "Cualquier contexto; sin bonificación.",
         affinity=#affinities>0 and ("Modificadores: "..table.concat(affinities,", ")..".") or requirement,
         unlock=card.unlockHint,
@@ -306,6 +306,7 @@ function Collection.new(app)
         self:text("Flechas: inspeccionar · Tab: botones · Enter: seleccionar · Esc: volver",18,347,604,P.muted)
         self:button("Social [E]",345,12,94,20,function() self:startEditing() end)
         self:button("Combate",444,12,94,20,function() app:switch(require("src.screens.combat_deck").new(app)) end)
+        self:button("Mejorar",247,12,92,20,function() app:switch(require("src.screens.upgrades").new(app,card.id)) end)
         if self.message then
             W.panel(16,343,608,17)
             self:text(self.message,22,347,596,P.gold)

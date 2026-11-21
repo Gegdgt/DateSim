@@ -14,6 +14,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
+
 Cada día dispone de **tres interacciones libres**, repetibles con cualquier esposa, y **un encargo independiente a Cliff o Zanoba**. La agenda muestra visitas, recompensas posibles y encargos pendientes. Permite dormir con espacios sin usar después de completar la historia obligatoria y consultar los cambios de ayer. Las escenas principales no gastan espacios. El Día 1 habilita actividades después del tutorial; el Día 7 cierra el tiempo libre antes de resolver los matrimonios. [Arquitectura y reglas de la agenda](docs/FASE_1_ACTIVIDADES.md).
 
 | Día | Contenido |
@@ -69,7 +71,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 4**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v4.json`, con respaldo `campaign-v4.backup.json`. Incluye agenda, reservas, visitas, encargos, resúmenes, eventos por día y los sistemas narrativos existentes. El menú puede importar la colección compatible de una campaña v1/v2/v3 con aceptación explícita; empieza la nueva progresión y conserva los archivos originales. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 5**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v5.json`, con respaldo `campaign-v5.backup.json`. Incluye niveles, duplicados, oro, transacciones, presupuesto diario y todo el progreso anterior. **Continuar** migra v4 conservando la historia y el archivo original. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -77,6 +79,6 @@ La continuidad `rudy_curse` usa **versión 4**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v4_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v5_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.

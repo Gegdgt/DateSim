@@ -1,8 +1,10 @@
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 4. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 5. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
+
+`CardCollection` mantiene una copia canónica por ID y deriva efectos y costes de `src/data/card_progression.lua`. `Economy` controla oro, stock por día y transacciones con revisión esperada; una confirmación antigua no puede volver a gastar. `Events.apply` acepta `copies={id=cantidad}` y `gold`, además de los desbloqueos existentes. `RelationshipBudget` limita las ganancias a diez por esposa y estadística, incluidas las decisiones narrativas ordinarias. [Contratos y fórmulas](FASE_2_PROGRESION.md).
 
 `Daily` centraliza los tres espacios, visitas repetibles, reservas pendientes, encargo independiente y cierre único. `src/data/activities.lua` declara actividades y encargos; `src/data/day_cycle.lua` conecta las siete agendas sin reemplazar las escenas existentes. Las escenas tienen `interactionRule="narrative"`, coste cero e IDs distintos de las actividades.
 

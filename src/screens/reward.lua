@@ -12,10 +12,11 @@ function Reward.new(app)
     s.kind="reward"; s.reward=assert(app.session.rewardQueue[1]); s.age=0
     s.cards=s.reward.cards or {}; s.page=math.min(#s.cards,s.reward.presentationPage or 1)
     s.starter=s.reward.eventId=="starter_gift" or s.reward.eventId=="practice_starter"
-    if app.audio then app.audio:effect("card_gift") end
+    function s:isNew() return not self.reward.newCards or self.reward.newCards[self.cards[self.page]]==true end
+    if app.audio then app.audio:effect(s:isNew() and "card_gift" or "confirm") end
     function s:update(dt)
         local before=self.age; self.age=self.age+dt
-        if before<.6 and self.age>=.6 and app.audio then app.audio:effect("unlock") end
+        if before<.6 and self.age>=.6 and app.audio and self:isNew() then app.audio:effect("unlock") end
     end
     function s:continue()
         if self.closing then return end
@@ -32,7 +33,7 @@ function Reward.new(app)
         self:begin(); app.resources:background("laboratory")
         love.graphics.setColor(.025,.035,.07,.8); love.graphics.rectangle("fill",0,0,640,360)
         W.panel(16,14,608,332)
-        self:text(self.starter and "¡HAS OBTENIDO TU PRIMER MAZO!" or "¡NUEVA CARTA OBTENIDA!",36,30,568,P.gold,2)
+        self:text(not self:isNew() and "¡CARTA REPETIDA!" or self.starter and "¡HAS OBTENIDO TU PRIMER MAZO!" or "¡NUEVA CARTA OBTENIDA!",36,30,568,P.gold,2)
         local giver=self.reward.presenter or "nanahoshi"
         local char=Characters.byId[giver]
         app.resources:portrait(giver,"happy",38,105,1)
@@ -44,7 +45,7 @@ function Reward.new(app)
         love.graphics.setColor(.72,.51,.23,1); love.graphics.rectangle("fill",56,215,54,8)
         love.graphics.rectangle("fill",79,220,8,15)
         local id=self.cards[self.page]; local card=Cards.byId[id] or Techniques.byId[id]
-        local t=app.options.reducedMotion and 1 or math.min(1,self.age/.6)
+        local t=(app.options.reducedMotion or not self:isNew()) and 1 or math.min(1,self.age/.6)
         if card then
             local x=math.floor(74+(278-74)*t); local y=math.floor(215+(81-215)*t-18*math.sin(t*math.pi))
             CardView.draw(app.resources,card,x,y)
@@ -56,7 +57,10 @@ function Reward.new(app)
             local condition=card.conditions and card.conditions.character
             self:text(category.." · Coste: "..(card.cost or 1).." acción/energía"..(condition and (" · Requiere "..condition) or ""),138,263,364,P.teal)
         end
-        self:text(self.starter and "Orsted → Nanahoshi → Rudy. Cinco sociales y cinco físicas." or "Guardada en tu colección. Consulta sus efectos en Mazo.",42,287,556,P.muted,1,"center")
+        local count=self.reward.counts and self.reward.counts[id] or 1
+        self:text(not self:isNew() and ("Recibiste "..count.." copias. Disponibles: "..require("src.systems.card_collection").ensure(app.session)[id].copies)
+            or (count>1 and ("Primera copia: nivel 1. Además recibiste "..(count-1).." duplicados."))
+            or (self.starter and "Orsted → Nanahoshi → Rudy. Cinco sociales y cinco físicas." or "Guardada en tu colección. Consulta Mejorar cartas."),42,287,556,P.muted,1,"center")
         self:button(self.page<#self.cards and "Siguiente carta" or "Continuar",226,309,188,25,function() self:continue() end)
     end
     function s:keypressed(key)

@@ -5,6 +5,7 @@ local Daily=require("src.systems.daily")
 local Catalog=require("src.data.activities")
 local Progression=require("src.systems.progression")
 local Controls=require("src.config.controls")
+local Budget=require("src.systems.relationship_budget")
 local Agenda={}
 function Agenda.new(app)
     local s=Screen.new(app)
@@ -18,7 +19,7 @@ function Agenda.new(app)
         local session=app.session
         local d=Daily.ensure(session)
         app.resources:background("home")
-        self:header("DÍA "..session.day.." / AGENDA")
+        self:header("DÍA "..session.day.." / AGENDA · ORO "..session.gold)
         local active=d.active_activity
         if active then
             local def=Catalog.byId[active.id]
@@ -28,7 +29,8 @@ function Agenda.new(app)
             self:text(def.description,190,115,400,P.ink)
             self:text("Espacio reservado · quedan "..Daily.remaining(session).." de 3",190,164,400,P.teal)
             for i,choice in ipairs(def.choices) do
-                self:button(choice.label.." (+"..choice.effects.love.." amor / +"..choice.effects.trust.." conf.)",190,197+(i-1)*43,410,34,function()
+                local delta=Budget.preview(session,def.character,choice.effects)
+                self:button(choice.label.." (+"..delta.love.." amor / +"..delta.trust.." conf.)",190,197+(i-1)*43,410,34,function()
                     local result,err=Daily.resolveActivity(session,choice.id)
                     commit(result,err)
                     if result then app:notify(result) end
@@ -58,7 +60,7 @@ function Agenda.new(app)
                 app.resources:portrait(def.character,"neutral",x+10,122,1)
                 self:text(def.title,x+80,126,106,P.gold)
                 self:text("Visitas: "..d.visits[def.character],x+80,160,106,P.teal)
-                self:text("1 espacio · se puede repetir\n+2 amor/+1 conf. o +1/+2",x+10,195,176,P.ink)
+                self:text("1 espacio · +12 oro / +1 copia\n+2 amor/+1 conf. o +1/+2",x+10,195,176,P.ink)
                 local disabled=Daily.remaining(session)==0 or d.activities_locked or d.ending_processed or session.relationships[def.character].marriageState=="separated"
                 self:button("Pasar tiempo",x+10,232,176,24,function() commit(Daily.startActivity(session,def.id)) end,disabled)
             end
@@ -74,7 +76,7 @@ function Agenda.new(app)
             for _,favor in ipairs(session.pending_favors) do
                 if favor.status=="pending" then pending[#pending+1]=Catalog.favorsById[favor.id].character.." (cierre D"..favor.due_day..")" end
             end
-            self:text("Pendientes: "..(#pending>0 and table.concat(pending,", ") or "ninguno")..". Las cartas ya adquiridas no se duplican.",28,237,584,P.ink)
+            self:text("Pendientes: "..(#pending>0 and table.concat(pending,", ") or "ninguno")..". Las copias repetidas sirven para mejorar.",28,237,584,P.ink)
         end
         local finalLock=session.day==7 and not d.activities_locked
         self:text(finalLock and "Resolver la historia cierra el tiempo libre antes de los acuerdos finales." or "Al dormir: +1 confianza si hubo visita; -1 si no. Los espacios libres se pierden.",24,274,592,P.ink)

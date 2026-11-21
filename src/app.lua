@@ -105,7 +105,7 @@ end
 
 function App:resume(transition)
     if not self.session then self:menu(); return end
-    if self.session.rewardQueue and #self.session.rewardQueue>0 then
+    if self.session.rewardQueue and #self.session.rewardQueue>0 and not (self.session.combat and self.session.combat.training) then
         self:switch(require("src.screens.reward").new(self),{type="fade_in",duration=.2})
         return
     end

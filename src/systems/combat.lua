@@ -4,6 +4,7 @@ local Data=require("src.data.cards")
 local Techniques=require("src.data.combat_cards")
 local Enemies=require("src.data.enemies")
 local Training=require("src.systems.training")
+local Collection=require("src.systems.card_collection")
 local Combat={rules=Techniques.rules}
 local R=Techniques.rules
 local function copy(value)
@@ -23,6 +24,7 @@ end
 local function contextFor(context)
     context=context or {}
     return {kind="combat",character=context.character,tutorial=context.tutorial==true,
+        progressionVersion=1,cardLevels=Collection.levels(context),preparationShield=context.preparationShield==4 and 4 or 0,
         day=integer(context.day,1,7) and context.day or nil,
         difficulty=integer(context.difficulty,1,6) and context.difficulty or nil,
         enemyId=Enemies.byId[context.enemyId] and Enemies.byId[context.enemyId].id or Enemies.default,
@@ -32,7 +34,7 @@ local function contextFor(context)
         externalEnergy=math.max(0,math.min(30,tonumber(context.externalEnergy) or 0))}
 end
 
-function Combat.card(id)
+local function baseCard(id)
     local base=Techniques.byId[id]
     if base then return copy(base) end
     local original=Data.byId[id]
@@ -50,11 +52,21 @@ function Combat.card(id)
     view.perBattle=original.combat.perBattle or (view.effects.heal and R.healUses)
     return view
 end
+function Combat.card(id,state)
+    local card=baseCard(id);if not card then return nil end
+    if state and state.context and state.context.progressionVersion~=1 then return card end
+    local level=Collection.level(state and (state.context or state) or {},id)
+    card.effects=Collection.combatEffects(id,level,card.effects)
+    local costs=Collection.combatCosts(id,level,card)
+    card.cost,card.manaCost,card.hpCost,card.perBattle=costs.cost,costs.manaCost,costs.hpCost,costs.perBattle
+    card.level=level
+    return card
+end
 
 function Combat.describe(card,enc)
-    if type(card)=="string" then card=Combat.card(card) end
+    if type(card)=="string" then card=Combat.card(card,enc) end
     if not card then return "Solo encuentros sociales." end
-    if card.combat and not card.socialCost then card=Combat.card(card.id) end
+    if card.combat and not card.socialCost then card=Combat.card(card.id,enc) end
     local e=card.effects or {}; local parts={}
     if e.damage then parts[#parts+1]=e.damage.." daño" end
     if e.shield then parts[#parts+1]="+"..e.shield.." escudo" end
@@ -78,7 +90,7 @@ function Combat.validateDeck(deck,unlocked)
         if seen[id] then return false,"El mazo contiene una carta repetida." end
         if unlocked and unlocked[id]~=true then return false,"Carta bloqueada: "..c.name end
         seen[id]=true
-        if (c.effects.damage or 0)>=3 then offense=offense+1 end
+        if (c.effects.damage or 0)>0 then offense=offense+1 end
     end
     if offense<2 then return false,"Equipa al menos dos ataques ofensivos viables." end
     return true
@@ -247,6 +259,8 @@ local function start(deck,context,initial,legacyBalance)
         hand={},drawPile=copy(initial.pile),discard={},energy=R.energy,turn=1,maxTurns=R.maxTurns,
         revision=0,finished=false,perTurn={},perBattle={},companionHeals=0,randomState=initial.seed,commands={},log={},resultEvents={},relationshipEvents={},tacticalDecisions={}}
     enc.training=Training.new(enemy.trainingId)
+    enc.player.shield=context.preparationShield or 0
+    enc.player.physicalShield=context.preparationShield or 0
     if enc.training then enc.maxTurns=Training.config(enc).maxTurns end
     local companions={sylphiette={name="Sylphiette",role="Protección y curación"},roxy={name="Roxy",role="Magia y control"},eris={name="Eris",role="Espada e interrupción"}}
     if companions[context.character] and not enc.training then
@@ -298,7 +312,7 @@ function Combat.canPlay(enc,index)
     if type(enc)~="table" or enc.type~="combat" then return false,"No hay un combate activo." end
     if enc.finished then return false,"El combate ya terminó." end
     if not integer(index,1,#enc.hand) then return false,"Selecciona una carta de la mano." end
-    local card=Combat.card(enc.hand[index])
+    local card=Combat.card(enc.hand[index],enc)
     if not card then return false,"Esta carta solo funciona en encuentros sociales." end
     if card.conditions and card.conditions.character and card.conditions.character~=enc.context.character then
         return false,"Requiere la compañía de "..card.conditions.character.."."
@@ -315,7 +329,7 @@ function Combat.canPlay(enc,index)
 end
 
 function Combat.preview(enc,index)
-    local card=Combat.card(enc.hand[index]); if not card then return nil end
+    local card=Combat.card(enc.hand[index],enc); if not card then return nil end
     local preview={cardId=card.id,cost=card.cost,manaCost=card.manaCost or 0,hpCost=card.hpCost or 0,effects=copy(card.effects),text=Combat.describe(card,enc)}
     if card.perBattle and enc.balanceVersion~=1 then
         preview.usesLeft=math.max(0,card.perBattle-(enc.perBattle[card.id] or 0))
@@ -336,7 +350,7 @@ end
 function Combat.play(enc,index,expectedRevision)
     if expectedRevision~=nil and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
     local ok,err=Combat.canPlay(enc,index); if not ok then return nil,err end
-    local card=Combat.card(enc.hand[index]); local e=card.effects
+    local card=Combat.card(enc.hand[index],enc); local e=card.effects
     local result={cardId=card.id,cost=card.cost,manaCost=card.manaCost or 0,hpCost=card.hpCost or 0,element=card.element,events={}}
     enc.energy=enc.energy-card.cost
     local field=resourceField(enc,card)
@@ -491,7 +505,7 @@ function Combat.endTurn(enc,expectedRevision)
     if enc.training then
         local available=Combat.canBasic(enc,"counter")==true
         for index,id in ipairs(enc.hand) do
-            local card=Combat.card(id)
+            local card=Combat.card(id,enc)
             if card and (card.effects.damage or 0)>0 and Combat.canPlay(enc,index) then available=true;break end
         end
         Training.beforeEndTurn(enc,available)
@@ -613,6 +627,9 @@ function Combat.restore(snapshot,deck,context)
         and type(snapshot.enemy)=="table" and snapshot.enemy.actionUses==nil
         and type(snapshot.context)=="table" and snapshot.context.day==nil and snapshot.context.difficulty==nil
     local legacyBalance=oldSnapshot or snapshot.balanceVersion==1
+    if snapshot.context and snapshot.context.progressionVersion~=1 then
+        context.progressionVersion,context.cardLevels,context.preparationShield=nil,nil,nil
+    end
     if snapshot.balanceVersion~=nil and snapshot.balanceVersion~=1 and snapshot.balanceVersion~=2 then return nil end
     if legacyBalance then context.day=nil;context.difficulty=nil end
     if not same(snapshot.context,context) or not same(snapshot.deck,adapted) then return nil end

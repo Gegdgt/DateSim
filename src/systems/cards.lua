@@ -82,6 +82,11 @@ function Cards.preview(enc,index)
     for _,layer in ipairs(layers) do
         for _,key in ipairs({"score","trust","chemistry"}) do result[key]=result[key]+(layer[key] or 0) end
     end
+    local Collection=require("src.systems.card_collection")
+    if not enc.context.legacyProgression then
+        local scaled=Collection.socialEffects(card.id,Collection.level(enc.context.memory or enc.context,card.id),{love=result.chemistry,trust=result.trust})
+        result.chemistry,result.trust=scaled.love,scaled.trust
+    end
     result.phrase=Cards.phrase(card,enc.context)
     result.tone=card.tone
     result.expression=(result.trust<0 or result.chemistry<0) and "angry"
@@ -244,6 +249,7 @@ function Cards.preview(enc,index)
     if not card then return nil end
     local result=Resolver.resolve(enc.context,card.id,enc.memory)
     if not result then return nil end
+    result.progressionVersion=enc.context.legacyProgression and 0 or 1
     if enc.context.legacyEffects then
         local previous=legacyPreview(enc,index)
         previous.phrase,previous.reaction,previous.expression=result.phrase,result.reaction,result.expression
@@ -254,7 +260,7 @@ function Cards.preview(enc,index)
     result.contextBonus=delta(); result.affinityBonus=delta(); result.targetAdjustment=delta()
     local state=enc.memory or enc.context.memory or {}
     local actual=result.affinityTarget and Affinity.preview(state,result.character,result)
-        or Relationships.preview(state.relationships or {},result.character,result)
+        or require("src.systems.relationship_budget").preview(state,result.character,result)
     result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
     result.projectedInterest=actual.interest or 0
     if result.affinityTarget then result.affinityBefore,result.affinityAfter=actual.before,actual.after end
@@ -276,9 +282,10 @@ function Cards.pass(enc,expectedTurn)
     if expectedTurn and expectedTurn~=enc.turn then return nil,"Esta acción ya fue procesada." end
     if enc.finished then return nil,"El encuentro ya terminó." end
     local result=assert(Resolver.resolve(enc.context,"pass",enc.memory))
+    result.progressionVersion=enc.context.legacyProgression and 0 or 1
     result.cost=0; result.actionTurn=enc.turn; result.applied=false
     local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
-        or Relationships.preview(enc.memory.relationships,result.character,result)
+        or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
     result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
     result.projectedInterest=actual.interest or 0
     if result.affinityTarget then result.affinityBefore,result.affinityAfter=actual.before,actual.after end
@@ -310,8 +317,12 @@ function Cards.restore(snapshot,deck,context)
     replayContext.memory=Memory.capture(snapshot.initialMemory)
     local enc=fromOrder(deck,replayContext,snapshot.initialOrder)
     if not enc then return nil end
+    local migrated=false
     for turn,entry in ipairs(snapshot.log) do
         if type(entry)~="table" then return nil end
+        enc.context.legacyProgression=entry.progressionVersion~=1
+        enc.memory.legacyBudget=enc.context.legacyProgression
+        migrated=migrated or enc.context.legacyProgression
         local result
         if entry.cardId=="pass" then result=Cards.pass(enc)
         else
@@ -327,6 +338,20 @@ function Cards.restore(snapshot,deck,context)
             result.actualLove=result.projectedLove or 0
             result.actualTrust=result.projectedTrust or 0
             result.actualInterest=result.projectedInterest or 0
+        end
+    end
+    enc.context.legacyProgression=nil;enc.memory.legacyBudget=nil
+    if migrated then
+        -- Preserve historical responses, then use today's levels and budget for
+        -- every new action. Pending reactions are still committed only once.
+        enc.memory=Memory.capture(context.memory)
+        for turn,result in ipairs(enc.log) do
+            if not result.applied then
+                local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
+                    or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
+                result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
+                Memory.commit(enc.memory,Memory.copy(result),context.sceneId,turn)
+            end
         end
     end
     for _,zone in ipairs({"hand","drawPile","discard","reserve"}) do if not sameList(snapshot[zone],enc[zone]) then return nil end end

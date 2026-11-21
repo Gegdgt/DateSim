@@ -20,11 +20,12 @@ function Result.commit(session,enc)
  local cp=session.checkpoint;local key=Result.key(cp)
  session.trainingResults=session.trainingResults or {}
  if session.events[key] then return session.trainingResults[cp],false end
- local before=Relationships.preview(session.relationships,"eris",{love=result.love,trust=result.trust})
+ local before=require("src.systems.relationship_budget").preview(session,"eris",{love=result.love,trust=result.trust})
  local record=copy(result)
  record.actualLove,record.actualTrust=before.love,before.trust
  record.checkpoint=cp
  local effect={character="eris",love=result.love,trust=result.trust,
+  gold=require("src.data.economy").rewards.training,copies={staff_strike=3},
   context="training",decision=cp=="day5_eris_duel" and "eris_training_result" or "eris_training_last_result",value=result.id,
   text=Dialogue[result.id].effort..": "..result.reason,
   relationshipEvent=result.eventId,sharedMoment="training_"..cp}

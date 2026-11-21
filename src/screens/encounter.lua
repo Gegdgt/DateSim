@@ -239,7 +239,7 @@ function Encounter.new(app)
         if self.enc.narrativeVersion then return "Los cambios mostrados ya se aplicaron. Continuar no los repite." end
         local total={trust=0,chemistry=0}
         for _,entry in ipairs(self.enc.log) do total.trust=total.trust+entry.trust; total.chemistry=total.chemistry+entry.chemistry end
-        local delta=Relationships.preview(app.session.relationships,self.definition.character,total)
+        local delta=require("src.systems.relationship_budget").preview(app.session,self.definition.character,total)
         return (self.enc.context.socialTutorial and "Prueba sin romance: " or "Al cerrar: ")..Cards.signed(delta.trust).." confianza / "..Cards.signed(delta.chemistry).." amor (límite 100)."
     end
     function s:drawHistory()

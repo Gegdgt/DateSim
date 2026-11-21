@@ -1,6 +1,6 @@
 # Código completo del proyecto
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, guardado v4, animaciones y audio sintetizado.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, guardado v5, animaciones y audio sintetizado.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -989,6 +989,137 @@ Se mantienen las suites de Fase 1. `tests/chapters.lua` añade fixtures de parti
 El siguiente incremento narrativo es **Día 4: La torre de los caminos**, en el observatorio, con el Sello de la Voluntad. [CAPITULOS.md](CAPITULOS.md) describe cómo registrar el módulo y abrir la continuación de `day3_complete` cuando su destino exista. Siguen pendientes los días cinco a siete, selección de ruta, confesiones, escenas de finales, editor de mazo y distribución autónoma. La actualización de [experiencia](EXPERIENCIA.md) ya incorpora tutorial, animaciones y audio original sintetizado; las pistas definitivas grabadas siguen pendientes.
 ````
 
+## docs/FASE_2_PROGRESION.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_2_PROGRESION.md`
+
+````markdown
+# Fase 2 — Cartas, duplicados y economía
+
+La colección conserva los **40 IDs**, los dos mazos y todos los PNG y ASE existentes. Cada ID tiene una sola entrada mejorable. La pantalla **MEJORAR CARTAS** se abre desde **M → Mejorar**; desde ella se accede a la tienda.
+
+## Copias y niveles
+
+La primera copia desbloquea nivel 1. Las siguientes se acumulan en `collection[id].copies`, sin añadir posiciones al mazo. Una mejora consume duplicados y oro; nunca consume la carta original ni sustituye su ID.
+
+| Nivel de destino | Copias adicionales | Copias totales desde cero | Oro de esa mejora, clase básica |
+| --- | ---: | ---: | ---: |
+| 1 | 1 original | 1 | 0 |
+| 2 | 2 | 3 | 5 |
+| 3 | 4 | 7 | 10 |
+| 4 | 6 | 13 | 15 |
+| 5 | 8 | 21 | 20 |
+| 6 | 10 | 31 | 25 |
+| 7 | 12 | 43 | 30 |
+| 8 | 14 | 57 | 35 |
+| 9 | 16 | 73 | 40 |
+| 10 | 18 | 91 | 45 |
+
+Desde nivel `L`, `copies_required = 2 * L` y `gold_required = 5 * L * goldFactor`. Al llegar a 10 ambos requisitos son cero y se rechazan mejoras y compras de copias. Los duplicados ganados después se conservan, sin crear otro nivel. Una carta básica cuesta 225 de oro en mejoras desde 1 hasta 10; comprar sus 90 duplicados cuesta otros 180. Las recompensas reducen ese gasto.
+
+## Efectos sociales y presupuesto diario
+
+Para cada componente positivo permitido por el perfil de la carta:
+
+```lua
+effect = baseEffect * (1 + math.floor((level - 1) / 2))
+```
+
+Una base +1 produce 1, 1, 2, 2, 3, 3, 4, 4, 5, 5. Escuchar solo mejora confianza; Broma ligera y Coqueteo sutil solo amor; Dar ánimo mejora ambos. Un componente positivo del diálogo se sustituye por el componente escalado de la carta; cero permanece cero y una respuesta negativa conserva su penalización contextual. Las exclusivas tienen base +2 amor/+1 confianza. La afinidad investigadora de Nanahoshi conserva sus reglas independientes.
+
+`daily.relationship_gains[wife]` acumula ganancias **realmente aplicadas**, con presupuestos separados de 10 amor y 10 confianza. `Events.apply` concentra cartas, actividades, cierres, decisiones, entrenamiento y combate. Las vistas previas consultan el mismo presupuesto. Si quedan tres puntos y la carta ofrece cinco, muestra y aplica tres. El límite global de relación sigue siendo 100. Las pérdidas no consumen ni restituyen presupuesto. Cambiar de jornada reinicia ambos contadores.
+
+Las actividades ofrecen +2/+1 o +1/+2. Dos visitas aportan cuatro puntos a la estadística elegida; tres, seis, además de una confianza por atención al cerrar. Las escenas y cartas completan esta atención, sujetas al máximo diario. La memoria de promesas y los requisitos narrativos se conservan.
+
+## Combate
+
+Los rangos individuales se interpolan según su clase:
+
+```lua
+value = math.floor(base + (maximum - base) * ((level - 1) / 9)^exponent + 0.5)
+```
+
+| Clase | Exponente | Factor de oro | Precio por copia | Ejemplos de daño N1 → N10 |
+| --- | ---: | ---: | ---: | --- |
+| Básica | 1.35 | 1 | 2 | Bastón 2 → 20; piedra 1 → 16; corte 3 → 24 |
+| Intermedia | 1.55 | 2 | 4 | Proyectil de agua 6 → 55; descarga 6 → 60 |
+| Avanzada | 1.8 | 3 | 7 | Lanza de hielo 7 → 95; conjuro pesado 11 → 125 |
+| Especial | 2 | 4 | 10 | Magia compartida 6 → 140; conjuro combinado 12 → 180 |
+| Definitiva | 2.3 | 5 | 14 | Cañón de agua 15 → 250 |
+
+Las barreras tienen rangos propios (Barrera reforzada: 9 → 18); Curación básica pasa de 5 a 10 PV, sin superar los PV máximos y con tres usos por combate. Robo, acciones, recuperación de maná, estados y oportunidades de uso no escalan. Desde N7, avanzadas/especiales añaden tres de maná y admiten dos usos; la definitiva exige 12 de maná/energía externa, 6 PV y un uso. Los costes de acciones originales permanecen. La interfaz muestra los costes actuales y los cambios del siguiente nivel.
+
+El nivel no elimina la defensa enemiga, la maldición, las intenciones ni las fases de Badigadi. El mazo, los niveles y la preparación forman parte del contexto determinista de cada batalla; las mejoras se bloquean durante encuentros activos.
+
+## Economía de siete días
+
+Oro inicial: **120**. No se permite gastar más del saldo. El stock se controla por día y artículo, sin poder renovarlo cargando la partida.
+
+| Fuente | Oro | Copias adicionales |
+| --- | ---: | --- |
+| Actividad familiar | 12 | 1 Escuchar, Honestidad o Ánimo, según esposa |
+| Encargo de Cliff | 45 | 2 Escuchar y 1 Curación básica |
+| Encargo de Zanoba | 40 | 2 Bastón y 1 Defensa física |
+| Misión | 15 | Las definidas por la misión |
+| Cierre de capítulo | 30 | Las definidas por la historia |
+| Entrenamiento evaluado | 45 | 3 Bastón |
+| Victoria, días 1–6 | 30 / 40 / 50 / 60 / 70 / 90 | 2 de la primera técnica equipada |
+
+El resultado de entrenamiento y la conclusión victoriosa son eventos distintos; ambos solo se conceden una vez. No hay ingresos por reintentar derrotas ni por releer recompensas. El Día 7 no introduce nuevas batallas.
+
+| Compra | Precio | Stock diario | Uso |
+| --- | ---: | ---: | --- |
+| Copias de carta adquirida | Según clase | 30 por ID | Comprar lotes de 1, 5 o 10 |
+| Libro de estudio | 12 | 4 | Consumir para recibir 3 copias sociales |
+| Material mágico | 20 | 3 | Consumir para +4 energía externa, máximo 30 |
+| Preparación | 30 | 1 | +4 escudo al iniciar la siguiente batalla, sin acumulación |
+
+Los ingresos permiten elegir algunas especializaciones; no se espera completar las cuarenta cartas en una campaña. La prueba completa obtuvo 2 007 de oro y llevó Bastón y Dar ánimo a N10 gastando 796, con duplicados ganados y comprados. Las técnicas nuevas siguen requiriendo sus desbloqueos narrativos. Los libros pueden ser útiles para las exclusivas más caras; tienen stock limitado.
+
+## Integración y extensión
+
+| Archivo | Responsabilidad |
+| --- | --- |
+| `src/data/card_progression.lua` | Perfiles sociales, rangos de combate, clases, costes y reglas desde N7 |
+| `src/data/economy.lua` | Oro inicial, recompensas, precios, suministros y stock |
+| `src/systems/card_collection.lua` | Colección canónica, vistas derivadas, entregas y mejoras |
+| `src/systems/economy.lua` | Transacciones, revisiones, compras y consumo |
+| `src/systems/relationship_budget.lua` | Presupuesto compartido por esposa y jornada |
+| `src/systems/events.lua` | Aplicación única de efectos, oro y lotes de copias |
+| `src/screens/upgrades.lua`, `shop.lua`, `reward.lua` | Comparación, animación, compras y duplicados |
+| `src/systems/save.lua` | Formato v5 y migración de v4 sin sobrescribir el original |
+
+Ejemplo de recompensa extensible:
+
+```lua
+Events.apply(session, "day3_research_bonus", {
+    copies = {listen = 4, water_projectile = 2},
+    gold = 35,
+    text = "Notas de investigación completadas.",
+})
+```
+
+Usar un ID de evento estable evita volver a entregar el lote. `unlock={...}` equivale a recibir una copia; si ya existe, se convierte en duplicado. Para consultar la carta se usa `Collection.view(session,id)`, que reúne ID, desbloqueo, nivel, copias, tipo, efectos base/actuales, requisitos y nivel máximo. Solo se persisten los datos propios del jugador; los efectos se derivan de la configuración.
+
+`Collection.upgrade(session,id,expectedRevision)` verifica requisitos antes de descontar. La pantalla eleva la carta y dibuja un destello con primitivas pixel art; a los 0,45 segundos confirma una única transacción, reproduce el sonido y guarda. Continuar habilita una nueva mejora. Cargar antes de la confirmación conserva los recursos; cargar después conserva el nivel y el gasto. No se generaron imágenes nuevas.
+
+## Guardado y pruebas
+
+`campaign-v5.json` conserva colección, oro, compras, objetos, transacciones, presupuesto de relaciones y todo el progreso diario/narrativo anterior. La migración de v4 conserva historia, matrimonios, mazos y acciones en curso; inicializa las cartas adquiridas en N1 y reconstruye las ganancias de hoy desde el diario. Los archivos v4 quedan intactos. Las conversaciones históricas reproducen sus respuestas anteriores; las nuevas acciones usan las reglas actuales. Los combates v4 mantienen su contexto anterior hasta terminar.
+
+```powershell
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+# Pruebas focalizadas:
+$env:DATESIM_TEST_GROUP='economy-ui'       # dominio, persistencia e interfaz
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+$env:DATESIM_TEST_GROUP='economy-campaign' # ingresos reales y dos especializaciones
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+Remove-Item Env:DATESIM_TEST_GROUP
+```
+
+Las pruebas abarcan 91 copias, diez niveles, costes, descuentos, límites, duplicados, pulsaciones rápidas, replay, migración en disco y compatibilidad narrativa. Los resultados de ejecución están en [VERIFICACION.md](VERIFICACION.md).
+````
+
 ## docs/GUARDADO.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/GUARDADO.md`
@@ -996,22 +1127,24 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 4**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 5**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v4.json` | Partida actual. |
-| `campaign-v4.backup.json` | Última partida anterior válida. |
-| `campaign-v4.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v5.json` | Partida actual. |
+| `campaign-v5.backup.json` | Última partida anterior válida. |
+| `campaign-v5.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
 ## Estado persistido
 
+La versión 5 añade `collection[id]={id,level,copies,unlocked}`, `gold`, `economy` (revisión, transacciones, stock por jornada, objetos y escudo preparado) y `daily.relationship_gains`. Tipo, efectos y costes se reconstruyen desde los catálogos. Las entregas guardan cantidades y distinguen primeros desbloqueos de duplicados. Las mejoras guardan el nivel y el gasto en la misma operación; la animación no vuelve a ejecutar transacciones al cargar.
+
 Incluye checkpoint, día y posición de diálogo; maldición y descubrimientos; pistas; inventario del antídoto; capacidad externa; relaciones y sus historiales; decisiones, misiones y enemigos vencidos; cartas adquiridas; ambos mazos; entregas pendientes y su página; estado del documento abierto; encuentros y combate.
 
-La versión 4 añade `daily` (espacios, reservas, visitas, actividades, encargo solicitado, eventos, recompensas y cierre), `pending_favors`, `daily_history` y `events_by_day`. Una actividad pendiente ya reservó su espacio: cargar no lo devuelve. El cierre registra el resumen antes de avanzar; las entregas y la atención usan claves por día y ejecución. [Esquema y reglas](FASE_1_ACTIVIDADES.md).
+La versión 4 introdujo `daily` (espacios, reservas, visitas, actividades, encargo solicitado, eventos, recompensas y cierre), `pending_favors`, `daily_history` y `events_by_day`. Una actividad pendiente ya reservó su espacio: cargar no lo devuelve. El cierre registra el resumen antes de avanzar; las entregas y la atención usan claves por día y ejecución. [Esquema y reglas](FASE_1_ACTIVIDADES.md).
 
 La restauración mantiene el bloqueo de voz y magia hasta que el inventario registre `antidoteUsed`. `documentState` conserva fase, tiempo transcurrido y página: una animación interrumpida continúa desde ese punto sin volver a premiar una lectura registrada. La pista `hitogami_letter` permanece disponible para releer desde el diario.
 
@@ -1021,7 +1154,7 @@ Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: 
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v4. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v5. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -1029,7 +1162,7 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-El motor social conserva su soporte de replay anterior, pero la campaña v4 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
+El motor social conserva su soporte de replay anterior, pero la campaña v5 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
@@ -1037,11 +1170,15 @@ Antes de escribir se normalizan los datos. El guardado anterior válido se copia
 
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
-Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v4. [Dificultad y límites](COMBATE.md).
+Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v5. [Dificultad y límites](COMBATE.md).
 
 ## Importación de partidas anteriores
 
-El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v4, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
+Si no hay v5 válido, **Continuar** busca `campaign-v4.json` y su respaldo. Migra la misma partida: conserva checkpoint, historia, matrimonios, mazos, actividades y encargos. Inicializa cartas adquiridas en nivel 1 y oro en 120; las ganancias de relaciones del día se reconstruyen desde el diario y se limitan a diez por estadística. El siguiente guardado escribe v5 y **no modifica v4**.
+
+Los registros sociales anteriores conservan sus efectos históricos durante el replay; las nuevas acciones usan niveles y presupuesto diario. Los combates en curso conservan sus reglas anteriores hasta terminar. Los nuevos guardan `context.progressionVersion=1`, niveles por ID y preparación inicial, además de los comandos existentes. Cambiar el nivel durante un encuentro está prohibido.
+
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v5, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
@@ -1053,7 +1190,7 @@ El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pa
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v4_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
+La suite general usa `cartas_del_destino_v5_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
 ````
 
 ## docs/MALDICION_RUDY.md
@@ -1142,13 +1279,25 @@ En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibi�
 
 Dispones de tres actividades libres al día. **Pasar tiempo** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
 
-En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida no vuelve a duplicarse.
+En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida entrega copias para mejorarla.
 
 **Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 1. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Cambios de ayer** permite volver a consultarlo.
 
 El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
 
 ## Conversar mediante cartas
+
+Cada esposa puede ganar hasta **+10 amor y +10 confianza por jornada**, sumando cartas, actividades, combates y eventos. El juego muestra los puntos realmente aplicados. Las pérdidas no restituyen el margen de ganancias del día.
+
+## Mejorar cartas y comprar suministros
+
+Abre **M → Mejorar**. Selecciona una carta para ver imagen, nivel, efectos actuales y siguientes, copias y oro. La primera copia desbloquea nivel 1; cada mejora desde nivel L consume `2 × L` duplicados más oro. Llegar a nivel 10 requiere 91 copias en total. **Mejorar** se deshabilita si falta algún recurso. La carta se eleva, aparece el destello y se confirma una sola mejora; pulsa **Continuar** para otra. La carta equipada permanece en tu mazo.
+
+La **Tienda** vende copias de cartas que ya tienes, libros (+3 copias sociales al usarlos), materiales (+4 energía externa, máximo 30) y preparación (+4 escudo al comenzar la siguiente batalla). Las existencias se renuevan al cambiar de día. Actividades, encargos, misiones, entrenamientos y combates entregan oro. Elegir algunas cartas para especializar es suficiente; no necesitas mejorar las cuarenta.
+
+**¡CARTA REPETIDA!** indica cuántas copias se añadieron al inventario. Las mejoras sociales aumentan solo las bonificaciones propias de cada carta: Escuchar sigue dando confianza y Coqueteo sutil sigue dando amor. Las penalizaciones dependen de la respuesta y la situación. Las técnicas de combate tienen curvas distintas; las más potentes también imponen costes y límites de uso. [Tabla completa de costes](FASE_2_PROGRESION.md).
+
+## Elegir una respuesta
 
 Escuchar, Broma ligera, Hablar con honestidad, Dar ánimo y Coqueteo sutil representan intenciones; las frases cambian según personaje y situación. La mano muestra tres cartas, con tres acciones y cuatro puntos de energía social. Selecciona para inspeccionar y confirma para jugar. El color identifica categoría; el detalle muestra coste, tono, contexto y efectos. P ofrece el respiro social disponible en el encuentro.
 
@@ -1200,7 +1349,7 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v4.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v5.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
 ````
 
 ## docs/RECURSOS.md
@@ -1386,9 +1535,11 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 4. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 5. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
+
+`CardCollection` mantiene una copia canónica por ID y deriva efectos y costes de `src/data/card_progression.lua`. `Economy` controla oro, stock por día y transacciones con revisión esperada; una confirmación antigua no puede volver a gastar. `Events.apply` acepta `copies={id=cantidad}` y `gold`, además de los desbloqueos existentes. `RelationshipBudget` limita las ganancias a diez por esposa y estadística, incluidas las decisiones narrativas ordinarias. [Contratos y fórmulas](FASE_2_PROGRESION.md).
 
 `Daily` centraliza los tres espacios, visitas repetibles, reservas pendientes, encargo independiente y cierre único. `src/data/activities.lua` declara actividades y encargos; `src/data/day_cycle.lua` conecta las siete agendas sin reemplazar las escenas existentes. Las escenas tienen `interactionRule="narrative"`, coste cero e IDs distintos de las actividades.
 
@@ -1446,7 +1597,32 @@ La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERI
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación de la progresión diaria — Fase 1
+# Verificación de cartas y economía — Fase 2
+
+Fecha: **21 de noviembre de 2026**. Ejecución real con **LÖVE 11.5 / LuaJIT**, renderizador y audio. Se conservaron los 40 IDs, los mazos y todos los PNG y ASE originales; `git diff --check` no detecta errores de formato.
+
+La validación se realizó en la suite general y en grupos focalizados. La ejecución general completó los módulos de recursos, sistemas, narrativa y **34 campañas**; al encontrar expectativas antiguas de valores fijos en las pruebas de interfaz, se actualizaron y se ejecutó nuevamente el grupo gráfico completo. Los últimos grupos `economy-ui`, `economy-campaign`, `narrative` y `ui` terminaron con **`ALL TESTS PASSED`, salida 0**. Los registros locales están en `tests/artifacts/economy-*.log`.
+
+| Cobertura verificada | Resultado |
+| --- | --- |
+| Dominio de economía, niveles, migración y persistencia | 398 comprobaciones |
+| Interfaz de mejora, sonido, duplicados y pulsaciones rápidas | 25 comprobaciones; 7 capturas |
+| Campañas narrativas sin compras obligatorias | 33 031 comprobaciones; 34 recorridos, cinco finales |
+| Campaña adicional con compras y mejoras reales | 939 comprobaciones; dos cartas N10 |
+| Recorrido gráfico completo | 1 239 comprobaciones; 691 pasos |
+| Combate gráfico e integración | 44 + 24 comprobaciones; 22 capturas |
+| Narrativa focalizada tras migración | 73 + 2 788 + 277 comprobaciones; 41 capturas de diálogos |
+| Combate y equilibrio existentes | 120 + 288 victorias simuladas |
+
+La campaña de especialización obtuvo **2 007 de oro**, mejoró **Bastón y Dar ánimo a nivel 10** y terminó con **1 211 de oro**. No se inyectaron recursos ni relaciones para alcanzar esos niveles. Su estado serializado ocupó **222 567 bytes**, dentro del límite de lectura de guardados. Esta prueba verifica viabilidad económica; el ajuste subjetivo de dificultad y preferencias requiere sesiones con jugadores.
+
+Se verificaron los costes de todas las clases, las 91 copias totales, las curvas monótonas de daño/escudo/curación, el máximo de nivel 10, la conservación del mazo, el gasto único y los requisitos insuficientes. Las pruebas de relaciones incluyen +5 reducido a +3, penalizaciones sin recuperar margen, límites independientes por esposa y reinicio de jornada. Un mazo N10 todavía pierde si ignora al enemigo.
+
+La migración carga un archivo v4 desde disco, continúa una conversación ya iniciada y escribe v5 **sin modificar los bytes de v4**. También se comprueban conversaciones con acciones históricas y nuevas, respuestas pendientes, presupuestos agotados, guardados malformados y replay de combate con niveles. Los formatos v1/v2/v3 mantienen su importación explícita anterior.
+
+Capturas inspeccionadas: [mejora](../tests/artifacts/economy-after.png), [nivel máximo y costes](../tests/artifacts/economy-maximum.png), [tienda](../tests/artifacts/economy-shop.png), [duplicados](../tests/artifacts/economy-duplicate.png) y [encargos](../tests/artifacts/daily-favors.png). Los artefactos de prueba están excluidos de Git. La identidad de pruebas está separada de la del jugador; cada grupo tiene su propia identidad.
+
+## Registro anterior — Fase 1
 
 Fecha: **21 de noviembre de 2026**. Suite completa ejecutada con **LÖVE 11.5 / LuaJIT**, gráficos y audio reales. Resultado: **40 123 comprobaciones en 21 módulos, `ALL TESTS PASSED`, salida 0**, en una única ejecución final.
 
@@ -1737,6 +1913,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
+
 Cada día dispone de **tres interacciones libres**, repetibles con cualquier esposa, y **un encargo independiente a Cliff o Zanoba**. La agenda muestra visitas, recompensas posibles y encargos pendientes. Permite dormir con espacios sin usar después de completar la historia obligatoria y consultar los cambios de ayer. Las escenas principales no gastan espacios. El Día 1 habilita actividades después del tutorial; el Día 7 cierra el tiempo libre antes de resolver los matrimonios. [Arquitectura y reglas de la agenda](docs/FASE_1_ACTIVIDADES.md).
 
 | Día | Contenido |
@@ -1792,7 +1970,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 4**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v4.json`, con respaldo `campaign-v4.backup.json`. Incluye agenda, reservas, visitas, encargos, resúmenes, eventos por día y los sistemas narrativos existentes. El menú puede importar la colección compatible de una campaña v1/v2/v3 con aceptación explícita; empieza la nueva progresión y conserva los archivos originales. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 5**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v5.json`, con respaldo `campaign-v5.backup.json`. Incluye niveles, duplicados, oro, transacciones, presupuesto diario y todo el progreso anterior. **Continuar** migra v4 conservando la historia y el archivo original. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -1800,7 +1978,7 @@ La continuidad `rudy_curse` usa **versión 4**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v4_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v5_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.
 ````
@@ -1917,7 +2095,7 @@ end
 
 function App:resume(transition)
     if not self.session then self:menu(); return end
-    if self.session.rewardQueue and #self.session.rewardQueue>0 then
+    if self.session.rewardQueue and #self.session.rewardQueue>0 and not (self.session.combat and self.session.combat.training) then
         self:switch(require("src.screens.reward").new(self),{type="fade_in",duration=.2})
         return
     end
@@ -2244,11 +2422,11 @@ local list={
 }
 local favors={
     {id="cliff_notes",character="cliff",title="Cliff: estudiar una técnica",delay=1,
-        description="Entrega al cierre de mañana (hoy en el Día 7).",reward="Curación básica y +2 energía externa",
-        effects={unlock={"heal"},externalEnergy=2}},
+        description="Cierre de mañana; hoy en D7.",reward="Curación, 2 Escuchar, 45 oro y 2 energía",
+        effects={unlock={"heal"},copies={listen=2},gold=require("src.data.economy").rewards.cliff,externalEnergy=2}},
     {id="zanoba_artifact",character="zanoba",title="Zanoba: ajustar un artefacto",delay=0,
-        description="Entrega al cerrar esta jornada.",reward="Defensa física y +2 energía externa",
-        effects={unlock={"wind_guard"},externalEnergy=2}},
+        description="Al cerrar esta jornada.",reward="Defensa, 2 Bastón, 40 oro y 2 energía",
+        effects={unlock={"wind_guard"},copies={staff_strike=2},gold=require("src.data.economy").rewards.zanoba,externalEnergy=2}},
 }
 local catalog={list=list,byId={},favors=favors,favorsById={}}
 for _,activity in ipairs(list) do catalog.byId[activity.id]=activity end
@@ -2399,6 +2577,7 @@ return {
         defeat={loop=false,synth={notes={57,55,52,48,45},beat=.42}},
     },
     effects={
+        upgrade={notes={60,67,72,79,84,88},duration=.65,gain=.18},
         paper={notes={89,82,86,74},duration=.15,gain=.09},
         envelope_open={notes={74,78,82},duration=.22,gain=.1},
         revelation={notes={48,66,78,54},duration=.4,gain=.18},
@@ -2430,6 +2609,47 @@ return {
         defeat={notes={55,50,45},duration=.45,gain=.17},
     },
 }
+````
+
+## src/data/card_progression.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/card_progression.lua`
+
+````lua
+-- Balance de niveles. Los IDs y las ilustraciones pertenecen al catálogo original.
+local P={maxLevel=10,goldPerLevel=5,copiesPerLevel=2,
+    costRules={fromLevel=7,ultimate={mana=12,hp=6,uses=1},advanced={extraMana=3,maxMana=12,uses=2}},classes={
+    basic={name="Básica",goldFactor=1,copyPrice=2,exponent=1.35},
+    intermediate={name="Intermedia",goldFactor=2,copyPrice=4,exponent=1.55},
+    advanced={name="Avanzada",goldFactor=3,copyPrice=7,exponent=1.8},
+    special={name="Especial",goldFactor=4,copyPrice=10,exponent=2},
+    ultimate={name="Definitiva",goldFactor=5,copyPrice=14,exponent=2.3},
+},combat={
+    staff_strike={class="basic",damage={2,20}},simple_cut={class="basic",damage={3,24}},
+    stone_throw={class="basic",damage={1,16}},push={class="basic",damage={1,12},shield={3,8}},
+    coordinated_attack={class="basic",damage={2,22}},
+    water_projectile={class="intermediate",damage={6,55}},magic_bolt={class="intermediate",damage={6,60}},
+    arcane_guard={class="intermediate",shield={5,13}},heavy_spell={class="advanced",damage={11,125}},
+    heal={class="intermediate",heal={5,10}},focus={class="basic"},
+    ice_lance={class="advanced",damage={7,95}},wind_guard={class="basic",shield={3,8}},
+    mana_spark={class="basic",damage={2,18}},disrupting_ray={class="intermediate",damage={3,45},shield={2,6}},
+    quick_study={class="intermediate",damage={6,65}},swamp={class="advanced",damage={2,70}},
+    earth_wall={class="advanced",shield={9,18}},water_cannon={class="ultimate",damage={15,250}},
+    propose_plan={class="basic"},analyze_runes={class="intermediate"},earth_barrier={class="intermediate",shield={5,12}},
+    shared_magic={class="special",damage={6,140},heal={4,8},shield={3,8}},
+    combined_spell={class="special",damage={12,180}},sword_magic={class="special",damage={13,170},shield={3,8}},
+},social={
+    listen={love=0,trust=1},encourage={love=1,trust=1},remember={love=1,trust=1},
+    light_joke={love=1,trust=0},change_subject={love=0,trust=0},self_joke={love=1,trust=1},
+    be_honest={love=1,trust=1},admit_error={love=0,trust=1},share_fear={love=1,trust=1},
+    propose_plan={love=0,trust=1},analyze_runes={love=0,trust=1},earth_barrier={love=0,trust=1},
+    shared_magic={love=2,trust=1},combined_spell={love=2,trust=1},sword_magic={love=2,trust=1},
+    choose_together={love=1,trust=1},subtle_flirt={love=1,trust=0},happy_reply={love=1,trust=1},
+    bold_reply={love=1,trust=0},angry_reply={love=-2,trust=-4},sincere_apology={love=0,trust=1},
+}}
+function P.copiesRequired(level) return level<P.maxLevel and P.copiesPerLevel*level or 0 end
+function P.goldRequired(level,class) return level<P.maxLevel and P.goldPerLevel*level*P.classes[class].goldFactor or 0 end
+return P
 ````
 
 ## src/data/cards.lua
@@ -4188,6 +4408,21 @@ return {
 }
 ````
 
+## src/data/economy.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/economy.lua`
+
+````lua
+return {startingGold=120,maxGold=1000000,copyStock=30,
+    rewards={activity=12,mission=15,chapter=30,training=45,combat={30,40,50,60,70,90,0},cliff=45,zanoba=40},
+    activityCopies={sylphiette="listen",roxy="be_honest",eris="encourage"},
+    items={
+        study_book={name="Libro de estudio",price=12,stock=4,description="Úsalo en una carta social adquirida: +3 copias.",copies=3},
+        magic_material={name="Material mágico",price=20,stock=3,description="Usar: +4 energía externa (máx. 30).",energy=4},
+        battle_preparation={name="Preparar el próximo combate",price=30,stock=1,description="Empiezas el próximo combate con 4 de escudo; no se acumula.",shield=4},
+    },itemOrder={"study_book","magic_material","battle_preparation"}}
+````
+
 ## src/data/endings.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/endings.lua`
@@ -4373,8 +4608,11 @@ return {
     },
     history={title="La maldición de Rudy",text="Rudy, Sylphiette, Roxy y Eris son adultos y ya están casados. Un sueño ambiguo de Hitogami precede a una carta firmada —H. Al leerla, Rudy descubre que la poción que aceptó le ha sellado la voz y el maná. Revelar deliberadamente el secreto a una esposa amenaza su amor.\n\nTiene siete días. Nanahoshi adapta unas cartas que recibió de Orsted: utilizan magia almacenada para reproducir la voz de Rudy. La investigación conduce a Badigadi y al antídoto. Recuperar la voz no repara automáticamente los matrimonios. Esta es una continuidad alternativa original del juego."},
     rules={
+        {title="Mejorar cartas hasta nivel 10",text="Abre M, pulsa Mejorar y selecciona una carta. La primera copia desbloquea el nivel 1. Subir desde nivel L consume 2 por L copias y oro: necesitas 91 copias totales para llegar al nivel 10. Las copias repetidas se guardan; tu carta equipada permanece en el mazo.\n\nLa pantalla compara efectos, costes y copias antes de confirmar. El nivel máximo no pide más copias. Espera a terminar el destello y pulsa Continuar antes de otra mejora."},
+        {title="Efectos y límite diario",text="Una bonificación social de +1 sube a +2 en nivel 3, +3 en nivel 5, +4 en nivel 7 y +5 en nivel 9. Escuchar solo aumenta confianza; Coqueteo sutil solo amor. Las respuestas inapropiadas conservan las penalizaciones de su situación.\n\nCada esposa puede ganar hasta +10 amor y +10 confianza al día entre cartas, actividades, combates y eventos. Ves el valor realmente disponible. Perder puntos no devuelve capacidad para ganar más ese día."},
+        {title="Oro, copias y suministros",text="Actividades, encargos, misiones, entrenamientos y victorias entregan oro. Mejorar abre la Tienda: vende copias de cartas adquiridas, con existencias diarias. Puedes especializar algunas cartas durante los siete días.\n\nLos libros entregan tres copias de una carta social; los materiales aumentan la energía externa hasta 30; preparar un combate concede cuatro de escudo inicial una sola vez. Revisa precios y oro antes de comprar."},
         {title="Agenda: tres actividades y un encargo",text="Cada día tienes tres espacios libres. Puedes repartirlos entre Sylphiette, Roxy y Eris o repetir la misma esposa. Cada actividad reserva un espacio y luego ofrece una decisión. Cliff y Zanoba comparten un encargo independiente por día; la agenda muestra sus premios y plazos.\n\nLa historia obligatoria no consume espacios. Después del tutorial también hay actividades del Día 1. Finalizar día permite dormir con espacios libres: se pierden, no se acumulan. Cambios de ayer conserva visitas, recompensas y relaciones."},
-        {title="Atención y cierre de la jornada",text="Una esposa visitada recibe +1 confianza al cerrar el día; sin visita, -1. Las decisiones de actividad aumentan amor y confianza con sus propios efectos. Repetir no consume un espacio extra al guardar o cargar. Las separaciones siguen los acuerdos narrativos, no una cifra aislada.\n\nEl Día 7 anuncia el cierre del tiempo libre antes de resolver los matrimonios. Los encargos vencidos se entregan una sola vez. El resumen queda guardado antes de comenzar el capítulo siguiente. La campaña v4 conserva los archivos de versiones anteriores."},
+        {title="Atención y cierre de la jornada",text="Una esposa visitada recibe hasta +1 confianza al cerrar el día; sin visita, -1. Las decisiones de actividad aumentan amor y confianza con sus propios efectos. Repetir no consume un espacio extra al guardar o cargar. Las separaciones siguen los acuerdos narrativos, no una cifra aislada.\n\nEl Día 7 anuncia el cierre del tiempo libre antes de resolver los matrimonios. Los encargos vencidos se entregan una sola vez. El resumen queda guardado antes de comenzar el capítulo siguiente. El guardado conserva los archivos de versiones anteriores."},
         {title="Amor y confianza persistentes",text="Cada matrimonio comienza con 65 de amor y 65 de confianza (0–100). Los valores nunca se reinician por cambiar de día. Cumplir promesas, compartir responsabilidades y escuchar ayudan; ocultar riesgos y negar autonomía dañan los vínculos.\n\nLas decisiones, conflictos y reconciliaciones quedan en el diario. Una equivocación puede repararse con hechos. No basta con ganar combates ni con obtener una puntuación alta."},
         {title="Barras y cambios visibles",text="Sobre el retrato, cada esposa muestra Amor y Confianza con valores de 0 a 100. La reacción aplica el cambio una sola vez; sus números indican cuánto ganaste o perdiste realmente. Las barras se animan durante 0,6 segundos y puedes seguir leyendo.\n\nLos cambios positivos muestran un signo + y los negativos un signo menos. Movimiento reducido conserva números y efectos estáticos. Guardar conserva el valor definitivo: cargar o avanzar no repite puntos ni sonidos."},
         {title="La curiosidad de Nanahoshi",text="Nanahoshi muestra Confianza e Interés en el tutorial y las investigaciones de los días tres y cuatro. Solo Escuchar, Hablar con honestidad, Dar ánimo, Broma ligera y Coqueteo sutil pueden aumentar su interés según el contexto. Las demás pueden afectar su confianza.\n\nRepetir una carta en la misma conversación no repite la recompensa. Un halago puede sorprenderla o provocar sarcasmo: no la convierte en esposa ni abre otro final. Su afinidad se guarda aparte de los matrimonios."},
@@ -4551,6 +4789,7 @@ local Daily=require("src.systems.daily")
 local Catalog=require("src.data.activities")
 local Progression=require("src.systems.progression")
 local Controls=require("src.config.controls")
+local Budget=require("src.systems.relationship_budget")
 local Agenda={}
 function Agenda.new(app)
     local s=Screen.new(app)
@@ -4564,7 +4803,7 @@ function Agenda.new(app)
         local session=app.session
         local d=Daily.ensure(session)
         app.resources:background("home")
-        self:header("DÍA "..session.day.." / AGENDA")
+        self:header("DÍA "..session.day.." / AGENDA · ORO "..session.gold)
         local active=d.active_activity
         if active then
             local def=Catalog.byId[active.id]
@@ -4574,7 +4813,8 @@ function Agenda.new(app)
             self:text(def.description,190,115,400,P.ink)
             self:text("Espacio reservado · quedan "..Daily.remaining(session).." de 3",190,164,400,P.teal)
             for i,choice in ipairs(def.choices) do
-                self:button(choice.label.." (+"..choice.effects.love.." amor / +"..choice.effects.trust.." conf.)",190,197+(i-1)*43,410,34,function()
+                local delta=Budget.preview(session,def.character,choice.effects)
+                self:button(choice.label.." (+"..delta.love.." amor / +"..delta.trust.." conf.)",190,197+(i-1)*43,410,34,function()
                     local result,err=Daily.resolveActivity(session,choice.id)
                     commit(result,err)
                     if result then app:notify(result) end
@@ -4604,7 +4844,7 @@ function Agenda.new(app)
                 app.resources:portrait(def.character,"neutral",x+10,122,1)
                 self:text(def.title,x+80,126,106,P.gold)
                 self:text("Visitas: "..d.visits[def.character],x+80,160,106,P.teal)
-                self:text("1 espacio · se puede repetir\n+2 amor/+1 conf. o +1/+2",x+10,195,176,P.ink)
+                self:text("1 espacio · +12 oro / +1 copia\n+2 amor/+1 conf. o +1/+2",x+10,195,176,P.ink)
                 local disabled=Daily.remaining(session)==0 or d.activities_locked or d.ending_processed or session.relationships[def.character].marriageState=="separated"
                 self:button("Pasar tiempo",x+10,232,176,24,function() commit(Daily.startActivity(session,def.id)) end,disabled)
             end
@@ -4620,7 +4860,7 @@ function Agenda.new(app)
             for _,favor in ipairs(session.pending_favors) do
                 if favor.status=="pending" then pending[#pending+1]=Catalog.favorsById[favor.id].character.." (cierre D"..favor.due_day..")" end
             end
-            self:text("Pendientes: "..(#pending>0 and table.concat(pending,", ") or "ninguno")..". Las cartas ya adquiridas no se duplican.",28,237,584,P.ink)
+            self:text("Pendientes: "..(#pending>0 and table.concat(pending,", ") or "ninguno")..". Las copias repetidas sirven para mejorar.",28,237,584,P.ink)
         end
         local finalLock=session.day==7 and not d.activities_locked
         self:text(finalLock and "Resolver la historia cierra el tiempo libre antes de los acuerdos finales." or "Al dormir: +1 confianza si hubo visita; -1 si no. Los espacios libres se pierden.",24,274,592,P.ink)
@@ -4768,11 +5008,11 @@ function Collection.details(card,session)
     end
     local condition=card.conditions and card.conditions.character
     local requirement=condition and ("Requiere a "..Characters.byId[condition].shortName..".") or "Sin requisito de compañía."
-    local e=card.effects
+    local view=require("src.systems.card_collection").view(session,card.id)
     return {
-        name=card.name,category=Data.categories[card.category],cost="Energía: "..card.cost,
+        name=card.name,category=Data.categories[card.category].." · N"..view.level,cost="Energía: "..card.cost,
         state=state,stateLabel=stateNames[state],description=card.description,
-        base="La frase y los cambios de relación dependen de cada conversación.",
+        base=signed(view.effect.love).." amor / "..signed(view.effect.trust).." conf.\nCopias: "..view.copies.." · El contexto puede penalizar.",
         contexts=#recommended>0 and table.concat(recommended," / ") or "Cualquier contexto; sin bonificación.",
         affinity=#affinities>0 and ("Modificadores: "..table.concat(affinities,", ")..".") or requirement,
         unlock=card.unlockHint,
@@ -4952,6 +5192,7 @@ function Collection.new(app)
         self:text("Flechas: inspeccionar · Tab: botones · Enter: seleccionar · Esc: volver",18,347,604,P.muted)
         self:button("Social [E]",345,12,94,20,function() self:startEditing() end)
         self:button("Combate",444,12,94,20,function() app:switch(require("src.screens.combat_deck").new(app)) end)
+        self:button("Mejorar",247,12,92,20,function() app:switch(require("src.screens.upgrades").new(app,card.id)) end)
         if self.message then
             W.panel(16,343,608,17)
             self:text(self.message,22,347,596,P.gold)
@@ -5066,10 +5307,16 @@ function CombatScreen.new(app,definition)
     local s=Screen.new(app)
     s.definition=definition or Progression.encounter(app.session,app.session.checkpoint) or {}
     local context={character=s.definition.character,tutorial=s.definition.tutorial,enemyId=s.definition.enemyId,
+        cardLevels=require("src.systems.card_collection").levels(app.session),
+        preparationShield=app.session.combat and app.session.combat.context.preparationShield or require("src.systems.economy").ensure(app.session).nextBattleShield,
         day=app.session.day,difficulty=s.definition.difficulty,
         tacticalContext=s.definition.tacticalContext,unlocked=not app.practice and app.session.unlocked or nil,
         combatDeck=app.session.combatDeck,curse=app.session.curse,externalEnergy=app.session.externalEnergy}
-    s.enc=Combat.restore(app.session.combat,app.session.deck,context) or Combat.new(app.session.deck,context)
+    s.enc=Combat.restore(app.session.combat,app.session.deck,context)
+    if not s.enc then
+        s.enc=Combat.new(app.session.deck,context)
+        app.session.economy.nextBattleShield=0
+    end
     app.session.combat=s.enc
     s.selected,s.confirmReady,s.age,s.historyPage=1,false,0,1
     s.feedback="Selecciona una carta para inspeccionarla. Confirma con Jugar."
@@ -5352,7 +5599,7 @@ function CombatScreen.new(app,definition)
         if self.enc.companion then self:button("Táctica [T]",521,189,103,21,function() self.tacticsOpen=true;self.keyboardFocus=nil end,locked or self.enc.finished) end
         for i=1,3 do
             local x,y=12+(i-1)*89,221
-            local card=Combat.card(self.enc.hand[i])
+            local card=Combat.card(self.enc.hand[i],self.enc)
             if card then
                 local selected=self.selected==i and self.confirmReady
                 if selected then rect(P.gold,x-2,y-2,84,116) end
@@ -5371,7 +5618,7 @@ function CombatScreen.new(app,definition)
             end
         end
         W.panel(283,220,349,92,{shadow=false})
-        local card=Combat.card(self.enc.hand[self.selected])
+        local card=Combat.card(self.enc.hand[self.selected],self.enc)
         if card then
             local preview=Combat.preview(self.enc,self.selected)
             self:text(card.name..(preview and preview.usesLeft and " · "..preview.usesLeft.." usos" or ""),293,226,329,P.gold)
@@ -5596,7 +5843,7 @@ function Editor.new(app,returnTo)
         self:button("<",324,213,38,24,function() self.page=(self.page-2)%pages+1; self.selected=(self.page-1)*8+1 end)
         self:text("Página "..self.page.."/"..pages,373,221,178,P.muted)
         self:button(">",576,213,38,24,function() self.page=self.page%pages+1; self.selected=(self.page-1)*8+1 end)
-        local c=Combat.card(self.catalog[self.selected]); local old=Combat.card(self.draft[self.slot])
+        local c=Combat.card(self.catalog[self.selected],app.session); local old=Combat.card(self.draft[self.slot],app.session)
         self:text(c.name..": "..Combat.describe(c),18,254,604,P.gold)
         self:text("Actual: "..(old and (old.name.." · "..Combat.describe(old)) or "Vacía"),18,276,604,P.muted)
         local original=Data.byId[c.id] or Social.byId[c.id]
@@ -6353,7 +6600,7 @@ function Encounter.new(app)
         if self.enc.narrativeVersion then return "Los cambios mostrados ya se aplicaron. Continuar no los repite." end
         local total={trust=0,chemistry=0}
         for _,entry in ipairs(self.enc.log) do total.trust=total.trust+entry.trust; total.chemistry=total.chemistry+entry.chemistry end
-        local delta=Relationships.preview(app.session.relationships,self.definition.character,total)
+        local delta=require("src.systems.relationship_budget").preview(app.session,self.definition.character,total)
         return (self.enc.context.socialTutorial and "Prueba sin romance: " or "Al cerrar: ")..Cards.signed(delta.trust).." confianza / "..Cards.signed(delta.chemistry).." amor (límite 100)."
     end
     function s:drawHistory()
@@ -6848,7 +7095,7 @@ function Menu.new(app)
         self:text("LAS CARTAS\nDEL DESTINO",44,94,330,P.ink,2)
         self:text("Siete días. Una voz sellada.\nUna familia que necesita escucharte.",44,146,310,P.muted)
         if self.legacyConfirm then
-            self:text("Nueva campaña con agenda diaria.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v4.json.",44,186,310,P.gold)
+            self:text("Nueva campaña con agenda y mejoras.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v5.json.",44,186,310,P.gold)
             self:button("Aceptar e importar",44,250,310,25,function() app:newGame(true) end)
             self:button("Cancelar",44,282,310,25,function() self.legacyConfirm=false end)
         elseif self.confirm then
@@ -7023,7 +7270,8 @@ function Overlays.new(app,kind)
                 local conflicts,broken=0,0
                 for _,value in pairs(r.pendingConflicts or {}) do if value then conflicts=conflicts+1 end end
                 for _,value in pairs(r.promises or {}) do if value=="broken" or (type(value)=="table" and value.status=="broken") then broken=broken+1 end end
-                self:text("Evento personal: "..(r.events.personal_resolution and "sí" or "pendiente").."\nConflictos: "..conflicts.."\nPromesas rotas: "..broken,x+10,183,176,P.ink)
+                local gains=require("src.systems.relationship_budget").ensure(app.session)[id]
+                self:text("Hoy: +"..gains.love.." amor / +"..gains.trust.." conf.\nLímite: +10 de cada uno\nConflictos: "..conflicts.." · Promesas: "..broken,x+10,183,176,P.ink)
                 local states={married="casados",stable="estable",strained="en tensión",reconciled="reconciliados",separated="separados",committed="comprometidos"}
                 self:text("Matrimonio: "..(states[r.marriageState] or "en curso"),x+10,241,176,P.muted)
             end
@@ -7062,10 +7310,11 @@ function Reward.new(app)
     s.kind="reward"; s.reward=assert(app.session.rewardQueue[1]); s.age=0
     s.cards=s.reward.cards or {}; s.page=math.min(#s.cards,s.reward.presentationPage or 1)
     s.starter=s.reward.eventId=="starter_gift" or s.reward.eventId=="practice_starter"
-    if app.audio then app.audio:effect("card_gift") end
+    function s:isNew() return not self.reward.newCards or self.reward.newCards[self.cards[self.page]]==true end
+    if app.audio then app.audio:effect(s:isNew() and "card_gift" or "confirm") end
     function s:update(dt)
         local before=self.age; self.age=self.age+dt
-        if before<.6 and self.age>=.6 and app.audio then app.audio:effect("unlock") end
+        if before<.6 and self.age>=.6 and app.audio and self:isNew() then app.audio:effect("unlock") end
     end
     function s:continue()
         if self.closing then return end
@@ -7082,7 +7331,7 @@ function Reward.new(app)
         self:begin(); app.resources:background("laboratory")
         love.graphics.setColor(.025,.035,.07,.8); love.graphics.rectangle("fill",0,0,640,360)
         W.panel(16,14,608,332)
-        self:text(self.starter and "¡HAS OBTENIDO TU PRIMER MAZO!" or "¡NUEVA CARTA OBTENIDA!",36,30,568,P.gold,2)
+        self:text(not self:isNew() and "¡CARTA REPETIDA!" or self.starter and "¡HAS OBTENIDO TU PRIMER MAZO!" or "¡NUEVA CARTA OBTENIDA!",36,30,568,P.gold,2)
         local giver=self.reward.presenter or "nanahoshi"
         local char=Characters.byId[giver]
         app.resources:portrait(giver,"happy",38,105,1)
@@ -7094,7 +7343,7 @@ function Reward.new(app)
         love.graphics.setColor(.72,.51,.23,1); love.graphics.rectangle("fill",56,215,54,8)
         love.graphics.rectangle("fill",79,220,8,15)
         local id=self.cards[self.page]; local card=Cards.byId[id] or Techniques.byId[id]
-        local t=app.options.reducedMotion and 1 or math.min(1,self.age/.6)
+        local t=(app.options.reducedMotion or not self:isNew()) and 1 or math.min(1,self.age/.6)
         if card then
             local x=math.floor(74+(278-74)*t); local y=math.floor(215+(81-215)*t-18*math.sin(t*math.pi))
             CardView.draw(app.resources,card,x,y)
@@ -7106,7 +7355,10 @@ function Reward.new(app)
             local condition=card.conditions and card.conditions.character
             self:text(category.." · Coste: "..(card.cost or 1).." acción/energía"..(condition and (" · Requiere "..condition) or ""),138,263,364,P.teal)
         end
-        self:text(self.starter and "Orsted → Nanahoshi → Rudy. Cinco sociales y cinco físicas." or "Guardada en tu colección. Consulta sus efectos en Mazo.",42,287,556,P.muted,1,"center")
+        local count=self.reward.counts and self.reward.counts[id] or 1
+        self:text(not self:isNew() and ("Recibiste "..count.." copias. Disponibles: "..require("src.systems.card_collection").ensure(app.session)[id].copies)
+            or (count>1 and ("Primera copia: nivel 1. Además recibiste "..(count-1).." duplicados."))
+            or (self.starter and "Orsted → Nanahoshi → Rudy. Cinco sociales y cinco físicas." or "Guardada en tu colección. Consulta Mejorar cartas."),42,287,556,P.muted,1,"center")
         self:button(self.page<#self.cards and "Siguiente carta" or "Continuar",226,309,188,25,function() self:continue() end)
     end
     function s:keypressed(key)
@@ -7115,6 +7367,56 @@ function Reward.new(app)
     return s
 end
 return Reward
+````
+
+## src/screens/shop.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/shop.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local Collection=require("src.systems.card_collection")
+local Economy=require("src.systems.economy")
+local Data=require("src.data.economy")
+local Shop={}
+function Shop.new(app,cardId)
+    local s=Screen.new(app);s.kind="shop";s.cardId=cardId or "listen"
+    function s:purchase(id,revision,quantity)
+        local receipt,err=Economy.buy(app.session,id,revision,quantity)
+        self.message=err or (Collection.byId[id] and "¡CARTA REPETIDA! +"..(quantity or 1).." copias a la colección." or "Compra guardada en el inventario.")
+        if receipt then app:save() end
+    end
+    function s:draw()
+        self:begin();app.resources:background("library");W.panel(12,12,616,336)
+        self:text("TIENDA · ORO: "..app.session.gold,26,25,438,P.gold,2)
+        self:button("Volver",516,21,98,26,function() app:switch(require("src.screens.upgrades").new(app,self.cardId)) end)
+        local quote,err=Economy.quote(app.session,self.cardId)
+        self:text("COPIAS: "..Collection.byId[self.cardId].name,26,67,580,P.teal)
+        self:text(quote and (quote.price.." oro/copia · Existencias de hoy: "..quote.stock) or err,26,87,580,P.ink)
+        self:button("Comprar 1",26,110,174,28,function() self:purchase(self.cardId,quote.revision,1) end,not quote or quote.reason~=nil)
+        self:button("Comprar 5",210,110,174,28,function() self:purchase(self.cardId,quote.revision,5) end,not quote or quote.reason~=nil or quote.stock<5 or app.session.gold<quote.price*5)
+        self:button("Comprar 10",394,110,220,28,function() self:purchase(self.cardId,quote.revision,10) end,not quote or quote.reason~=nil or quote.stock<10 or app.session.gold<quote.price*10)
+        for i,id in ipairs(Data.itemOrder) do
+            local item=Data.items[id];local q=Economy.quote(app.session,id);local y=150+(i-1)*45
+            self:text(item.name.." · "..item.price.." oro",26,y,418,P.gold)
+            self:text(item.description,26,y+14,418,P.ink)
+            self:button("Comprar",468,y,146,29,function() self:purchase(id,q.revision) end,q.reason~=nil)
+        end
+        self:button("Usar material (+4 energía)",26,289,280,27,function()
+            local receipt,reason=Economy.use(app.session,"magic_material",nil,Economy.ensure(app.session).revision)
+            self.message=reason or "Material usado.";if receipt then app:save() end
+        end,(Economy.ensure(app.session).items.magic_material or 0)<1 or app.session.externalEnergy>=30)
+        self:text("Libros: "..(app.session.economy.items.study_book or 0).." · Materiales: "..(app.session.economy.items.magic_material or 0),320,298,292,P.teal)
+        self:text(self.message or (quote and quote.reason) or "Los libros se usan sobre la carta elegida en Mejorar cartas.",26,328,588,P.ink)
+    end
+    function s:keypressed(key)
+        if key=="escape" then app:switch(require("src.screens.upgrades").new(app,self.cardId)) else self:navigate(key) end
+    end
+    return s
+end
+return Shop
 ````
 
 ## src/screens/summary.lua
@@ -7259,6 +7561,108 @@ function TrainingScreen.new(app)
  return s
 end
 return TrainingScreen
+````
+
+## src/screens/upgrades.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/upgrades.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local CardView=require("src.ui.card")
+local Collection=require("src.systems.card_collection")
+local Economy=require("src.systems.economy")
+local Upgrades={}
+function Upgrades.effects(view)
+    local parts={}
+    if view.effect then parts[#parts+1]="Amor "..string.format("%+d",view.effect.love).." / Conf. "..string.format("%+d",view.effect.trust) end
+    for _,key in ipairs({"damage","shield","heal","draw","mana"}) do
+        local value=view.combatEffect and view.combatEffect[key]
+        if value then parts[#parts+1]=({damage="Daño ",shield="Escudo ",heal="Cura ",draw="Roba ",mana="Recupera maná "})[key]..value end
+    end
+    return table.concat(parts," · ")
+end
+function Upgrades.new(app,selected)
+    local s=Screen.new(app);s.kind="upgrades";s.index=1;s.page=1
+    for i,card in ipairs(Collection.list) do if card.id==selected then s.index=i;s.page=math.ceil(i/9) end end
+    function s:improve()
+        if self.pending then return end
+        local id=Collection.list[self.index].id
+        local ok,err=Collection.canUpgrade(app.session,id)
+        if not ok then self.message=err;return end
+        self.pending={id=id,revision=Economy.ensure(app.session).revision,before=Collection.view(app.session,id),age=0}
+        self.keyboardFocus=nil
+    end
+    function s:update(dt)
+        local pending=self.pending;if not pending then return end
+        pending.age=pending.age+dt
+        if pending.age>=.45 and not pending.committed then
+            pending.committed=true
+            local result,err=Collection.upgrade(app.session,pending.id,pending.revision)
+            pending.result=result
+            self.message=err or ("¡Mejora completada! -"..result.receipt.copies.." copias / "..result.receipt.gold.." oro.")
+            if result then app.audio:effect("upgrade");app:save() end
+        end
+    end
+    function s:draw()
+        self:begin();app.resources:background("library")
+        W.panel(8,7,624,30)
+        self:text("MEJORAR CARTAS",18,18,205,P.gold)
+        self:text("ORO: "..app.session.gold,231,18,170,P.teal)
+        self:button("Tienda",424,12,90,20,function() app:switch(require("src.screens.shop").new(app,Collection.list[self.index].id)) end,self.pending~=nil)
+        self:button("Volver",524,12,100,20,function() app:overlay("deck") end,self.pending~=nil)
+        W.panel(14,46,192,293);W.panel(216,46,410,293)
+        for row=1,9 do
+            local index=(self.page-1)*9+row;local card=Collection.list[index]
+            if card then
+                local view=Collection.view(app.session,card.id)
+                self:button((view.unlocked and "N"..view.level.." " or "[X] ")..card.name,22,57+(row-1)*25,176,24,function() self.index=index;self.message=nil end,self.pending~=nil,index==self.index)
+            end
+        end
+        local pages=math.ceil(#Collection.list/9)
+        self:button("<",22,295,44,26,function() self.page=self.page-1;self.index=(self.page-1)*9+1 end,self.page==1 or self.pending~=nil)
+        self:text(self.page.." / "..pages,76,304,68,P.ink)
+        self:button(">",154,295,44,26,function() self.page=self.page+1;self.index=(self.page-1)*9+1 end,self.page==pages or self.pending~=nil)
+        local card=Collection.list[self.index];local view=Collection.view(app.session,card.id)
+        local nextView=view.level<10 and Collection.view(app.session,card.id,view.level+1)
+        self:text(card.name,228,57,386,P.gold)
+        local elevation=self.pending and math.floor(12*math.min(1,self.pending.age/.3)) or 0
+        CardView.draw(app.resources,card,229,87-elevation)
+        if self.pending and self.pending.age>.2 and self.pending.age<.7 and not app.options.reducedMotion then
+            love.graphics.setColor(1,.85,.45,.8)
+            for i=0,7 do local x=229+(i%4)*23;local y=78+math.floor(i/4)*112;love.graphics.rectangle("fill",x,y,4,4) end
+        end
+        self:text(view.type.." · "..view.className.."\nNivel "..view.level.." / 10",324,82,286,P.teal)
+        local before=self.pending and self.pending.before or view
+        local after=self.pending and self.pending.result and self.pending.result.after or nextView
+        self:text("ACTUAL"..(self.pending and " (ANTES)" or "").."\n"..Upgrades.effects(before),324,118,286,P.ink)
+        self:text(after and ((self.pending and self.pending.result and "DESPUÉS / N" or "SIGUIENTE / N")..after.level.."\n"..Upgrades.effects(after)) or "NIVEL MÁXIMO",324,167,286,P.gold)
+        self:text("Copias: "..view.copies.." / "..view.copiesRequired.." necesarias · Oro: "..view.goldRequired,228,217,386,P.ink)
+        self:text((view.socialCost and ("Social: "..view.socialCost.." energía. ") or "")..(view.combatCost and ("Combate: "..view.combatCost.." A / "..view.manaCost.." M / "..view.hpCost.." PV.") or ""),228,240,386,P.teal)
+        if nextView and (nextView.manaCost~=view.manaCost or nextView.hpCost~=view.hpCost) then
+            self:text("Siguiente: "..nextView.manaCost.." M / "..nextView.hpCost.." PV · máx. "..nextView.perBattle.." usos",228,262,386,P.gold)
+        elseif view.perBattle then self:text("Límite: "..view.perBattle.." uso(s) por combate.",228,262,386,P.gold) end
+        local ok,reason=Collection.canUpgrade(app.session,card.id)
+        if self.pending then
+            self:button("Continuar",228,280,386,27,function() self.pending=nil;self.message=nil;self.keyboardFocus=nil end,self.pending.age<.9)
+        else
+            self:button(view.level==10 and "Nivel máximo" or "Mejorar",228,280,182,27,function() self:improve() end,not ok)
+            self:button("Usar libro (+3 copias)",418,280,196,27,function()
+                local receipt,err=Economy.use(app.session,"study_book",card.id,Economy.ensure(app.session).revision)
+                self.message=err or "Libro aplicado: +3 copias.";if receipt then app:save() end
+            end,not view.effect or not view.unlocked or view.level==10 or (Economy.ensure(app.session).items.study_book or 0)<1)
+        end
+        self:text(self.message or reason or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
+        self:text("Tab y Enter: botones · Las mejoras no cambian los mazos equipados.",18,347,604,P.ink)
+    end
+    function s:keypressed(key)
+        if key=="escape" and not self.pending then app:overlay("deck") else self:navigate(key) end
+    end
+    return s
+end
+return Upgrades
 ````
 
 ## src/systems/affinity.lua
@@ -7629,6 +8033,118 @@ end
 return Audio
 ````
 
+## src/systems/card_collection.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/card_collection.lua`
+
+````lua
+local Social=require("src.data.cards")
+local Combat=require("src.data.combat_cards")
+local Config=require("src.data.card_progression")
+local Collection={list={},byId={}}
+local function copy(t) local out={}; for k,v in pairs(t or {}) do out[k]=v end; return out end
+for _,catalog in ipairs({Social.list,Combat.list}) do
+    for _,card in ipairs(catalog) do Collection.list[#Collection.list+1]=card;Collection.byId[card.id]=card end
+end
+function Collection.ensure(session)
+    session.collection=session.collection or {};session.unlocked=session.unlocked or {}
+    for _,card in ipairs(Collection.list) do
+        local entry=session.collection[card.id]
+        if not entry then entry={id=card.id,level=1,copies=0,unlocked=session.unlocked[card.id]==true};session.collection[card.id]=entry end
+        if session.unlocked[card.id] then entry.unlocked=true end
+        if entry.unlocked then session.unlocked[card.id]=true end
+    end
+    return session.collection
+end
+function Collection.level(session,id)
+    local entry=session and session.collection and session.collection[id]
+    local level=entry and entry.level or (session and session.cardLevels and session.cardLevels[id]) or 1
+    return math.max(1,math.min(10,math.floor(tonumber(level) or 1)))
+end
+function Collection.levels(session)
+    local levels={}
+    for _,card in ipairs(Collection.list) do levels[card.id]=Collection.level(session,card.id) end
+    return levels
+end
+function Collection.class(id) return Config.combat[id] and Config.combat[id].class or "basic" end
+function Collection.socialEffects(id,level,contextEffect)
+    local base=Config.social[id] or {love=0,trust=0}
+    local effect=copy(contextEffect or base)
+    local factor=1+math.floor((level-1)/2)
+    for _,key in ipairs({"love","trust"}) do
+        if (effect[key] or 0)>0 then effect[key]=math.max(0,base[key] or 0)*factor end
+    end
+    return effect
+end
+function Collection.combatEffects(id,level,base)
+    local out=copy(base)
+    local spec=Config.combat[id]
+    if not spec then return out end
+    for _,key in ipairs({"damage","shield","heal"}) do
+        if spec[key] then
+            local range=spec[key]
+            out[key]=math.floor(range[1]+(range[2]-range[1])*((level-1)/9)^Config.classes[spec.class].exponent+.5)
+        end
+    end
+    -- Robos, maná, energía, estados y número de usos NO escalan.
+    return out
+end
+function Collection.combatCosts(id,level,base)
+    local class=Collection.class(id)
+    local out={cost=base.cost,manaCost=base.manaCost or 0,hpCost=base.hpCost or 0,
+        perBattle=base.perBattle or (base.effects and base.effects.heal and Combat.rules.healUses)}
+    local rules=Config.costRules
+    if level>=rules.fromLevel and class=="ultimate" then
+        out.manaCost=rules.ultimate.mana;out.hpCost=rules.ultimate.hp;out.perBattle=rules.ultimate.uses
+    elseif level>=rules.fromLevel and (class=="advanced" or class=="special") then
+        out.manaCost=math.min(rules.advanced.maxMana,out.manaCost+rules.advanced.extraMana);out.perBattle=rules.advanced.uses
+    end
+    return out
+end
+function Collection.view(session,id,overrideLevel)
+    local card=Collection.byId[id];if not card then return nil end
+    local entry=Collection.ensure(session)[id]
+    local level=overrideLevel or entry.level
+    local combat=Combat.byId[id] or card.combat
+    local class=Collection.class(id)
+    local costs=combat and Collection.combatCosts(id,level,combat)
+    return {id=id,name=card.name,level=level,copies=entry.copies,unlocked=entry.unlocked,maxLevel=10,
+        type=Social.byId[id] and (combat and "Híbrida" or "Social") or "Combate",class=class,className=Config.classes[class].name,
+        baseEffect=Social.byId[id] and Collection.socialEffects(id,1),effect=Social.byId[id] and Collection.socialEffects(id,level),
+        baseCombatEffect=combat and Collection.combatEffects(id,1,combat.effects),combatEffect=combat and Collection.combatEffects(id,level,combat.effects),
+        copiesRequired=Config.copiesRequired(level),goldRequired=Config.goldRequired(level,class),
+        socialCost=Social.byId[id] and card.cost,combatCost=costs and costs.cost,manaCost=costs and costs.manaCost,hpCost=costs and costs.hpCost,perBattle=costs and costs.perBattle}
+end
+function Collection.grant(session,id,count)
+    if not Collection.byId[id] or type(count)~="number" or count%1~=0 or count<1 or count>10000 then return nil,"Recompensa de copias inválida." end
+    local entry=Collection.ensure(session)[id]
+    local new=not entry.unlocked
+    if new then entry.unlocked=true;entry.level=1;session.unlocked[id]=true end
+    entry.copies=entry.copies+count-(new and 1 or 0)
+    return {cardId=id,count=count,new=new,duplicates=count-(new and 1 or 0)}
+end
+function Collection.canUpgrade(session,id)
+    local view=Collection.view(session,id)
+    if not view or not view.unlocked then return false,"Primero adquiere la carta." end
+    if view.level==10 then return false,"Nivel máximo." end
+    if session.combat or session.encounter then return false,"Termina el encuentro antes de mejorar." end
+    if view.copies<view.copiesRequired then return false,"Faltan "..(view.copiesRequired-view.copies).." copias." end
+    if (session.gold or 0)<view.goldRequired then return false,"Faltan "..(view.goldRequired-(session.gold or 0)).." de oro." end
+    return true
+end
+function Collection.upgrade(session,id,revision)
+    local ok,err=Collection.canUpgrade(session,id);if not ok then return nil,err end
+    local before=Collection.view(session,id)
+    local receipt;receipt,err=require("src.systems.economy").spend(session,before.goldRequired,revision,"upgrade_"..id)
+    if not receipt then return nil,err end
+    local entry=session.collection[id]
+    entry.copies=entry.copies-before.copiesRequired;entry.level=entry.level+1
+    receipt.cardId=id;receipt.level=entry.level;receipt.copies=before.copiesRequired
+    return {before=before,after=Collection.view(session,id),receipt=receipt}
+end
+return Collection
+````
+
 ## src/systems/cards.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/cards.lua`
@@ -7717,6 +8233,11 @@ function Cards.preview(enc,index)
     local layers={result.base,result.contextBonus,result.affinityBonus}
     for _,layer in ipairs(layers) do
         for _,key in ipairs({"score","trust","chemistry"}) do result[key]=result[key]+(layer[key] or 0) end
+    end
+    local Collection=require("src.systems.card_collection")
+    if not enc.context.legacyProgression then
+        local scaled=Collection.socialEffects(card.id,Collection.level(enc.context.memory or enc.context,card.id),{love=result.chemistry,trust=result.trust})
+        result.chemistry,result.trust=scaled.love,scaled.trust
     end
     result.phrase=Cards.phrase(card,enc.context)
     result.tone=card.tone
@@ -7880,6 +8401,7 @@ function Cards.preview(enc,index)
     if not card then return nil end
     local result=Resolver.resolve(enc.context,card.id,enc.memory)
     if not result then return nil end
+    result.progressionVersion=enc.context.legacyProgression and 0 or 1
     if enc.context.legacyEffects then
         local previous=legacyPreview(enc,index)
         previous.phrase,previous.reaction,previous.expression=result.phrase,result.reaction,result.expression
@@ -7890,7 +8412,7 @@ function Cards.preview(enc,index)
     result.contextBonus=delta(); result.affinityBonus=delta(); result.targetAdjustment=delta()
     local state=enc.memory or enc.context.memory or {}
     local actual=result.affinityTarget and Affinity.preview(state,result.character,result)
-        or Relationships.preview(state.relationships or {},result.character,result)
+        or require("src.systems.relationship_budget").preview(state,result.character,result)
     result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
     result.projectedInterest=actual.interest or 0
     if result.affinityTarget then result.affinityBefore,result.affinityAfter=actual.before,actual.after end
@@ -7912,9 +8434,10 @@ function Cards.pass(enc,expectedTurn)
     if expectedTurn and expectedTurn~=enc.turn then return nil,"Esta acción ya fue procesada." end
     if enc.finished then return nil,"El encuentro ya terminó." end
     local result=assert(Resolver.resolve(enc.context,"pass",enc.memory))
+    result.progressionVersion=enc.context.legacyProgression and 0 or 1
     result.cost=0; result.actionTurn=enc.turn; result.applied=false
     local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
-        or Relationships.preview(enc.memory.relationships,result.character,result)
+        or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
     result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
     result.projectedInterest=actual.interest or 0
     if result.affinityTarget then result.affinityBefore,result.affinityAfter=actual.before,actual.after end
@@ -7946,8 +8469,12 @@ function Cards.restore(snapshot,deck,context)
     replayContext.memory=Memory.capture(snapshot.initialMemory)
     local enc=fromOrder(deck,replayContext,snapshot.initialOrder)
     if not enc then return nil end
+    local migrated=false
     for turn,entry in ipairs(snapshot.log) do
         if type(entry)~="table" then return nil end
+        enc.context.legacyProgression=entry.progressionVersion~=1
+        enc.memory.legacyBudget=enc.context.legacyProgression
+        migrated=migrated or enc.context.legacyProgression
         local result
         if entry.cardId=="pass" then result=Cards.pass(enc)
         else
@@ -7963,6 +8490,20 @@ function Cards.restore(snapshot,deck,context)
             result.actualLove=result.projectedLove or 0
             result.actualTrust=result.projectedTrust or 0
             result.actualInterest=result.projectedInterest or 0
+        end
+    end
+    enc.context.legacyProgression=nil;enc.memory.legacyBudget=nil
+    if migrated then
+        -- Preserve historical responses, then use today's levels and budget for
+        -- every new action. Pending reactions are still committed only once.
+        enc.memory=Memory.capture(context.memory)
+        for turn,result in ipairs(enc.log) do
+            if not result.applied then
+                local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
+                    or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
+                result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
+                Memory.commit(enc.memory,Memory.copy(result),context.sceneId,turn)
+            end
         end
     end
     for _,zone in ipairs({"hand","drawPile","discard","reserve"}) do if not sameList(snapshot[zone],enc[zone]) then return nil end end
@@ -7986,6 +8527,7 @@ local Data=require("src.data.cards")
 local Techniques=require("src.data.combat_cards")
 local Enemies=require("src.data.enemies")
 local Training=require("src.systems.training")
+local Collection=require("src.systems.card_collection")
 local Combat={rules=Techniques.rules}
 local R=Techniques.rules
 local function copy(value)
@@ -8005,6 +8547,7 @@ end
 local function contextFor(context)
     context=context or {}
     return {kind="combat",character=context.character,tutorial=context.tutorial==true,
+        progressionVersion=1,cardLevels=Collection.levels(context),preparationShield=context.preparationShield==4 and 4 or 0,
         day=integer(context.day,1,7) and context.day or nil,
         difficulty=integer(context.difficulty,1,6) and context.difficulty or nil,
         enemyId=Enemies.byId[context.enemyId] and Enemies.byId[context.enemyId].id or Enemies.default,
@@ -8014,7 +8557,7 @@ local function contextFor(context)
         externalEnergy=math.max(0,math.min(30,tonumber(context.externalEnergy) or 0))}
 end
 
-function Combat.card(id)
+local function baseCard(id)
     local base=Techniques.byId[id]
     if base then return copy(base) end
     local original=Data.byId[id]
@@ -8032,11 +8575,21 @@ function Combat.card(id)
     view.perBattle=original.combat.perBattle or (view.effects.heal and R.healUses)
     return view
 end
+function Combat.card(id,state)
+    local card=baseCard(id);if not card then return nil end
+    if state and state.context and state.context.progressionVersion~=1 then return card end
+    local level=Collection.level(state and (state.context or state) or {},id)
+    card.effects=Collection.combatEffects(id,level,card.effects)
+    local costs=Collection.combatCosts(id,level,card)
+    card.cost,card.manaCost,card.hpCost,card.perBattle=costs.cost,costs.manaCost,costs.hpCost,costs.perBattle
+    card.level=level
+    return card
+end
 
 function Combat.describe(card,enc)
-    if type(card)=="string" then card=Combat.card(card) end
+    if type(card)=="string" then card=Combat.card(card,enc) end
     if not card then return "Solo encuentros sociales." end
-    if card.combat and not card.socialCost then card=Combat.card(card.id) end
+    if card.combat and not card.socialCost then card=Combat.card(card.id,enc) end
     local e=card.effects or {}; local parts={}
     if e.damage then parts[#parts+1]=e.damage.." daño" end
     if e.shield then parts[#parts+1]="+"..e.shield.." escudo" end
@@ -8060,7 +8613,7 @@ function Combat.validateDeck(deck,unlocked)
         if seen[id] then return false,"El mazo contiene una carta repetida." end
         if unlocked and unlocked[id]~=true then return false,"Carta bloqueada: "..c.name end
         seen[id]=true
-        if (c.effects.damage or 0)>=3 then offense=offense+1 end
+        if (c.effects.damage or 0)>0 then offense=offense+1 end
     end
     if offense<2 then return false,"Equipa al menos dos ataques ofensivos viables." end
     return true
@@ -8229,6 +8782,8 @@ local function start(deck,context,initial,legacyBalance)
         hand={},drawPile=copy(initial.pile),discard={},energy=R.energy,turn=1,maxTurns=R.maxTurns,
         revision=0,finished=false,perTurn={},perBattle={},companionHeals=0,randomState=initial.seed,commands={},log={},resultEvents={},relationshipEvents={},tacticalDecisions={}}
     enc.training=Training.new(enemy.trainingId)
+    enc.player.shield=context.preparationShield or 0
+    enc.player.physicalShield=context.preparationShield or 0
     if enc.training then enc.maxTurns=Training.config(enc).maxTurns end
     local companions={sylphiette={name="Sylphiette",role="Protección y curación"},roxy={name="Roxy",role="Magia y control"},eris={name="Eris",role="Espada e interrupción"}}
     if companions[context.character] and not enc.training then
@@ -8280,7 +8835,7 @@ function Combat.canPlay(enc,index)
     if type(enc)~="table" or enc.type~="combat" then return false,"No hay un combate activo." end
     if enc.finished then return false,"El combate ya terminó." end
     if not integer(index,1,#enc.hand) then return false,"Selecciona una carta de la mano." end
-    local card=Combat.card(enc.hand[index])
+    local card=Combat.card(enc.hand[index],enc)
     if not card then return false,"Esta carta solo funciona en encuentros sociales." end
     if card.conditions and card.conditions.character and card.conditions.character~=enc.context.character then
         return false,"Requiere la compañía de "..card.conditions.character.."."
@@ -8297,7 +8852,7 @@ function Combat.canPlay(enc,index)
 end
 
 function Combat.preview(enc,index)
-    local card=Combat.card(enc.hand[index]); if not card then return nil end
+    local card=Combat.card(enc.hand[index],enc); if not card then return nil end
     local preview={cardId=card.id,cost=card.cost,manaCost=card.manaCost or 0,hpCost=card.hpCost or 0,effects=copy(card.effects),text=Combat.describe(card,enc)}
     if card.perBattle and enc.balanceVersion~=1 then
         preview.usesLeft=math.max(0,card.perBattle-(enc.perBattle[card.id] or 0))
@@ -8318,7 +8873,7 @@ end
 function Combat.play(enc,index,expectedRevision)
     if expectedRevision~=nil and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
     local ok,err=Combat.canPlay(enc,index); if not ok then return nil,err end
-    local card=Combat.card(enc.hand[index]); local e=card.effects
+    local card=Combat.card(enc.hand[index],enc); local e=card.effects
     local result={cardId=card.id,cost=card.cost,manaCost=card.manaCost or 0,hpCost=card.hpCost or 0,element=card.element,events={}}
     enc.energy=enc.energy-card.cost
     local field=resourceField(enc,card)
@@ -8473,7 +9028,7 @@ function Combat.endTurn(enc,expectedRevision)
     if enc.training then
         local available=Combat.canBasic(enc,"counter")==true
         for index,id in ipairs(enc.hand) do
-            local card=Combat.card(id)
+            local card=Combat.card(id,enc)
             if card and (card.effects.damage or 0)>0 and Combat.canPlay(enc,index) then available=true;break end
         end
         Training.beforeEndTurn(enc,available)
@@ -8595,6 +9150,9 @@ function Combat.restore(snapshot,deck,context)
         and type(snapshot.enemy)=="table" and snapshot.enemy.actionUses==nil
         and type(snapshot.context)=="table" and snapshot.context.day==nil and snapshot.context.difficulty==nil
     local legacyBalance=oldSnapshot or snapshot.balanceVersion==1
+    if snapshot.context and snapshot.context.progressionVersion~=1 then
+        context.progressionVersion,context.cardLevels,context.preparationShield=nil,nil,nil
+    end
     if snapshot.balanceVersion~=nil and snapshot.balanceVersion~=1 and snapshot.balanceVersion~=2 then return nil end
     if legacyBalance then context.day=nil;context.difficulty=nil end
     if not same(snapshot.context,context) or not same(snapshot.deck,adapted) then return nil end
@@ -8938,11 +9496,15 @@ function Daily.resolveActivity(session,choiceId)
             local effect=copy(choice.effects)
             effect.character=def.character; effect.context="activity"; effect.text=choice.result
             effect.sharedMoment=active.instance_id
+            local economy=require("src.data.economy")
+            effect.gold=economy.rewards.activity
+            effect.copies={[economy.activityCopies[def.character]]=1}
+            local delta=require("src.systems.relationship_budget").preview(session,def.character,effect)
             local applied,err=Events.apply(session,active.instance_id,effect)
             if not applied and err then return nil,err end
             d.activities_completed[#d.activities_completed+1]={id=active.id,instance_id=active.instance_id,choice=choiceId,character=def.character}
             d.active_activity=nil
-            return choice.result
+            return choice.result.." (+"..delta.love.." amor / +"..delta.trust.." conf. / +"..effect.gold.." oro)"
         end
     end
     return nil,"Elige una de las opciones de la actividad."
@@ -9172,6 +9734,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 local Relationships=require("src.systems.relationships")
 local Events=require("src.systems.events")
 local Affinity=require("src.systems.affinity")
+local Budget=require("src.systems.relationship_budget")
 local Memory={}
 local function copy(value)
     if type(value)~="table" then return value end
@@ -9190,6 +9753,7 @@ function Memory.capture(session)
     local out={day=session.day or 1,checkpoint=session.checkpoint,relationships=Relationships.new(),affinities=Affinity.normalize(session.affinities),
         events=map(session.events),decisions=map(session.decisions),unlocked=map(session.unlocked),
         curse=copy(session.curse or {}),selectedCompanion=session.selectedCompanion,
+        cardLevels=require("src.systems.card_collection").levels(session),relationship_gains=copy(Budget.ensure(session)),
         dialogueMemory={used=map(session.dialogueMemory and session.dialogueMemory.used)}}
     for id,r in pairs(out.relationships) do
         local value=(session.relationships or {})[id] or r
@@ -9220,7 +9784,7 @@ function Memory.commit(session,result,scene,turn)
     for _,flag in ipairs(result.flags or {}) do
         effect.batch[#effect.batch+1]={decision=flag,value=true,text=effect.text}
     end
-    local delta=affinity and Affinity.preview(session,result.character,result) or Relationships.preview(session.relationships,result.character,effect)
+    local delta=affinity and Affinity.preview(session,result.character,result) or Budget.preview(session,result.character,effect)
     local applied,err=Events.apply(session,key,effect)
     if not applied then return false,err end
     if affinity then
@@ -9288,6 +9852,9 @@ function Resolver.resolve(context,cardId,state)
     state=state or context.memory or Memory.capture()
     local response=chosen(base,state)
     local effect=response.effects or {}
+    -- La afinidad de investigación de Nanahoshi conserva sus reglas propias.
+    if not context.legacyProgression and Data.byId[cardId] and not Affinity.config[node.character] then effect=require("src.systems.card_collection").socialEffects(cardId,
+        require("src.systems.card_collection").level(state,cardId),effect) end
     local result={cardId=cardId,character=node.character,conversationId=node.id,responseId=response.id,
         phrase=response.rudy,reaction=response.response,expression=response.expression or "neutral",animation=response.animation,
         score=effect.score or 0,trust=effect.trust or 0,chemistry=effect.love or 0,interest=effect.interest or 0,
@@ -9683,6 +10250,98 @@ end
 return Validator
 ````
 
+## src/systems/economy.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/economy.lua`
+
+````lua
+local Data=require("src.data.economy")
+local Collection=require("src.systems.card_collection")
+local Power=require("src.data.card_progression")
+local Economy={}
+function Economy.ensure(session)
+    session.gold=session.gold or Data.startingGold
+    session.economy=session.economy or {revision=0,transactions={},purchases={},items={},nextBattleShield=0}
+    return session.economy
+end
+function Economy.grant(session,amount,id)
+    if type(amount)~="number" or amount%1~=0 or amount<0 or amount>Data.maxGold or type(id)~="string" then return nil,"Recompensa de oro inválida." end
+    local e=Economy.ensure(session)
+    if e.transactions[id] then return 0 end
+    local actual=math.min(Data.maxGold-session.gold,math.max(0,amount))
+    session.gold=session.gold+actual;e.revision=e.revision+1
+    e.transactions[id]={id=id,day=session.day,gold=actual,kind="reward"}
+    return actual
+end
+function Economy.spend(session,amount,revision,kind)
+    local e=Economy.ensure(session)
+    if revision~=e.revision then return nil,"La operación ya cambió. Revisa de nuevo los costes." end
+    if type(amount)~="number" or amount%1~=0 or amount<0 or amount>session.gold then return nil,"Oro insuficiente." end
+    local receipt={id="purchase_"..(e.revision+1),day=session.day,gold=-amount,kind=kind}
+    session.gold=session.gold-amount;e.revision=e.revision+1;e.transactions[receipt.id]=receipt
+    return receipt
+end
+function Economy.rewardFor(id,effect)
+    if effect.gold~=nil then return effect.gold end
+    if effect.mission then return Data.rewards.mission end
+    if id:match("^day%d_complete$") or id=="campaign_complete" then return Data.rewards.chapter end
+    return 0
+end
+function Economy.quote(session,id)
+    local e=Economy.ensure(session)
+    local item=Data.items[id]
+    local card=Collection.byId[id]
+    if not item and not card then return nil,"Artículo desconocido." end
+    if card then
+        local entry=Collection.ensure(session)[id]
+        if not entry.unlocked then return nil,"Solo se venden copias de cartas adquiridas." end
+        if entry.level==10 then return nil,"Nivel máximo: no necesitas más copias." end
+    end
+    local key="day"..session.day.."_"..id
+    local stock=(item and item.stock or Data.copyStock)-(e.purchases[key] or 0)
+    local price=item and item.price or Power.classes[Collection.class(id)].copyPrice
+    local reason
+    if session.combat or session.encounter then reason="Termina el encuentro antes de comprar."
+    elseif stock<=0 then reason="Existencias de hoy agotadas."
+    elseif session.gold<price then reason="Oro insuficiente."
+    elseif id=="battle_preparation" and e.nextBattleShield>0 then reason="Ya preparaste el próximo combate." end
+    return {id=id,price=price,stock=stock,revision=e.revision,key=key,reason=reason}
+end
+function Economy.buy(session,id,revision,quantity)
+    local quote,err=Economy.quote(session,id)
+    if not quote or quote.reason then return nil,err or quote.reason end
+    quantity=quantity or 1
+    if type(quantity)~="number" or quantity%1~=0 or quantity<1 or quantity>10 or quantity>quote.stock or (Data.items[id] and quantity~=1) then return nil,"Cantidad no disponible." end
+    local receipt;receipt,err=Economy.spend(session,quote.price*quantity,revision,"buy_"..id)
+    if not receipt then return nil,err end
+    local e=session.economy;e.purchases[quote.key]=(e.purchases[quote.key] or 0)+quantity
+    if Collection.byId[id] then
+        local grant=Collection.grant(session,id,quantity)
+        require("src.systems.events").queueCards(session,receipt.id,{grant},"nanahoshi")
+    elseif id=="battle_preparation" then e.nextBattleShield=Data.items[id].shield
+    else e.items[id]=(e.items[id] or 0)+1 end
+    return receipt
+end
+function Economy.use(session,itemId,cardId,revision)
+    local e=Economy.ensure(session);local item=Data.items[itemId]
+    if not item or itemId=="battle_preparation" or (e.items[itemId] or 0)<1 then return nil,"No tienes ese objeto." end
+    if session.combat or session.encounter then return nil,"Usa los objetos fuera de los encuentros." end
+    if itemId=="study_book" then
+        local view=Collection.view(session,cardId)
+        if not view or not view.unlocked or not view.effect or view.level==10 then return nil,"Elige una carta social adquirida de nivel menor a 10." end
+    elseif itemId=="magic_material" and (session.externalEnergy or 0)>=30 then return nil,"La energía externa ya está al máximo." end
+    local receipt,err=Economy.spend(session,0,revision,"use_"..itemId)
+    if not receipt then return nil,err end
+    e.items[itemId]=e.items[itemId]-1
+    if itemId=="study_book" then
+        local grant=Collection.grant(session,cardId,item.copies)
+        require("src.systems.events").queueCards(session,receipt.id,{grant},"nanahoshi")
+    elseif itemId=="magic_material" then session.externalEnergy=math.min(30,(session.externalEnergy or 0)+item.energy) end
+    return receipt
+end
+return Economy
+````
+
 ## src/systems/events.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/events.lua`
@@ -9691,6 +10350,9 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 local Relationships=require("src.systems.relationships")
 local Characters=require("src.data.characters")
 local CardData=require("src.data.cards")
+local Collection=require("src.systems.card_collection")
+local Economy=require("src.systems.economy")
+local Budget=require("src.systems.relationship_budget")
 local Events={}
 function Events.mark(session,id)
     session.events=session.events or {}
@@ -9700,6 +10362,19 @@ function Events.mark(session,id)
     session.events_by_day[dayKey]=session.events_by_day[dayKey] or {}
     session.events_by_day[dayKey][id]=true
     if session.daily and session.daily.day==session.day then session.daily.events[id]=true end
+end
+function Events.queueCards(session,id,grants,presenter)
+    if #grants==0 then return end
+    local reward={id="reward_"..id,eventId=id,presenter=presenter or "nanahoshi",cards={},counts={},newCards={}}
+    for _,grant in ipairs(grants) do
+        local cardId=grant.cardId
+        if not reward.counts[cardId] then reward.cards[#reward.cards+1]=cardId;reward.counts[cardId]=0 end
+        reward.counts[cardId]=reward.counts[cardId]+grant.count
+        if grant.new then reward.newCards[cardId]=true end
+    end
+    session.rewardQueue=session.rewardQueue or {};session.rewardQueue[#session.rewardQueue+1]=reward
+    session.rewards=session.rewards or {};session.rewards[id]=true
+    Events.mark(session,id)
 end
 local states={pending=true,kept=true,broken=true}
 local function knownCard(id)
@@ -9717,6 +10392,11 @@ local function validate(effect,depth)
         if effect[field]~=nil and type(effect[field])~="string" then return false,"Identificador narrativo inválido." end
     end
     for _,id in ipairs(effect.unlock or {}) do if not knownCard(id) then return false,"Carta desconocida: "..tostring(id) end end
+    if effect.gold~=nil and (type(effect.gold)~="number" or effect.gold%1~=0 or effect.gold<0 or effect.gold>100000) then return false,"Recompensa de oro inválida." end
+    if effect.copies~=nil and type(effect.copies)~="table" then return false,"Lote de copias inválido." end
+    for id,count in pairs(effect.copies or {}) do
+        if not knownCard(id) or type(count)~="number" or count%1~=0 or count<1 or count>10000 then return false,"Recompensa de copias inválida." end
+    end
     for _,child in ipairs(effect.batch or {}) do
         local ok,err=validate(child,(depth or 0)+1); if not ok then return false,err end
     end
@@ -9741,15 +10421,17 @@ function Events.apply(session,id,effects)
     session.events=session.events or {}; session.decisions=session.decisions or {}
     session.unlocked=session.unlocked or {}; session.rewardQueue=session.rewardQueue or {}
     session.journal=session.journal or {}; session.rewards=session.rewards or {}
-    local newlyUnlocked={}
-    local function unlock(cardId)
-        if not session.unlocked[cardId] then session.unlocked[cardId]=true; newlyUnlocked[#newlyUnlocked+1]=cardId end
+    local grants={}
+    local function unlock(cardId,count)
+        grants[#grants+1]=assert(Collection.grant(session,cardId,count or 1))
     end
     local function apply(effect,path,inheritedText,inheritedHidden)
         local delta={love=0,trust=0}
         if effect.character and session.relationships[effect.character] then
-            delta=Relationships.preview(session.relationships,effect.character,effect)
-            Relationships.record(session.relationships,effect.character,effect,path,session.day)
+            delta=Budget.commit(session,effect.character,effect)
+            local adjusted={};for key,value in pairs(effect) do adjusted[key]=value end
+            adjusted.love,adjusted.trust,adjusted.chemistry=delta.love,delta.trust,nil
+            Relationships.record(session.relationships,effect.character,adjusted,path,session.day)
         end
         if effect.decision then session.decisions[effect.decision]=effect.value end
         session.curse=session.curse or require("src.systems.curse").new()
@@ -9765,6 +10447,9 @@ function Events.apply(session,id,effects)
         end
         if effect.route and session.day>=5 and session.relationships[effect.route] then session.route=effect.route end
         for _,cardId in ipairs(effect.unlock or {}) do unlock(cardId) end
+        for cardId,count in pairs(effect.copies or {}) do unlock(cardId,count) end
+        local gold=Economy.rewardFor(path,effect)
+        local actualGold=gold>0 and Economy.grant(session,gold,path) or 0
         if effect.starter or effect.equipStarter then
             if #session.deck==0 then
                 for i,cardId in ipairs(CardData.starterDeck) do unlock(cardId); session.deck[i]=cardId end
@@ -9788,7 +10473,7 @@ function Events.apply(session,id,effects)
         end
         local hidden=effect.hidden==true or inheritedHidden==true
         session.journal[#session.journal+1]={id=path,eventId=id,day=session.day,checkpoint=session.checkpoint,
-            character=effect.character,context=effect.context or effects.context or "story",text=text,
+            character=effect.character,context=effect.context or effects.context or "story",text=text..(actualGold>0 and (" (+"..actualGold.." oro)") or ""),gold=actualGold,
             decision=effect.decision,value=effect.value,love=delta.love,trust=delta.trust,hidden=hidden,
             conflict=effect.conflict,reconcile=effect.reconcile,promise=effect.promise and effect.promise.id,
             promiseStatus=effect.promise and effect.promise.status,critical=effect.critical and effect.critical.id}
@@ -9796,15 +10481,14 @@ function Events.apply(session,id,effects)
     end
     apply(effects,id)
     Events.mark(session,id)
-    if #newlyUnlocked>0 then
+    if #grants>0 then
         if session.daily and session.daily.day==session.day then
             session.daily.rewards_granted=session.daily.rewards_granted or {}
-            for _,cardId in ipairs(newlyUnlocked) do session.daily.rewards_granted[#session.daily.rewards_granted+1]=cardId end
+            for _,grant in ipairs(grants) do session.daily.rewards_granted[#session.daily.rewards_granted+1]=grant.cardId end
         end
         local presenter=effects.presenter or effects.character or "nanahoshi"
         if not Characters.byId[presenter] then presenter="nanahoshi" end
-        session.rewardQueue[#session.rewardQueue+1]={id="reward_"..id,eventId=id,cards=newlyUnlocked,presenter=presenter}
-        session.rewards[id]=true
+        Events.queueCards(session,id,grants,presenter)
     end
     return true
 end
@@ -10853,7 +11537,8 @@ function Progression.finishCombat(session,enc)
     local enemy=require("src.data.enemies").byId[enc.enemy.id]
     local key="combat_reward_"..checkpoint
     if not session.events[key] then
-        Events.mark(session,key)
+        Events.apply(session,key,{gold=require("src.data.economy").rewards.combat[session.day],
+            copies={[session.combatDeck[1] or "staff_strike"]=2},text="Recompensa del combate: oro y dos copias de tu primera técnica equipada."})
         Events.mark(session,"mirror_defeated_"..checkpoint)
         if enemy and enemy.narrativeEvent then Events.mark(session,enemy.narrativeEvent) end
         if enemy and enemy.reward and enemy.reward.event then Events.mark(session,enemy.reward.event) end
@@ -10876,6 +11561,40 @@ function Progression.finishCombat(session,enc)
 end
 
 return Progression
+````
+
+## src/systems/relationship_budget.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/relationship_budget.lua`
+
+````lua
+local Relationships=require("src.systems.relationships")
+local Characters=require("src.data.characters")
+local Budget={limit=10}
+function Budget.ensure(session)
+    if session.daily and session.daily.day~=session.day then require("src.systems.daily").ensure(session) end
+    local holder=session.daily and session.daily.day==session.day and session.daily or session
+    holder.relationship_gains=holder.relationship_gains or {}
+    for _,id in ipairs(Characters.romanceIds) do holder.relationship_gains[id]=holder.relationship_gains[id] or {love=0,trust=0} end
+    return holder.relationship_gains
+end
+function Budget.preview(session,id,effect)
+    local gains=Budget.ensure(session)[id]
+    local allowed={love=effect.love or effect.chemistry or 0,trust=effect.trust or 0}
+    if gains and not session.legacyBudget then
+        for _,key in ipairs({"love","trust"}) do
+            if allowed[key]>0 then allowed[key]=math.min(allowed[key],math.max(0,Budget.limit-gains[key])) end
+        end
+    end
+    return Relationships.preview(session.relationships or {},id,allowed)
+end
+function Budget.commit(session,id,effect)
+    local delta=Budget.preview(session,id,effect)
+    local gains=Budget.ensure(session)[id]
+    if gains then for _,key in ipairs({"love","trust"}) do gains[key]=math.min(Budget.limit,gains[key]+math.max(0,delta[key])) end end
+    return delta
+end
+return Budget
 ````
 
 ## src/systems/relationships.lua
@@ -11497,7 +12216,9 @@ local Chapters=require("src.data.chapters")
 local Progression=require("src.systems.progression")
 local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
-local Save={version=4,filename="campaign-v4.json",backup="campaign-v4.backup.json",optionsFile="options.json",
+local Collection=require("src.systems.card_collection")
+local Economy=require("src.systems.economy")
+local Save={version=5,filename="campaign-v5.json",backup="campaign-v5.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -11539,6 +12260,7 @@ function Save.newSession(config)
         curse=require("src.systems.curse").new(),clues={},inventory={},externalEnergy=0,
         journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},events_by_day={},options=Options.normalize()}
     Daily.ensure(s)
+    Collection.ensure(s);Economy.ensure(s)
     return s
 end
 
@@ -11547,6 +12269,33 @@ function Save.validate(input)
     if not next(input) then return nil,"El guardado está vacío." end
     if input.version==1 or input.version==nil then
         return nil,"Esta partida pertenece a la continuidad anterior. Inicia una nueva campaña compatible; el archivo original se conserva."
+    end
+    if input.version==4 then
+        local encoded,err=Json.encode(input)
+        if not encoded then return nil,err end
+        input=Json.decode(encoded)
+        input.version=5;input.collection=nil;input.gold=nil;input.economy=nil
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.economySource="campaign-v4.json"
+        if type(input.daily)=="table" then
+            input.daily.relationship_gains={}
+            for _,id in ipairs(Characters.romanceIds) do input.daily.relationship_gains[id]={love=0,trust=0} end
+            for _,entry in ipairs(type(input.journal)=="table" and input.journal or {}) do
+                local gains=type(entry)=="table" and entry.day==input.day and input.daily.relationship_gains[entry.character]
+                if gains then for _,field in ipairs({"love","trust"}) do gains[field]=math.min(10,gains[field]+math.max(0,tonumber(entry[field]) or 0)) end end
+            end
+        end
+        local encounter=input.encounter
+        if type(encounter)=="table" and type(encounter.initialMemory)=="table" then
+            local memory=encounter.initialMemory
+            memory.relationship_gains={}
+            for _,id in ipairs(Characters.romanceIds) do memory.relationship_gains[id]={love=0,trust=0} end
+            for _,entry in ipairs(type(input.journal)=="table" and input.journal or {}) do
+                local gains=type(entry)=="table" and entry.day==input.day and memory.relationship_gains[entry.character]
+                if gains and type(memory.events)=="table" and memory.events[entry.eventId] then
+                    for _,field in ipairs({"love","trust"}) do gains[field]=math.min(10,gains[field]+math.max(0,tonumber(entry[field]) or 0)) end
+                end
+            end
+        end
     end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
@@ -11604,6 +12353,33 @@ function Save.validate(input)
         for _,id in ipairs(CardData.starterDeck) do s.unlocked[id]=true end
         for _,id in ipairs(CombatData.starterDeck or {}) do s.unlocked[id]=true end
     end
+    Collection.ensure(s)
+    for id,entry in pairs(s.collection) do
+        local saved=type(input.collection)=="table" and input.collection[id]
+        if type(saved)=="table" then
+            if saved.id~=id or type(saved.level)~="number" or saved.level%1~=0 or saved.level<1 or saved.level>10
+                or type(saved.copies)~="number" or saved.copies%1~=0 or saved.copies<0 or saved.copies>1000000 then return nil,"Colección de cartas inválida." end
+            entry.level,entry.copies=saved.level,saved.copies
+            entry.unlocked=s.unlocked[id]==true or saved.unlocked==true
+            if entry.unlocked then s.unlocked[id]=true end
+        end
+    end
+    local EconomyData=require("src.data.economy")
+    if input.gold~=nil and (type(input.gold)~="number" or input.gold%1~=0 or input.gold<0 or input.gold>EconomyData.maxGold) then return nil,"Saldo de oro inválido." end
+    s.gold=input.gold or EconomyData.startingGold
+    if type(input.economy)=="table" then
+        local e=input.economy
+        s.economy.revision=math.floor(number(e.revision,0,0,1000000))
+        for key,quantity in pairs(map(e.purchases,false)) do
+            if type(quantity)~="number" or quantity%1~=0 or quantity<0 or quantity>30 then return nil,"Existencias de tienda inválidas." end
+            s.economy.purchases[key]=quantity
+        end
+        s.economy.nextBattleShield=e.nextBattleShield==EconomyData.items.battle_preparation.shield and e.nextBattleShield or 0
+        for id in pairs(EconomyData.items) do s.economy.items[id]=math.floor(number(type(e.items)=="table" and e.items[id],0,0,10000)) end
+        for id,receipt in pairs(type(e.transactions)=="table" and e.transactions or {}) do
+            if type(id)=="string" and #id<=150 and type(receipt)=="table" then s.economy.transactions[id]=map(receipt,false) end
+        end
+    end
     if Cards.validateDeck(input.deck,s.unlocked) then
         s.deck=copyList(input.deck)
     elseif Cards.validateDeck(CardData.starterDeck,s.unlocked) then s.deck=copyList(CardData.starterDeck) end
@@ -11617,10 +12393,14 @@ function Save.validate(input)
     for _,reward in ipairs(type(input.rewardQueue)=="table" and input.rewardQueue or {}) do
         if type(reward)=="table" and type(reward.id)=="string" and type(reward.eventId)=="string"
             and s.events[reward.eventId] and not queued[reward.id] and #s.rewardQueue<128 then
-            local entry={id=reward.id,eventId=reward.eventId,presenter=Characters.byId[reward.presenter] and reward.presenter or "nanahoshi",cards={}}
+            local entry={id=reward.id,eventId=reward.eventId,presenter=Characters.byId[reward.presenter] and reward.presenter or "nanahoshi",cards={},counts={},newCards={}}
             local seen={}
             for _,id in ipairs(type(reward.cards)=="table" and reward.cards or {}) do
-                if s.unlocked[id] and not seen[id] then entry.cards[#entry.cards+1]=id; seen[id]=true end
+                if s.unlocked[id] and not seen[id] then
+                    entry.cards[#entry.cards+1]=id; seen[id]=true
+                    entry.counts[id]=math.floor(number(type(reward.counts)=="table" and reward.counts[id],1,1,100000))
+                    entry.newCards[id]=reward.newCards==nil or (type(reward.newCards)=="table" and reward.newCards[id]==true) or nil
+                end
             end
             if #entry.cards>0 then
                 entry.presentationPage=math.floor(number(reward.presentationPage,1,1,#entry.cards))
@@ -11657,6 +12437,18 @@ function Save.validate(input)
         s.day=Chapters.get(s.checkpoint).day; s.dialogueIndex=1
         s.recoveryNotice="El mazo guardado estaba incompleto. Nanahoshi revisará la entrega; las decisiones permanecen registradas."
     end
+    -- Restore the daily budget before reconstructing any pending reaction.
+    local dailyOk,dailyError=Daily.restore(s,input)
+    if not dailyOk then return nil,dailyError end
+    if s.daily.relationship_gains~=nil and type(s.daily.relationship_gains)~="table" then return nil,"Presupuesto de relaciones inválido." end
+    local gains=require("src.systems.relationship_budget").ensure(s)
+    for _,id in ipairs(Characters.romanceIds) do
+        if type(gains[id])~="table" then return nil,"Presupuesto de relaciones inválido." end
+        for _,field in ipairs({"love","trust"}) do
+            local value=gains[id][field]
+            if type(value)~="number" or value~=value or value<0 or value>10 then return nil,"Límite diario de relaciones inválido." end
+        end
+    end
     local definition=Progression.encounter(s,s.checkpoint)
     if definition then
         local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
@@ -11675,6 +12467,7 @@ function Save.validate(input)
         if input.combatPreparation==true then s.combatPreparation=true end
         if not s.combatPreparation and type(input.combat)=="table" then
             s.combat=Combat.restore(input.combat,s.deck,{character=definition.character,tutorial=definition.tutorial,
+                cardLevels=Collection.levels(s),preparationShield=type(input.combat.context)=="table" and input.combat.context.preparationShield,
                 enemyId=definition.enemyId,unlocked=s.unlocked,combatDeck=s.combatDeck,tacticalContext=definition.tacticalContext,curse=s.curse,externalEnergy=s.externalEnergy,
                 day=s.day,difficulty=definition.difficulty})
         end
@@ -11694,8 +12487,6 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
-    local dailyOk,dailyError=Daily.restore(s,input)
-    if not dailyOk then return nil,dailyError end
     for day=1,7 do
         s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
     end
@@ -11731,7 +12522,7 @@ function Save.write(session)
     end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v4.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v5.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -11739,7 +12530,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v4.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v5.tmp.json")
     return true
 end
 
@@ -11753,6 +12544,14 @@ function Save.load()
     if backup then
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
+    end
+    for _,path in ipairs({"campaign-v4.json","campaign-v4.backup.json"}) do
+        local previous=readFile(path)
+        local decoded=previous and Json.decode(previous)
+        if type(decoded)=="table" and decoded.version==4 then
+            local session=Save.validate(decoded)
+            if session then return session,"Campaña v4 recuperada con cartas de nivel 1. El archivo original se conserva; se guardará en v5." end
+        end
     end
     return nil,err or "No hay guardado válido disponible."
 end
@@ -11949,11 +12748,12 @@ function Result.commit(session,enc)
  local cp=session.checkpoint;local key=Result.key(cp)
  session.trainingResults=session.trainingResults or {}
  if session.events[key] then return session.trainingResults[cp],false end
- local before=Relationships.preview(session.relationships,"eris",{love=result.love,trust=result.trust})
+ local before=require("src.systems.relationship_budget").preview(session,"eris",{love=result.love,trust=result.trust})
  local record=copy(result)
  record.actualLove,record.actualTrust=before.love,before.trust
  record.checkpoint=cp
  local effect={character="eris",love=result.love,trust=result.trust,
+  gold=require("src.data.economy").rewards.training,copies={staff_strike=3},
   context="training",decision=cp=="day5_eris_duel" and "eris_training_result" or "eris_training_last_result",value=result.id,
   text=Dialogue[result.id].effort..": "..result.reason,
   relationshipEvent=result.eventId,sharedMoment="training_"..cp}
@@ -12906,6 +13706,8 @@ function Suite.run()
  local Combat=require("src.systems.combat")
  local Endings=require("src.data.endings")
  local Events=require("src.systems.events")
+ local Collection=require("src.systems.card_collection")
+ local Economy=require("src.systems.economy")
  local count=0
  local function check(ok,message) assert(ok,message);count=count+1 end
  local function copy(value) return assert(Json.decode(assert(Json.encode(value)))) end
@@ -12959,7 +13761,7 @@ function Suite.run()
    if s.unlocked[id] and #equipped<10 then equipped[#equipped+1]=id end
   end
   if #equipped>=5 then s.combatDeck=equipped end
-  local enc=Combat.new(s.deck,{character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy},rng(37))
+  local enc=Combat.new(s.deck,{character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
   s.combat=enc
   local actionCount=0
   while not enc.finished do
@@ -12973,7 +13775,7 @@ function Suite.run()
     local best,index=-math.huge,nil
     for i=1,#enc.hand do
      if Combat.canPlay(enc,i) then
-      local c=Combat.card(enc.hand[i]);local e=c.effects
+      local c=Combat.card(enc.hand[i],enc);local e=c.effects
       local score=(e.damage or 0)*3+(e.draw or 0)*5+(e.mana or 0)*.4+(e.energy or 0)*6
       if enc.enemy.intent.kind=="attack" then score=score+math.min(e.shield or 0,math.max(0,enc.enemy.intent.damage-enc.player.shield))*1.3 end
       score=score+math.min(e.heal or 0,enc.player.maxHp-enc.player.hp)*1.4-(c.hpCost or 0)*.8
@@ -13043,6 +13845,18 @@ function Suite.run()
     check(nextId~=nil,"Salida de "..checkpoint..": "..tostring(err))
    elseif node.definition.agenda then
     local Daily=require("src.systems.daily")
+    if config.specialize then
+     for _,id in ipairs({"staff_strike","encourage"}) do
+      local entry=Collection.ensure(s)[id]
+      local quote=Economy.quote(s,id)
+      while entry.level<10 and quote and not quote.reason and s.gold>quote.price+25 and entry.copies<90-entry.level*(entry.level-1) do
+       local quantity=math.min(10,quote.stock,math.floor((s.gold-25)/quote.price),90-entry.level*(entry.level-1)-entry.copies)
+       check(Economy.buy(s,id,quote.revision,quantity),"Compra financiada por recompensas reales")
+       quote=Economy.quote(s,id)
+      end
+      while Collection.canUpgrade(s,id) do check(Collection.upgrade(s,id,s.economy.revision),"Especialización financiada durante la campaña") end
+     end
+    end
     while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
@@ -13074,8 +13888,19 @@ function Suite.run()
   check(s.events.antidote_obtained and not s.curse.active and s.events.campaign_complete,"Antídoto utilizado y campaña completada")
   check(Relationships.ending(round(s).relationships)==ending,"Final persiste al guardar/cargar")
   Suite.completed[ending]=copy(s)
+  if config.specialize then
+   check(s.collection.staff_strike.level==10 and s.collection.encourage.level==10,"Los ingresos reales permiten especializar dos cartas en siete días")
+   local income=120;for _,receipt in pairs(s.economy.transactions) do income=income+math.max(0,receipt.gold or 0) end
+   check(s.gold>=0 and income<40*(225+180),"La economía permite especializarse, no maximizar cuarenta cartas")
+   local maxBytes=#assert(Json.encode(s));check(maxBytes<524288,"Campaña con tienda cabe en el límite de guardado")
+   print("Specialization: staff_strike N10, encourage N10; income "..income..", remaining "..s.gold..", save "..maxBytes.." bytes.")
+  end
   return s,ending,visited
  end
+ local function specialize()
+  return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true})
+ end
+ if os.getenv("DATESIM_TEST_GROUP")=="economy-campaign" then specialize();print("Economy campaign: "..count.." checks passed.");return count end
  local reached={}
  for mask=0,7 do
   local keep,preferred={},nil
@@ -13125,7 +13950,8 @@ function Suite.run()
   end
   for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
  end
- print("Campaign: "..count.." checks passed (34 complete routes, five endings, free daily distributions, favors and save/load).")
+ specialize()
+ print("Campaign: "..count.." checks passed (35 complete routes, five endings, specialization, free daily distributions, favors and save/load).")
  return count
 end
 return Suite
@@ -13689,9 +14515,9 @@ function Suite.run()
     check(enc.player.hp==30 and enc.player.mana==0 and enc.player.externalEnergy==0 and enc.energy==3,"Vida, maná sellado, energía externa y acciones separados")
     check(table.concat(enc.hand,",")=="staff_strike,push,stone_throw","Tutorial físico reproducible")
     local before=Json.encode(enc);local preview=Combat.preview(enc,1)
-    check(before==Json.encode(enc) and preview.damage==4 and preview.manaCost==0,"Vista previa pura")
+    check(before==Json.encode(enc) and preview.damage==2 and preview.manaCost==0,"Vista previa pura de nivel 1")
     play(enc,"staff_strike")
-    check(enc.enemy.hp==18 and enc.player.mana==0 and enc.player.hp==30 and enc.energy==2,"Bastón funciona sin magia ni coste de vida")
+    check(enc.enemy.hp==20 and enc.player.mana==0 and enc.player.hp==30 and enc.energy==2,"Bastón funciona sin magia ni coste de vida")
     local unchanged=Json.encode(enc)
     check(not Combat.play(enc,1,0) and unchanged==Json.encode(enc),"Token obsoleto no vuelve a gastar")
     Combat.basic(enc,"defend",enc.revision)
@@ -13708,7 +14534,7 @@ function Suite.run()
     check(retry.player.hp==30 and retry.player.mana==0 and retry.revision==0 and #retry.relationshipEvents==0,"Reintento conserva la maldición")
     local dodge=new();assert(Combat.basic(dodge,"dodge"));check(dodge.player.shield==3 and not Combat.basic(dodge,"dodge"),"Esquiva disponible y limitada por turno")
     local sword=new();sword.hand={"simple_cut"};play(sword,"simple_cut")
-    check(sword.player.hp==29 and sword.player.mana==0 and sword.enemy.hp==17,"Corte cuesta esfuerzo físico explícito")
+    check(sword.player.hp==29 and sword.player.mana==0 and sword.enemy.hp==19,"Corte cuesta esfuerzo físico explícito")
     local unsafe=new();unsafe.hand={"quick_study"};unsafe.player.hp=4
     check(not Combat.canPlay(unsafe,1),"Esfuerzo no puede dejar menos de un PV")
     unsafe.player.hp=5;play(unsafe,"quick_study")
@@ -14183,7 +15009,7 @@ function Suite.run(app)
         check(Json.encode(screen.enc)==before and screen.confirmReady,"Seleccionar con mouse inspecciona sin jugar")
         capture("combat-02-selected")
         screen:keypressed("return")
-        check(screen.enc.enemy.hp==18 and screen.enc.energy==2 and screen.enc.player.mana==0,"Confirmar aplica cuatro daño y costes una sola vez")
+        check(screen.enc.enemy.hp==20 and screen.enc.energy==2 and screen.enc.player.mana==0,"Confirmar aplica dos de daño de nivel 1 y costes una sola vez")
         local revision=screen.enc.revision
         screen:keypressed("return");screen:keypressed("2");screen:keypressed("e")
         check(screen.enc.revision==revision,"Animación bloquea entradas repetidas")
@@ -14437,7 +15263,7 @@ function Suite.run()
         return Cards.preview({hand={id},context={kind="conversation",character=character}},1)
     end
     local eris,sylphy=preview("bold_reply","eris"),preview("bold_reply","sylphiette")
-    check(eris.trust>0 and sylphy.trust<0,"Misma carta, consecuencias distintas por personaje")
+    check(eris.chemistry>0 and eris.trust==0 and sylphy.trust<0,"Respuesta audaz mejora solo amor; el contexto inapropiado conserva su penalización")
     check(eris.expression=="happy" and sylphy.expression=="angry","Reacciones coherentes con la decisión")
     check(preview("subtle_flirt","roxy").phrase~=preview("subtle_flirt","eris").phrase,"Frases por interlocutor")
     local nano=preview("subtle_flirt","nanahoshi")
@@ -14638,6 +15464,8 @@ function Suite.run()
             check(app.session.daily.active_activity~=nil,"Continúa la decisión pendiente")
             capture("daily-activity")
             click("Compartir una lectura (+2 amor / +1 conf.)")
+            settle()
+            while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
         end
         check(app.session.daily.visits.roxy==3 and Daily.remaining(app.session)==0,"Tres visitas a Roxy desde la interfaz")
         capture("daily-agenda-spent")
@@ -14802,8 +15630,8 @@ function Suite.run()
 
     local expected={
         light_joke={love=-5,trust=-2,phrase="¿Quieres que me deje ganar?",expression="angry",flag="eris_disliked_training_joke",next="eris_training_argument"},
-        encourage={love=5,trust=3,phrase="¡Claro que sí! Estoy contigo. Entrenemos juntos",expression="happy",flag="eris_training_supported",next="eris_training_together"},
-        subtle_flirt={love=10,trust=1,phrase="Iré, pero si gano, quiero un beso",expression="happy",flag="eris_romantic_training",next="eris_training_challenge"},
+        encourage={love=1,trust=1,phrase="¡Claro que sí! Estoy contigo. Entrenemos juntos",expression="happy",flag="eris_training_supported",next="eris_training_together"},
+        subtle_flirt={love=1,trust=0,phrase="Iré, pero si gano, quiero un beso",expression="happy",flag="eris_romantic_training",next="eris_training_challenge"},
     }
     local branches={}
     for cardId,wanted in pairs(expected) do
@@ -15155,8 +15983,8 @@ function Suite.run()
 
         local eris={
             {card="light_joke",name="eris-joke",love=-5,trust=-2,expression="angry",next="eris_training_argument",flag="eris_disliked_training_joke"},
-            {card="encourage",name="eris-support",love=5,trust=3,expression="happy",next="eris_training_together",flag="eris_training_supported"},
-            {card="subtle_flirt",name="eris-flirt",love=10,trust=1,expression="happy",next="eris_training_challenge",flag="eris_romantic_training"},
+            {card="encourage",name="eris-support",love=1,trust=1,expression="happy",next="eris_training_together",flag="eris_training_supported"},
+            {card="subtle_flirt",name="eris-flirt",love=1,trust=0,expression="happy",next="eris_training_challenge",flag="eris_romantic_training"},
         }
         local distinct={}
         for _,case in ipairs(eris) do
@@ -15166,9 +15994,9 @@ function Suite.run()
         local count=0; for _ in pairs(distinct) do count=count+1 end
         check(count==3,"Prueba A: tres fixtures independientes, tres consecuencias y tres ramas")
         for _,case in ipairs({
-            {card="listen",name="roxy-listen",love=3,trust=4,expression="happy",next="roxy_formula_check"},
+            {card="listen",name="roxy-listen",love=0,trust=1,expression="happy",next="roxy_formula_check"},
             {card="light_joke",name="roxy-joke",love=-2,trust=-1,expression="worried",next="roxy_formula_boundaries"},
-            {card="be_honest",name="roxy-honest",love=4,trust=3,expression="happy",next="roxy_formula_equals"},
+            {card="be_honest",name="roxy-honest",love=1,trust=1,expression="happy",next="roxy_formula_equals"},
         }) do playCase("encounter_roxy",case.card,case.name,case) end
 
         local promised=playCase("encounter_sylphiette","encourage","sylphiette-promise")
@@ -15218,6 +16046,261 @@ function Suite.run()
     Suite.report={checks=checks,captures=captures}
     print("Dialogue UI: "..checks.." checks; "..captures.." real-renderer captures; Eris A, Roxy B, Sylphiette C, seeded hands D, cancellation and disk save/restore.")
     return checks
+end
+return Suite
+````
+
+## tests/economy.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/economy.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+    local Save=require("src.systems.save")
+    local Collection=require("src.systems.card_collection")
+    local Economy=require("src.systems.economy")
+    local Events=require("src.systems.events")
+    local Budget=require("src.systems.relationship_budget")
+    local Combat=require("src.systems.combat")
+    local Config=require("src.data.card_progression")
+    local Json=require("src.systems.json")
+    local count=0
+    local function check(ok,msg) assert(ok,msg);count=count+1 end
+    local function clone(s) return assert(Json.decode(assert(Json.encode(s)))) end
+    local s=Save.newSession()
+    Events.apply(s,"starter_gift",{starter=true})
+    check(#Collection.list==40,"Se conservan las cuarenta cartas")
+    check(s.collection.listen.level==1 and s.collection.listen.copies==0,"Primera copia desbloquea nivel 1")
+    check(Events.apply(s,"multi",{copies={listen=90,light_joke=3},gold=10000}),"Evento admite lotes de copias y oro")
+    check(s.collection.listen.copies==90 and s.collection.light_joke.copies==3,"Duplicados suman inventario")
+    local before=s.gold
+    check(not Events.apply(s,"multi",{copies={listen=90},gold=10000}) and s.gold==before,"Recompensa idempotente")
+    local deck=Json.encode(s.deck);local total=1;local spent=0
+    for level=1,9 do
+        local view=Collection.view(s,"listen")
+        check(view.copiesRequired==2*level,"Coste de copias "..level)
+        local revision=s.economy.revision
+        local gold=s.gold;local copies=s.collection.listen.copies
+        check(Collection.upgrade(s,"listen",revision),"Mejora legal al nivel "..(level+1))
+        check(s.gold==gold-view.goldRequired and s.collection.listen.copies==copies-2*level,"Descuento exacto")
+        check(not Collection.upgrade(s,"listen",revision),"Pulsación duplicada con revisión antigua se rechaza")
+        total=total+2*level;spent=spent+view.goldRequired
+        local effect=Collection.view(s,"listen").effect
+        check(effect.love==0 and effect.trust==1+math.floor(level/2),"Solo escala la confianza de Escuchar")
+    end
+    check(total==91 and s.collection.listen.copies==0,"91 copias totales para nivel 10")
+    check(spent==225,"Coste total de oro de una carta básica: 225")
+    for index,class in ipairs({"basic","intermediate","advanced","special","ultimate"}) do
+        for level=1,9 do check(Config.goldRequired(level,class)==5*level*index,"Coste configurable de oro por clase y nivel") end
+    end
+    for id,spec in pairs(Config.combat) do
+        local previous=Collection.view(s,id,1).combatEffect
+        for level=2,10 do
+            local effect=Collection.view(s,id,level).combatEffect
+            for _,stat in ipairs({"damage","shield","heal"}) do
+                if spec[stat] then check(effect[stat]>=previous[stat] and effect[stat]<=spec[stat][2],"Progresión monótona y acotada: "..id.."/"..stat);end
+            end
+            previous=effect
+        end
+    end
+    check(Collection.view(s,"listen").copiesRequired==0 and not Collection.upgrade(s,"listen",s.economy.revision),"Nivel 10 no pide más copias")
+    check(Json.encode(s.deck)==deck,"Mejorar no destruye ni sustituye carta equipada")
+    local penalty=Collection.socialEffects("light_joke",10,{love=-2,trust=-3})
+    check(penalty.love==-2 and penalty.trust==-3,"Penalización contextual no se multiplica")
+    for _,id in ipairs({"staff_strike","simple_cut","stone_throw","push","coordinated_attack"}) do
+        local view=Collection.view(s,id)
+        check(view.combatEffect.damage>=1 and view.combatEffect.damage<=3,"Daño físico inicial pequeño")
+    end
+    check(Collection.view(s,"water_cannon",10).combatEffect.damage==250,"Definitiva llega a 250")
+    check(Collection.view(s,"staff_strike",10).combatEffect.damage<30,"Básica tiene otra curva")
+    check(Collection.view(s,"heal",10).combatEffect.heal==10 and Collection.view(s,"earth_wall",10).combatEffect.shield==18,"Curación y defensa acotadas")
+    check(Collection.view(s,"focus",10).combatEffect.mana==Collection.view(s,"focus",1).combatEffect.mana,"Recuperación de recursos no escala")
+    local noFunds=Save.newSession();Collection.grant(noFunds,"listen",3);noFunds.gold=0
+    check(not Collection.upgrade(noFunds,"listen",0) and noFunds.collection.listen.copies==2,"Oro insuficiente no gasta copias")
+    local r=Save.newSession()
+    Events.apply(r,"one",{character="roxy",love=7,trust=8})
+    Events.apply(r,"two",{character="roxy",love=5,trust=5})
+    check(r.relationships.roxy.love==75 and r.relationships.roxy.trust==75,"Suma de todas las fuentes limitada a +10")
+    local last=r.journal[#r.journal]
+    check(last.love==3 and last.trust==2,"Se registra el valor realmente aplicado")
+    Events.apply(r,"penalty",{character="roxy",love=-5,trust=-3})
+    Events.apply(r,"more",{character="roxy",love=9,trust=9})
+    check(r.relationships.roxy.love==70 and r.relationships.roxy.trust==72,"Penalizaciones no restauran presupuesto")
+    Events.apply(r,"wife",{character="eris",love=3,trust=4})
+    check(Budget.ensure(r).eris.love==3,"Cada esposa tiene su propio límite")
+    r.day=2;require("src.systems.daily").ensure(r)
+    check(Budget.preview(r,"roxy",{love=5}).love==5,"Límite se reinicia al día siguiente")
+    local shop=Save.newSession();Events.apply(shop,"starter_gift",{starter=true});shop.rewardQueue={}
+    local rev=shop.economy.revision
+    check(Economy.buy(shop,"listen",rev,5),"Compra de cinco copias")
+    check(shop.collection.listen.copies==5 and shop.gold==110,"Precio y cantidad exactos")
+    check(not Economy.buy(shop,"listen",rev,5),"Compra repetida bloqueada")
+    check(not shop.rewardQueue[1].newCards.listen and shop.rewardQueue[1].counts.listen==5,"Presentación de duplicados sin falso desbloqueo")
+    check(not Economy.buy(shop,"water_cannon",shop.economy.revision),"No vende cartas bloqueadas")
+    check(Economy.buy(shop,"study_book",shop.economy.revision),"Comprar libro")
+    check(Economy.use(shop,"study_book","listen",shop.economy.revision) and shop.collection.listen.copies==8,"Libro entrega tres copias y se consume")
+    check(not Economy.use(shop,"study_book","listen",shop.economy.revision),"Libro no reutilizable")
+    check(Economy.buy(shop,"magic_material",shop.economy.revision),"Comprar material")
+    check(Economy.use(shop,"magic_material",nil,shop.economy.revision) and shop.externalEnergy==4,"Material mejora reserva finita")
+    check(Economy.buy(shop,"battle_preparation",shop.economy.revision),"Preparar enfrentamiento")
+    check(not Economy.buy(shop,"battle_preparation",shop.economy.revision),"Preparación no acumulable")
+    s.rewardQueue={};s.checkpoint="day1_agenda"
+    local restored=assert(Save.validate(clone(s)))
+    check(restored.collection.listen.level==10 and restored.gold==s.gold and restored.economy.revision==s.economy.revision,"Colección y economía persisten")
+    check(Save.write(s),"Guardar progresión en disco")
+    check(assert(Save.load()).collection.listen.level==10,"Cargar nivel 10 desde disco")
+    local bad=clone(s);bad.gold=-1;check(not Save.validate(bad),"Rechaza saldo negativo")
+    bad=clone(s);bad.collection.listen.level=11;check(not Save.validate(bad),"Rechaza nivel 11")
+    bad=clone(s);bad.economy.purchases.day1_listen=true;check(not Save.validate(bad),"Rechaza existencias no numéricas")
+    bad=clone(s);bad.daily.relationship_gains="invalid";check(not Save.validate(bad),"Rechaza presupuesto diario malformado sin abortar")
+    check(not Economy.grant(s,0/0,"invalid"),"Rechaza oro no finito sin mutar el saldo")
+    local v4=clone(shop);v4.version=4;v4.collection=nil;v4.economy=nil;v4.gold=nil
+    local migrated=assert(Save.validate(v4))
+    check(migrated.version==5 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
+    bad=clone(v4);bad.daily="invalid";check(not Save.validate(bad),"Rechaza estado diario v4 inválido durante migración")
+    local c=Save.newSession();Events.apply(c,"starter_gift",{starter=true})
+    c.checkpoint="day1_tutorial";c.events.tutorial_completed=true
+    Collection.grant(c,"staff_strike",6);c.gold=1000
+    Collection.upgrade(c,"staff_strike",c.economy.revision);Collection.upgrade(c,"staff_strike",c.economy.revision)
+    local context={enemyId="mana_anomaly",tutorial=true,day=1,combatDeck=c.combatDeck,unlocked=c.unlocked,curse=c.curse,externalEnergy=0,cardLevels=Collection.levels(c)}
+    c.combat=Combat.new(c.deck,context,function() return 11 end)
+    check(Combat.card("staff_strike",c.combat).effects.damage>Combat.card("staff_strike").effects.damage,"Nivel aumenta daño real del combate")
+    check(Combat.play(c.combat,1),"Ataque mejorado ejecutable")
+    local loaded=assert(Save.validate(clone(c)))
+    check(loaded.combat and loaded.combat.enemy.hp==c.combat.enemy.hp,"Replay de combate conserva niveles y daño")
+    check(not Collection.upgrade(c,"staff_strike",c.economy.revision),"No altera estadísticas durante un combate")
+    local Cards=require("src.systems.cards")
+    local Memory=require("src.systems.dialogue_memory")
+    local Resolver=require("src.systems.dialogue_resolver")
+    local social,definition=require("tests.dialogue_branching").fixture("encounter_eris")
+    Collection.ensure(social).encourage.level=9
+    Events.apply(social,"prior_attention",{character="eris",love=7,trust=8})
+    social.encounter=Cards.new(social.deck,Resolver.context(social,definition),function(n)return n end)
+    local function indexOf(enc,id) for i,value in ipairs(enc.hand) do if value==id then return i end end end
+    local action=assert(Cards.play(social.encounter,assert(indexOf(social.encounter,"encourage"))))
+    check(action.chemistry==5 and action.trust==5 and action.projectedLove==3 and action.projectedTrust==2,"Carta mejorada respeta el presupuesto compartido con actividades")
+    social.encounterReview=true
+    local pending=assert(Save.validate(clone(social)))
+    check(pending.encounter and pending.encounter.log[1].projectedLove==3,"Carga de reacción pendiente conserva nivel y límite")
+    local reaction=pending.encounter.log[1]
+    check(Memory.commit(pending,reaction,pending.checkpoint,1) and reaction.actualLove==3 and reaction.actualTrust==2,"Reacción concede el valor realmente disponible")
+    local afterReaction=assert(Save.validate(clone(pending)))
+    check(afterReaction.encounter and not Memory.commit(afterReaction,afterReaction.encounter.log[1],afterReaction.checkpoint,1),"Cargar reacción ya vista no vuelve a premiar")
+    -- Emulate a real v4 action using its original authored deltas, then load it
+    -- with the v5 code. Original source files are never rewritten.
+    local old,oldDef=require("tests.dialogue_branching").fixture("encounter_eris")
+    Events.apply(old,"old_prior_attention",{character="eris",love=7,trust=8})
+    local oldContext=Resolver.context(old,oldDef);oldContext.legacyProgression=true
+    old.encounter=Cards.new(old.deck,oldContext,function(n)return n end)
+    old.encounter.memory.legacyBudget=true
+    local oldResult=assert(Cards.play(old.encounter,assert(indexOf(old.encounter,"encourage"))))
+    oldResult.progressionVersion=nil
+    check(oldResult.chemistry==5 and oldResult.trust==3,"Fixture usa deltas históricos de v4")
+    old.legacyBudget=true;Memory.commit(old,oldResult,old.checkpoint,1);old.legacyBudget=nil
+    old.version=4;old.collection=nil;old.gold=nil;old.economy=nil;old.encounterReview=true
+    local original=assert(Json.encode(old));local migration=assert(Save.validate(clone(old)))
+    check(migration.encounter and migration.encounter.log[1].actualLove==5 and migration.relationships.eris.love==77,"v4 conserva reacción y relación histórica")
+    check(migration.daily.relationship_gains.eris.love==10 and not migration.encounter.context.legacyProgression,"Nuevas acciones usan presupuesto y reglas v5")
+    local again=assert(Save.validate(clone(migration)))
+    check(again.encounter and again.encounter.log[1].actualLove==5,"Segunda carga no reinterpreta una respuesta histórica")
+    local newResult=assert(Cards.play(again.encounter,assert(indexOf(again.encounter,"be_honest"))))
+    check(newResult.progressionVersion==1 and newResult.projectedTrust==0,"La acción nueva respeta ganancias históricas mayores a diez")
+    Memory.commit(again,newResult,again.checkpoint,2)
+    local mixed=assert(Save.validate(clone(again)))
+    check(mixed.encounter and mixed.encounter.log[2].actualTrust==0,"Replay mixto v4/v5 conserva el presupuesto y los deltas nuevos")
+    local identity=love.filesystem.getIdentity()
+    love.filesystem.setIdentity("cartas_del_destino_v5_migration_tests")
+    love.filesystem.remove(Save.filename);love.filesystem.remove(Save.backup)
+    assert(love.filesystem.write("campaign-v4.json",original))
+    local disk=assert(Save.load());check(disk.version==5 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
+    check(Save.write(disk) and love.filesystem.read("campaign-v4.json")==original,"Escribir v5 conserva exactamente el archivo v4")
+    love.filesystem.setIdentity(identity)
+    local costs=Collection.view(s,"water_cannon",10)
+    check(costs.manaCost==12 and costs.hpCost==6 and costs.perBattle==1,"Definitiva potente tiene coste y uso único")
+    local powerful=Combat.new(c.deck,{enemyId="mana_anomaly",tutorial=true,day=1,combatDeck=c.combatDeck,
+        unlocked=c.unlocked,curse=c.curse,cardLevels={staff_strike=10,simple_cut=10,push=10,stone_throw=10,coordinated_attack=10}},function()return 11 end)
+    for _=1,30 do if powerful.finished then break end;Combat.endTurn(powerful) end
+    check(powerful.outcome=="defeat","Un mazo de nivel 10 todavía puede perder si ignora al enemigo")
+    print("Economy/levels: "..count.." checks passed (91 copies, ten levels, costs, caps, shop, replay and persistence).")
+    return count
+end
+return Suite
+````
+
+## tests/economy_ui.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/economy_ui.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+    local Save=require("src.systems.save")
+    local Events=require("src.systems.events")
+    local Collection=require("src.systems.card_collection")
+    local Json=require("src.systems.json")
+    local Font=require("src.ui.font")
+    local saved={write=Save.write,load=Save.load,exists=Save.exists,readOptions=Save.readOptions,legacyInfo=Save.legacyInfo}
+    local stored
+    Save.write=function(s) stored=assert(Json.encode(assert(Save.validate(s))));return true end
+    Save.load=function() return stored and Save.validate(assert(Json.decode(stored))) end
+    Save.exists=function() return stored~=nil end
+    Save.legacyInfo=function() return nil end
+    Save.readOptions=function() return {muted=true,textAnimation=false,reducedMotion=false} end
+    local count=0
+    local function check(ok,msg) assert(ok,msg);count=count+1 end
+    local ok,err=xpcall(function()
+        local app=require("src.app").new()
+        app.session=Save.newSession();Events.apply(app.session,"starter_gift",{starter=true})
+        Events.apply(app.session,"upgrade_fixture",{copies={listen=20,water_cannon=91},gold=10000})
+        app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
+        local sounds={};local audio=app.audio.effect
+        app.audio.effect=function(self,id) sounds[id]=(sounds[id] or 0)+1;return audio(self,id) end
+        local function draw() app.toastTime=0;app:draw() end
+        local function settle() app:update(2);draw() end
+        local function capture(name)
+            draw();local pixels=app.canvas:newImageData();local bytes=pixels:encode("png")
+            local f=assert(io.open(love.filesystem.getSource().."/tests/artifacts/economy-"..name..".png","wb"));f:write(bytes:getString());f:close();pixels:release();bytes:release()
+        end
+        local function click(label)
+            draw()
+            for _,b in ipairs(app.manager.current.buttons) do
+                if b.label==label then check(not b.disabled,"Botón activo: "..label);b.action();return end
+            end
+            error("Botón ausente: "..label)
+        end
+        app:switch(require("src.screens.upgrades").new(app,"listen"));settle();capture("before")
+        local screen=app.manager.current;local gold=app.session.gold;local copies=app.session.collection.listen.copies
+        click("Mejorar");screen:improve();screen:update(.25);draw();capture("flash")
+        check(app.session.gold==gold and app.session.collection.listen.level==1,"Elevación previa al gasto")
+        screen:update(.25);draw();capture("after")
+        check(app.session.collection.listen.level==2 and app.session.collection.listen.copies==copies-2 and app.session.gold==gold-5,"Un único gasto al confirmar animación")
+        screen:update(3);screen:improve();screen:update(1)
+        check(app.session.collection.listen.level==2 and sounds.upgrade==1,"Pulsaciones rápidas no repiten mejora ni sonido")
+        local loaded=assert(Save.load());check(loaded.collection.listen.level==2 and loaded.gold==gold-5,"Carga conserva mejora aplicada")
+        click("Continuar");click("Mejorar");screen:update(1)
+        check(app.session.collection.listen.level==3 and Collection.view(app.session,"listen").effect.trust==2,"Interfaz aplica incremento real del siguiente escalón")
+        click("Continuar");click("Tienda");settle();capture("shop")
+        click("Comprar 5")
+        check(app.session.rewardQueue[1].counts.listen==5,"Tienda genera recompensa de cinco duplicados")
+        app:resume();settle();capture("duplicate")
+        check(app.manager.current.kind=="reward" and not app.manager.current:isNew(),"Repetida tiene presentación independiente")
+        local originalFont=Font.draw;local rendered={}
+        Font.draw=function(text,...) rendered[#rendered+1]=tostring(text);return originalFont(text,...) end
+        draw();Font.draw=originalFont
+        check(table.concat(rendered," "):find("¡CARTA REPETIDA!",1,true),"Aviso visible de repetida")
+        while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
+        for _=1,9 do check(Collection.upgrade(app.session,"water_cannon",app.session.economy.revision),"Mejora definitiva financiada por fixture") end
+        app:switch(require("src.screens.upgrades").new(app,"water_cannon"));settle();capture("maximum")
+        for _,b in ipairs(app.manager.current.buttons) do if b.label=="Nivel máximo" then check(b.disabled,"Nivel máximo deshabilitado") end end
+        app.session.gold=0
+        app:switch(require("src.screens.upgrades").new(app,"light_joke"));settle();capture("missing")
+        for _,b in ipairs(app.manager.current.buttons) do if b.label=="Mejorar" then check(b.disabled,"Requisitos insuficientes deshabilitan mejora") end end
+        app.audio:stop()
+    end,debug.traceback)
+    for key,value in pairs(saved) do Save[key]=value end
+    assert(ok,err)
+    print("Economy UI: "..count.." checks passed; seven real-renderer captures, animation, duplicates and double-spend prevention.")
 end
 return Suite
 ````
@@ -16347,7 +17430,7 @@ function Suite.run()
         check(Events.apply(s,"promise_"..id,{character=id,love=3,trust=3,promise={id="return",status="kept"}}),"Promesa cumplida "..id)
     end
     local s=Save.newSession()
-    check(s.version==4 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
+    check(s.version==5 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
     check(#s.deck==0 and #s.combatDeck==0 and next(s.unlocked)==nil,"Sin cartas antes de Nanahoshi")
     for _,id in ipairs(names) do
         check(s.relationships[id].love==65 and s.relationships[id].trust==65,"Matrimonio comienza positivamente")
@@ -16473,7 +17556,7 @@ function Suite.run()
     end)
     love=oldLove
     assert(tested,err)
-    print("Marriages/save v4: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
+    print("Marriages/save v5: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
     return checked
 end
 return Suite
@@ -16907,7 +17990,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==4,"Sin apariencia global persistida en el formato diario")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==5,"Sin apariencia global persistida en el formato de progresión")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2
@@ -17543,7 +18626,9 @@ function Suite.run()
             capture("agenda-day"..app.session.day)
             if app.session.daily.active_activity then
                 capture("daily-activity")
-                click(require("src.data.activities").byId[app.session.daily.active_activity.id].choices[1].label.." (+2 amor / +1 conf.)")
+                local def=require("src.data.activities").byId[app.session.daily.active_activity.id]
+                local delta=require("src.systems.relationship_budget").preview(app.session,def.character,def.choices[1].effects)
+                click(def.choices[1].label.." (+"..delta.love.." amor / +"..delta.trust.." conf.)")
             elseif Daily.remaining(app.session)>0 and not app.session.daily.activities_locked then
                 local id=({"sylphiette","roxy","eris"})[app.session.daily.interactions_used+1]
                 check(Daily.startActivity(app.session,"time_"..id)~=nil,"Agenda permite repetir actividades")
@@ -17653,13 +18738,16 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 -- Active marriage-continuity suite; previous fixtures remain in legacy_run_v1.lua.
 return function()
     io.stdout:setvbuf("no")
-    love.filesystem.setIdentity("cartas_del_destino_v4_tests")
     local group=os.getenv("DATESIM_TEST_GROUP")
-    if group=="daily" or group=="daily-ui" then
+    love.filesystem.setIdentity("cartas_del_destino_v5_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
+    elseif group=="narrative" then require("tests.curse_social").run();require("tests.dialogue_branching").run();require("tests.dialogue_visual").run();return
+    elseif group=="combat-core" then require("tests.combat").run();require("tests.combat_balance").run();require("tests.training").run();return
+    elseif group=="daily" or group=="daily-ui" then
         require("tests.daily").run()
         if group=="daily-ui" then require("tests.daily_ui").run() end
         return
-    elseif group=="campaign" then
+    elseif group=="campaign" or group=="economy-campaign" then
         require("tests.campaign").run()
         return
     elseif group=="training" or group=="training-ui" then
@@ -17676,6 +18764,8 @@ return function()
     require("tests.portraits").run()
     require("tests.audio_options").run()
     require("tests.marriages").run()
+    require("tests.economy").run()
+    require("tests.economy_ui").run()
     require("tests.daily").run()
     require("tests.daily_ui").run()
     require("tests.combat").run()
@@ -18466,7 +19556,7 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "guardado v4, animaciones y audio sintetizado.\n\n"
+          "guardado v5, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

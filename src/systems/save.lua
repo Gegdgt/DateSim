@@ -8,7 +8,9 @@ local Chapters=require("src.data.chapters")
 local Progression=require("src.systems.progression")
 local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
-local Save={version=4,filename="campaign-v4.json",backup="campaign-v4.backup.json",optionsFile="options.json",
+local Collection=require("src.systems.card_collection")
+local Economy=require("src.systems.economy")
+local Save={version=5,filename="campaign-v5.json",backup="campaign-v5.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -50,6 +52,7 @@ function Save.newSession(config)
         curse=require("src.systems.curse").new(),clues={},inventory={},externalEnergy=0,
         journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},events_by_day={},options=Options.normalize()}
     Daily.ensure(s)
+    Collection.ensure(s);Economy.ensure(s)
     return s
 end
 
@@ -58,6 +61,33 @@ function Save.validate(input)
     if not next(input) then return nil,"El guardado está vacío." end
     if input.version==1 or input.version==nil then
         return nil,"Esta partida pertenece a la continuidad anterior. Inicia una nueva campaña compatible; el archivo original se conserva."
+    end
+    if input.version==4 then
+        local encoded,err=Json.encode(input)
+        if not encoded then return nil,err end
+        input=Json.decode(encoded)
+        input.version=5;input.collection=nil;input.gold=nil;input.economy=nil
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.economySource="campaign-v4.json"
+        if type(input.daily)=="table" then
+            input.daily.relationship_gains={}
+            for _,id in ipairs(Characters.romanceIds) do input.daily.relationship_gains[id]={love=0,trust=0} end
+            for _,entry in ipairs(type(input.journal)=="table" and input.journal or {}) do
+                local gains=type(entry)=="table" and entry.day==input.day and input.daily.relationship_gains[entry.character]
+                if gains then for _,field in ipairs({"love","trust"}) do gains[field]=math.min(10,gains[field]+math.max(0,tonumber(entry[field]) or 0)) end end
+            end
+        end
+        local encounter=input.encounter
+        if type(encounter)=="table" and type(encounter.initialMemory)=="table" then
+            local memory=encounter.initialMemory
+            memory.relationship_gains={}
+            for _,id in ipairs(Characters.romanceIds) do memory.relationship_gains[id]={love=0,trust=0} end
+            for _,entry in ipairs(type(input.journal)=="table" and input.journal or {}) do
+                local gains=type(entry)=="table" and entry.day==input.day and memory.relationship_gains[entry.character]
+                if gains and type(memory.events)=="table" and memory.events[entry.eventId] then
+                    for _,field in ipairs({"love","trust"}) do gains[field]=math.min(10,gains[field]+math.max(0,tonumber(entry[field]) or 0)) end
+                end
+            end
+        end
     end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
@@ -115,6 +145,33 @@ function Save.validate(input)
         for _,id in ipairs(CardData.starterDeck) do s.unlocked[id]=true end
         for _,id in ipairs(CombatData.starterDeck or {}) do s.unlocked[id]=true end
     end
+    Collection.ensure(s)
+    for id,entry in pairs(s.collection) do
+        local saved=type(input.collection)=="table" and input.collection[id]
+        if type(saved)=="table" then
+            if saved.id~=id or type(saved.level)~="number" or saved.level%1~=0 or saved.level<1 or saved.level>10
+                or type(saved.copies)~="number" or saved.copies%1~=0 or saved.copies<0 or saved.copies>1000000 then return nil,"Colección de cartas inválida." end
+            entry.level,entry.copies=saved.level,saved.copies
+            entry.unlocked=s.unlocked[id]==true or saved.unlocked==true
+            if entry.unlocked then s.unlocked[id]=true end
+        end
+    end
+    local EconomyData=require("src.data.economy")
+    if input.gold~=nil and (type(input.gold)~="number" or input.gold%1~=0 or input.gold<0 or input.gold>EconomyData.maxGold) then return nil,"Saldo de oro inválido." end
+    s.gold=input.gold or EconomyData.startingGold
+    if type(input.economy)=="table" then
+        local e=input.economy
+        s.economy.revision=math.floor(number(e.revision,0,0,1000000))
+        for key,quantity in pairs(map(e.purchases,false)) do
+            if type(quantity)~="number" or quantity%1~=0 or quantity<0 or quantity>30 then return nil,"Existencias de tienda inválidas." end
+            s.economy.purchases[key]=quantity
+        end
+        s.economy.nextBattleShield=e.nextBattleShield==EconomyData.items.battle_preparation.shield and e.nextBattleShield or 0
+        for id in pairs(EconomyData.items) do s.economy.items[id]=math.floor(number(type(e.items)=="table" and e.items[id],0,0,10000)) end
+        for id,receipt in pairs(type(e.transactions)=="table" and e.transactions or {}) do
+            if type(id)=="string" and #id<=150 and type(receipt)=="table" then s.economy.transactions[id]=map(receipt,false) end
+        end
+    end
     if Cards.validateDeck(input.deck,s.unlocked) then
         s.deck=copyList(input.deck)
     elseif Cards.validateDeck(CardData.starterDeck,s.unlocked) then s.deck=copyList(CardData.starterDeck) end
@@ -128,10 +185,14 @@ function Save.validate(input)
     for _,reward in ipairs(type(input.rewardQueue)=="table" and input.rewardQueue or {}) do
         if type(reward)=="table" and type(reward.id)=="string" and type(reward.eventId)=="string"
             and s.events[reward.eventId] and not queued[reward.id] and #s.rewardQueue<128 then
-            local entry={id=reward.id,eventId=reward.eventId,presenter=Characters.byId[reward.presenter] and reward.presenter or "nanahoshi",cards={}}
+            local entry={id=reward.id,eventId=reward.eventId,presenter=Characters.byId[reward.presenter] and reward.presenter or "nanahoshi",cards={},counts={},newCards={}}
             local seen={}
             for _,id in ipairs(type(reward.cards)=="table" and reward.cards or {}) do
-                if s.unlocked[id] and not seen[id] then entry.cards[#entry.cards+1]=id; seen[id]=true end
+                if s.unlocked[id] and not seen[id] then
+                    entry.cards[#entry.cards+1]=id; seen[id]=true
+                    entry.counts[id]=math.floor(number(type(reward.counts)=="table" and reward.counts[id],1,1,100000))
+                    entry.newCards[id]=reward.newCards==nil or (type(reward.newCards)=="table" and reward.newCards[id]==true) or nil
+                end
             end
             if #entry.cards>0 then
                 entry.presentationPage=math.floor(number(reward.presentationPage,1,1,#entry.cards))
@@ -168,6 +229,18 @@ function Save.validate(input)
         s.day=Chapters.get(s.checkpoint).day; s.dialogueIndex=1
         s.recoveryNotice="El mazo guardado estaba incompleto. Nanahoshi revisará la entrega; las decisiones permanecen registradas."
     end
+    -- Restore the daily budget before reconstructing any pending reaction.
+    local dailyOk,dailyError=Daily.restore(s,input)
+    if not dailyOk then return nil,dailyError end
+    if s.daily.relationship_gains~=nil and type(s.daily.relationship_gains)~="table" then return nil,"Presupuesto de relaciones inválido." end
+    local gains=require("src.systems.relationship_budget").ensure(s)
+    for _,id in ipairs(Characters.romanceIds) do
+        if type(gains[id])~="table" then return nil,"Presupuesto de relaciones inválido." end
+        for _,field in ipairs({"love","trust"}) do
+            local value=gains[id][field]
+            if type(value)~="number" or value~=value or value<0 or value>10 then return nil,"Límite diario de relaciones inválido." end
+        end
+    end
     local definition=Progression.encounter(s,s.checkpoint)
     if definition then
         local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
@@ -186,6 +259,7 @@ function Save.validate(input)
         if input.combatPreparation==true then s.combatPreparation=true end
         if not s.combatPreparation and type(input.combat)=="table" then
             s.combat=Combat.restore(input.combat,s.deck,{character=definition.character,tutorial=definition.tutorial,
+                cardLevels=Collection.levels(s),preparationShield=type(input.combat.context)=="table" and input.combat.context.preparationShield,
                 enemyId=definition.enemyId,unlocked=s.unlocked,combatDeck=s.combatDeck,tacticalContext=definition.tacticalContext,curse=s.curse,externalEnergy=s.externalEnergy,
                 day=s.day,difficulty=definition.difficulty})
         end
@@ -205,8 +279,6 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
-    local dailyOk,dailyError=Daily.restore(s,input)
-    if not dailyOk then return nil,dailyError end
     for day=1,7 do
         s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
     end
@@ -242,7 +314,7 @@ function Save.write(session)
     end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v4.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v5.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -250,7 +322,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v4.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v5.tmp.json")
     return true
 end
 
@@ -264,6 +336,14 @@ function Save.load()
     if backup then
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
+    end
+    for _,path in ipairs({"campaign-v4.json","campaign-v4.backup.json"}) do
+        local previous=readFile(path)
+        local decoded=previous and Json.decode(previous)
+        if type(decoded)=="table" and decoded.version==4 then
+            local session=Save.validate(decoded)
+            if session then return session,"Campaña v4 recuperada con cartas de nivel 1. El archivo original se conserva; se guardará en v5." end
+        end
     end
     return nil,err or "No hay guardado válido disponible."
 end

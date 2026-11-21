@@ -49,7 +49,7 @@ function Editor.new(app,returnTo)
         self:button("<",324,213,38,24,function() self.page=(self.page-2)%pages+1; self.selected=(self.page-1)*8+1 end)
         self:text("Página "..self.page.."/"..pages,373,221,178,P.muted)
         self:button(">",576,213,38,24,function() self.page=self.page%pages+1; self.selected=(self.page-1)*8+1 end)
-        local c=Combat.card(self.catalog[self.selected]); local old=Combat.card(self.draft[self.slot])
+        local c=Combat.card(self.catalog[self.selected],app.session); local old=Combat.card(self.draft[self.slot],app.session)
         self:text(c.name..": "..Combat.describe(c),18,254,604,P.gold)
         self:text("Actual: "..(old and (old.name.." · "..Combat.describe(old)) or "Vacía"),18,276,604,P.muted)
         local original=Data.byId[c.id] or Social.byId[c.id]

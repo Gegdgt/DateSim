@@ -1,4 +1,29 @@
-# Verificación de la progresión diaria — Fase 1
+# Verificación de cartas y economía — Fase 2
+
+Fecha: **21 de noviembre de 2026**. Ejecución real con **LÖVE 11.5 / LuaJIT**, renderizador y audio. Se conservaron los 40 IDs, los mazos y todos los PNG y ASE originales; `git diff --check` no detecta errores de formato.
+
+La validación se realizó en la suite general y en grupos focalizados. La ejecución general completó los módulos de recursos, sistemas, narrativa y **34 campañas**; al encontrar expectativas antiguas de valores fijos en las pruebas de interfaz, se actualizaron y se ejecutó nuevamente el grupo gráfico completo. Los últimos grupos `economy-ui`, `economy-campaign`, `narrative` y `ui` terminaron con **`ALL TESTS PASSED`, salida 0**. Los registros locales están en `tests/artifacts/economy-*.log`.
+
+| Cobertura verificada | Resultado |
+| --- | --- |
+| Dominio de economía, niveles, migración y persistencia | 398 comprobaciones |
+| Interfaz de mejora, sonido, duplicados y pulsaciones rápidas | 25 comprobaciones; 7 capturas |
+| Campañas narrativas sin compras obligatorias | 33 031 comprobaciones; 34 recorridos, cinco finales |
+| Campaña adicional con compras y mejoras reales | 939 comprobaciones; dos cartas N10 |
+| Recorrido gráfico completo | 1 239 comprobaciones; 691 pasos |
+| Combate gráfico e integración | 44 + 24 comprobaciones; 22 capturas |
+| Narrativa focalizada tras migración | 73 + 2 788 + 277 comprobaciones; 41 capturas de diálogos |
+| Combate y equilibrio existentes | 120 + 288 victorias simuladas |
+
+La campaña de especialización obtuvo **2 007 de oro**, mejoró **Bastón y Dar ánimo a nivel 10** y terminó con **1 211 de oro**. No se inyectaron recursos ni relaciones para alcanzar esos niveles. Su estado serializado ocupó **222 567 bytes**, dentro del límite de lectura de guardados. Esta prueba verifica viabilidad económica; el ajuste subjetivo de dificultad y preferencias requiere sesiones con jugadores.
+
+Se verificaron los costes de todas las clases, las 91 copias totales, las curvas monótonas de daño/escudo/curación, el máximo de nivel 10, la conservación del mazo, el gasto único y los requisitos insuficientes. Las pruebas de relaciones incluyen +5 reducido a +3, penalizaciones sin recuperar margen, límites independientes por esposa y reinicio de jornada. Un mazo N10 todavía pierde si ignora al enemigo.
+
+La migración carga un archivo v4 desde disco, continúa una conversación ya iniciada y escribe v5 **sin modificar los bytes de v4**. También se comprueban conversaciones con acciones históricas y nuevas, respuestas pendientes, presupuestos agotados, guardados malformados y replay de combate con niveles. Los formatos v1/v2/v3 mantienen su importación explícita anterior.
+
+Capturas inspeccionadas: [mejora](../tests/artifacts/economy-after.png), [nivel máximo y costes](../tests/artifacts/economy-maximum.png), [tienda](../tests/artifacts/economy-shop.png), [duplicados](../tests/artifacts/economy-duplicate.png) y [encargos](../tests/artifacts/daily-favors.png). Los artefactos de prueba están excluidos de Git. La identidad de pruebas está separada de la del jugador; cada grupo tiene su propia identidad.
+
+## Registro anterior — Fase 1
 
 Fecha: **21 de noviembre de 2026**. Suite completa ejecutada con **LÖVE 11.5 / LuaJIT**, gráficos y audio reales. Resultado: **40 123 comprobaciones en 21 módulos, `ALL TESTS PASSED`, salida 0**, en una única ejecución final.
 

@@ -63,11 +63,15 @@ function Daily.resolveActivity(session,choiceId)
             local effect=copy(choice.effects)
             effect.character=def.character; effect.context="activity"; effect.text=choice.result
             effect.sharedMoment=active.instance_id
+            local economy=require("src.data.economy")
+            effect.gold=economy.rewards.activity
+            effect.copies={[economy.activityCopies[def.character]]=1}
+            local delta=require("src.systems.relationship_budget").preview(session,def.character,effect)
             local applied,err=Events.apply(session,active.instance_id,effect)
             if not applied and err then return nil,err end
             d.activities_completed[#d.activities_completed+1]={id=active.id,instance_id=active.instance_id,choice=choiceId,character=def.character}
             d.active_activity=nil
-            return choice.result
+            return choice.result.." (+"..delta.love.." amor / +"..delta.trust.." conf. / +"..effect.gold.." oro)"
         end
     end
     return nil,"Elige una de las opciones de la actividad."

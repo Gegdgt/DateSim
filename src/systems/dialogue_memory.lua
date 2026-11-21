@@ -1,6 +1,7 @@
 local Relationships=require("src.systems.relationships")
 local Events=require("src.systems.events")
 local Affinity=require("src.systems.affinity")
+local Budget=require("src.systems.relationship_budget")
 local Memory={}
 local function copy(value)
     if type(value)~="table" then return value end
@@ -19,6 +20,7 @@ function Memory.capture(session)
     local out={day=session.day or 1,checkpoint=session.checkpoint,relationships=Relationships.new(),affinities=Affinity.normalize(session.affinities),
         events=map(session.events),decisions=map(session.decisions),unlocked=map(session.unlocked),
         curse=copy(session.curse or {}),selectedCompanion=session.selectedCompanion,
+        cardLevels=require("src.systems.card_collection").levels(session),relationship_gains=copy(Budget.ensure(session)),
         dialogueMemory={used=map(session.dialogueMemory and session.dialogueMemory.used)}}
     for id,r in pairs(out.relationships) do
         local value=(session.relationships or {})[id] or r
@@ -49,7 +51,7 @@ function Memory.commit(session,result,scene,turn)
     for _,flag in ipairs(result.flags or {}) do
         effect.batch[#effect.batch+1]={decision=flag,value=true,text=effect.text}
     end
-    local delta=affinity and Affinity.preview(session,result.character,result) or Relationships.preview(session.relationships,result.character,effect)
+    local delta=affinity and Affinity.preview(session,result.character,result) or Budget.preview(session,result.character,effect)
     local applied,err=Events.apply(session,key,effect)
     if not applied then return false,err end
     if affinity then

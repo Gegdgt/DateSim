@@ -72,7 +72,7 @@ function Suite.run(app)
         check(Json.encode(screen.enc)==before and screen.confirmReady,"Seleccionar con mouse inspecciona sin jugar")
         capture("combat-02-selected")
         screen:keypressed("return")
-        check(screen.enc.enemy.hp==18 and screen.enc.energy==2 and screen.enc.player.mana==0,"Confirmar aplica cuatro daño y costes una sola vez")
+        check(screen.enc.enemy.hp==20 and screen.enc.energy==2 and screen.enc.player.mana==0,"Confirmar aplica dos de daño de nivel 1 y costes una sola vez")
         local revision=screen.enc.revision
         screen:keypressed("return");screen:keypressed("2");screen:keypressed("e")
         check(screen.enc.revision==revision,"Animación bloquea entradas repetidas")

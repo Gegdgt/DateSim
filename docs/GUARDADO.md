@@ -1,21 +1,23 @@
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 4**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 5**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v4.json` | Partida actual. |
-| `campaign-v4.backup.json` | Última partida anterior válida. |
-| `campaign-v4.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v5.json` | Partida actual. |
+| `campaign-v5.backup.json` | Última partida anterior válida. |
+| `campaign-v5.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
 ## Estado persistido
 
+La versión 5 añade `collection[id]={id,level,copies,unlocked}`, `gold`, `economy` (revisión, transacciones, stock por jornada, objetos y escudo preparado) y `daily.relationship_gains`. Tipo, efectos y costes se reconstruyen desde los catálogos. Las entregas guardan cantidades y distinguen primeros desbloqueos de duplicados. Las mejoras guardan el nivel y el gasto en la misma operación; la animación no vuelve a ejecutar transacciones al cargar.
+
 Incluye checkpoint, día y posición de diálogo; maldición y descubrimientos; pistas; inventario del antídoto; capacidad externa; relaciones y sus historiales; decisiones, misiones y enemigos vencidos; cartas adquiridas; ambos mazos; entregas pendientes y su página; estado del documento abierto; encuentros y combate.
 
-La versión 4 añade `daily` (espacios, reservas, visitas, actividades, encargo solicitado, eventos, recompensas y cierre), `pending_favors`, `daily_history` y `events_by_day`. Una actividad pendiente ya reservó su espacio: cargar no lo devuelve. El cierre registra el resumen antes de avanzar; las entregas y la atención usan claves por día y ejecución. [Esquema y reglas](FASE_1_ACTIVIDADES.md).
+La versión 4 introdujo `daily` (espacios, reservas, visitas, actividades, encargo solicitado, eventos, recompensas y cierre), `pending_favors`, `daily_history` y `events_by_day`. Una actividad pendiente ya reservó su espacio: cargar no lo devuelve. El cierre registra el resumen antes de avanzar; las entregas y la atención usan claves por día y ejecución. [Esquema y reglas](FASE_1_ACTIVIDADES.md).
 
 La restauración mantiene el bloqueo de voz y magia hasta que el inventario registre `antidoteUsed`. `documentState` conserva fase, tiempo transcurrido y página: una animación interrumpida continúa desde ese punto sin volver a premiar una lectura registrada. La pista `hitogami_letter` permanece disponible para releer desde el diario.
 
@@ -25,7 +27,7 @@ Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: 
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v4. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v5. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -33,7 +35,7 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-El motor social conserva su soporte de replay anterior, pero la campaña v4 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
+El motor social conserva su soporte de replay anterior, pero la campaña v5 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
@@ -41,11 +43,15 @@ Antes de escribir se normalizan los datos. El guardado anterior válido se copia
 
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
-Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v4. [Dificultad y límites](COMBATE.md).
+Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v5. [Dificultad y límites](COMBATE.md).
 
 ## Importación de partidas anteriores
 
-El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v4, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
+Si no hay v5 válido, **Continuar** busca `campaign-v4.json` y su respaldo. Migra la misma partida: conserva checkpoint, historia, matrimonios, mazos, actividades y encargos. Inicializa cartas adquiridas en nivel 1 y oro en 120; las ganancias de relaciones del día se reconstruyen desde el diario y se limitan a diez por estadística. El siguiente guardado escribe v5 y **no modifica v4**.
+
+Los registros sociales anteriores conservan sus efectos históricos durante el replay; las nuevas acciones usan niveles y presupuesto diario. Los combates en curso conservan sus reglas anteriores hasta terminar. Los nuevos guardan `context.progressionVersion=1`, niveles por ID y preparación inicial, además de los comandos existentes. Cambiar el nivel durante un encuentro está prohibido.
+
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v5, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
@@ -57,4 +63,4 @@ El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pa
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v4_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
+La suite general usa `cartas_del_destino_v5_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.

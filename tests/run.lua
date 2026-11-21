@@ -1,13 +1,16 @@
 -- Active marriage-continuity suite; previous fixtures remain in legacy_run_v1.lua.
 return function()
     io.stdout:setvbuf("no")
-    love.filesystem.setIdentity("cartas_del_destino_v4_tests")
     local group=os.getenv("DATESIM_TEST_GROUP")
-    if group=="daily" or group=="daily-ui" then
+    love.filesystem.setIdentity("cartas_del_destino_v5_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
+    elseif group=="narrative" then require("tests.curse_social").run();require("tests.dialogue_branching").run();require("tests.dialogue_visual").run();return
+    elseif group=="combat-core" then require("tests.combat").run();require("tests.combat_balance").run();require("tests.training").run();return
+    elseif group=="daily" or group=="daily-ui" then
         require("tests.daily").run()
         if group=="daily-ui" then require("tests.daily_ui").run() end
         return
-    elseif group=="campaign" then
+    elseif group=="campaign" or group=="economy-campaign" then
         require("tests.campaign").run()
         return
     elseif group=="training" or group=="training-ui" then
@@ -24,6 +27,8 @@ return function()
     require("tests.portraits").run()
     require("tests.audio_options").run()
     require("tests.marriages").run()
+    require("tests.economy").run()
+    require("tests.economy_ui").run()
     require("tests.daily").run()
     require("tests.daily_ui").run()
     require("tests.combat").run()

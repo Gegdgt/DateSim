@@ -23,6 +23,7 @@ return {
         defeat={loop=false,synth={notes={57,55,52,48,45},beat=.42}},
     },
     effects={
+        upgrade={notes={60,67,72,79,84,88},duration=.65,gain=.18},
         paper={notes={89,82,86,74},duration=.15,gain=.09},
         envelope_open={notes={74,78,82},duration=.22,gain=.1},
         revelation={notes={48,66,78,54},duration=.4,gain=.18},

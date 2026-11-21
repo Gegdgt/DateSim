@@ -58,7 +58,8 @@ function Overlays.new(app,kind)
                 local conflicts,broken=0,0
                 for _,value in pairs(r.pendingConflicts or {}) do if value then conflicts=conflicts+1 end end
                 for _,value in pairs(r.promises or {}) do if value=="broken" or (type(value)=="table" and value.status=="broken") then broken=broken+1 end end
-                self:text("Evento personal: "..(r.events.personal_resolution and "sí" or "pendiente").."\nConflictos: "..conflicts.."\nPromesas rotas: "..broken,x+10,183,176,P.ink)
+                local gains=require("src.systems.relationship_budget").ensure(app.session)[id]
+                self:text("Hoy: +"..gains.love.." amor / +"..gains.trust.." conf.\nLímite: +10 de cada uno\nConflictos: "..conflicts.." · Promesas: "..broken,x+10,183,176,P.ink)
                 local states={married="casados",stable="estable",strained="en tensión",reconciled="reconciliados",separated="separados",committed="comprometidos"}
                 self:text("Matrimonio: "..(states[r.marriageState] or "en curso"),x+10,241,176,P.muted)
             end

@@ -12,13 +12,25 @@ En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibi�
 
 Dispones de tres actividades libres al día. **Pasar tiempo** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
 
-En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida no vuelve a duplicarse.
+En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida entrega copias para mejorarla.
 
 **Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 1. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Cambios de ayer** permite volver a consultarlo.
 
 El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
 
 ## Conversar mediante cartas
+
+Cada esposa puede ganar hasta **+10 amor y +10 confianza por jornada**, sumando cartas, actividades, combates y eventos. El juego muestra los puntos realmente aplicados. Las pérdidas no restituyen el margen de ganancias del día.
+
+## Mejorar cartas y comprar suministros
+
+Abre **M → Mejorar**. Selecciona una carta para ver imagen, nivel, efectos actuales y siguientes, copias y oro. La primera copia desbloquea nivel 1; cada mejora desde nivel L consume `2 × L` duplicados más oro. Llegar a nivel 10 requiere 91 copias en total. **Mejorar** se deshabilita si falta algún recurso. La carta se eleva, aparece el destello y se confirma una sola mejora; pulsa **Continuar** para otra. La carta equipada permanece en tu mazo.
+
+La **Tienda** vende copias de cartas que ya tienes, libros (+3 copias sociales al usarlos), materiales (+4 energía externa, máximo 30) y preparación (+4 escudo al comenzar la siguiente batalla). Las existencias se renuevan al cambiar de día. Actividades, encargos, misiones, entrenamientos y combates entregan oro. Elegir algunas cartas para especializar es suficiente; no necesitas mejorar las cuarenta.
+
+**¡CARTA REPETIDA!** indica cuántas copias se añadieron al inventario. Las mejoras sociales aumentan solo las bonificaciones propias de cada carta: Escuchar sigue dando confianza y Coqueteo sutil sigue dando amor. Las penalizaciones dependen de la respuesta y la situación. Las técnicas de combate tienen curvas distintas; las más potentes también imponen costes y límites de uso. [Tabla completa de costes](FASE_2_PROGRESION.md).
+
+## Elegir una respuesta
 
 Escuchar, Broma ligera, Hablar con honestidad, Dar ánimo y Coqueteo sutil representan intenciones; las frases cambian según personaje y situación. La mano muestra tres cartas, con tres acciones y cuatro puntos de energía social. Selecciona para inspeccionar y confirma para jugar. El color identifica categoría; el detalle muestra coste, tono, contexto y efectos. P ofrece el respiro social disponible en el encuentro.
 
@@ -70,4 +82,4 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v4.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v5.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).

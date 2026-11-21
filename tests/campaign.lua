@@ -13,6 +13,8 @@ function Suite.run()
  local Combat=require("src.systems.combat")
  local Endings=require("src.data.endings")
  local Events=require("src.systems.events")
+ local Collection=require("src.systems.card_collection")
+ local Economy=require("src.systems.economy")
  local count=0
  local function check(ok,message) assert(ok,message);count=count+1 end
  local function copy(value) return assert(Json.decode(assert(Json.encode(value)))) end
@@ -66,7 +68,7 @@ function Suite.run()
    if s.unlocked[id] and #equipped<10 then equipped[#equipped+1]=id end
   end
   if #equipped>=5 then s.combatDeck=equipped end
-  local enc=Combat.new(s.deck,{character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy},rng(37))
+  local enc=Combat.new(s.deck,{character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
   s.combat=enc
   local actionCount=0
   while not enc.finished do
@@ -80,7 +82,7 @@ function Suite.run()
     local best,index=-math.huge,nil
     for i=1,#enc.hand do
      if Combat.canPlay(enc,i) then
-      local c=Combat.card(enc.hand[i]);local e=c.effects
+      local c=Combat.card(enc.hand[i],enc);local e=c.effects
       local score=(e.damage or 0)*3+(e.draw or 0)*5+(e.mana or 0)*.4+(e.energy or 0)*6
       if enc.enemy.intent.kind=="attack" then score=score+math.min(e.shield or 0,math.max(0,enc.enemy.intent.damage-enc.player.shield))*1.3 end
       score=score+math.min(e.heal or 0,enc.player.maxHp-enc.player.hp)*1.4-(c.hpCost or 0)*.8
@@ -150,6 +152,18 @@ function Suite.run()
     check(nextId~=nil,"Salida de "..checkpoint..": "..tostring(err))
    elseif node.definition.agenda then
     local Daily=require("src.systems.daily")
+    if config.specialize then
+     for _,id in ipairs({"staff_strike","encourage"}) do
+      local entry=Collection.ensure(s)[id]
+      local quote=Economy.quote(s,id)
+      while entry.level<10 and quote and not quote.reason and s.gold>quote.price+25 and entry.copies<90-entry.level*(entry.level-1) do
+       local quantity=math.min(10,quote.stock,math.floor((s.gold-25)/quote.price),90-entry.level*(entry.level-1)-entry.copies)
+       check(Economy.buy(s,id,quote.revision,quantity),"Compra financiada por recompensas reales")
+       quote=Economy.quote(s,id)
+      end
+      while Collection.canUpgrade(s,id) do check(Collection.upgrade(s,id,s.economy.revision),"Especialización financiada durante la campaña") end
+     end
+    end
     while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
@@ -181,8 +195,19 @@ function Suite.run()
   check(s.events.antidote_obtained and not s.curse.active and s.events.campaign_complete,"Antídoto utilizado y campaña completada")
   check(Relationships.ending(round(s).relationships)==ending,"Final persiste al guardar/cargar")
   Suite.completed[ending]=copy(s)
+  if config.specialize then
+   check(s.collection.staff_strike.level==10 and s.collection.encourage.level==10,"Los ingresos reales permiten especializar dos cartas en siete días")
+   local income=120;for _,receipt in pairs(s.economy.transactions) do income=income+math.max(0,receipt.gold or 0) end
+   check(s.gold>=0 and income<40*(225+180),"La economía permite especializarse, no maximizar cuarenta cartas")
+   local maxBytes=#assert(Json.encode(s));check(maxBytes<524288,"Campaña con tienda cabe en el límite de guardado")
+   print("Specialization: staff_strike N10, encourage N10; income "..income..", remaining "..s.gold..", save "..maxBytes.." bytes.")
+  end
   return s,ending,visited
  end
+ local function specialize()
+  return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true})
+ end
+ if os.getenv("DATESIM_TEST_GROUP")=="economy-campaign" then specialize();print("Economy campaign: "..count.." checks passed.");return count end
  local reached={}
  for mask=0,7 do
   local keep,preferred={},nil
@@ -232,7 +257,8 @@ function Suite.run()
   end
   for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
  end
- print("Campaign: "..count.." checks passed (34 complete routes, five endings, free daily distributions, favors and save/load).")
+ specialize()
+ print("Campaign: "..count.." checks passed (35 complete routes, five endings, specialization, free daily distributions, favors and save/load).")
  return count
 end
 return Suite

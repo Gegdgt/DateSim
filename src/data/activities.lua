@@ -22,11 +22,11 @@ local list={
 }
 local favors={
     {id="cliff_notes",character="cliff",title="Cliff: estudiar una técnica",delay=1,
-        description="Entrega al cierre de mañana (hoy en el Día 7).",reward="Curación básica y +2 energía externa",
-        effects={unlock={"heal"},externalEnergy=2}},
+        description="Cierre de mañana; hoy en D7.",reward="Curación, 2 Escuchar, 45 oro y 2 energía",
+        effects={unlock={"heal"},copies={listen=2},gold=require("src.data.economy").rewards.cliff,externalEnergy=2}},
     {id="zanoba_artifact",character="zanoba",title="Zanoba: ajustar un artefacto",delay=0,
-        description="Entrega al cerrar esta jornada.",reward="Defensa física y +2 energía externa",
-        effects={unlock={"wind_guard"},externalEnergy=2}},
+        description="Al cerrar esta jornada.",reward="Defensa, 2 Bastón, 40 oro y 2 energía",
+        effects={unlock={"wind_guard"},copies={staff_strike=2},gold=require("src.data.economy").rewards.zanoba,externalEnergy=2}},
 }
 local catalog={list=list,byId={},favors=favors,favorsById={}}
 for _,activity in ipairs(list) do catalog.byId[activity.id]=activity end

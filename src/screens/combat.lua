@@ -78,10 +78,16 @@ function CombatScreen.new(app,definition)
     local s=Screen.new(app)
     s.definition=definition or Progression.encounter(app.session,app.session.checkpoint) or {}
     local context={character=s.definition.character,tutorial=s.definition.tutorial,enemyId=s.definition.enemyId,
+        cardLevels=require("src.systems.card_collection").levels(app.session),
+        preparationShield=app.session.combat and app.session.combat.context.preparationShield or require("src.systems.economy").ensure(app.session).nextBattleShield,
         day=app.session.day,difficulty=s.definition.difficulty,
         tacticalContext=s.definition.tacticalContext,unlocked=not app.practice and app.session.unlocked or nil,
         combatDeck=app.session.combatDeck,curse=app.session.curse,externalEnergy=app.session.externalEnergy}
-    s.enc=Combat.restore(app.session.combat,app.session.deck,context) or Combat.new(app.session.deck,context)
+    s.enc=Combat.restore(app.session.combat,app.session.deck,context)
+    if not s.enc then
+        s.enc=Combat.new(app.session.deck,context)
+        app.session.economy.nextBattleShield=0
+    end
     app.session.combat=s.enc
     s.selected,s.confirmReady,s.age,s.historyPage=1,false,0,1
     s.feedback="Selecciona una carta para inspeccionarla. Confirma con Jugar."
@@ -364,7 +370,7 @@ function CombatScreen.new(app,definition)
         if self.enc.companion then self:button("Táctica [T]",521,189,103,21,function() self.tacticsOpen=true;self.keyboardFocus=nil end,locked or self.enc.finished) end
         for i=1,3 do
             local x,y=12+(i-1)*89,221
-            local card=Combat.card(self.enc.hand[i])
+            local card=Combat.card(self.enc.hand[i],self.enc)
             if card then
                 local selected=self.selected==i and self.confirmReady
                 if selected then rect(P.gold,x-2,y-2,84,116) end
@@ -383,7 +389,7 @@ function CombatScreen.new(app,definition)
             end
         end
         W.panel(283,220,349,92,{shadow=false})
-        local card=Combat.card(self.enc.hand[self.selected])
+        local card=Combat.card(self.enc.hand[self.selected],self.enc)
         if card then
             local preview=Combat.preview(self.enc,self.selected)
             self:text(card.name..(preview and preview.usesLeft and " · "..preview.usesLeft.." usos" or ""),293,226,329,P.gold)

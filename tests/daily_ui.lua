@@ -50,6 +50,8 @@ function Suite.run()
             check(app.session.daily.active_activity~=nil,"Continúa la decisión pendiente")
             capture("daily-activity")
             click("Compartir una lectura (+2 amor / +1 conf.)")
+            settle()
+            while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
         end
         check(app.session.daily.visits.roxy==3 and Daily.remaining(app.session)==0,"Tres visitas a Roxy desde la interfaz")
         capture("daily-agenda-spent")

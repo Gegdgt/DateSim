@@ -303,7 +303,8 @@ function Progression.finishCombat(session,enc)
     local enemy=require("src.data.enemies").byId[enc.enemy.id]
     local key="combat_reward_"..checkpoint
     if not session.events[key] then
-        Events.mark(session,key)
+        Events.apply(session,key,{gold=require("src.data.economy").rewards.combat[session.day],
+            copies={[session.combatDeck[1] or "staff_strike"]=2},text="Recompensa del combate: oro y dos copias de tu primera técnica equipada."})
         Events.mark(session,"mirror_defeated_"..checkpoint)
         if enemy and enemy.narrativeEvent then Events.mark(session,enemy.narrativeEvent) end
         if enemy and enemy.reward and enemy.reward.event then Events.mark(session,enemy.reward.event) end

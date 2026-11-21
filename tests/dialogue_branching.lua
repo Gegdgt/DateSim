@@ -113,8 +113,8 @@ function Suite.run()
 
     local expected={
         light_joke={love=-5,trust=-2,phrase="¿Quieres que me deje ganar?",expression="angry",flag="eris_disliked_training_joke",next="eris_training_argument"},
-        encourage={love=5,trust=3,phrase="¡Claro que sí! Estoy contigo. Entrenemos juntos",expression="happy",flag="eris_training_supported",next="eris_training_together"},
-        subtle_flirt={love=10,trust=1,phrase="Iré, pero si gano, quiero un beso",expression="happy",flag="eris_romantic_training",next="eris_training_challenge"},
+        encourage={love=1,trust=1,phrase="¡Claro que sí! Estoy contigo. Entrenemos juntos",expression="happy",flag="eris_training_supported",next="eris_training_together"},
+        subtle_flirt={love=1,trust=0,phrase="Iré, pero si gano, quiero un beso",expression="happy",flag="eris_romantic_training",next="eris_training_challenge"},
     }
     local branches={}
     for cardId,wanted in pairs(expected) do

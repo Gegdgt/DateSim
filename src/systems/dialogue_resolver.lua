@@ -39,6 +39,9 @@ function Resolver.resolve(context,cardId,state)
     state=state or context.memory or Memory.capture()
     local response=chosen(base,state)
     local effect=response.effects or {}
+    -- La afinidad de investigación de Nanahoshi conserva sus reglas propias.
+    if not context.legacyProgression and Data.byId[cardId] and not Affinity.config[node.character] then effect=require("src.systems.card_collection").socialEffects(cardId,
+        require("src.systems.card_collection").level(state,cardId),effect) end
     local result={cardId=cardId,character=node.character,conversationId=node.id,responseId=response.id,
         phrase=response.rudy,reaction=response.response,expression=response.expression or "neutral",animation=response.animation,
         score=effect.score or 0,trust=effect.trust or 0,chemistry=effect.love or 0,interest=effect.interest or 0,
