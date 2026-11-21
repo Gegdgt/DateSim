@@ -5,6 +5,9 @@ local Techniques=require("src.data.combat_cards")
 local Enemies=require("src.data.enemies")
 local Training=require("src.systems.training")
 local Collection=require("src.systems.card_collection")
+local Companions=require("src.systems.companions")
+local Balance=require("src.data.battle_balance")
+local Legacy=require("src.systems.combat_legacy")
 local Combat={rules=Techniques.rules}
 local R=Techniques.rules
 local function copy(value)
@@ -23,10 +26,10 @@ local function same(a,b)
 end
 local function contextFor(context)
     context=context or {}
-    return {kind="combat",character=context.character,tutorial=context.tutorial==true,
+    return {kind="combat",warVersion=1,allies=context.enemyId=="eris_training" and {} or Companions.roster(context),character=context.character,tutorial=context.tutorial==true,
         progressionVersion=1,cardLevels=Collection.levels(context),preparationShield=context.preparationShield==4 and 4 or 0,
         day=integer(context.day,1,7) and context.day or nil,
-        difficulty=integer(context.difficulty,1,6) and context.difficulty or nil,
+        difficulty=integer(context.difficulty,1,7) and context.difficulty or nil,
         enemyId=Enemies.byId[context.enemyId] and Enemies.byId[context.enemyId].id or Enemies.default,
         tacticalContext=copy(context.tacticalContext or {}),
         curse={active=context.curse and context.curse.active==true or false,
@@ -104,7 +107,7 @@ function Combat.adaptDeck(deck,context)
     local adapted,seen,adjustments={},{},{}
     for _,id in ipairs(selected) do
         local c=Combat.card(id)
-        if not c.conditions or not c.conditions.character or c.conditions.character==context.character then
+        if not c.conditions or not c.conditions.character or Companions.roster(context)[c.conditions.character] then
             adapted[#adapted+1]=id;seen[id]=true
         else adjustments[#adjustments+1]=c.name..": sin su compañera, sustituida por una técnica adquirida." end
     end
@@ -132,17 +135,19 @@ local function event(result,kind,target,text,fields)
 end
 local function label(target) return target=="enemy" and "El enemigo" or target=="companion" and "La compañera" or "Rudy" end
 local function damageAmount(attacker,defender,base)
+    if base<=0 then return 0 end
     return math.max(0,base-(attacker.weak>0 and R.weakReduction or 0))+(defender.vulnerable>0 and R.vulnerableBonus or 0)
 end
 local function elementalDamage(enc,card)
-    local bonus=card.element and card.element==enc.enemy.weakness and 2 or 0
+    local bonus=card.element and card.element==enc.enemy.weakness and (enc.enemy.id=="badigadi_final" and Balance.boss.weaknessBonus or 2) or 0
     local config=Training.config(enc)
     local reduction=config and card.element=="sword" and config.swordReduction or 0
-    return math.max(0,(card.effects.damage or 0)+bonus-reduction),bonus,reduction
+    local armor=enc.enemy.phase=="resolve" and enc.enemy.exposed<=0 and Balance.boss.armor or 0
+    return math.max(0,(card.effects.damage or 0)+bonus-reduction-armor),bonus,reduction
 end
-local function damage(enc,target,base,result)
+local function damage(enc,target,base,result,source)
     local defender=enc[target]
-    local attacker=target=="enemy" and enc.player or enc.enemy
+    local attacker=source or (target=="enemy" and enc.player or enc.enemy)
     local attempted=damageAmount(attacker,defender,base)
     local blocked=math.min(defender.shield,attempted)
     local lost=math.min(defender.hp,attempted-blocked)
@@ -171,6 +176,10 @@ local function draw(enc,count,result)
     return drawn
 end
 local function activeAction(enc)
+    if enc.enemy.id=="badigadi_final" and Balance.boss.phases[enc.enemy.phase] then
+        local actions=Balance.boss.phases[enc.enemy.phase]
+        return actions[(enc.enemy.actionIndex-1)%#actions+1]
+    end
     if enc.enemy.phase=="seal" then return {id="seal_pulse",name="Pulso del sello",kind="attack",damage=3} end
     if enc.enemy.phase=="six_arms" then
         if enc.enemy.actionIndex%2==1 then return {id="six_arms",name="Seis brazos",kind="attack",damage=3,hits=3,companionDamage=2} end
@@ -220,10 +229,15 @@ local function checkOutcome(enc,result)
     if enc.enemy.id=="badigadi_final" and not enc.enemy.sealBroken then
         if enc.enemy.hp<=0 and enc.enemy.phase~="seal" then
             enc.enemy.phase="seal";enc.enemy.shield=0
-            event(result,"phase","enemy","Fase 3 · Romper el sello. Badigadi está vencido, pero el antídoto sigue sellado. Usa Romper sello [B].")
+            event(result,"phase","enemy","Fase 4 · Romper la protección del antídoto. Badigadi cede, pero sigue vivo. Usa Romper sello [B].")
             updateIntent(enc,result)
-        elseif enc.enemy.hp<=enc.enemy.maxHp/2 and enc.enemy.phase=="endurance" then
+        elseif enc.enemy.hp<=enc.enemy.maxHp*Balance.boss.thresholds[2] and enc.enemy.phase~="resolve" and enc.enemy.phase~="seal" then
+            enc.enemy.phase="resolve";enc.enemy.actionIndex=1
+            event(result,"phase","enemy","Fase 3 · Resistencia mejorada: 6 menos de daño por ataque. Agua, análisis y ataques combinados abren su defensa.")
+            updateIntent(enc,result)
+        elseif enc.enemy.hp<=enc.enemy.maxHp*Balance.boss.thresholds[1] and enc.enemy.phase=="endurance" then
             enc.enemy.phase="six_arms"
+            enc.enemy.actionIndex=1
             event(result,"phase","enemy","Fase 2 · Seis brazos. Anuncia tres golpes consecutivos: defiéndete y coordina a tu compañera.")
             updateIntent(enc,result)
         end
@@ -252,22 +266,22 @@ local function start(deck,context,initial,legacyBalance)
     local enemy=legacyBalance and copy(Enemies.byId[context.enemyId]) or Enemies.resolve(context.enemyId,context)
     enemy.hp=enemy.maxHp; enemy.shield=0; enemy.weak=0; enemy.vulnerable=0; enemy.actionIndex=1
     enemy.actionUses={}
+    enemy.exposed=0
     enemy.defeatEvent=enemy.defeatedEvent
     if enemy.id=="badigadi_final" then enemy.phase="endurance";enemy.seal=enemy.sealMax;enemy.sealBroken=false end
-    local enc={type="combat",version=2,balanceVersion=legacyBalance and 1 or 2,context=copy(context),deck=copy(deck),initial=copy(initial),
+    local enc={type="combat",version=2,balanceVersion=3,context=copy(context),deck=copy(deck),initial=copy(initial),
         player={name="Rudy",hp=R.playerHp,maxHp=R.playerHp,mana=context.curse.manaBlocked and 0 or R.playerMana,maxMana=R.playerMana,externalEnergy=context.externalEnergy,maxExternalEnergy=context.externalEnergy,physicalShield=0,magicShield=0,shield=0,weak=0,vulnerable=0},enemy=enemy,
         hand={},drawPile=copy(initial.pile),discard={},energy=R.energy,turn=1,maxTurns=R.maxTurns,
         revision=0,finished=false,perTurn={},perBattle={},companionHeals=0,randomState=initial.seed,commands={},log={},resultEvents={},relationshipEvents={},tacticalDecisions={}}
     enc.training=Training.new(enemy.trainingId)
+    enc.allies=enc.training and {} or copy(context.allies)
+    enc.supportUsed={}
+    if enemy.id=="badigadi_final" then enc.maxTurns=Balance.boss.maxTurns end
     enc.player.shield=context.preparationShield or 0
     enc.player.physicalShield=context.preparationShield or 0
     if enc.training then enc.maxTurns=Training.config(enc).maxTurns end
-    local companions={sylphiette={name="Sylphiette",role="Protección y curación"},roxy={name="Roxy",role="Magia y control"},eris={name="Eris",role="Espada e interrupción"}}
-    if companions[context.character] and not enc.training then
-        enc.companion=copy(companions[context.character]);enc.companion.id=context.character
-        enc.companion.hp=context.tacticalContext.companionInjured and 8 or 20
-        enc.companion.maxHp=20;enc.companion.shield=0;enc.companion.weak=0;enc.companion.vulnerable=0
-    end
+    enc.companion=enc.allies[context.character]
+    if not enc.companion then for _,id in ipairs(Companions.order) do if enc.allies[id] then enc.companion=enc.allies[id];break end end end
     draw(enc,R.handSize)
     intent(enc)
     enc.log[1]={turn=1,text="Comienza el combate. Rudy: "..R.playerHp.." vida, "..(legacyBalance and R.playerMana or enc.player.mana).." maná, 3 acciones. "..enemy.intent.text,events={}}
@@ -275,6 +289,7 @@ local function start(deck,context,initial,legacyBalance)
 end
 
 function Combat.new(deck,context,rng)
+    if context and context.legacyEncounter then return Legacy.new(deck,context,rng) end
     local adapted,err,adjustments=Combat.adaptDeck(deck,context)
     assert(adapted,err)
     context=contextFor(context)
@@ -314,7 +329,7 @@ function Combat.canPlay(enc,index)
     if not integer(index,1,#enc.hand) then return false,"Selecciona una carta de la mano." end
     local card=Combat.card(enc.hand[index],enc)
     if not card then return false,"Esta carta solo funciona en encuentros sociales." end
-    if card.conditions and card.conditions.character and card.conditions.character~=enc.context.character then
+    if card.conditions and card.conditions.character and not enc.allies[card.conditions.character] then
         return false,"Requiere la compañía de "..card.conditions.character.."."
     end
     if card.perTurn and (enc.perTurn[card.id] or 0)>=card.perTurn then return false,"Esta carta ya alcanzó su límite por turno." end
@@ -403,101 +418,8 @@ function Combat.play(enc,index,expectedRevision)
     return record(enc,result,{kind="play",cardId=card.id,index=index})
 end
 
-local tactics={
-    {id="together",name="Atacar juntos",manaCost=0,description="Golpe físico y ataque aliado. 1 acción, sin maná."},
-    {id="protect",name="Defender a la compañera",manaCost=0,description="6 escudo para ella, 3 para Rudy. 1 acción, sin maná."},
-    {id="assist",name="Dejar que ella ataque",manaCost=0,description="Actúa según su especialidad. 1 acción, sin maná de Rudy."},
-    {id="coordinate",name="Coordinar magia y espada",manaCost=3,description="Combinación ofensiva o curación. 1 acción, 3 maná."},
-    {id="retreat",name="Retroceder juntos",manaCost=0,description="4 escudo para ambos y 2 maná. 1 acción."},
-    {id="group",name="Proteger al grupo",manaCost=3,description="8 escudo para Rudy y compañera. 1 acción, 3 maná."},
-}
-Combat.tactics=tactics
-local function tacticalDefinition(id)
-    for _,value in ipairs(tactics) do if value.id==id then return value end end
-end
-function Combat.canTactic(enc,id)
-    local t=tacticalDefinition(id)
-    if not enc or enc.finished then return false,"El combate ya terminó." end
-    if not t then return false,"Táctica desconocida." end
-    if not enc.companion then return false,"No hay compañera en esta misión." end
-    if enc.companion.hp<=0 then return false,"La compañera necesita recuperarse en el punto seguro." end
-    if enc.perTurn.companion then return false,"Tu compañera ya actuó este turno." end
-    if enc.energy<1 then return false,"La coordinación consume una acción de Rudy." end
-    local field=resourceField(enc,t)
-    if not field or enc.player[field]<t.manaCost then return false,"Energía mágica insuficiente. Puedes dejarla actuar sin maná." end
-    return true
-end
-local function relationshipTactic(enc,id,result)
-    -- Una decisión contextual por encuentro. Jugar ataques nunca entrega amor.
-    if #enc.relationshipEvents>0 then return end
-    local ally=enc.companion
-    local hits=enc.balanceVersion==1 and 1 or (enc.enemy.intent.hits or 1)
-    local threat=enc.enemy.intent.kind=="attack" and (enc.enemy.intent.damage*hits>=8 or (enc.enemy.intent.companionDamage or 0)>=3)
-    local injured=ally.hp<=ally.maxHp/2 or enc.context.tacticalContext.companionInjured==true
-    local danger=threat or enc.context.tacticalContext.danger==true
-    local love,trust,reason=1,2,"Coordinación responsable ante una amenaza compartida."
-    if id=="protect" then
-        if injured or danger then love,trust,reason=3,4,"La protección respondió a una herida o peligro real."
-        elseif ally.id=="eris" then love,trust,reason=-2,-3,"Eris tenía el combate controlado; Rudy le impidió actuar."
-        else love,trust,reason=0,0,"Una precaución innecesaria; conversarán sobre ella al volver." end
-    elseif id=="assist" and injured then love,trust,reason=-3,-4,"Rudy exigió atacar a una compañera que necesitaba descanso."
-    elseif id=="coordinate" and ally.id=="roxy" then love,trust,reason=3,4,"Rudy escuchó el análisis de Roxy y conjugó con ella como igual."
-    elseif id=="together" and ally.id=="eris" then love,trust,reason=3,4,"Eris y Rudy respetaron sus capacidades y lucharon juntos."
-    elseif id=="group" and ally.id=="sylphiette" and danger then love,trust,reason=3,4,"Sylphiette coordinó una defensa necesaria de todo el grupo."
-    elseif id=="retreat" then
-        love,trust,reason=injured and 2 or 0,injured and 3 or 0,injured and "La retirada permitió cuidar una herida real." or "Retrocedieron para reorganizarse, sin premio sentimental automático."
-    end
-    enc.relationshipEvents[1]={id="combat_tactic_"..enc.enemy.id.."_"..ally.id,character=ally.id,love=love,trust=trust,
-        context="combat",choice=id,reason=reason,sharedMoment="battle_"..enc.enemy.id}
-    event(result,"relationship_pending","companion",reason.." La interpretación se confirmará al resolver la batalla.")
-end
-function Combat.tactic(enc,id,expectedRevision)
-    if expectedRevision~=nil and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
-    local ok,err=Combat.canTactic(enc,id);if not ok then return nil,err end
-    local t=tacticalDefinition(id);local ally=enc.companion
-    local result={events={},actionName=t.name,companionAction=id,companionId=ally.id}
-    local field=resourceField(enc,t)
-    enc.energy=enc.energy-1;enc.player[field]=enc.player[field]-t.manaCost;enc.perTurn.companion=true
-    enc.tacticalDecisions[#enc.tacticalDecisions+1]={id=id,turn=enc.turn,companionHp=ally.hp}
-    relationshipTactic(enc,id,result)
-    event(result,"companion_action","companion",ally.name..": "..t.name..". Coste: 1 acción, "..t.manaCost.." "..resourceName(field)..".")
-    local function guard(target,amount)
-        enc[target].shield=enc[target].shield+amount
-        if target=="player" then enc.player.physicalShield=enc.player.physicalShield+amount end
-        event(result,"shield",target,label(target).." gana "..amount.." escudo.",{amount=amount})
-    end
-    local function heal(amount)
-        if enc.balanceVersion~=1 and enc.companionHeals>=R.companionHealUses then
-            event(result,"recovery_exhausted","companion",ally.name.." agotó sus "..R.companionHealUses.." curaciones; aún puede atacar y proteger.")
-            return
-        end
-        local gained=math.min(amount,enc.player.maxHp-enc.player.hp);enc.player.hp=enc.player.hp+gained
-        if gained>0 then enc.companionHeals=enc.companionHeals+1 end
-        local remaining=enc.balanceVersion==1 and "" or (" Quedan "..(R.companionHealUses-enc.companionHeals).." curaciones.")
-        event(result,"heal","player",ally.name.." cura "..gained.." vida a Rudy."..remaining,{amount=gained})
-    end
-    if id=="protect" then guard("companion",6);guard("player",3)
-    elseif id=="group" then guard("companion",8);guard("player",8)
-    elseif id=="retreat" then guard("companion",4);guard("player",4);local pool=enc.context.curse.manaBlocked and "externalEnergy" or "mana"
-        enc.player[pool]=math.min(pool=="mana" and enc.player.maxMana or enc.player.maxExternalEnergy,enc.player[pool]+2)
-    else
-        local power=ally.id=="eris" and 10 or ally.id=="roxy" and 8 or 4
-        if id=="together" then power=power+3 end
-        if id=="coordinate" then power=power+4 end
-        damage(enc,"enemy",power,result)
-        if ally.id=="sylphiette" then heal(id=="coordinate" and 5 or 3);guard("player",3)
-        elseif ally.id=="roxy" then
-            enc.enemy.weak=math.max(1,enc.enemy.weak)
-            local element=({water="de agua",earth="de tierra"})[enc.enemy.weakness] or enc.enemy.weakness
-            event(result,"status","enemy","Roxy analiza la respuesta "..element.." del enemigo y reduce su siguiente ataque.",{status="weak",amount=1})
-        elseif ally.id=="eris" and id=="coordinate" then
-            enc.enemy.weak=math.max(1,enc.enemy.weak)
-            event(result,"status","enemy","Eris interrumpe el avance enemigo: su próximo golpe pierde 2 de daño.",{status="weak",amount=1})
-        end
-    end
-    updateIntent(enc,result);checkOutcome(enc,result)
-    return record(enc,result,{kind="tactic",id=id})
-end
+Combat.tactics=Legacy.tactics
+require("src.systems.support_actions").install(Combat,{event=event,damage=damage,damageAmount=damageAmount,updateIntent=updateIntent,checkOutcome=checkOutcome,record=record})
 
 function Combat.endTurn(enc,expectedRevision)
     if expectedRevision~=nil and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
@@ -554,6 +476,7 @@ function Combat.endTurn(enc,expectedRevision)
             end
             enc.player.shield=0;enc.player.physicalShield=0;enc.player.magicShield=0; enc.turn=enc.turn+1
             enc.energy=math.max(1,R.energy-(action.kind=="interrupt" and action.actionLoss or 0)); enc.perTurn={}
+            enc.supportUsed={};enc.enemy.exposed=math.max(0,enc.enemy.exposed-1)
             local pool=enc.context.curse.manaBlocked and "externalEnergy" or "mana"
             local maximum=pool=="mana" and enc.player.maxMana or enc.player.maxExternalEnergy
             local manaGain=math.min(R.manaRegen,maximum-enc.player[pool])
@@ -617,6 +540,7 @@ end
 -- Reproduce el combate desde la apertura y compara todos los campos de reglas.
 -- No confía en vida/energía/resultados escritos en JSON, ni aplica recompensas.
 function Combat.restore(snapshot,deck,context)
+    if type(snapshot)=="table" and (not snapshot.context or snapshot.context.warVersion~=1) then return Legacy.restore(snapshot,deck,context) end
     if type(snapshot)~="table" or snapshot.type~="combat" or snapshot.version~=2 then return nil end
     local adapted,_,adjustments=Combat.adaptDeck(deck,context); if not adapted then return nil end
     context=contextFor(context)
@@ -630,7 +554,7 @@ function Combat.restore(snapshot,deck,context)
     if snapshot.context and snapshot.context.progressionVersion~=1 then
         context.progressionVersion,context.cardLevels,context.preparationShield=nil,nil,nil
     end
-    if snapshot.balanceVersion~=nil and snapshot.balanceVersion~=1 and snapshot.balanceVersion~=2 then return nil end
+    if snapshot.balanceVersion~=3 then return nil end
     if legacyBalance then context.day=nil;context.difficulty=nil end
     if not same(snapshot.context,context) or not same(snapshot.deck,adapted) then return nil end
     local initial=snapshot.initial
@@ -653,10 +577,12 @@ function Combat.restore(snapshot,deck,context)
             if not Combat.breakSeal(restored,restored.revision) then return nil end
         elseif command.kind=="tactic" then
             if not Combat.tactic(restored,command.id,restored.revision) then return nil end
+        elseif command.kind=="support" then
+            if not Combat.support(restored,command.wife,command.id,restored.revision,command.confirmRisk) then return nil end
         else return nil end
     end
     for _,key in ipairs({"player","enemy","hand","drawPile","discard","energy","turn","maxTurns","revision",
-        "finished","outcome","cause","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
+        "finished","outcome","cause","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","allies","supportUsed","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
         local expected=restored[key]
         if oldSnapshot and key=="enemy" then expected=copy(expected);expected.actionUses=nil end
         if not (oldSnapshot and (key=="perBattle" or key=="companionHeals")) and not same(expected,snapshot[key]) then return nil end
@@ -672,4 +598,12 @@ function Combat.restore(snapshot,deck,context)
     return restored
 end
 
+-- Los combates ya guardados conservan reglas, comandos y resultados históricos.
+for _,name in ipairs({"canPlay","preview","play","canTactic","tactic","endTurn","canBasic","basic","canBreakSeal","breakSeal","retry"}) do
+    local current=Combat[name]
+    Combat[name]=function(enc,...)
+        if enc and enc.context and enc.context.warVersion~=1 then return Legacy[name](enc,...) end
+        return current(enc,...)
+    end
+end
 return Combat

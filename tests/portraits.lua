@@ -175,7 +175,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==6,"Sin apariencia global persistida en el formato de progresión")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==7,"Sin apariencia global persistida en el formato de progresión")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2

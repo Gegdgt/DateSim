@@ -33,6 +33,7 @@ end
 
 local list={}
 for day=1,7 do list[#list+1]=require("src.data.chapters.day"..day) end
+require("src.data.war_chapters").install(list)
 require("src.data.day_cycle").install(list)
 local Chapters=Registry.build(list)
 Chapters.build=Registry.build

@@ -88,7 +88,7 @@ function Suite.run()
             else click(app.session.day==7 and "Cerrar tiempo libre e ir a la historia" or "Continuar historia") end
         elseif node.kind=="hub" then
             local companions=Progression.availableCompanions(app.session)
-            if #companions>0 then click("Elegir compañía") else click("Visitar") end
+            if cp=="day7_muster" then click("Todas las disponibles") elseif #companions>0 then click("Elegir compañía") else click("Visitar") end
         elseif node.kind=="encounter" then
             if s.enc.type=="combat" then
                 capture("combat-"..s.enc.enemy.id)
@@ -98,7 +98,7 @@ function Suite.run()
                 elseif not s:busy() and not s.enc.finished and s.enc.training and s.enc.enemy.intent.kind=="attack"
                     and s.enc.enemy.intent.damage>=6 and Combat.canBasic(s.enc,"defend") then
                     s:basic("defend")
-                elseif not s:busy() and not s.enc.finished and s.enc.companion and Combat.canTactic(s.enc,"coordinate") then
+                elseif not s.briefingOpen and not s:busy() and not s.enc.finished and s.enc.companion and Combat.canTactic(s.enc,"coordinate") then
                     s:tactic("coordinate")
                 else require("tests.combat_visual").drive(s) end
             else

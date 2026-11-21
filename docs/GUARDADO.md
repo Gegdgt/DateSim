@@ -1,17 +1,19 @@
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 6**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 7**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v6.json` | Partida actual. |
-| `campaign-v6.backup.json` | Última partida anterior válida. |
-| `campaign-v6.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v7.json` | Partida actual. |
+| `campaign-v7.backup.json` | Última partida anterior válida. |
+| `campaign-v7.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
 ## Estado persistido
+
+La versión 7 añade el contexto de combate `warVersion=1`: equipo y relaciones iniciales, acción propia de cada compañera, usos, recargas y comandos de apoyo. `support_previous_<esposa>` conserva la potencia del especial en el último combate completado para compararla en preparación. La selección del Día 7 admite una esposa, `all` o `solo`; se filtran las separadas.
 
 La versión 6 añade `family`: progreso de actividades, advertencias, ausencias, separaciones definitivas, libros, recetas, plazo del recado y escenas pendientes con fase/tiempo. Conserva relaciones entre −100 y 100, proveedor y aceleración de encargos y reservas de ayuda sin visitas. Un matrimonio separado permanece separado aunque se cargue otra escena o se cure la maldición. [Reglas familiares](FASE_3_FAMILIA.md).
 
@@ -29,7 +31,7 @@ Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: 
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v6. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v7. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -37,23 +39,25 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-El motor social conserva su soporte de replay anterior, pero la campaña v6 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
+El motor social conserva su soporte de replay anterior, pero la campaña v7 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
 Antes de escribir se normalizan los datos. El guardado anterior válido se copia al respaldo; la carga intenta primero el principal y luego el respaldo. Esto es una escritura con respaldo, no una promesa de reemplazo atómico del sistema de archivos.
 
+El límite de lectura y escritura es 2 MiB (`Save.maxBytes`): permite combinar un historial extenso con los comandos de hasta 75 turnos del jefe. La prueba de persistencia guarda 582.563 bytes, 600 entradas de historial y 414 comandos; recupera el turno 70 y todos los apoyos. Si la representación supera el límite, se rechaza antes de escribir un archivo que después no pudiera cargarse.
+
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
-Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v6. [Dificultad y límites](COMBATE.md).
+Los combates nuevos guardan `balanceVersion=3` y `context.warVersion=1`, perfil por día, niveles de cartas, equipo y apoyos. El replay verifica PV, fase, mano, recursos, acciones, usos y recargas. `combat_legacy.lua` y `enemies_legacy.lua` conservan balances anteriores para terminar batallas históricas con sus reglas originales. Este versionado es independiente del esquema de campaña. [Reglas de combate](FASE_4_COMBATE.md).
 
 ## Importación de partidas anteriores
 
-Si no hay v6 válido, **Continuar** busca v5 y luego v4, con sus respaldos. V5 conserva niveles, oro, relaciones y progreso; inicializa el registro familiar y respeta las fechas de encargos heredados. V4 recibe primero la migración de economía (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v6 y **no modifica v5 ni v4**. Las partidas nuevas empiezan en 50/50; migrar no reinicia estadísticas históricas.
+Si no hay v7 válido, **Continuar** busca v6, v5 y v4 con sus respaldos. V6 conserva familia, economía y progreso; v5 recibe los campos familiares; v4 recibe primero la migración económica (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v7 y **no modifica v6, v5 ni v4**. Migrar no reinicia estadísticas. Si el antídoto fue obtenido en el antiguo Día 6, el Día 7 continúa hacia su uso sin exigir repetir el jefe. Un combate histórico mantiene sus reglas y comandos, incluso el antiguo Badigadi de 72 PV.
 
 Los registros sociales anteriores conservan sus efectos históricos durante el replay; las nuevas acciones usan niveles y presupuesto diario. Los combates en curso conservan sus reglas anteriores hasta terminar. Los nuevos guardan `context.progressionVersion=1`, niveles por ID y preparación inicial, además de los comandos existentes. Cambiar el nivel durante un encuentro está prohibido.
 
-El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v6, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v7, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
@@ -65,4 +69,4 @@ El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pa
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v6_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
+La suite general usa `cartas_del_destino_v7_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.

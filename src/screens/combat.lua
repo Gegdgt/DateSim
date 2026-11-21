@@ -77,7 +77,9 @@ end
 function CombatScreen.new(app,definition)
     local s=Screen.new(app)
     s.definition=definition or Progression.encounter(app.session,app.session.checkpoint) or {}
+    local supportContext=require("src.systems.companions").context(app.session,s.definition)
     local context={character=s.definition.character,tutorial=s.definition.tutorial,enemyId=s.definition.enemyId,
+        relationships=supportContext.relationships,team=supportContext.team,legacyEncounter=s.definition.legacyEncounter,
         cardLevels=require("src.systems.card_collection").levels(app.session),
         preparationShield=app.session.combat and app.session.combat.context.preparationShield or require("src.systems.economy").ensure(app.session).nextBattleShield,
         day=app.session.day,difficulty=s.definition.difficulty,
@@ -90,6 +92,8 @@ function CombatScreen.new(app,definition)
     end
     app.session.combat=s.enc
     s.selected,s.confirmReady,s.age,s.historyPage=1,false,0,1
+    s.briefingOpen=s.enc.context.warVersion==1 and not s.definition.tutorial and s.enc.revision==0
+    s.supportWife=s.enc.companion and s.enc.companion.id
     s.feedback="Selecciona una carta para inspeccionarla. Confirma con Jugar."
     if #(s.enc.deckAdjustments or {})>0 then
         s.actionSummary="Exclusiva sin compañera: sustituida aquí por una técnica inicial adquirida. Tu mazo guardado se conserva."
@@ -118,7 +122,7 @@ function CombatScreen.new(app,definition)
     function s:startMotion(result,enemyAction)
         self.motion={elapsed=0,duration=app.options.reducedMotion and .18 or 1.05,events=result.events or {},enemyAction=enemyAction,
             startPlayer=self.displayHp.player,startEnemy=self.displayHp.enemy,startMana=self.displayHp.mana,
-            companionAction=result.companionAction,element=result.element,playedSounds=false}
+            companionAction=result.companionAction,companionId=result.companionId,element=result.element,playedSounds=false}
         self.feedback=result.text or "Acción resuelta."
         self.actionSummary=result.actionName or (result.cardId and Combat.card(result.cardId).name) or "Acción resuelta"
         local totals={damage=0,blocked=0,lost=0,hits=0}
@@ -171,6 +175,14 @@ function CombatScreen.new(app,definition)
         if not result then self.feedback=err;return false end
         self.tacticsOpen=false;self:startMotion(result,false);return true
     end
+    function s:support(id,confirmed)
+        if self:busy() or self.briefingOpen then return false end
+        local p=Combat.supportPreview(self.enc,self.supportWife,id)
+        if p and p.risk and not confirmed then self.riskSkill=id;return end
+        local result,err=Combat.support(self.enc,self.supportWife,id,self.enc.revision,confirmed)
+        if not result then self.feedback=err;return false end
+        self.riskSkill=nil;self.tacticsOpen=false;self:startMotion(result,false);return true
+    end
     function s:basic(id)
         if self:busy() or self.enc.finished then return false end
         if self.tutorial and self.tutorial.stage~="free" and not (self.tutorial.stage=="shield" and id=="defend") then return false end
@@ -212,7 +224,7 @@ function CombatScreen.new(app,definition)
             return
         end
         if self.enc.training and self.enc.finished then app:resume();return end
-        if self.enc.outcome~="victory" then return end
+        if self.enc.outcome~="victory" and self.enc.enemy.id~="orsted_trial" then return end
         app:finishCombat(self.enc)
     end
     function s:update(dt)
@@ -258,7 +270,7 @@ function CombatScreen.new(app,definition)
         self:text("Escudos F:"..self.enc.player.physicalShield.." M:"..self.enc.player.magicShield.." · "..stateText(self.enc.player),18,73,204,P.muted)
         W.panel(242,8,390,78)
         self:text(self.enc.enemy.name,252,14,194,P.lavender)
-        self:text(self.enc.enemy.phase and ({endurance="I · Resistencia",six_arms="II · Seis brazos",seal="III · Sello "..(self.enc.enemy.seal or 0),victory="IV · Victoria"})[self.enc.enemy.phase] or stateText(self.enc.enemy),452,14,170,P.muted,1,"right")
+        self:text(self.enc.enemy.phase and ({endurance="I · Resistencia",six_arms="II · Seis brazos",resolve="III · Resistencia",seal="IV · Sello "..(self.enc.enemy.seal or 0),victory="IV · Victoria"})[self.enc.enemy.phase] or stateText(self.enc.enemy),452,14,170,P.muted,1,"right")
         self:text((self.enc.training and "Resistencia " or "Vida ")..self.enc.enemy.hp.." / "..self.enc.enemy.maxHp,252,29,178,P.ink)
         self:text("Escudo "..self.enc.enemy.shield,438,29,180,P.teal)
         W.bar(252,43,370,8,self.displayHp.enemy,self.enc.enemy.maxHp,P.danger)
@@ -305,7 +317,19 @@ function CombatScreen.new(app,definition)
         if self.enc.enemy.shield>0 or enemyShield then barrier(enemyX,92,enemyShield and .8 or .35) end
         self:text("Rudy",43,166,110,P.ink,1,"center")
         self:text(self.enc.enemy.training and "Entrenamiento" or "Amenaza",456,166,170,P.muted,1,"center")
-        if self.enc.companion then
+        if self.enc.allies then
+            local n=0
+            for _,id in ipairs(require("src.systems.companions").order) do local ally=self.enc.allies[id];if ally then
+                local moving=motion and motion.companionId==id
+                local reach=id=="eris" and 18 or 6
+                local offset=moving and not reduced and math.sin(math.min(1,p*2)*math.pi)*reach or 0
+                local x=139+n*34;n=n+1
+                app.resources:portraitSmall(id,moving and "happy" or "neutral",x+math.floor(offset),108)
+                W.bar(x,143,30,3,ally.hp,ally.maxHp,P.teal)
+                self:text(id:sub(1,3),x,153,30,P.teal)
+                self:text(self.enc.supportUsed[id] and "OK" or "+1",x,165,30,P.muted)
+            end end
+        elseif self.enc.companion then
             local ally=self.enc.companion
             local attack=motion and motion.companionAction and not reduced and math.sin(math.min(1,p*2)*math.pi)*12 or 0
             local injured=ally.hp<=ally.maxHp/2
@@ -456,6 +480,12 @@ function CombatScreen.new(app,definition)
         self:begin();rect(P.shadow,0,0,640,360,.85)
         local won=self.enc.outcome=="victory"
         W.panel(69,31,502,296,{border=won and P.gold or P.danger})
+        if self.enc.enemy.id=="orsted_trial" then
+            self:text("PRUEBA DE ORSTED COMPLETADA",90,52,460,P.gold)
+            self:text("Orsted detiene el ejercicio. Ambos siguen vivos. La prueba es opcional y no condiciona el antídoto.",94,110,452,P.ink)
+            self:button("Continuar",138,253,364,28,function()self:continue()end)
+            return
+        end
         if self.definition.activity and not self.enc.training then
             self:text(won and "ACTIVIDAD COMPLETADA" or "RETIRADA A TIEMPO",90,52,460,P.gold,2,"center")
             self:text(self.definition.title,94,101,452,P.ink)
@@ -505,6 +535,7 @@ function CombatScreen.new(app,definition)
         end)
     end
     function s:drawTactics()
+        if self.enc.context.warVersion==1 then return require("src.screens.support_panel").draw(self,app) end
         self:begin();rect(P.shadow,0,0,640,360,.9);W.panel(40,18,560,324)
         self:text("TÁCTICAS CON "..self.enc.companion.name:upper(),55,30,530,P.gold,2)
         local recoveries=self.enc.companion.id=="sylphiette" and (self.enc.balanceVersion==1 and " Curación: una por turno." or
@@ -524,11 +555,16 @@ function CombatScreen.new(app,definition)
         self:drawHud();self:drawActors();self:drawGuide();self:drawHand()
         if self.enc.finished and not self:busy() then self:drawResult() end
         if self.pauseOpen then self:drawPause() end
+        if self.briefingOpen then require("src.screens.support_panel").briefing(self,app) end
         if self.tacticsOpen and self.enc.companion then self:drawTactics() end
         if self.historyOpen then self:drawHistory() end
     end
     function s:mousepressed(x,y,button) self:click(x,y,button) end
     function s:keypressed(key)
+        if self.briefingOpen and not self.tacticsOpen then
+            if key=="return" or key=="space" then self.briefingOpen=false elseif key=="m" then app:combatSafeExit() elseif key=="t" and self.enc.companion then self.tacticsOpen=true else self:navigate(key) end
+            return
+        end
         if self.tacticsOpen then
             if key=="t" or key=="escape" then self.tacticsOpen=false;self.keyboardFocus=nil else self:navigate(key) end
             return
@@ -550,7 +586,7 @@ function CombatScreen.new(app,definition)
         if self:navigate(key) then return end
         local advance=key=="return" or key=="space" or key=="kpenter"
         if self.enc.finished then
-            if advance then if self.enc.outcome=="victory" or self.enc.training then self:continue() else self:retry() end end
+            if advance then if self.enc.outcome=="victory" or self.enc.training or self.enc.enemy.id=="orsted_trial" then self:continue() else self:retry() end end
             return
         end
         if advance and self.tutorial and (self.tutorial.stage=="attack_result" or self.tutorial.stage=="enemy_result") then self:advanceGuide();return end

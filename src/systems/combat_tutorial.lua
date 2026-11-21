@@ -45,13 +45,13 @@ function Tutorial.message(tutorial,enc)
     if not tutorial then return nil end
     local stage=tutorial.stage
     if stage=="attack" then
-        return "NANAHOSHI · 1/6: ATACAR","Golpe de bastón [1]: 1 acción y 0 maná; causa 4 daño. Seleccionar inspecciona; Jugar [Enter] confirma."
+        return "NANAHOSHI · 1/6: ATACAR","Golpe de bastón [1]: 1 acción y 0 maná; causa "..require("src.systems.combat").card("staff_strike",enc).effects.damage.." daño. Seleccionar inspecciona; Jugar [Enter] confirma."
     elseif stage=="attack_result" then
-        return "2/6: VIDA E INTENCIÓN","Enemigo: 22 > "..enc.enemy.hp.." PV. La intención anuncia 4 daño. No gastaste maná: la maldición sigue activa.",true
+        return "2/6: VIDA E INTENCIÓN","Enemigo: "..enc.enemy.maxHp.." > "..enc.enemy.hp.." PV. "..enc.enemy.intent.text.." No gastaste maná: la maldición sigue activa.",true
     elseif stage=="shield" then
         return "3/6: PROTEGERSE","Defensa básica [D]: 1 acción, sin magia ni carta. Ganarás 5 escudo, suficiente para el ataque anunciado."
     elseif stage=="end_turn" then
-        return "4/6: TURNO ENEMIGO","Tienes 5 escudo. Terminar turno [E] ejecuta el ataque de 4 daño y descarta la mano restante."
+        return "4/6: TURNO ENEMIGO","Tienes 5 escudo. Terminar turno [E] ejecuta la intención anunciada y descarta la mano restante."
     elseif stage=="enemy_result" then
         return "5/6: DAÑO Y BLOQUEO","El escudo absorbió el golpe. Rudy: "..enc.player.hp.."/30. Nueva mano, 3 acciones y maná natural bloqueado. El escudo caduca.",true
     elseif stage=="free" then

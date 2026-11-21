@@ -20,28 +20,13 @@ function Suite.run(app)
             if character and chapter.companion then s.decisions[chapter.companion.decisionKey]=character end
         end
         local def=assert(Progression.encounter(s,s.checkpoint))
-        local c={character=def.character,tutorial=def.tutorial,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tacticalContext=def.tacticalContext,unlocked=s.unlocked,combatDeck=s.combatDeck,curse=s.curse,externalEnergy=s.externalEnergy}
+        local support=require("src.systems.companions").context(s,def)
+        local c={relationships=support.relationships,team=support.team,cardLevels=require("src.systems.card_collection").levels(s),character=def.character,tutorial=def.tutorial,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tacticalContext=def.tacticalContext,unlocked=s.unlocked,combatDeck=s.combatDeck,curse=s.curse,externalEnergy=s.externalEnergy}
         s.combat=Combat.new(s.deck,c,function() return 17 end)
         return s,c
     end
     local function win(e,useAlly)
-        local guard=0
-        while not e.finished do
-            guard=guard+1;assert(guard<500,"Estrategia de integración no termina")
-            if Combat.canBreakSeal(e) then Combat.breakSeal(e) end
-            if e.finished then break end
-            if useAlly and Combat.canTactic(e,"coordinate") then Combat.tactic(e,"coordinate")
-            elseif useAlly and Combat.canTactic(e,"together") then Combat.tactic(e,"together") end
-            local best,value
-            for i,id in ipairs(e.hand) do
-                if Combat.canPlay(e,i) then
-                    local card=Combat.card(id);local f=card.effects
-                    local score=(f.damage or 0)+(f.shield or 0)*.7+math.min(f.heal or 0,e.player.maxHp-e.player.hp)+math.min(f.mana or 0,e.player.maxMana-e.player.mana)*.5
-                    if not value or score>value then best,value=i,score end
-                end
-            end
-            if best then Combat.play(e,best) elseif not e.finished then Combat.endTurn(e) end
-        end
+        require("tests.war_balance").solve(e)
         check(e.outcome=="victory","La campaña ofrece una estrategia ganadora legal")
     end
     local s,c=prepare()
@@ -63,11 +48,8 @@ function Suite.run(app)
     check(not Progression.finishCombat(stored,finished) and once==encode(stored),"Confirmar otra vez no duplica cartas, puntos ni transición")
     local afterLoad=assert(Save.validate(clone(stored)))
     check(afterLoad.unlocked.self_joke and #afterLoad.rewardQueue==#stored.rewardQueue,"Carta y entrega pendiente sobreviven a cargar")
-    local battleId
-    for id,node in pairs(Chapters.checkpoints) do
-        if node.kind=="encounter" and node.definition.kind=="magic" and node.definition.requiresCompanion and node.day>=3 then battleId=id;break end
-    end
-    assert(battleId,"Falta encuentro con compañera para integración")
+    -- Escenario estable: este módulo verifica persistencia, no selección aleatoria de dificultad.
+    local battleId="day3_encounter"
     local companion=prepare(battleId,"eris")
     local prior=encode(companion.relationships)
     win(companion.combat,true)

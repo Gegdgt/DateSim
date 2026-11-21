@@ -41,9 +41,12 @@ function Hub.new(app)
             end,(visited and not ready) or (ready and not require("src.systems.family").active(app.session,id)))
         end
         W.panel(18,336,604,20,{shadow=false})
-        if ready then self:button("Viajar solo",190,335,260,23,function()
+        if ready then self:button("Viajar solo",18,335,260,23,function()
             local ok,err=Progression.selectCompanion(app.session,"solo");if ok then app:save();app:resume() else app:notify(err) end
         end) else self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink) end
+        if ready and app.session.day==7 then self:button("Todas las disponibles",288,335,334,23,function()
+            local ok,err=Progression.selectCompanion(app.session,"all");if ok then app:save();app:resume() else app:notify(err) end
+        end) end
     end
     function s:keypressed(key)
         if self:navigate(key) then return end

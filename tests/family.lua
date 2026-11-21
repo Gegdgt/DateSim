@@ -104,7 +104,7 @@ function Suite.run()
   for _,id in ipairs(deck) do if not s.unlocked[id] then Collection.grant(s,id,1) end end
   s.combatDeck=deck;s.externalEnergy=12
   assert(Daily.startActivity(s,"eris_duel"));assert(Daily.resolveActivity(s,"duel"))
-  s.combat=Combat.new(s.deck,{enemyId="eris_training",day=5,difficulty=3,combatDeck=deck,unlocked=s.unlocked,curse=s.curse,externalEnergy=12,cardLevels=Collection.levels(s)},function()return 17 end)
+  s.combat=Combat.new(s.deck,{enemyId="eris_training",day=5,difficulty=5,combatDeck=deck,unlocked=s.unlocked,curse=s.curse,externalEnergy=12,cardLevels=Collection.levels(s)},function()return 17 end)
   require("tests.training").solve(s.combat,case.mode)
   check(Daily.finishBattle(s,s.combat) and s.decisions.activity_duel_result==case.result,"Actividad evalúa desempeño real: "..case.result)
   round(s)
@@ -124,11 +124,11 @@ function Suite.run()
  malformed=clone(s);malformed.family.queue={{id="bad",character="rudeus",kind="departure",phase=1}}
  check(not Save.validate(malformed),"Rechaza partida de quien no es esposa")
  local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_family_v5_migration_tests")
- for _,file in ipairs({Save.filename,Save.backup,"campaign-v6.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
+ for _,file in ipairs({Save.filename,Save.backup,"campaign-v7.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
  local old=fresh();old.version=5;old.family=nil;old.relationships.roxy.love=65
  local bytes=assert(Json.encode(old));assert(love.filesystem.write("campaign-v5.json",bytes))
- local migrated=assert(Save.load());check(migrated.version==6 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
- check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v6 conserva bytes originales v5")
+ local migrated=assert(Save.load());check(migrated.version==7 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v7 conserva bytes originales v5")
  love.filesystem.setIdentity(identity)
  local oldSocial,definition=require("tests.dialogue_branching").fixture("encounter_eris",{"listen","be_honest","encourage","subtle_flirt","light_joke"})
  oldSocial.relationships.eris.love=2;oldSocial.relationships.eris.trust=1

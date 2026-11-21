@@ -103,7 +103,7 @@ function Suite.run()
     local final=agenda(7);final.inventory.antidote=true
     Daily.requestFavor(final,"cliff_notes",nil,true)
     check(final.pending_favors[1].due_day==7,"Encargo final se resuelve antes del epílogo")
-    check(Progression.continueStory(final)=="day7_intro","Historia final sigue accesible con cero actividades")
+    check(Progression.continueStory(final)=="day7_muster","Preparación final sigue accesible con cero actividades")
     check(final.daily.activities_locked and not Daily.startActivity(final,"time_roxy"),"Día siete fija atención antes de resolver matrimonios")
     local trust=final.relationships.roxy.trust
     Daily.applyAttention(final);check(final.relationships.roxy.trust==trust,"Atención final se aplica una sola vez")

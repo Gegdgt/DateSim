@@ -225,7 +225,7 @@ function App:endPractice()
 end
 
 function App:finishCombat(enc)
-    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training) then return false end
+    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training and enc.enemy.id~="orsted_trial") then return false end
     if self.practice then self:endPractice(); return true end
     local ok,err=Progression.finishCombat(self.session,enc)
     if not ok then self:notify(err); return false end
@@ -236,6 +236,8 @@ function App:combatSafeExit()
     if self.practice then self:endPractice(); return end
     -- El punto seguro es la preparación, conservando el checkpoint y los
     -- vínculos previos. No entrega premios ni omite el enfrentamiento.
+    local combat=self.session.combat
+    if combat and combat.revision==0 and combat.context.preparationShield==4 then self.session.economy.nextBattleShield=4 end
     self.session.combat=nil
     self.session.combatPreparation=true
     self:save()

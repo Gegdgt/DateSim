@@ -1,6 +1,6 @@
 # Código completo del proyecto
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, guardado v6, animaciones y audio sintetizado.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, Badigadi de 1000 PV, apoyos por afinidad, guardado v7, animaciones y audio sintetizado.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -11,6 +11,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````text
 tests/artifacts/*.png
 tests/artifacts/*.log
+tests/artifacts/*.csv
 dist/
 *.love
 __pycache__/
@@ -378,8 +379,8 @@ Cada capítulo incluye además una agenda con tres actividades libres repetibles
 | 3 · El primer fragmento | Consulta privada; elección de compañera; exploración del bosque; alarma ilusoria y guardián de las ruinas; primer fragmento; discusión familiar sobre responsabilidades. | Fragmento: +12 de energía externa; Proyectil de Agua y Muro de Tierra; Proponer un plan, Analizar runas y Barrera de Tierra. Investigar con cuidado concede Barrera reforzada. El maná natural sigue bloqueado. |
 | 4 · El precio del silencio | Orsted y Cliff confirman en privado que escribir el secreto tampoco evita la maldición. Encuentro con el emisario; recuerdo de la entrega y consumo de la poción; consejo familiar sobre riesgos; protector del almacén; investigación del antídoto; promesa de Badigadi y práctica opcional. | Pista `potion_origin`; fragmento: +16 de energía externa; Bala de Agua, Proyectil de Piedra, Respuesta enojada, Disculpa sincera y Cambiar de tema. El análisis cuidadoso concede Pantano. |
 | 5 · Lazos puestos a prueba | Tareas individuales con las tres esposas, encuentro social y combate de apoyo para cada una; compromisos, límites y reparaciones. Se anticipan sus proyectos de vida para que las decisiones finales tengan antecedentes. | Refuerzo: +20 de energía externa (máximo 30); Cañón de Agua y su versión superior; técnicas exclusivas si la tarea social tuvo éxito, se asume el compromiso y hay confianza suficiente. |
-| 6 · El desafío del rey inmortal | Preparación y elección de compañera; reflejo distorsionado de Rudy; condiciones del desafío; resistencia de Badigadi, seis brazos y neutralización expresa del sello; entrega del frasco. | `antidote_obtained` e inventario del antídoto. El frasco madura durante la noche. Ni la victoria ni la recogida curan por sí solas. |
-| 7 · La verdadera voz | Elección obligatoria de beber el antídoto; recuperación de voz y magia; explicación directa a sus esposas; revisión de promesas, conflictos, responsabilidades y proyectos; epílogo. | Consumo único del antídoto, maldición inactiva y uno de cinco finales. La cura no suma amor ni confianza. |
+| 6 · El último cerco | Elección de compañera; reflejo de Rudy; lacayo de Hitogami; prueba opcional de Orsted habilitada por investigar las runas. La prueba permite continuar incluso perdiendo. | Camino abierto y preparación del contenedor. El antídoto sigue con Badigadi; voz y magia permanecen bloqueadas. |
+| 7 · El desafío y la verdadera voz | Elegir una compañera, todas las disponibles o viajar solo; Badigadi de 1000 PV, cuatro fases y ruptura del sello; beber el antídoto; conversaciones y epílogo. | `antidote_obtained`, consumo único y uno de cinco finales. Badigadi sigue vivo. La cura no suma afinidad ni restaura matrimonios separados. |
 
 Los IDs históricos de algunos checkpoints (`seal_result`, `seal_truth`, `mirror_final_plan`) permanecen como claves internas para reutilizar las reglas y pruebas de relaciones. Ya no describen una campaña centrada en el Espejo. No se muestran como títulos narrativos.
 
@@ -411,7 +412,7 @@ Cuando dos relaciones siguen siendo viables, las conversaciones del día siete r
 
 `src/data/chapters/day1.lua`–`day7.lua` contienen escenas, encuentros, decisiones y transiciones. `src/data/endings.lua` contiene los cinco epílogos. Los efectos persistentes pasan por eventos con IDs estables, de modo que guardar, cargar y volver a entrar no repite recompensas.
 
-`tests/campaign.lua` recorre 31 campañas reales variando los ocho conjuntos posibles de matrimonios conservados, las tres compañeras y decisiones de reparación. El recorrido registra la carta como pista, equipa exclusivamente técnicas adquiridas, ejecuta combates legales, neutraliza el sello de Badigadi mediante acciones explícitas, comprueba el consumo del antídoto y guarda/carga entre checkpoints. También prueba que una equivocación temprana o del quinto día puede repararse con antecedentes concretos.
+`tests/campaign.lua` recorre 35 campañas reales variando los ocho conjuntos posibles de matrimonios conservados, las tres compañeras y decisiones de reparación. El recorrido registra la carta como pista, equipa exclusivamente técnicas adquiridas, ejecuta combates legales, neutraliza el sello de Badigadi mediante acciones explícitas, comprueba el consumo del antídoto y guarda/carga entre checkpoints. También prueba que una equivocación temprana o del quinto día puede repararse con antecedentes concretos.
 
 La suite recorre **31 campañas completas y los cinco finales**, incluyendo el duelo real antes de continuar las misiones. La integración adicional verifica los cuatro resultados y la revancha reconciliadora. Es una verificación automatizada del flujo y las reglas; no sustituye una sesión larga de prueba narrativa con jugadores. Las cifras de la ejecución actual se mantienen en [VERIFICACION.md](VERIFICACION.md).
 ````
@@ -491,66 +492,50 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Combate durante la maldición de Rudy
 
-El motor conserva vida, acciones, robo, descarte, intenciones, compañeras y reintento mediante comandos reproducibles. La campaña empieza con 30 PV, tres acciones por turno y **maná natural bloqueado en cero**. La maldición se recibe en `context.curse`; el antídoto la desactiva en el capítulo siete.
+Rudy tiene 30 PV, tres acciones por turno y magia natural bloqueada hasta beber el antídoto. Las cartas físicas iniciales causan entre 1 y 3 puntos; después mejora cartas y canaliza magia mediante energía externa. Cada compañera disponible tiene una acción propia por turno. [Configuración, fórmulas, habilidades y balance de la Fase 4](FASE_4_COMBATE.md).
 
-## Mazo inicial y controles
+## Preparación y controles
 
-Nanahoshi entrega exactamente cinco técnicas: Golpe de bastón (4 daño), Corte sencillo (5 daño y 1 PV de esfuerzo), Lanzamiento de piedra (3 daño), Empuje (2 daño y 3 escudo), Ataque coordinado (4 daño y debilitamiento de un turno). Todas cuestan una acción y cero maná. El esfuerzo nunca puede pagar el último PV.
+Antes de luchar se muestran enemigo, PV, equipo, afinidad y potencia. **T** permite revisar habilidades, costes, cargas y recargas; **M** vuelve a preparar el mazo y comprar mejoras. El mazo admite entre cinco y diez cartas distintas adquiridas y al menos dos ataques. Las exclusivas requieren a su esposa presente y con matrimonio activo. Comenzar habilita las acciones.
 
-La mano contiene tres cartas. Clic o 1–3 selecciona; Enter confirma; E termina el turno. **D: defensa básica** otorga cinco puntos de escudo; **V: esquiva** otorga tres. Son acciones físicas independientes de la mano, de un uso por turno cada una. H abre el historial y T las tácticas. Los mazos admiten entre cinco y diez cartas distintas adquiridas, con al menos dos ataques de tres o más de daño.
+| Control | Acción |
+| --- | --- |
+| Clic o 1–3 | Inspeccionar una carta |
+| Enter | Confirmar carta o comenzar desde preparación |
+| D | Defensa: 5 escudo físico, una acción, una vez por turno |
+| V | Esquiva: 3 escudo físico, una acción, una vez por turno |
+| T | Elegir compañera y habilidad |
+| E | Terminar turno; actúa el enemigo y se roba nueva mano |
+| H | Historial de daños, bloqueos y apoyos |
+| B | Romper un anclaje del sello expuesto: una acción |
+| C | Contraataque de entrenamiento con Eris tras defensa efectiva |
 
-## Energía y protección
+Escudos absorben antes que la vida y caducan al volver a Rudy. Golpes múltiples consumen el mismo escudo entre impactos. Intenciones y vistas previas consideran debilitamientos y muestran daño real. El artefacto recupera cuatro de energía por turno hasta su capacidad adquirida, máximo 30; el maná natural permanece separado y bloqueado. El esfuerzo no puede consumir el último PV.
 
-El primer fragmento da una capacidad de 12 de energía externa, utilizada por las cartas encantadas de agua y tierra. El artefacto se recarga hasta cuatro puntos por turno; esto no restaura la magia natural de Rudy. `player.mana` y `player.externalEnergy` son campos separados. Las cartas con `resource="natural"` se rechazan antes del antídoto. Tras curarse, Rudy puede canalizar su maná normal.
+## Progresión y compañeras
 
-La interfaz distingue escudo físico y mágico. Ambos absorben daño antes de los PV y caducan al comenzar el turno siguiente. El motor conserva su suma en `shield` para las vistas y registros originales. Los estados de debilitamiento y vulnerabilidad modifican también la intención y la vista previa, con duraciones finitas.
+PV ordinarios de referencia: 10, 20, 36, 55, 180, 260 y 300 según día; guardianes y reflejos varían. Aparecen defensas, golpes preparados, debilitamientos e interrupciones. Día 6 incluye el lacayo de Hitogami y la prueba opcional no letal de Orsted. Día 7 presenta a Badigadi con **1000 PV**, independientemente del equipo.
 
-Curación básica cuesta una acción y tres puntos de energía mágica, recupera hasta cinco PV y permite **tres usos por combate**. Las cartas híbridas con curación, como Magia compartida, también tienen tres usos; el detalle muestra los restantes y explica el bloqueo al agotarlos. La vida nunca supera su máximo. Sylphiette dispone de tres curaciones efectivas por combate: actuar con Rudy ileso no consume una. Después puede seguir atacando y protegiendo. Estos límites se reconstruyen al cargar; terminar un turno no los repone y reintentar comienza con las cargas iniciales.
+El daño de apoyo escala con el promedio de amor y confianza, acotado a 0–100 y dividido entre 100. Especiales máximos: Sylphiette 90, Eris 150 y Roxy 110; tres usos, recarga de tres turnos y costes de 4, 4 y 5 de energía. Sus ataques normales son menores. Roxy analiza y reduce defensas; Eris protege e interrumpe; Sylphiette alterna ataque, barrera y curación. Las separadas no participan.
 
-## Dificultad por día
-
-`src/data/enemies.lua` conserva las definiciones base y publica `difficulty` y `resolve(id, context)`. El contexto admite `day` y una dificultad opcional de 1 a 6. Una batalla conserva ese contexto durante guardado y reintento. Los datos compartidos nunca se modifican.
-
-| Día | Ajuste sobre el enemigo base | Repertorio adicional |
-| --- | --- | --- |
-| 1 | Sin bonificación; tutorial de 22 PV y ataques de 4 | Patrón guiado |
-| 2 | Sin bonificación; bestia de 35 PV | Ataque, preparación y defensa |
-| 3 | Sin bonificación; guardián de 44 PV | Golpe fuerte anunciado y defensa |
-| 4 | +4 PV, +1 daño, +1 escudo | Debilitamiento |
-| 5 | +18 PV, +2 daño, +2 escudo | Interrupción y dos golpes anunciados |
-| 6 | +8 PV, +1 daño, +1 escudo | Interrupción |
-| 7 | Desenlace sin enfrentamientos | Ninguno |
-
-Los bonos tienen topes de 80 PV, 15 de daño por ataque y 9 de escudo. El tutorial siempre usa el primer nivel. **Badigadi y los jefes conservan sus estadísticas y fases**, sin recibir estos bonos. El encuentro del día cinco con la anomalía pasa de 22 a 40 PV y añade acciones; la progresión no se reduce a subir su vida.
-
-Las partidas v3 con un combate ya empezado antes de este ajuste se validan reproduciendo sus comandos con las reglas anteriores. Conservan exactamente enemigo, PV, mano, mazo, descarte, semilla, historial y revisión. Su `balanceVersion=1` mantiene esas reglas hasta acabar o reintentar esa batalla; no se añaden límites de curación o dificultad a mitad del encuentro. Los combates nuevos usan `balanceVersion=2`. Esta migración no cambia el formato general de campaña ni acepta estados manipulados; los snapshots inválidos siguen usando la recuperación segura existente.
-
-Interrumpir quita una acción en el siguiente turno de Rudy, dejándole dos para actuar. Terminado ese turno recupera tres. Cada recuperación enemiga de escudo admite tres usos; después la intención anuncia que está agotada. Los ataques múltiples anuncian daño por golpe y cantidad: el mismo escudo se va consumiendo entre los impactos. El resumen visual acumula todo el ataque y muestra daño, bloqueo y PV perdidos; el historial conserva cada golpe.
-
-## Compañeras
-
-Sylphiette protege y cura, Roxy analiza y debilita, Eris golpea e interrumpe. Atacar juntos, dejar que ella actúe y defenderla no requieren magia natural de Rudy. Las combinaciones mágicas consumen energía externa mientras está maldito. Una sola decisión táctica contextual por encuentro puede modificar la relación, al confirmar la victoria; ataques repetidos no conceden amor. Proteger a Eris herida ayuda; impedir actuar a Eris capaz perjudica la confianza.
-
-## Duelo de entrenamiento con Eris
-
-El día cinco usa el motor de combate con resistencia no letal y sin una segunda Eris como aliada. Ella tiene 42 puntos de resistencia, desvía dos puntos de los ataques con espada y es vulnerable al control de tierra. Después de un bloqueo o esquiva efectivos, **C** permite un contraataque de bastón de cinco puntos por una acción. La ventana se consume una vez.
-
-El motor registra intentos, impactos, daño, bloqueos, esquivas, acciones tácticas, turnos vacíos y oportunidades desperdiciadas. Al terminar, una pantalla de valoración distingue victoria, derrota honorable, derrota honesta y sospecha de dejarse ganar. Los valores, umbrales, memoria y revancha están documentados en [Afinidad y entrenamiento](AFINIDAD_Y_ENTRENAMIENTO.md). La recompensa afectiva se aplica una sola vez al leer la reacción; perder continúa la historia y no abre el reintento de las batallas normales.
+La curación de Sylphiette cuesta dos de energía, recarga en dos turnos y tiene tres usos. Con afinidad media 90/80/50/25 cura respectivamente 40%/30%/20%/10% de PV máximos, sin sobrepasarlos. Por debajo de 25, la interferencia de la maldición causa 40% de daño: exige confirmación explícita y puede causar derrota. Cancelar no gasta recursos.
 
 ## Badigadi y el antídoto
 
-`badigadi_final` tiene 72 PV y cuatro fases:
+1. Resistencia: ataques de 4 y preparación.
+2. A 750 PV: tres ataques de 2, alternados con preparación.
+3. A 350 PV: tres ataques de 3 y resistencia de 6. Agua, análisis y especiales combinados ayudan a superarla.
+4. A cero PV: dos anclajes del sello, 12 de resistencia total; **B** quita 6 por acción. Agotar PV no basta para ganar.
 
-1. Resistencia: alterna golpes y preparación.
-2. Seis brazos: al perder la mitad de la vida anuncia tres golpes consecutivos de tres puntos, alternados con una pausa.
-3. Romper el sello: cero PV expone los anclajes, pero **no concede victoria**. `B` o el botón Romper sello ejecuta `Combat.breakSeal`, cuesta una acción y elimina seis de sus doce puntos de resistencia. El sello aún puede emitir pulsos.
-4. Victoria: con ambos anclajes neutralizados Badigadi acepta su derrota y entrega el antídoto por su promesa. No muere.
+Badigadi acepta la derrota y sigue vivo. La victoria entrega el antídoto una vez; beberlo después restaura voz y magia sin reparar relaciones automáticamente. Puede vencerse sin Orsted ni compañeras. Perder permite reintentar o revisar el mazo. El plazo máximo es 75 turnos para el jefe y 30 para encuentros ordinarios.
 
-Una derrota conserva las decisiones previas y permite reintentar con el mismo reparto o regresar a preparación. Nunca crea un sexto final ni concede premios. El guardado valida el registro completo de cartas, defensa, esquiva, tácticas y sello antes de restaurar la batalla.
+## Entrenamiento y continuidad
 
-## Verificación ejecutada
+El duelo con Eris conserva resistencia no letal, contraataque, métricas de esfuerzo y resultados narrativos. Perder permite continuar. [Afinidad, entrenamiento y revancha](AFINIDAD_Y_ENTRENAMIENTO.md).
 
-Las pruebas se ejecutan con LuaJIT incluido en LÖVE 11.5. `tests/combat.lua` pasa **1620 comprobaciones y 120/120 victorias**. `tests/combat_balance.lua` recorre los encuentros de campaña con seis semillas, mazo inicial y ampliado, y las compañeras elegibles: **919 comprobaciones y 288/288 victorias legales**, leyendo intenciones y utilizando defensa. También comprueba cargas de curación, interrupción de un turno, daño múltiple, bloqueo, dificultad acotada, datos inmutables, ausencia de combates en el día siete y restauración por replay. No se exige obtener una carta concreta para superar las batallas. Entrenamiento añade 84 comprobaciones de reglas y 444 de integración en la App con los cuatro desenlaces, guardado, música, controles, barras y reconciliación. [Ejecuciones y registros](VERIFICACION.md).
+Los combates nuevos guardan `warVersion=1` y `balanceVersion=3` dentro del formato v7. Las batallas antiguas se reproducen con módulos históricos, incluidas sus cifras originales; los archivos anteriores no se sobrescriben. Cargar no duplica cargas, acciones ni premios. [Guardado](GUARDADO.md).
+
+La verificación incluye 576 simulaciones del jefe, 36 encuentros intermedios, fórmulas de afinidad, controles reales, capturas y recorridos completos de campaña con compras legales. Los ensayos históricos están separados del balance actual. [Resultados medidos](VERIFICACION.md).
 ````
 
 ## docs/DIALOGOS.md
@@ -1202,6 +1187,126 @@ Remove-Item Env:DATESIM_TEST_GROUP
 `tests/family.lua` cubre actividades, efectos reales, duelos, cupos, penalizaciones, recuperación, separaciones, encargos, libros y migración. `tests/family_ui.lua` ejercita confirmación/cancelación, diálogos, anillo guardado, caballo, librería y píxeles grises. La campaña se prueba además con todos los finales y distribuciones diarias; véase [VERIFICACION.md](VERIFICACION.md).
 ````
 
+## docs/FASE_4_COMBATE.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_4_COMBATE.md`
+
+````markdown
+# Fase 4: combate, afinidad y Badigadi
+
+Implementado sobre la campaña existente para LÖVE 11.5 / LuaJIT. Se conservan los 40 IDs de cartas, los mazos, PNG y ASE. Estas reglas corresponden a combates nuevos; las batallas históricas conservan sus reglas al cargar.
+
+## Acciones y recursos
+
+Rudy comienza con 30 PV, tres acciones por turno y magia natural bloqueada. Cada compañera presente tiene **una acción propia por turno**, que puede intercalarse con las de Rudy. Terminar turno ejecuta la intención enemiga, elimina los escudos restantes y renueva las acciones. Los apoyos no se ejecutan automáticamente ni duplican acciones de Rudy.
+
+El artefacto recupera cuatro de energía externa por turno hasta su capacidad adquirida (máximo 30). Los apoyos con coste mágico comparten ese recurso; después del antídoto utilizan maná natural. Los ataques normales de compañeras no consumen el recurso de Rudy. Defensa básica y esquiva cuestan una acción cada una: conceden cinco y tres de escudo físico respectivamente, una vez por turno. Eris concede protección física; Sylphiette y Roxy, mágica. Todo escudo de Rudy caduca al volver su turno.
+
+Las cartas consultan `card_collection`: en nivel 1, bastón causa 2, espada 3 con esfuerzo de 1 PV, piedra 1, empuje 1 y coordinación 2. El esfuerzo nunca paga el último PV. Se mantienen diferencias de elemento, daño y coste entre bastón, espada, ataques físicos, agua, tierra y magia combinada. Cañón de Agua superior (`water_cannon`) llega a 250 de daño base en nivel 10; bastón a 20 y Cañón de Agua (`heavy_spell`) a 125. Desde nivel 7 la definitiva exige 12 de energía, 6 PV y un uso por batalla; las avanzadas tienen dos usos y mayor coste mágico. Curación básica mejora de 5 a 10 PV y mantiene tres usos. [Fórmulas de cartas](FASE_2_PROGRESION.md).
+
+## Enemigos por día
+
+`src/data/battle_balance.lua` concentra magnitudes y habilidades; `enemies.resolve(id, context)` produce una copia independiente para cada batalla.
+
+| Día | PV base | Ataque | Escudo | Patrón añadido |
+| --- | ---: | ---: | ---: | --- |
+| 1 | 10 | 2 | 0 | Ataque y pausa; tutorial corto |
+| 2 | 20 | 3 | 2 | Defensa, máximo tres usos |
+| 3 | 36 | 4 | 3 | Preparación y golpe de daño normal +3 |
+| 4 | 55 | 5 | 5 | Debilita a Rudy un turno |
+| 5 | 180 | 6 | 7 | Interrumpe una acción; dos golpes de 3 |
+| 6 | 260 | 7 | 9 | Lacayo de Hitogami y prueba opcional de Orsted |
+| 7 | 300 | 8 | 10 | Actividades ordinarias; el jefe tiene configuración propia |
+
+Guardián de las ruinas multiplica PV por 1,15; reflejo de Rudy por 1,10; reflejo distorsionado por 1,05, redondeando al entero más cercano. Los entrenamientos conservan reglas específicas. El salto de los días 5–6 acompaña el acceso a técnicas mejoradas y apoyos: se verifica con acciones legales, defensa, mejoras pagadas y recorridos de campaña. Hay además 36 simulaciones intermedias: seis semillas por día, sin compañeras, niveles 1, 1, 2, 3, 4 y 5.
+
+El Día 6 abre el camino tras el reflejo y el lacayo. Investigar las runas (`observatory_research="tested"`) habilita una prueba no letal de Orsted. Aceptarla es opcional y perder permite continuar; no concede antídoto. El Día 7 permite elegir una compañera, todas las disponibles o viajar solo. Una separación definitiva excluye apoyos y cartas exclusivas de esa esposa.
+
+## Afinidad y habilidades
+
+El contexto toma amor, confianza y matrimonio persistentes al comenzar. Las relaciones no cambian a mitad de batalla; cargar reproduce el mismo contexto.
+
+```lua
+local affinity = (love + trust) / 2
+local multiplier = math.max(0, math.min(100, affinity)) / 100
+local damage = math.floor(baseDamage * multiplier + 0.5)
+```
+
+Después se aplican resistencia, vulnerabilidad y escudo. La interfaz distingue **daño base** de **PV que perderá ahora**, y la preparación compara el especial con el último combate completado. Afinidad negativa produce cero daño.
+
+| Habilidad | Potencia máxima / efecto | Energía | Recarga | Usos por batalla |
+| --- | --- | ---: | ---: | ---: |
+| Sylphiette: Proyectil | 12 | 0 | 1 | Sin límite adicional |
+| Luz coordinada | 90; atraviesa resistencia reforzada | 4 | 3 | 3 |
+| Curar a Rudy | Tabla inferior | 2 | 2 | 3 |
+| Barrera familiar | 8 escudo | 2 | 1 | Sin límite adicional |
+| Eris: Corte normal | 24 | 0 | 1 | Sin límite adicional |
+| Ataque fuerte | 65 | 0 | 2 | 5 |
+| Interrumpir | 12; debilita un turno | 0 | 2 | Sin límite adicional |
+| Proteger a Rudy | 5 escudo | 0 | 1 | Sin límite adicional |
+| Espada coordinada | 150; atraviesa resistencia reforzada | 4 | 3 | 3 |
+| Roxy: Proyectil mágico | 18 | 0 | 1 | Sin límite adicional |
+| Analizar debilidad | Debilita y anula resistencia 2 turnos | 0 | 2 | Sin límite adicional |
+| Disolver defensa | 10; quita hasta 12 escudo; expone 3 turnos | 2 | 2 | Sin límite adicional |
+| Coordinar magia | 40; debilita un turno | 2 | 2 | Sin límite adicional |
+| Conjuro combinado | 110; atraviesa resistencia reforzada | 5 | 3 | 3 |
+| Muro de apoyo | 7 escudo | 2 | 1 | Sin límite adicional |
+
+Las potencias escalan por afinidad; escudos y estados conservan su magnitud. Debilitar reduce dos puntos por golpe enemigo. Una recarga de tres permite repetir en turno 4 lo usado en turno 1; las cargas agotadas no se regeneran. Cada esposa puede registrar una consecuencia de coordinación (+1 amor/+2 confianza) al vencer, sujeta a modulación familiar y al límite diario de +10 por estadística.
+
+| Afinidad media de Sylphiette | Efecto sobre PV máximos |
+| --- | --- |
+| 90 o más | Cura 40% |
+| 80 a menos de 90 | Cura 30% |
+| 50 a menos de 80 | Cura 20% |
+| 25 a menos de 50 | Cura 10% |
+| Menos de 25 | Interferencia: daño del 40% |
+
+Con 30 PV máximos: +12, +9, +6, +3 o −12. Se cura como máximo la vida faltante; estar ileso no consume carga. La interferencia daña directamente los PV, puede derrotar y exige confirmación visible. Cancelar no gasta acción, carga ni energía. Se atribuye el problema a la sincronización de la maldición, no a la capacidad profesional de Sylphiette.
+
+## Badigadi: 1000 PV, cuatro fases
+
+1. **Resistencia, 1000–751 PV:** golpe de 4 y preparación alternados.
+2. **Seis brazos, 750–351 PV:** tres golpes de 2 y preparación alternados; el escudo se consume entre impactos.
+3. **Resistencia mejorada, 350–1 PV:** tres golpes de 3 y preparación; reduce en 6 cada ataque mientras Roxy no lo exponga. Los especiales combinados de compañeras atraviesan esa resistencia. El agua obtiene +8 antes de resistencia; la vulnerabilidad ordinaria añade +2.
+4. **Protección del antídoto, 0 PV:** sello con 12 de resistencia. Dos acciones explícitas de `Romper sello [B]` eliminan 6 cada una. El sello puede emitir pulsos de 3. Solo romperlo concede victoria narrativa.
+
+Badigadi sigue vivo. `day7_boss → day7_victory` entrega una vez el antídoto; beberlo en la escena posterior libera voz y magia. La cura no reactiva matrimonios separados. Se mantienen los 1000 PV con cualquier equipo. Límite de turnos: 75 para el jefe, 30 para ordinarios y 18 para entrenamiento de Eris. Agotar el plazo causa derrota, no bloqueo.
+
+## Simulaciones reproducibles
+
+`tests/war_balance.lua` ejecuta 576 batallas: niveles 1/5/10 × ocho equipos × afinidades 20/50/90 × ocho semillas. Usa diez cartas a nivel homogéneo, capacidad externa 30 y magia natural bloqueada para aislar variables. **No representa una colección que deba maximizarse en campaña.** Los recorridos completos compran mejoras con oro y copias reales por separado.
+
+La estrategia observa intenciones, defiende, cura cuando conviene, explota agua, análisis e interrupción y respeta costes, usos y recargas. [Resultados completos en CSV](BALANCE_FASE_4.csv). Máscaras: bit 1 Sylphiette, bit 2 Roxy, bit 4 Eris. Las medias incluyen derrotas. `mean_shield` cuenta escudo generado, no necesariamente absorbido; `mean_healing`, curación efectiva; daño por turno mide PV quitados al jefe, sin la resistencia del sello.
+
+| Nivel | Equipo / afinidad | Victorias | Turnos medios | PV restantes | Daño/turno | Curación | Escudo |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | Solo | 6/8 | 71,63 | 19,38 | 13,98 | 4,00 | 200,00 |
+| 1 | Tres / 90 | 8/8 | 7,00 | 29,63 | 142,86 | 0,25 | 20,88 |
+| 5 | Solo | 8/8 | 22,25 | 23,75 | 45,07 | 9,75 | 44,00 |
+| 5 | Tres / 20 | 8/8 | 18,13 | 28,63 | 55,37 | 2,63 | 43,00 |
+| 5 | Tres / 50 | 8/8 | 9,75 | 29,63 | 102,78 | 2,75 | 23,88 |
+| 5 | Tres / 90 | 8/8 | 5,25 | 30,00 | 191,67 | 0,88 | 19,38 |
+| 10 | Solo | 8/8 | 8,88 | 26,00 | 115,08 | 9,88 | 21,00 |
+| 10 | Tres / 90 | 8/8 | 4,25 | 28,75 | 237,50 | 9,25 | 8,75 |
+
+Todas las combinaciones de nivel 5/10 ganan sus ocho semillas. Nivel 1 solo pierde dos por plazo: mejorar algunas cartas importa. Más apoyo ofrece opciones, pero un especial con afinidad baja puede rendir menos que reservar energía para una carta fuerte; se puede omitir ese apoyo. Son frecuencias de esta estrategia y estas semillas, no una probabilidad universal de victoria humana. Pasar turnos sin actuar pierde incluso con nivel 10 y tres esposas a afinidad 100.
+
+## Arquitectura, guardado y pruebas
+
+`companions.lua` calcula afinidad y equipo; `support_actions.lua` resuelve habilidades; `combat.lua`, turnos y comandos; `support_panel.lua`, preparación y confirmación. `war_chapters.lua` enlaza los encuentros antes de instalar la agenda. Nuevas habilidades y magnitudes se declaran en datos.
+
+Guardado **v7**, con archivo y respaldo propios: migra v6/v5/v4 sin modificarlos. Combates nuevos guardan `context.warVersion=1`, `balanceVersion=3`, relaciones iniciales, equipo, cargas, recargas y acciones. Restaurar reproduce los comandos, incluidos apoyos y confirmación de riesgo, y compara el resultado; no repone cargas ni concede premios. `combat_legacy.lua` y `enemies_legacy.lua` preservan las batallas anteriores. Si una partida obtuvo el antídoto en el antiguo Día 6, continúa su desenlace sin exigir otro jefe.
+
+Las suites `war`, `war_balance` y `war_ui` cubren fórmulas, umbrales 24.99/25/49/50/79/80/89/90/100, valores negativos, recargas, pulsaciones repetidas, separación, fases, carga, barras y riesgo. `campaign` recorre siete días con compras legales; `restructure_integration` usa las pantallas reales. [Verificación ejecutada](VERIFICACION.md).
+
+```powershell
+$env:DATESIM_TEST_GROUP='war-ui'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+# Suite completa: quitar DATESIM_TEST_GROUP y DATESIM_TEST_MODULE.
+```
+````
+
 ## docs/GUARDADO.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/GUARDADO.md`
@@ -1209,18 +1314,20 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 6**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 7**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v6.json` | Partida actual. |
-| `campaign-v6.backup.json` | Última partida anterior válida. |
-| `campaign-v6.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v7.json` | Partida actual. |
+| `campaign-v7.backup.json` | Última partida anterior válida. |
+| `campaign-v7.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
 ## Estado persistido
+
+La versión 7 añade el contexto de combate `warVersion=1`: equipo y relaciones iniciales, acción propia de cada compañera, usos, recargas y comandos de apoyo. `support_previous_<esposa>` conserva la potencia del especial en el último combate completado para compararla en preparación. La selección del Día 7 admite una esposa, `all` o `solo`; se filtran las separadas.
 
 La versión 6 añade `family`: progreso de actividades, advertencias, ausencias, separaciones definitivas, libros, recetas, plazo del recado y escenas pendientes con fase/tiempo. Conserva relaciones entre −100 y 100, proveedor y aceleración de encargos y reservas de ayuda sin visitas. Un matrimonio separado permanece separado aunque se cargue otra escena o se cure la maldición. [Reglas familiares](FASE_3_FAMILIA.md).
 
@@ -1238,7 +1345,7 @@ Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: 
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v6. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v7. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -1246,23 +1353,25 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-El motor social conserva su soporte de replay anterior, pero la campaña v6 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
+El motor social conserva su soporte de replay anterior, pero la campaña v7 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
 Antes de escribir se normalizan los datos. El guardado anterior válido se copia al respaldo; la carga intenta primero el principal y luego el respaldo. Esto es una escritura con respaldo, no una promesa de reemplazo atómico del sistema de archivos.
 
+El límite de lectura y escritura es 2 MiB (`Save.maxBytes`): permite combinar un historial extenso con los comandos de hasta 75 turnos del jefe. La prueba de persistencia guarda 582.563 bytes, 600 entradas de historial y 414 comandos; recupera el turno 70 y todos los apoyos. Si la representación supera el límite, se rechaza antes de escribir un archivo que después no pudiera cargarse.
+
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
-Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v6. [Dificultad y límites](COMBATE.md).
+Los combates nuevos guardan `balanceVersion=3` y `context.warVersion=1`, perfil por día, niveles de cartas, equipo y apoyos. El replay verifica PV, fase, mano, recursos, acciones, usos y recargas. `combat_legacy.lua` y `enemies_legacy.lua` conservan balances anteriores para terminar batallas históricas con sus reglas originales. Este versionado es independiente del esquema de campaña. [Reglas de combate](FASE_4_COMBATE.md).
 
 ## Importación de partidas anteriores
 
-Si no hay v6 válido, **Continuar** busca v5 y luego v4, con sus respaldos. V5 conserva niveles, oro, relaciones y progreso; inicializa el registro familiar y respeta las fechas de encargos heredados. V4 recibe primero la migración de economía (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v6 y **no modifica v5 ni v4**. Las partidas nuevas empiezan en 50/50; migrar no reinicia estadísticas históricas.
+Si no hay v7 válido, **Continuar** busca v6, v5 y v4 con sus respaldos. V6 conserva familia, economía y progreso; v5 recibe los campos familiares; v4 recibe primero la migración económica (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v7 y **no modifica v6, v5 ni v4**. Migrar no reinicia estadísticas. Si el antídoto fue obtenido en el antiguo Día 6, el Día 7 continúa hacia su uso sin exigir repetir el jefe. Un combate histórico mantiene sus reglas y comandos, incluso el antiguo Badigadi de 72 PV.
 
 Los registros sociales anteriores conservan sus efectos históricos durante el replay; las nuevas acciones usan niveles y presupuesto diario. Los combates en curso conservan sus reglas anteriores hasta terminar. Los nuevos guardan `context.progressionVersion=1`, niveles por ID y preparación inicial, además de los comandos existentes. Cambiar el nivel durante un encuentro está prohibido.
 
-El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v6, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v7, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
@@ -1274,7 +1383,7 @@ El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pa
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v6_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
+La suite general usa `cartas_del_destino_v7_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
 ````
 
 ## docs/MALDICION_RUDY.md
@@ -1416,14 +1525,14 @@ Rudy tiene 30 PV y tres acciones por turno. Sus ataques físicos iniciales no co
 | D | Defensa básica: cinco de escudo físico, una acción, una vez por turno. |
 | V | Esquiva: tres de escudo físico, una acción, una vez por turno. |
 | C | Contraataque contra Eris tras bloquear o esquivar efectivamente: una acción. |
-| T | Elegir táctica de la compañera. |
+| T | Elegir compañera y habilidad de apoyo. |
 | E | Terminar turno y robar una nueva mano después de la acción enemiga. |
 | H | Consultar historial de daños, bloqueos y acciones. |
 | B | Neutralizar un anclaje del sello de Badigadi cuando esté expuesto. |
 
-Defensa y esquiva no necesitan cartas. El escudo absorbe antes que la vida y caduca al comenzar el siguiente turno. Los fragmentos recuperados permiten usar energía externa para los hechizos de agua y tierra: el indicador natural continúa bloqueado hasta la cura. Sylphiette cura/protege, Roxy analiza/conjura y Eris golpea/interrumpe. Sus tácticas pueden tener consecuencias afectivas según peligro y heridas.
+Defensa y esquiva no necesitan cartas. El escudo absorbe antes que la vida y caduca al comenzar el siguiente turno. Los fragmentos recuperados permiten usar energía externa para los hechizos de agua y tierra: el indicador natural continúa bloqueado hasta la cura. Sylphiette cura/protege, Roxy analiza/conjura y Eris golpea/interrumpe. Cada compañera tiene una acción propia por turno; sus ataques escalan con el promedio de amor y confianza. Antes de comenzar se muestran potencia, costes, recargas y usos. Las separadas no participan. Con afinidad menor de 25, la curación de Sylphiette exige confirmar el riesgo: la interferencia causa daño del 40% de los PV máximos y puede derrotar a Rudy.
 
-Badigadi entra en la fase de seis brazos al perder la mitad de su resistencia. Cuando llega a cero PV, el sello aún protege el antídoto. Usa **Romper sello [B]** dos veces, una acción por anclaje. Badigadi acepta su derrota y sigue vivo. Perder permite reintentar o preparar el mazo; no es un final adicional.
+Badigadi tiene 1000 PV en el Día 7. A 750 entra en la fase de seis brazos; a 350 refuerza su resistencia, que el agua, análisis y especiales combinados ayudan a superar. Cuando llega a cero PV, el sello aún protege el antídoto. Usa **Romper sello [B]** dos veces, una acción por anclaje. Badigadi acepta su derrota y sigue vivo. Perder permite reintentar o preparar el mazo; no es un final adicional.
 
 ## Entrenar con Eris
 
@@ -1437,7 +1546,7 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v6.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v7.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
 ````
 
 ## docs/RECURSOS.md
@@ -1623,7 +1732,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 6. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 7. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
 
@@ -1675,6 +1784,8 @@ Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolut
 
 ## Cartas sociales y combate
 
+`battle_balance.lua` declara enemigos por día y habilidades de apoyo. `companions.lua` toma las relaciones persistentes; `support_actions.lua` aplica afinidad, costes, acciones y recargas. `war_chapters.lua` coloca el jefe en el Día 7. El guardado v7 reproduce apoyos mediante comandos y conserva batallas anteriores con módulos `*_legacy`. [Arquitectura y balance](FASE_4_COMBATE.md).
+
 Las cartas sociales declaran ID, categoría, tono, coste, contextos, frases, efectos, modificadores y obtención. El encuentro conserva la mano y sus acciones; la vista previa no muta el estado. La resolución muestra frase encantada, reacción y cambios, y bloquea entradas repetidas durante la animación. Repetir el mismo acontecimiento no acumula amor.
 
 Los dos mazos admiten 5–10 cartas distintas adquiridas. El social valida viabilidad por personaje; el de combate exige dos ataques ofensivos. Las habilidades exclusivas requieren su compañera. El combate mantiene maná natural, energía externa, escudo físico y mágico, acciones, PV, estados, intenciones y comandos reproducibles. Las tácticas no confirman consecuencias afectivas hasta resolver la victoria. [Combate](COMBATE.md), [persistencia](GUARDADO.md).
@@ -1687,7 +1798,42 @@ La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERI
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación de familia y actividades — Fase 3
+# Verificación de combate y afinidad — Fase 4
+
+Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real e identidades de prueba aisladas. **39 126 comprobaciones**, tomando una ejecución válida de cada módulo y sin sumar repeticiones. Los PNG y ASE originales no cambiaron.
+
+La ejecución general completó reglas, narrativa y los **35 recorridos de campaña**. Una prueba de integración anterior elegía un encuentro mediante `pairs` y atacaba sin defenderse: se sustituyó por un escenario estable de persistencia y la estrategia actual, que lee intenciones y usa acciones legales. Se volvió a ejecutar el grupo gráfico completo. Los grupos focalizados finales y la campaña gráfica terminaron con **`ALL TESTS PASSED`, salida 0**; la validación final consta de la suite general y esas ejecuciones focalizadas, no de una segunda corrida completa.
+
+| Cobertura | Resultado |
+| --- | --- |
+| Reglas nuevas: fórmulas, umbrales, daño real, curación, recargas, Orsted, separación, guardado y migración | 217 comprobaciones; incluye 36 batallas intermedias |
+| Balance de Badigadi | 1 200 comprobaciones; 576 simulaciones, ocho composiciones familiares |
+| Interfaz de apoyo, preparación, cuatro fases, antídoto y confirmación de riesgo | 10 comprobaciones; 12 capturas reales |
+| Campaña de siete días, cinco finales, distribución libre y compras legales | 24 306 comprobaciones; 35 recorridos completos |
+| Campaña gráfica | 1 339 comprobaciones; 767 pasos de pantalla |
+| Combate gráfico e integración | 44 + 24 comprobaciones |
+| Compatibilidad de combates históricos | 1 620 + 956 comprobaciones; 120 + 300 victorias |
+| Entrenamiento y su integración | 84 + 444 comprobaciones |
+| Familia e interfaz | 228 + 2 400 comprobaciones |
+| Ciclo diario e interfaz | 1 017 + 36 comprobaciones |
+| Niveles, economía e interfaz | 398 + 25 comprobaciones |
+| Diálogos e interfaz | 73 + 2 788 + 277 comprobaciones |
+| Barras, afinidad e introducción | 138 + 260 + 34 comprobaciones |
+| Recursos, movimiento, retratos, audio y matrimonios | 654 + 172 + 181 + 101 + 100 comprobaciones |
+
+El balance actual se evalúa en `war_balance`, `war`, `campaign` y las pantallas. `combat` y `combat_balance` mantienen fixtures del motor histórico para comprobar compatibilidad; sus victorias no se presentan como medidas del nuevo jefe. Los perfiles actuales de días 5/6 usan 180/260 PV base y se probaron en los 35 recorridos finales.
+
+Badigadi mantiene 1000 PV en todas las simulaciones. Con cartas de nivel 5 o 10 gana la estrategia de prueba en las ocho semillas de cada combinación; con nivel 1 y Rudy solo gana 6/8 y pierde dos por plazo. [CSV completo](BALANCE_FASE_4.csv) y [metodología, mazo y métricas](FASE_4_COMBATE.md). Las simulaciones de nivel homogéneo aíslan variables; los recorridos de campaña usan únicamente cartas adquiridas y mejoras pagadas. La especialización alcanza Bastón y Dar ánimo a nivel 10: ingreso 1 908 oro, saldo 1 106 y 238 994 bytes de progreso final. Orsted no es requisito para ninguna victoria del jefe.
+
+Se probaron 24.99, 25, 49, 50, 79, 80, 89, 90 y 100 de afinidad, además de valores negativos y amor distinto de confianza. Los tests comparan la fórmula con el daño aplicado, no solo la vista previa. La interferencia de Sylphiette exige confirmar; cancelar no gasta y aceptar puede dejar a Rudy en cero PV. Las barras convergen al resultado real. Roxy muestra el daño posterior a disolver escudo y exponer resistencia.
+
+La migración v6→v7 conserva los bytes del original y reanuda una batalla histórica contra Badigadi con sus antiguos 72 PV. Los comandos alterados se rechazan. La prueba extensa guarda **582 563 bytes**, **414 comandos** y 600 entradas de historial, y recupera el turno 70 sin reponer apoyos. El límite de lectura/escritura pasa a 2 MiB para admitir historia y batallas largas. Las migraciones de economía y familia siguen pasando.
+
+Capturas inspeccionadas del renderizador real: [preparación](../tests/artifacts/war-preparation.png), [habilidades de Roxy](../tests/artifacts/war-roxy-skills.png), [resistencia reforzada](../tests/artifacts/war-phase-resolve.png), [sello](../tests/artifacts/war-phase-seal.png), [confirmación de interferencia](../tests/artifacts/war-risk-confirmation.png) y [derrota por interferencia](../tests/artifacts/war-interference-defeat.png). Se reutilizan retratos y fondos existentes, con desplazamiento de ataque cercano para Eris y apoyos mágicos diferenciados.
+
+Registros locales: `war-final.log`, `war-final-targeted.log`, `war-persistence.log` y `war-final-ui-campaign.log` en `tests/artifacts/`. Las capturas y logs se excluyen de Git; el CSV publicado permanece en `docs/`. Las pruebas automatizadas y la inspección visual no sustituyen sesiones de balance con jugadores ni equivalen a una partida manual completa.
+
+## Registro anterior — Fase 3
 
 Fecha: **21 de noviembre de 2026**. Pruebas ejecutadas con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados. **44 224 comprobaciones** sumando los módulos de la suite y sus ejecuciones focalizadas finales, sin contar repeticiones. No se modificaron los PNG ni los ASE originales.
 
@@ -2031,6 +2177,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+La **Fase 4** añade enemigos por día, apoyos con afinidad persistente, costes y recargas, preparación de combate y Badigadi de **1000 PV en el Día 7**. Puede vencerse sin compañeras ni el evento opcional de Orsted. [Reglas y simulaciones](docs/FASE_4_COMBATE.md).
+
 Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
 
 La **Fase 3** incorpora 16 actividades: combates y duelos con Eris, responsabilidades familiares con Sylphiette e investigación y librería con Roxy, además de reconciliación. No visitar a una esposa cuesta **−20 amor y −20 confianza** al cierre. Las advertencias preceden a una separación por abandono; la partida conserva la separación, su escena y el retrato gris. Cliff y Zanoba entregan al día siguiente; ayudar consume un espacio y adelanta la entrega. [Reglas, recompensas y archivos](docs/FASE_3_FAMILIA.md).
@@ -2044,8 +2192,8 @@ Cada día dispone de **tres interacciones libres**, repetibles con cualquier esp
 | 3 · El primer fragmento | Investigación con Nanahoshi, bosque, ruinas, compañera elegida, combates y magia alimentada por energía externa. |
 | 4 · El precio del silencio | Investigación del sello con Nanahoshi, conflictos familiares, emisario, recuerdo de la poción y pistas sobre Badigadi. |
 | 5 · Lazos puestos a prueba | Duelo de entrenamiento con Eris; misiones personales, compromisos, reconciliaciones y cartas de compañeras. |
-| 6 · El desafío del rey inmortal | Posible revancha con Eris; viaje a la arena, enfrentamientos previos y Badigadi en varias fases; neutralizar el sello libera el antídoto. |
-| 7 · La verdadera voz | Uso del antídoto, conversación directa, resolución de relaciones y epílogo. |
+| 6 · El último cerco | Revancha opcional con Eris, reflejo de Rudy, lacayo de Hitogami y prueba opcional no letal de Orsted si investigaste las runas. |
+| 7 · El desafío y la verdadera voz | Preparación del equipo; Badigadi de 1000 PV y cuatro fases; antídoto, conversación directa, resolución de relaciones y epílogo. |
 
 Hitogami manipula la historia; no es un enemigo físico convencional. Orsted es aliado. Badigadi acepta la derrota y sobrevive. Hay exactamente **cinco finales**: las tres esposas, solamente Roxy, solamente Eris, solamente Sylphiette o ninguna. Las parejas viables pendientes se resuelven mediante decisiones narrativas, sin escoger automáticamente el mayor amor. [Capítulos y condiciones](docs/CAPITULOS.md).
 
@@ -2090,7 +2238,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 6**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v6.json`, con respaldo `campaign-v6.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 7**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v7.json`, con respaldo `campaign-v7.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v6/v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -2098,7 +2246,7 @@ La continuidad `rudy_curse` usa **versión 6**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v6_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v7_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.
 ````
@@ -2335,7 +2483,7 @@ function App:endPractice()
 end
 
 function App:finishCombat(enc)
-    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training) then return false end
+    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training and enc.enemy.id~="orsted_trial") then return false end
     if self.practice then self:endPractice(); return true end
     local ok,err=Progression.finishCombat(self.session,enc)
     if not ok then self:notify(err); return false end
@@ -2346,6 +2494,8 @@ function App:combatSafeExit()
     if self.practice then self:endPractice(); return end
     -- El punto seguro es la preparación, conservando el checkpoint y los
     -- vínculos previos. No entrega premios ni omite el enfrentamiento.
+    local combat=self.session.combat
+    if combat and combat.revision==0 and combat.context.preparationShield==4 then self.session.economy.nextBattleShield=4 end
     self.session.combat=nil
     self.session.combatPreparation=true
     self:save()
@@ -2715,6 +2865,61 @@ return {
         victory={notes={72,76,79,84},duration=.45,gain=.18},
         defeat={notes={55,50,45},duration=.45,gain=.17},
     },
+}
+````
+
+## src/data/battle_balance.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/battle_balance.lua`
+
+````lua
+-- Todas las magnitudes nuevas viven aquí; el replay anterior usa enemies_legacy.
+return {
+ hpFactors={ruins_guardian=1.15,rudy_reflection=1.1,distorted_reflection=1.05},
+ days={
+  {name="Aprendizaje",hp=10,damage=2,shield=0},
+  {name="Primeras defensas",hp=20,damage=3,shield=2},
+  {name="Ataques preparados",hp=36,damage=4,shield=3},
+  {name="Barreras y debilitamiento",hp=55,damage=5,shield=5},
+  {name="Coordinación",hp=180,damage=6,shield=7},
+  {name="Lacayos y desafíos",hp=260,damage=7,shield=9},
+  {name="Última jornada",hp=300,damage=8,shield=10},
+ },
+ boss={hp=1000,maxTurns=75,seal=12,thresholds={.75,.35},armor=6,weaknessBonus=8,
+  phases={
+   endurance={{id="royal_punch",name="Puño del rey",kind="attack",damage=4},{id="royal_prepare",name="Medir resistencia",kind="prepare",nextDamage=4}},
+   six_arms={{id="six_arms",name="Seis brazos",kind="attack",damage=2,hits=3},{id="royal_breath",name="Rearmar postura",kind="prepare",nextDamage=6}},
+   resolve={{id="royal_assault",name="Asalto del rey",kind="attack",damage=3,hits=3},{id="royal_opening",name="Preparar asalto",kind="prepare",nextDamage=9}},
+   seal={{id="seal_pulse",name="Pulso del sello",kind="attack",damage=3}},
+  }},
+ support={
+  sylphiette={name="Sylphiette",role="Ataque, barreras y curación",special=90,normal=12},
+  eris={name="Eris",role="Ataque físico e interrupción",special=150,normal=24},
+  roxy={name="Roxy",role="Magia, análisis y defensa reducida",special=110,normal=18},
+ },
+ skills={
+  sylphiette={
+   {id="attack",name="Proyectil",power=12,mana=0},
+   {id="special",name="Luz coordinada",power=90,mana=4,cooldown=3,uses=3},
+   {id="heal",name="Curar a Rudy",mana=2,cooldown=2,uses=3,heal=true},
+   {id="guard",name="Barrera familiar",mana=2,shield=8},
+  },
+  eris={
+   {id="attack",name="Corte normal",power=24,mana=0},
+   {id="strong",name="Ataque fuerte",power=65,mana=0,cooldown=2,uses=5},
+   {id="interrupt",name="Interrumpir",power=12,mana=0,weak=1,cooldown=2},
+   {id="guard",name="Proteger a Rudy",mana=0,shield=5},
+   {id="special",name="Espada coordinada",power=150,mana=4,cooldown=3,uses=3},
+  },
+  roxy={
+   {id="attack",name="Proyectil mágico",power=18,mana=0},
+   {id="analyze",name="Analizar debilidad",mana=0,weak=2,expose=2,cooldown=2},
+   {id="shatter",name="Disolver defensa",power=10,mana=2,shatter=12,expose=3,cooldown=2},
+   {id="coordinate",name="Coordinar magia",power=40,mana=2,weak=1,cooldown=2},
+   {id="special",name="Conjuro combinado",power=110,mana=5,cooldown=3,uses=3},
+   {id="guard",name="Muro de apoyo",mana=2,shield=7},
+  },
+ },
 }
 ````
 
@@ -3677,6 +3882,7 @@ end
 
 local list={}
 for day=1,7 do list[#list+1]=require("src.data.chapters.day"..day) end
+require("src.data.war_chapters").install(list)
 require("src.data.day_cycle").install(list)
 local Chapters=Registry.build(list)
 Chapters.build=Registry.build
@@ -4574,6 +4780,50 @@ return {list=list,byId=byId}
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/enemies.lua`
 
 ````lua
+local Legacy=require("src.data.enemies_legacy")
+local Balance=require("src.data.battle_balance")
+local function copy(v)
+ if type(v)~="table" then return v end
+ local out={};for k,x in pairs(v)do out[k]=copy(x)end;return out
+end
+local E={list=copy(Legacy.list),byId={},default=Legacy.default,difficulty=Balance.days}
+for _,e in ipairs(E.list)do E.byId[e.id]=e end
+for _,e in ipairs({
+ {id="hitogami_minion",name="Lacayo de Hitogami",portrait="guardian_ruinas",maxHp=120,weakness="earth",shape="guardian",defeatText="El lacayo huye. Hitogami pierde el acceso al camino, no su existencia."},
+ {id="orsted_trial",name="Orsted: prueba de control",portrait="orsted",maxHp=120,weakness="water",shape="guardian",nonlethal=true,defeatText="Orsted baja la guardia. La prueba termina; sigue siendo un aliado."},
+})do e.narrativeEvent=e.id.."_defeated";e.defeatedEvent=e.narrativeEvent;e.reward={event=e.narrativeEvent};E.list[#E.list+1]=e;E.byId[e.id]=e end
+E.byId.protector_emissary=E.byId.emissary_guard;E.byId.mirror_anomaly=E.byId.mana_anomaly
+E.byId.badigadi_final.maxHp=Balance.boss.hp
+function E.resolve(id,context)
+ context=context or {};local e=copy(E.byId[id] or E.byId[E.default])
+ local day=context.tutorial and 1 or context.difficulty or context.day or 1
+ local p=Balance.days[day] or Balance.days[1]
+ e.difficulty={level=day,name=p.name}
+ if e.id=="eris_training" or e.id=="badigadi_training" then return Legacy.resolve(id,context) end
+ if e.id=="badigadi_final" then e.maxHp=Balance.boss.hp;e.sealMax=Balance.boss.seal;e.actions=copy(Balance.boss.phases.endurance);return e end
+ e.maxHp=math.floor(p.hp*(Balance.hpFactors[e.id] or 1)+.5)
+ e.actions={{id="strike",name="Ataque anunciado",kind="attack",damage=p.damage}}
+ if day>=2 then e.actions[#e.actions+1]={id="guard",name="Defensa preparada",kind="shield",shield=p.shield,maxUses=3} end
+ if day>=3 then
+  e.actions[#e.actions+1]={id="prepare",name="Preparar golpe",kind="prepare",nextDamage=p.damage+3}
+  e.actions[#e.actions+1]={id="charged",name="Golpe preparado",kind="attack",damage=p.damage+3}
+ end
+ if day>=4 then e.actions[#e.actions+1]={id="weakening",name="Debilitamiento",kind="status",status="weak",duration=1} end
+ if day>=5 then
+  e.actions[#e.actions+1]={id="interrupt",name="Interrumpir el ritmo",kind="interrupt",actionLoss=1}
+  e.actions[#e.actions+1]={id="multiple",name="Ataque multiple",kind="attack",damage=3,hits=2}
+ end
+ if day==1 then e.actions[#e.actions+1]={id="observe",name="Tomar distancia",kind="prepare",nextDamage=p.damage} end
+ return e
+end
+return E
+````
+
+## src/data/enemies_legacy.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/enemies_legacy.lua`
+
+````lua
 -- Amenazas locales y del espejo. Su derrota jamás mata físicamente a Hitogami.
 local function attack(id,name,damage,extra)
     local a={id=id,name=name,kind="attack",damage=damage}
@@ -4852,10 +5102,11 @@ return {
         {title="Leer la intención y reservar defensa",text="El enemigo anuncia qué hará antes de que termines el turno. Compara daño, golpes y estados con tus PV y escudo. D da defensa física y V permite esquivar: ambas están disponibles aunque la mano no tenga una barrera. Cada una se usa una vez por turno.\n\nEl escudo se consume antes de perder vida y entre impactos de un ataque múltiple. El resultado muestra daño anunciado, bloqueo y PV perdidos. H conserva el detalle. Una interrupción reduce a dos las acciones del siguiente turno; después vuelves a tener tres."},
         {title="El duelo del día cinco",text="Eris te reta a entrenar sin heridas letales. Tiene 42 de resistencia y desvía dos puntos de daño con espada. Aprovecha la tierra, la defensa y la esquiva. Tras bloquear o esquivar un golpe efectivo, C permite contraatacar con bastón: una acción y cinco puntos de daño.\n\nGanar concede +8 amor y +6 confianza; una derrota exigente, +4/+3; una derrota honesta, +1/+1. Los puntos se aplican al leer su valoración. No puedes reintentar para acumular recompensas."},
         {title="Esfuerzo y revancha con Eris",text="Perder rápido mientras atacas o te defiendes no significa dejarse ganar. Eris evalúa impactos, daño, bloqueos, esquivas y participación. Solo varios turnos vacíos, oportunidades claras desperdiciadas y muy pocos intentos justifican su sospecha: -10 amor y -8 confianza.\n\nEris recuerda el resultado. Si sospecha que no te esforzaste, puedes disculparte y aceptar una revancha el día seis. Ganar o darle una pelea exigente después de la disculpa repara ese conflicto. Ambos resultados quedan en el diario."},
-        {title="Curación con costes y límites",text="Curación básica cuesta una acción y tres de energía mágica, recupera hasta cinco PV y admite tres usos por batalla. Las cartas híbridas que curan también tienen tres usos. Nunca se supera la vida máxima. Los detalles muestran los usos restantes.\n\nSylphiette dispone de tres curaciones efectivas por combate: actuar con Rudy ileso no consume una. Al agotarlas puede seguir atacando y protegiendo. Cambiar de turno no recarga curaciones. Reintentar comienza de nuevo con las cargas de esa batalla."},
-        {title="Dificultad a lo largo de los días",text="Día 1: anomalía de aprendizaje. Día 2: bestia con ataque y defensa. Día 3: guardián con golpes fuertes anunciados. Día 4: debilitamientos y más presión. Día 5: interrupciones y golpes múltiples; conviene coordinar protección y curación.\n\nEl día 6 culmina con las fases propias de Badigadi. No recibe multiplicadores por día. El día 7 cierra la historia sin nuevas batallas. Observa las intenciones: no necesitas robar una carta concreta para defenderte. Una derrota permite reintentar o preparar el mazo."},
+        {title="Curación con costes y límites",text="Curación básica recupera 5 PV en nivel 1 y 10 en nivel 10: una acción, tres de energía y tres usos. Sylphiette cuesta dos de energía, recarga en dos turnos y tiene tres usos. Nunca superas tus PV máximos.\n\nSegún su afinidad media: 90 o más cura 40%; 80–89 cura 30%; 50–79 cura 20%; 25–49 cura 10%. Por debajo de 25, la maldición interfiere y causa 40% de daño a Rudy. Debes confirmar el riesgo: puede derrotarlo. No disminuye la capacidad profesional de Sylphiette."},
+        {title="Dificultad a lo largo de los días",text="PV de referencia por día: 10, 20, 36, 55, 180 y 260. Los guardianes y reflejos tienen variaciones. Día 2 introduce defensa; día 3 golpes preparados; día 4 debilitamiento; días 5 y 6 ataques múltiples y mayor necesidad de apoyo.\n\nDía 6: lacayo de Hitogami y prueba opcional de Orsted si investigaste las runas. Día 7: Badigadi, 1000 PV incluso si viajas solo. Prepara el mazo, consulta las habilidades y observa las intenciones antes de comenzar."},
         {title="Mano, daño y estados",text="Selecciona con clic, 1–3 o flechas; confirma con Jugar o Enter. Inspeccionar no gasta recursos. E termina el turno: descarta la mano, ejecuta la intención visible del enemigo y roba tres cartas. El descarte se baraja si se agota el mazo.\n\nDebilitamiento reduce daño y vulnerabilidad aumenta daño recibido. El historial H explica costes, bloqueo y efectos. La energía externa es independiente de la maldición. Siempre hay defensa y esquiva disponibles."},
-        {title="Compañeras y contexto",text="Sylphiette protege y cura; Roxy analiza debilidades, controla y conjura; Eris inflige daño físico e interrumpe ataques. Sus acciones tácticas aparecen en pantalla.\n\nCoordinarse puede aumentar la confianza. Proteger a Eris herida es distinto de impedirle un combate que domina. Ignorar el análisis de Roxy tiene consecuencias. Repetir ataques no concede amor: cada decisión relevante se registra una sola vez por encuentro."},
+        {title="Turnos y compañeras",text="Rudy tiene tres acciones. Cada compañera presente tiene una acción propia por turno; puedes intercalarlas. Al terminar, actúa el enemigo y se renuevan las acciones. Escudos y esquiva duran hasta ese ataque.\n\nLa afinidad es el promedio de amor y confianza, acotado a 0–100 para calcular daño. Especiales máximos: Sylphiette 90, Eris 150, Roxy 110; tres usos y recarga de tres turnos. Sus ataques normales son menores. Las separadas no participan. T abre habilidades, costes y resultados."},
+        {title="Badigadi y el antídoto",text="Fase 1: resiste y ataca. Al bajar a 750 PV usa tres golpes de dos puntos; al llegar a 350, tres de tres y resistencia de seis. El agua, el análisis de Roxy y los ataques combinados permiten aprovechar sus debilidades.\n\nA cero PV empieza la cuarta fase: rompe dos anclajes con B, una acción cada uno. Badigadi acepta la derrota, sigue vivo y entrega el antídoto. Usarlo restaura voz y magia; no repara matrimonios. Puedes ganar sin la prueba de Orsted ni compañeras."},
         {title="Victoria, derrota y guardado",text="La victoria neutraliza la amenaza y entrega su recompensa una sola vez. Derrota permite Reintentar o volver al punto seguro para editar el mazo; no borra las decisiones. La práctica del menú es descartable.\n\nF5 guarda; la campaña también guarda al decidir y cambiar de escena. La campaña usa un guardado con copia de respaldo y conserva sus pistas narrativas. Las campañas de otra continuidad se conservan; empieza una partida nueva para seguir la maldición."},
         {title="Conversaciones y controles",text="Las cartas sociales reproducen la voz encantada de Rudy. Leer en silencio no la utiliza. Los encuentros sociales miden avance, amor y confianza; no infligen daño. P toma un respiro. En una selección social, Esc cancela la carta; sin selección abre la pausa.\n\nJ: diario. M: mazos. H: historial de combate. F11: pantalla completa. Tab y Enter: botones. Opciones permite texto instantáneo, movimiento reducido y volúmenes separados. La música y los efectos son originales sintetizados; no incluyen doblaje grabado."},
     },
@@ -4999,6 +5250,64 @@ return {
   {speaker="eris",expression="happy",text="Mi espada fue más rápida. Prueba a cubrirte antes de responder. ¡Para aprender estamos entrenando!",apply=true},
  }},
 }
+````
+
+## src/data/war_chapters.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/war_chapters.lua`
+
+````lua
+local War={}
+function War.install(list)
+ local six,seven=list[6],list[7]
+ six.title="El último cerco";seven.title="El desafío y la verdadera voz"
+ -- La secuencia anterior se conserva en IDs heredados cuando ya existe antídoto.
+ local truth,close=six.scenes.day6_truth,six.scenes.day6_close
+ seven.scenes.day7_challenge=truth;truth.title="Día 7 · La promesa de Badigadi"
+ seven.scenes.day7_victory=close;close.title="Día 7 · El antídoto conquistado"
+ close.lines[2].text="Badigadi sigue vivo. Rudy recoge el antídoto; Nanahoshi verifica su estabilización en el contenedor preparado durante la noche."
+ close.lines[3].text="El reactivo está estable. Podemos usarlo ahora. No necesitas buscar otra cura."
+ close.lines[4].text="La cura está en mis manos. No borrará las decisiones que tomé con las cartas, pero hoy podré hablar sin esconder su causa."
+ six.scenes.day6_truth={title="Día 6 · El último cerco",background="arena",lines={
+  {speaker="nanahoshi",expression="worried",text="El reflejo cayó, pero un lacayo de Hitogami bloquea el paso. No lleva el antídoto. Badigadi nos espera mañana con el frasco protegido."},
+  {speaker="rudeus",delivery="thought",text="Debo cuidar los recursos y preparar mis cartas. Ganar hoy abre el camino; la última batalla sigue pendiente."},
+ }}
+ six.encounters.day6_boss.legacyEncounter=true
+ six.encounters.day6_hitogami={title="Lacayo de Hitogami",kind="magic",character="companion",enemyId="hitogami_minion",background="arena",targetScore=5,intro="Observa los ataques preparados y conserva recursos para las defensas."}
+ six.scenes.day6_orsted_offer={title="Día 6 · Una prueba opcional",background="training",lines={
+  {speaker="orsted",expression="neutral",text="Si contrastaste las runas del observatorio, puedo comprobar tu control bajo presión. Es una prueba, no una condición para obtener la cura. Puedes descansar."},
+ },choices={
+  {id="rest",label="Descansar y preparar el enfrentamiento final.",effects={decision="orsted_trial",value="declined"}},
+  {id="accept",label="Aceptar la prueba de control de Orsted.",requires={decision="observatory_research",equals="tested"},effects={decision="orsted_trial",value="accepted"}},
+ }}
+ six.encounters.day6_orsted={title="Orsted · Control bajo presión",kind="magic",enemyId="orsted_trial",background="training",targetScore=5,intro="Prueba opcional y no letal. Termina al vencer o agotar tus PV; puedes continuar en ambos casos."}
+ six.scenes.day6_close={title="Día 6 · Antes del desafío",background="laboratory",lines={
+  {speaker="nanahoshi",expression="neutral",text="El camino está despejado. El antídoto sigue con Badigadi. Descansa y utiliza la última jornada para preparar cartas, materiales y apoyos."},
+  {speaker="rudeus",delivery="thought",text="Todavía no recupero la magia natural. Mañana dependeré de mis cartas y de quienes hayan elegido seguir a mi lado."},
+ }}
+ six.transitions.day6_truth={{to="day6_hitogami"}}
+ six.transitions.day6_boss={{to="day6_close",effects={{id="antidote_obtained",antidote=true,enemyDefeated="badigadi_final"}}}}
+ six.transitions.day6_hitogami={{to="day6_orsted_offer"}}
+ six.transitions.day6_orsted_offer={{to="day6_orsted",requires={decision="orsted_trial",equals="accepted"}},{to="day6_close"}}
+ six.transitions.day6_orsted={{to="day6_close"}}
+ six.summaries.day6_complete.title="EL CAMINO ESTÁ ABIERTO"
+ six.summaries.day6_complete.body="Los lacayos han retrocedido. El antídoto sigue protegido por Badigadi; la magia natural de Rudy permanece bloqueada."
+ six.summaries.day6_complete.footer="Mañana: preparar el equipo y afrontar al rey inmortal."
+ six.hubs.day6_companion.heading="RUTA DEL DÍA 6"
+ six.hubs.day6_companion.description="Elige una compañera disponible o viaja solo. El jefe final espera mañana."
+ seven.initial="day7_muster"
+ seven.companion={decisionKey="day7_companion",selectionCheckpoint="day7_muster",event="day7_companion_selected"}
+ seven.hubs.day7_muster={title="DÍA 7 / PREPARACIÓN FINAL",background="arena",heading="BADIGADI · 1000 PV",
+  description="Elige una compañera, todas las disponibles o viajar solo. M abre las mejoras.",
+  companion={decision="day7_companion",event="day7_companion_selected",to="day7_challenge",options={"sylphiette","roxy","eris","all"}}}
+ seven.locations=six.locations
+ seven.encounters.day7_boss={title="Badigadi · El rey inmortal",kind="magic",character="companion",enemyId="badigadi_final",background="arena",targetScore=5,intro="1000 PV. Resistencia, seis brazos, defensa reforzada y sello. Las compañeras disponibles aportan una acción de apoyo cada una."}
+ seven.transitions.day7_challenge={{to="day7_boss"}}
+ seven.transitions.day7_boss={{to="day7_victory",effects={{id="antidote_obtained",antidote=true,enemyDefeated="badigadi_final"}}}}
+ seven.transitions.day7_victory={{to="day7_intro"}}
+ seven.scenes.day7_intro.lines[1].text="La lectura es estable. El antídoto que ganaste a Badigadi está listo. Bébelo; después comprobaremos tu voz y tu magia natural."
+end
+return War
 ````
 
 ## src/screens/agenda.lua
@@ -5590,7 +5899,9 @@ end
 function CombatScreen.new(app,definition)
     local s=Screen.new(app)
     s.definition=definition or Progression.encounter(app.session,app.session.checkpoint) or {}
+    local supportContext=require("src.systems.companions").context(app.session,s.definition)
     local context={character=s.definition.character,tutorial=s.definition.tutorial,enemyId=s.definition.enemyId,
+        relationships=supportContext.relationships,team=supportContext.team,legacyEncounter=s.definition.legacyEncounter,
         cardLevels=require("src.systems.card_collection").levels(app.session),
         preparationShield=app.session.combat and app.session.combat.context.preparationShield or require("src.systems.economy").ensure(app.session).nextBattleShield,
         day=app.session.day,difficulty=s.definition.difficulty,
@@ -5603,6 +5914,8 @@ function CombatScreen.new(app,definition)
     end
     app.session.combat=s.enc
     s.selected,s.confirmReady,s.age,s.historyPage=1,false,0,1
+    s.briefingOpen=s.enc.context.warVersion==1 and not s.definition.tutorial and s.enc.revision==0
+    s.supportWife=s.enc.companion and s.enc.companion.id
     s.feedback="Selecciona una carta para inspeccionarla. Confirma con Jugar."
     if #(s.enc.deckAdjustments or {})>0 then
         s.actionSummary="Exclusiva sin compañera: sustituida aquí por una técnica inicial adquirida. Tu mazo guardado se conserva."
@@ -5631,7 +5944,7 @@ function CombatScreen.new(app,definition)
     function s:startMotion(result,enemyAction)
         self.motion={elapsed=0,duration=app.options.reducedMotion and .18 or 1.05,events=result.events or {},enemyAction=enemyAction,
             startPlayer=self.displayHp.player,startEnemy=self.displayHp.enemy,startMana=self.displayHp.mana,
-            companionAction=result.companionAction,element=result.element,playedSounds=false}
+            companionAction=result.companionAction,companionId=result.companionId,element=result.element,playedSounds=false}
         self.feedback=result.text or "Acción resuelta."
         self.actionSummary=result.actionName or (result.cardId and Combat.card(result.cardId).name) or "Acción resuelta"
         local totals={damage=0,blocked=0,lost=0,hits=0}
@@ -5684,6 +5997,14 @@ function CombatScreen.new(app,definition)
         if not result then self.feedback=err;return false end
         self.tacticsOpen=false;self:startMotion(result,false);return true
     end
+    function s:support(id,confirmed)
+        if self:busy() or self.briefingOpen then return false end
+        local p=Combat.supportPreview(self.enc,self.supportWife,id)
+        if p and p.risk and not confirmed then self.riskSkill=id;return end
+        local result,err=Combat.support(self.enc,self.supportWife,id,self.enc.revision,confirmed)
+        if not result then self.feedback=err;return false end
+        self.riskSkill=nil;self.tacticsOpen=false;self:startMotion(result,false);return true
+    end
     function s:basic(id)
         if self:busy() or self.enc.finished then return false end
         if self.tutorial and self.tutorial.stage~="free" and not (self.tutorial.stage=="shield" and id=="defend") then return false end
@@ -5725,7 +6046,7 @@ function CombatScreen.new(app,definition)
             return
         end
         if self.enc.training and self.enc.finished then app:resume();return end
-        if self.enc.outcome~="victory" then return end
+        if self.enc.outcome~="victory" and self.enc.enemy.id~="orsted_trial" then return end
         app:finishCombat(self.enc)
     end
     function s:update(dt)
@@ -5771,7 +6092,7 @@ function CombatScreen.new(app,definition)
         self:text("Escudos F:"..self.enc.player.physicalShield.." M:"..self.enc.player.magicShield.." · "..stateText(self.enc.player),18,73,204,P.muted)
         W.panel(242,8,390,78)
         self:text(self.enc.enemy.name,252,14,194,P.lavender)
-        self:text(self.enc.enemy.phase and ({endurance="I · Resistencia",six_arms="II · Seis brazos",seal="III · Sello "..(self.enc.enemy.seal or 0),victory="IV · Victoria"})[self.enc.enemy.phase] or stateText(self.enc.enemy),452,14,170,P.muted,1,"right")
+        self:text(self.enc.enemy.phase and ({endurance="I · Resistencia",six_arms="II · Seis brazos",resolve="III · Resistencia",seal="IV · Sello "..(self.enc.enemy.seal or 0),victory="IV · Victoria"})[self.enc.enemy.phase] or stateText(self.enc.enemy),452,14,170,P.muted,1,"right")
         self:text((self.enc.training and "Resistencia " or "Vida ")..self.enc.enemy.hp.." / "..self.enc.enemy.maxHp,252,29,178,P.ink)
         self:text("Escudo "..self.enc.enemy.shield,438,29,180,P.teal)
         W.bar(252,43,370,8,self.displayHp.enemy,self.enc.enemy.maxHp,P.danger)
@@ -5818,7 +6139,19 @@ function CombatScreen.new(app,definition)
         if self.enc.enemy.shield>0 or enemyShield then barrier(enemyX,92,enemyShield and .8 or .35) end
         self:text("Rudy",43,166,110,P.ink,1,"center")
         self:text(self.enc.enemy.training and "Entrenamiento" or "Amenaza",456,166,170,P.muted,1,"center")
-        if self.enc.companion then
+        if self.enc.allies then
+            local n=0
+            for _,id in ipairs(require("src.systems.companions").order) do local ally=self.enc.allies[id];if ally then
+                local moving=motion and motion.companionId==id
+                local reach=id=="eris" and 18 or 6
+                local offset=moving and not reduced and math.sin(math.min(1,p*2)*math.pi)*reach or 0
+                local x=139+n*34;n=n+1
+                app.resources:portraitSmall(id,moving and "happy" or "neutral",x+math.floor(offset),108)
+                W.bar(x,143,30,3,ally.hp,ally.maxHp,P.teal)
+                self:text(id:sub(1,3),x,153,30,P.teal)
+                self:text(self.enc.supportUsed[id] and "OK" or "+1",x,165,30,P.muted)
+            end end
+        elseif self.enc.companion then
             local ally=self.enc.companion
             local attack=motion and motion.companionAction and not reduced and math.sin(math.min(1,p*2)*math.pi)*12 or 0
             local injured=ally.hp<=ally.maxHp/2
@@ -5969,6 +6302,12 @@ function CombatScreen.new(app,definition)
         self:begin();rect(P.shadow,0,0,640,360,.85)
         local won=self.enc.outcome=="victory"
         W.panel(69,31,502,296,{border=won and P.gold or P.danger})
+        if self.enc.enemy.id=="orsted_trial" then
+            self:text("PRUEBA DE ORSTED COMPLETADA",90,52,460,P.gold)
+            self:text("Orsted detiene el ejercicio. Ambos siguen vivos. La prueba es opcional y no condiciona el antídoto.",94,110,452,P.ink)
+            self:button("Continuar",138,253,364,28,function()self:continue()end)
+            return
+        end
         if self.definition.activity and not self.enc.training then
             self:text(won and "ACTIVIDAD COMPLETADA" or "RETIRADA A TIEMPO",90,52,460,P.gold,2,"center")
             self:text(self.definition.title,94,101,452,P.ink)
@@ -6018,6 +6357,7 @@ function CombatScreen.new(app,definition)
         end)
     end
     function s:drawTactics()
+        if self.enc.context.warVersion==1 then return require("src.screens.support_panel").draw(self,app) end
         self:begin();rect(P.shadow,0,0,640,360,.9);W.panel(40,18,560,324)
         self:text("TÁCTICAS CON "..self.enc.companion.name:upper(),55,30,530,P.gold,2)
         local recoveries=self.enc.companion.id=="sylphiette" and (self.enc.balanceVersion==1 and " Curación: una por turno." or
@@ -6037,11 +6377,16 @@ function CombatScreen.new(app,definition)
         self:drawHud();self:drawActors();self:drawGuide();self:drawHand()
         if self.enc.finished and not self:busy() then self:drawResult() end
         if self.pauseOpen then self:drawPause() end
+        if self.briefingOpen then require("src.screens.support_panel").briefing(self,app) end
         if self.tacticsOpen and self.enc.companion then self:drawTactics() end
         if self.historyOpen then self:drawHistory() end
     end
     function s:mousepressed(x,y,button) self:click(x,y,button) end
     function s:keypressed(key)
+        if self.briefingOpen and not self.tacticsOpen then
+            if key=="return" or key=="space" then self.briefingOpen=false elseif key=="m" then app:combatSafeExit() elseif key=="t" and self.enc.companion then self.tacticsOpen=true else self:navigate(key) end
+            return
+        end
         if self.tacticsOpen then
             if key=="t" or key=="escape" then self.tacticsOpen=false;self.keyboardFocus=nil else self:navigate(key) end
             return
@@ -6063,7 +6408,7 @@ function CombatScreen.new(app,definition)
         if self:navigate(key) then return end
         local advance=key=="return" or key=="space" or key=="kpenter"
         if self.enc.finished then
-            if advance then if self.enc.outcome=="victory" or self.enc.training then self:continue() else self:retry() end end
+            if advance then if self.enc.outcome=="victory" or self.enc.training or self.enc.enemy.id=="orsted_trial" then self:continue() else self:retry() end end
             return
         end
         if advance and self.tutorial and (self.tutorial.stage=="attack_result" or self.tutorial.stage=="enemy_result") then self:advanceGuide();return end
@@ -7304,9 +7649,12 @@ function Hub.new(app)
             end,(visited and not ready) or (ready and not require("src.systems.family").active(app.session,id)))
         end
         W.panel(18,336,604,20,{shadow=false})
-        if ready then self:button("Viajar solo",190,335,260,23,function()
+        if ready then self:button("Viajar solo",18,335,260,23,function()
             local ok,err=Progression.selectCompanion(app.session,"solo");if ok then app:save();app:resume() else app:notify(err) end
         end) else self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink) end
+        if ready and app.session.day==7 then self:button("Todas las disponibles",288,335,334,23,function()
+            local ok,err=Progression.selectCompanion(app.session,"all");if ok then app:save();app:resume() else app:notify(err) end
+        end) end
     end
     function s:keypressed(key)
         if self:navigate(key) then return end
@@ -7849,6 +8197,68 @@ function Summary.new(app)
     return s
 end
 return Summary
+````
+
+## src/screens/support_panel.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/support_panel.lua`
+
+````lua
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local C=require("src.systems.companions")
+local Combat=require("src.systems.combat")
+local Data=require("src.data.battle_balance")
+local Panel={}
+function Panel.draw(s,app)
+ s:begin();W.panel(12,12,616,336)
+ if s.riskSkill then
+  s:text("RIESGO DE INTERFERENCIA",30,35,570,P.danger,2)
+  s:text("Afinidad menor de 25: la maldición distorsiona la sincronización. No es pérdida de capacidad profesional de Sylphiette.",30,90,570,P.ink)
+  local p=Combat.supportPreview(s.enc,s.supportWife,s.riskSkill)
+  s:text("Rudy perderá "..p.riskDamage.." PV (40% de su máximo), incluso si causa una derrota. La curación no se aplicará.",30,150,570,P.danger)
+  s:button("Confirmar el riesgo",30,260,280,36,function()s:support(s.riskSkill,true)end)
+  s:button("Cancelar",324,260,280,36,function()s.riskSkill=nil end)
+  return
+ end
+ local index=0
+ for _,id in ipairs(C.order)do if s.enc.allies[id] then
+  index=index+1;s:button(Data.support[id].name,25+(index-1)*195,24,185,26,function()s.supportWife=id;s.keyboardFocus=nil end,false,s.supportWife==id)
+ end end
+ local wife=s.supportWife;local ally=s.enc.allies[wife]
+ if not ally then return end
+ s:text("Afinidad "..C.affinity(ally).." · 1 apoyo propio/turno · Rudy conserva sus acciones",25,61,590,P.teal)
+ for i,skill in ipairs(Data.skills[wife])do
+  local y=83+(i-1)*35;local p=Combat.supportPreview(s.enc,wife,skill.id);local ok,why=Combat.canSupport(s.enc,wife,skill.id)
+  s:button(skill.name,25,y,200,28,function()s:support(skill.id)end,s.briefingOpen or not ok)
+  local effect=skill.heal and (p.risk and "RIESGO: -"..p.riskDamage.." PV" or "+"..p.heal.." PV reales") or skill.power and (p.damage.." daño / "..p.hpLost.." PV ahora") or (skill.shield and "+"..skill.shield.." escudo" or "Debilita y expone")
+  s:text(effect.." · "..p.mana.." M"..(p.uses and " · usos "..p.uses or ""),235,y+2,367,p.risk and P.danger or P.ink)
+  local detail=skill.shatter and "Quita hasta 12 escudo; expone 3 turnos." or skill.expose and "Expone y debilita 2 turnos." or skill.weak and "Debilita: -2 daño por golpe." or skill.shield and "Caduca al volver a Rudy." or "Actúa antes del turno enemigo."
+  s:text(not ok and why or ((skill.cooldown and "Recarga "..skill.cooldown..". " or "")..detail),235,y+14,367,P.muted)
+ end
+ s:button("Volver [Esc / T]",190,311,260,25,function()s.tacticsOpen=false;s.riskSkill=nil end)
+end
+function Panel.briefing(s,app)
+ s:begin();W.panel(12,12,616,336)
+ s:text("PREPARAR EL ENFRENTAMIENTO",28,28,584,P.gold,2)
+ s:text(s.enc.enemy.name.." · "..s.enc.enemy.maxHp.." PV",28,57,584,P.ink)
+ s:text("Rudy: 3 acciones. Cada compañera: 1 apoyo. Terminar turno ejecuta la intención enemiga; después caducan tus escudos y se recuperan 4 de energía externa.",28,79,584,P.muted)
+ local row=0
+ for _,id in ipairs(C.order)do local a=s.enc.allies[id];if a then
+  local y=127+row*44;row=row+1
+  app.resources:portraitSmall(id,"neutral",28,y)
+  s:text(a.name.." · afinidad "..C.affinity(a).." · normal "..C.damage(Data.support[id].normal,a).." / especial "..C.damage(Data.support[id].special,a),70,y+2,535,P.teal)
+  local previous=app.session.decisions["support_previous_"..id]
+  local change=previous and (" · Especial "..string.format("%+d",C.damage(Data.support[id].special,a)-previous).." desde el último combate") or ""
+  s:text(id=="sylphiette" and C.affinity(a)<25 and "RIESGO: interferencia de la maldición, -40% PV máximos." or Data.support[id].role..change,70,y+17,535,id=="sylphiette" and C.affinity(a)<25 and P.danger or P.muted)
+ end end
+ if row==0 then s:text("Rudy viaja solo. Usa cartas mejoradas, debilidades y defensa. Badigadi conserva sus 1000 PV; Orsted no es obligatorio.",28,140,584,P.ink)end
+ s:text("Los especiales tienen recarga y usos limitados. T permite revisar todos los costes antes de actuar.",28,267,584,P.muted)
+ s:button("Comenzar [Enter]",28,307,200,27,function()s.briefingOpen=false end)
+ s:button("Habilidades [T]",238,307,180,27,function()s.tacticsOpen=true end,not s.enc.companion)
+ s:button("Preparar mazo [M]",428,307,184,27,function()app:combatSafeExit()end)
+end
+return Panel
 ````
 
 ## src/screens/training_result.lua
@@ -8912,6 +9322,622 @@ local Techniques=require("src.data.combat_cards")
 local Enemies=require("src.data.enemies")
 local Training=require("src.systems.training")
 local Collection=require("src.systems.card_collection")
+local Companions=require("src.systems.companions")
+local Balance=require("src.data.battle_balance")
+local Legacy=require("src.systems.combat_legacy")
+local Combat={rules=Techniques.rules}
+local R=Techniques.rules
+local function copy(value)
+    if type(value)~="table" then return value end
+    local out={}; for k,v in pairs(value) do out[k]=copy(v) end; return out
+end
+local function integer(value,min,max)
+    return type(value)=="number" and value==value and value%1==0 and value>=min and value<=max
+end
+local function same(a,b)
+    if type(a)~=type(b) then return false end
+    if type(a)~="table" then return a==b end
+    for k,v in pairs(a) do if not same(v,b[k]) then return false end end
+    for k in pairs(b) do if a[k]==nil then return false end end
+    return true
+end
+local function contextFor(context)
+    context=context or {}
+    return {kind="combat",warVersion=1,allies=context.enemyId=="eris_training" and {} or Companions.roster(context),character=context.character,tutorial=context.tutorial==true,
+        progressionVersion=1,cardLevels=Collection.levels(context),preparationShield=context.preparationShield==4 and 4 or 0,
+        day=integer(context.day,1,7) and context.day or nil,
+        difficulty=integer(context.difficulty,1,7) and context.difficulty or nil,
+        enemyId=Enemies.byId[context.enemyId] and Enemies.byId[context.enemyId].id or Enemies.default,
+        tacticalContext=copy(context.tacticalContext or {}),
+        curse={active=context.curse and context.curse.active==true or false,
+            manaBlocked=context.curse and context.curse.manaBlocked==true or false},
+        externalEnergy=math.max(0,math.min(30,tonumber(context.externalEnergy) or 0))}
+end
+
+local function baseCard(id)
+    local base=Techniques.byId[id]
+    if base then return copy(base) end
+    local original=Data.byId[id]
+    if not original or not original.combat then return nil end
+    local view=copy(original)
+    view.socialCost=original.cost
+    view.cost=original.combat.cost
+    view.manaCost=original.combat.manaCost or (original.combat.cost*2)
+    view.hpCost=original.combat.hpCost or 0
+    view.element=original.combat.element or "earth"
+    view.resource=original.combat.resource or "artifact"
+    view.effects=copy(original.combat.effects)
+    view.description=original.combat.description
+    view.perTurn=original.combat.perTurn
+    view.perBattle=original.combat.perBattle or (view.effects.heal and R.healUses)
+    return view
+end
+function Combat.card(id,state)
+    local card=baseCard(id);if not card then return nil end
+    if state and state.context and state.context.progressionVersion~=1 then return card end
+    local level=Collection.level(state and (state.context or state) or {},id)
+    card.effects=Collection.combatEffects(id,level,card.effects)
+    local costs=Collection.combatCosts(id,level,card)
+    card.cost,card.manaCost,card.hpCost,card.perBattle=costs.cost,costs.manaCost,costs.hpCost,costs.perBattle
+    card.level=level
+    return card
+end
+
+function Combat.describe(card,enc)
+    if type(card)=="string" then card=Combat.card(card,enc) end
+    if not card then return "Solo encuentros sociales." end
+    if card.combat and not card.socialCost then card=Combat.card(card.id,enc) end
+    local e=card.effects or {}; local parts={}
+    if e.damage then parts[#parts+1]=e.damage.." daño" end
+    if e.shield then parts[#parts+1]="+"..e.shield.." escudo" end
+    if e.heal then parts[#parts+1]="+"..e.heal.." vida (máx. "..R.playerHp..")" end
+    if e.mana then parts[#parts+1]="+"..e.mana.." maná" end
+    if e.energy then parts[#parts+1]="+"..e.energy.." energía" end
+    if e.draw then parts[#parts+1]="roba "..e.draw end
+    if e.weak then parts[#parts+1]="debilita (-2 daño, "..e.weak.." turno(s))" end
+    if e.vulnerable then parts[#parts+1]="vulnerable (+2 daño recibido, este turno)" end
+    if card.perTurn then parts[#parts+1]="máx. "..card.perTurn.."/turno" end
+    if card.perBattle and not (enc and enc.balanceVersion==1) then parts[#parts+1]="máx. "..card.perBattle.."/combate" end
+    return table.concat(parts,"; ")..". Coste: "..card.cost.." A / "..(card.manaCost or 0).." M / "..(card.hpCost or 0).." PV."
+end
+
+function Combat.validateDeck(deck,unlocked)
+    if type(deck)~="table" or #deck<5 or #deck>10 then return false,"El mazo de combate necesita entre cinco y diez cartas." end
+    local seen,offense={},0
+    for _,id in ipairs(deck) do
+        local c=Combat.card(id)
+        if not c then return false,"Carta sin uso de combate: "..tostring(id) end
+        if seen[id] then return false,"El mazo contiene una carta repetida." end
+        if unlocked and unlocked[id]~=true then return false,"Carta bloqueada: "..c.name end
+        seen[id]=true
+        if (c.effects.damage or 0)>0 then offense=offense+1 end
+    end
+    if offense<2 then return false,"Equipa al menos dos ataques ofensivos viables." end
+    return true
+end
+
+function Combat.adaptDeck(deck,context)
+    context=context or {}
+    local selected=context.combatDeck or Techniques.starterDeck
+    local ok,err=Combat.validateDeck(selected,context.unlocked)
+    if not ok then return nil,err end
+    local adapted,seen,adjustments={},{},{}
+    for _,id in ipairs(selected) do
+        local c=Combat.card(id)
+        if not c.conditions or not c.conditions.character or Companions.roster(context)[c.conditions.character] then
+            adapted[#adapted+1]=id;seen[id]=true
+        else adjustments[#adjustments+1]=c.name..": sin su compañera, sustituida por una técnica adquirida." end
+    end
+    for _,id in ipairs(Techniques.starterDeck) do
+        if #adapted>=#selected then break end
+        if not seen[id] and (not context.unlocked or context.unlocked[id]) then adapted[#adapted+1]=id;seen[id]=true end
+    end
+    ok,err=Combat.validateDeck(adapted,context.unlocked)
+    if not ok then return nil,err end
+    return adapted,nil,adjustments
+end
+Combat.buildDeck=Combat.adaptDeck
+
+local function random(enc,n)
+    enc.randomState=(enc.randomState*48271)%2147483647
+    return enc.randomState%n+1
+end
+local function shuffle(enc,pile)
+    for i=#pile,2,-1 do local j=random(enc,i); pile[i],pile[j]=pile[j],pile[i] end
+end
+local function event(result,kind,target,text,fields)
+    local value=fields or {}; value.kind=kind; value.target=target; value.text=text
+    result.events[#result.events+1]=value
+    return value
+end
+local function label(target) return target=="enemy" and "El enemigo" or target=="companion" and "La compañera" or "Rudy" end
+local function damageAmount(attacker,defender,base)
+    if base<=0 then return 0 end
+    return math.max(0,base-(attacker.weak>0 and R.weakReduction or 0))+(defender.vulnerable>0 and R.vulnerableBonus or 0)
+end
+local function elementalDamage(enc,card)
+    local bonus=card.element and card.element==enc.enemy.weakness and (enc.enemy.id=="badigadi_final" and Balance.boss.weaknessBonus or 2) or 0
+    local config=Training.config(enc)
+    local reduction=config and card.element=="sword" and config.swordReduction or 0
+    local armor=enc.enemy.phase=="resolve" and enc.enemy.exposed<=0 and Balance.boss.armor or 0
+    return math.max(0,(card.effects.damage or 0)+bonus-reduction-armor),bonus,reduction
+end
+local function damage(enc,target,base,result,source)
+    local defender=enc[target]
+    local attacker=source or (target=="enemy" and enc.player or enc.enemy)
+    local attempted=damageAmount(attacker,defender,base)
+    local blocked=math.min(defender.shield,attempted)
+    local lost=math.min(defender.hp,attempted-blocked)
+    local dodged=target=="player" and Training.dodgeAbsorbed(enc,blocked,defender.shield) or nil
+    defender.shield=defender.shield-blocked
+    if target=="player" then
+        local physical=math.min(defender.physicalShield or 0,blocked)
+        defender.physicalShield=math.max(0,(defender.physicalShield or 0)-physical)
+        defender.magicShield=math.max(0,(defender.magicShield or 0)-(blocked-physical))
+    end
+    defender.hp=math.max(0,defender.hp-lost)
+    event(result,"damage",target,label(target)..": "..attempted.." daño, "..blocked.." bloqueado, "..lost..(enc.training and " resistencia perdida." or " vida perdida."),
+        {rawDamage=base,damage=attempted,blocked=blocked,hpLost=lost,amount=lost,dodgeBlocked=dodged})
+end
+local function draw(enc,count,result)
+    local drawn=0
+    for _=1,count do
+        if #enc.drawPile==0 and #enc.discard>0 then
+            enc.drawPile=enc.discard; enc.discard={}; shuffle(enc,enc.drawPile)
+            if result then event(result,"shuffle","player","Se baraja el descarte para formar un nuevo mazo.") end
+        end
+        if #enc.drawPile==0 then break end
+        enc.hand[#enc.hand+1]=table.remove(enc.drawPile); drawn=drawn+1
+    end
+    if result and drawn>0 then event(result,"draw","player","Rudy roba "..drawn.." carta(s).",{amount=drawn}) end
+    return drawn
+end
+local function activeAction(enc)
+    if enc.enemy.id=="badigadi_final" and Balance.boss.phases[enc.enemy.phase] then
+        local actions=Balance.boss.phases[enc.enemy.phase]
+        return actions[(enc.enemy.actionIndex-1)%#actions+1]
+    end
+    if enc.enemy.phase=="seal" then return {id="seal_pulse",name="Pulso del sello",kind="attack",damage=3} end
+    if enc.enemy.phase=="six_arms" then
+        if enc.enemy.actionIndex%2==1 then return {id="six_arms",name="Seis brazos",kind="attack",damage=3,hits=3,companionDamage=2} end
+        return {id="royal_breath",name="Recobrar postura",kind="prepare",nextDamage=9}
+    end
+    local action=enc.enemy.actions[enc.enemy.actionIndex]
+    if action.maxUses and (enc.enemy.actionUses[action.id] or 0)>=action.maxUses then
+        return {id=action.id.."_exhausted",name="Defensa agotada",kind="recover"}
+    end
+    return action
+end
+local function intent(enc)
+    local action=copy(activeAction(enc))
+    if action.kind=="attack" then
+        action.baseDamage=action.damage
+        action.damage=damageAmount(enc.enemy,enc.player,action.baseDamage)
+        action.text=action.name..": "..action.damage.." daño"..(action.hits and " × "..action.hits or "").."."
+        if enc.enemy.weak>0 then action.text=action.text.." Debilitado: -2." end
+        if enc.player.vulnerable>0 then action.text=action.text.." Rudy vulnerable: +2." end
+        if action.companionDamage and enc.companion then action.text=action.text.." Compañera: "..action.companionDamage.." daño." end
+    elseif action.kind=="shield" then
+        action.text=action.name..": +"..action.shield.." escudo"..(action.maxUses and " ("..(action.maxUses-(enc.enemy.actionUses[action.id] or 0)).." usos)" or "").."."
+    elseif action.kind=="prepare" then action.text=action.name..": prepara "..action.nextDamage.." daño para su siguiente acción."
+    elseif action.kind=="interrupt" then action.text=action.name..": -"..action.actionLoss.." acción en el próximo turno de Rudy."
+    elseif action.kind=="recover" then action.text=action.name..": no recuperará más escudo."
+    else action.text=action.name..": Rudy causará 2 menos de daño durante su próximo turno." end
+    action.description=action.text
+    enc.enemy.intent=action
+end
+local function updateIntent(enc,result)
+    local old=enc.enemy.intent and enc.enemy.intent.text
+    intent(enc)
+    if old~=enc.enemy.intent.text and result then
+        event(result,"intent","enemy","Intención actualizada por el estado activo: "..enc.enemy.intent.text)
+    end
+end
+local function finish(enc,outcome,result,cause)
+    if Training.config(enc) and outcome=="defeat" then
+        cause="Eris detiene la espada de práctica al agotarse la resistencia de Rudy. El ejercicio termina sin heridas."
+    end
+    enc.finished=true; enc.outcome=outcome; enc.cause=cause
+    if outcome=="victory" then
+        event(result,"victory","enemy",enc.enemy.defeatText)
+    else event(result,"defeat","player",cause or "La vida de Rudy llegó a cero.") end
+end
+local function checkOutcome(enc,result)
+    if enc.enemy.id=="badigadi_final" and not enc.enemy.sealBroken then
+        if enc.enemy.hp<=0 and enc.enemy.phase~="seal" then
+            enc.enemy.phase="seal";enc.enemy.shield=0
+            event(result,"phase","enemy","Fase 4 · Romper la protección del antídoto. Badigadi cede, pero sigue vivo. Usa Romper sello [B].")
+            updateIntent(enc,result)
+        elseif enc.enemy.hp<=enc.enemy.maxHp*Balance.boss.thresholds[2] and enc.enemy.phase~="resolve" and enc.enemy.phase~="seal" then
+            enc.enemy.phase="resolve";enc.enemy.actionIndex=1
+            event(result,"phase","enemy","Fase 3 · Resistencia mejorada: 6 menos de daño por ataque. Agua, análisis y ataques combinados abren su defensa.")
+            updateIntent(enc,result)
+        elseif enc.enemy.hp<=enc.enemy.maxHp*Balance.boss.thresholds[1] and enc.enemy.phase=="endurance" then
+            enc.enemy.phase="six_arms"
+            enc.enemy.actionIndex=1
+            event(result,"phase","enemy","Fase 2 · Seis brazos. Anuncia tres golpes consecutivos: defiéndete y coordina a tu compañera.")
+            updateIntent(enc,result)
+        end
+    elseif enc.enemy.hp<=0 then finish(enc,"victory",result); return true end
+    if enc.player.hp<=0 then finish(enc,"defeat",result,"La vida de Rudy llegó a cero por la acción enemiga."); return true end
+    return false
+end
+local function record(enc,result,command)
+    result.turn=result.turn or enc.turn
+    if enc.training then
+        Training.observe(enc,result,command)
+        if not enc.finished and Training.goalReached(enc) then finish(enc,"victory",result) end
+        if enc.finished then enc.trainingResult=Training.complete(enc) end
+    end
+    local text={}
+    for _,entry in ipairs(result.events) do text[#text+1]=entry.text end
+    result.text=table.concat(text," ")
+    enc.log[#enc.log+1]=result
+    enc.resultEvents=copy(result.events)
+    enc.commands[#enc.commands+1]=command
+    enc.revision=enc.revision+1
+    return result
+end
+
+local function start(deck,context,initial,legacyBalance)
+    local enemy=legacyBalance and copy(Enemies.byId[context.enemyId]) or Enemies.resolve(context.enemyId,context)
+    enemy.hp=enemy.maxHp; enemy.shield=0; enemy.weak=0; enemy.vulnerable=0; enemy.actionIndex=1
+    enemy.actionUses={}
+    enemy.exposed=0
+    enemy.defeatEvent=enemy.defeatedEvent
+    if enemy.id=="badigadi_final" then enemy.phase="endurance";enemy.seal=enemy.sealMax;enemy.sealBroken=false end
+    local enc={type="combat",version=2,balanceVersion=3,context=copy(context),deck=copy(deck),initial=copy(initial),
+        player={name="Rudy",hp=R.playerHp,maxHp=R.playerHp,mana=context.curse.manaBlocked and 0 or R.playerMana,maxMana=R.playerMana,externalEnergy=context.externalEnergy,maxExternalEnergy=context.externalEnergy,physicalShield=0,magicShield=0,shield=0,weak=0,vulnerable=0},enemy=enemy,
+        hand={},drawPile=copy(initial.pile),discard={},energy=R.energy,turn=1,maxTurns=R.maxTurns,
+        revision=0,finished=false,perTurn={},perBattle={},companionHeals=0,randomState=initial.seed,commands={},log={},resultEvents={},relationshipEvents={},tacticalDecisions={}}
+    enc.training=Training.new(enemy.trainingId)
+    enc.allies=enc.training and {} or copy(context.allies)
+    enc.supportUsed={}
+    if enemy.id=="badigadi_final" then enc.maxTurns=Balance.boss.maxTurns end
+    enc.player.shield=context.preparationShield or 0
+    enc.player.physicalShield=context.preparationShield or 0
+    if enc.training then enc.maxTurns=Training.config(enc).maxTurns end
+    enc.companion=enc.allies[context.character]
+    if not enc.companion then for _,id in ipairs(Companions.order) do if enc.allies[id] then enc.companion=enc.allies[id];break end end end
+    draw(enc,R.handSize)
+    intent(enc)
+    enc.log[1]={turn=1,text="Comienza el combate. Rudy: "..R.playerHp.." vida, "..(legacyBalance and R.playerMana or enc.player.mana).." maná, 3 acciones. "..enemy.intent.text,events={}}
+    return enc
+end
+
+function Combat.new(deck,context,rng)
+    if context and context.legacyEncounter then return Legacy.new(deck,context,rng) end
+    local adapted,err,adjustments=Combat.adaptDeck(deck,context)
+    assert(adapted,err)
+    context=contextFor(context)
+    rng=rng or (love and love.math and love.math.random) or math.random
+    local seed=rng(2147483646)
+    if not integer(seed,1,2147483646) then seed=1 end
+    local scratch={randomState=seed}; local pile=copy(adapted)
+    shuffle(scratch,pile)
+    if context.tutorial then
+        -- Último elemento se roba primero. Primera mano y segundo turno guiados.
+        local order,available={},{}
+        for _,id in ipairs(adapted) do available[id]=true end
+        for _,id in ipairs({"staff_strike","push","stone_throw","simple_cut","coordinated_attack"}) do
+            if available[id] then order[#order+1]=id end
+        end
+        local used={}; for _,id in ipairs(order) do used[id]=true end
+        for _,id in ipairs(adapted) do if not used[id] then order[#order+1]=id end end
+        pile={}; for i=#order,1,-1 do pile[#pile+1]=order[i] end
+    end
+    local enc=start(adapted,context,{pile=pile,seed=scratch.randomState})
+    enc.deckAdjustments=adjustments
+    return enc
+end
+
+local function resourceField(enc,card)
+    if (card.manaCost or 0)==0 then return "mana" end
+    if enc.context.curse.manaBlocked then
+        if card.resource=="natural" then return nil end
+        return "externalEnergy"
+    end
+    return "mana"
+end
+local function resourceName(field) return field=="externalEnergy" and "energía externa" or "maná natural" end
+function Combat.canPlay(enc,index)
+    if type(enc)~="table" or enc.type~="combat" then return false,"No hay un combate activo." end
+    if enc.finished then return false,"El combate ya terminó." end
+    if not integer(index,1,#enc.hand) then return false,"Selecciona una carta de la mano." end
+    local card=Combat.card(enc.hand[index],enc)
+    if not card then return false,"Esta carta solo funciona en encuentros sociales." end
+    if card.conditions and card.conditions.character and not enc.allies[card.conditions.character] then
+        return false,"Requiere la compañía de "..card.conditions.character.."."
+    end
+    if card.perTurn and (enc.perTurn[card.id] or 0)>=card.perTurn then return false,"Esta carta ya alcanzó su límite por turno." end
+    if enc.balanceVersion~=1 and card.perBattle and (enc.perBattle[card.id] or 0)>=card.perBattle then return false,"Esta carta agotó sus "..card.perBattle.." usos por combate." end
+    if enc.balanceVersion~=1 and card.effects.heal and not card.effects.damage and enc.player.hp>=enc.player.maxHp then return false,"Rudy ya tiene la vida máxima." end
+    if enc.energy<card.cost then return false,"Necesita "..card.cost.." energía; tienes "..enc.energy.."." end
+    local field=resourceField(enc,card)
+    if not field then return false,"MANÁ: BLOQUEADO. La magia natural no funciona hasta usar el antídoto." end
+    if enc.player[field]<(card.manaCost or 0) then return false,"Necesita "..card.manaCost.." "..resourceName(field).."; tienes "..enc.player[field].."." end
+    if enc.player.hp<=(card.hpCost or 0) then return false,"El esfuerzo de espada debe dejar a Rudy al menos 1 PV." end
+    return true
+end
+
+function Combat.preview(enc,index)
+    local card=Combat.card(enc.hand[index],enc); if not card then return nil end
+    local preview={cardId=card.id,cost=card.cost,manaCost=card.manaCost or 0,hpCost=card.hpCost or 0,effects=copy(card.effects),text=Combat.describe(card,enc)}
+    if card.perBattle and enc.balanceVersion~=1 then
+        preview.usesLeft=math.max(0,card.perBattle-(enc.perBattle[card.id] or 0))
+        preview.text=preview.text.." Usos restantes: "..preview.usesLeft.."."
+    end
+    if card.effects.damage then
+        local base,bonus,reduction=elementalDamage(enc,card)
+        preview.elementBonus=bonus
+        if reduction>0 then preview.trainingSwordReduction=reduction end
+        preview.damage=damageAmount(enc.player,enc.enemy,base)
+        preview.blocked=math.min(enc.enemy.shield,preview.damage)
+        preview.hpLost=math.min(enc.enemy.hp,preview.damage-preview.blocked)
+        preview.text=preview.text.." Ahora: "..preview.damage.." daño / "..preview.blocked.." bloqueo / "..preview.hpLost.." vida."
+    end
+    return preview
+end
+
+function Combat.play(enc,index,expectedRevision)
+    if expectedRevision~=nil and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
+    local ok,err=Combat.canPlay(enc,index); if not ok then return nil,err end
+    local card=Combat.card(enc.hand[index],enc); local e=card.effects
+    local result={cardId=card.id,cost=card.cost,manaCost=card.manaCost or 0,hpCost=card.hpCost or 0,element=card.element,events={}}
+    enc.energy=enc.energy-card.cost
+    local field=resourceField(enc,card)
+    enc.player[field]=enc.player[field]-(card.manaCost or 0)
+    enc.player.hp=enc.player.hp-(card.hpCost or 0)
+    enc.perTurn[card.id]=(enc.perTurn[card.id] or 0)+1
+    enc.perBattle[card.id]=(enc.perBattle[card.id] or 0)+1
+    table.remove(enc.hand,index); enc.discard[#enc.discard+1]=card.id
+    event(result,"play","player",card.name..": paga "..card.cost.." acción, "..(card.manaCost or 0).." "..resourceName(field).." y "..(card.hpCost or 0).." PV de esfuerzo.",{element=card.element})
+    if e.damage then
+        local base,bonus,reduction=elementalDamage(enc,card)
+        if bonus>0 then event(result,"elemental","enemy","Debilidad elemental aprovechada: +"..bonus.." daño antes de escudo.",{amount=bonus,element=card.element}) end
+        if reduction>0 then event(result,"training_guard","enemy","Eris reconoce la técnica de espada y desvía "..reduction.." puntos. Busca otra distancia o un recurso táctico.",{amount=reduction}) end
+        damage(enc,"enemy",base,result)
+    end
+    if e.shield then
+        enc.player.shield=enc.player.shield+e.shield
+        local shieldKind=(card.manaCost or 0)>0 and "magicShield" or "physicalShield"
+        enc.player[shieldKind]=enc.player[shieldKind]+e.shield
+        event(result,"shield","player","Rudy gana "..e.shield.." escudo.",{amount=e.shield})
+    end
+    if e.heal then
+        local amount=math.min(e.heal,enc.player.maxHp-enc.player.hp)
+        enc.player.hp=math.min(enc.player.maxHp,enc.player.hp+amount)
+        event(result,"heal","player","Rudy recupera "..amount.." vida.",{amount=amount})
+    end
+    if e.energy then
+        enc.energy=enc.energy+e.energy
+        event(result,"energy","player","Rudy gana "..e.energy.." energía.",{amount=e.energy})
+    end
+    if e.mana then
+        local pool=enc.context.curse.manaBlocked and "externalEnergy" or "mana"
+        local maximum=pool=="mana" and enc.player.maxMana or enc.player.maxExternalEnergy
+        local amount=math.min(e.mana,maximum-enc.player[pool])
+        enc.player[pool]=enc.player[pool]+amount
+        event(result,"mana","player","El artefacto recupera "..amount.." "..resourceName(pool)..".",{amount=amount})
+    end
+    if e.weak then
+        enc.enemy.weak=math.max(enc.enemy.weak,e.weak)
+        event(result,"status","enemy","Enemigo debilitado: -2 daño durante "..e.weak.." turno(s).",{status="weak",amount=e.weak})
+    end
+    if e.vulnerable then
+        enc.enemy.vulnerable=math.max(enc.enemy.vulnerable,e.vulnerable)
+        event(result,"status","enemy","Enemigo vulnerable: +2 daño recibido por golpe hasta terminar tu turno.",{status="vulnerable",amount=e.vulnerable})
+    end
+    if e.draw then draw(enc,e.draw,result) end
+    event(result,"discard","player",card.name.." va al descarte.",{amount=1})
+    updateIntent(enc,result)
+    checkOutcome(enc,result)
+    return record(enc,result,{kind="play",cardId=card.id,index=index})
+end
+
+Combat.tactics=Legacy.tactics
+require("src.systems.support_actions").install(Combat,{event=event,damage=damage,damageAmount=damageAmount,updateIntent=updateIntent,checkOutcome=checkOutcome,record=record})
+
+function Combat.endTurn(enc,expectedRevision)
+    if expectedRevision~=nil and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
+    if enc.finished then return nil,"El combate ya terminó." end
+    if enc.training then
+        local available=Combat.canBasic(enc,"counter")==true
+        for index,id in ipairs(enc.hand) do
+            local card=Combat.card(id,enc)
+            if card and (card.effects.damage or 0)>0 and Combat.canPlay(enc,index) then available=true;break end
+        end
+        Training.beforeEndTurn(enc,available)
+    end
+    local result={events={},turn=enc.turn,enemyAction=enc.enemy.intent.id,actionName=enc.enemy.intent.name}
+    local amount=#enc.hand
+    for _,id in ipairs(enc.hand) do enc.discard[#enc.discard+1]=id end
+    enc.hand={}
+    if amount>0 then event(result,"discard","player","Fin de turno: se descartan "..amount.." cartas de la mano.",{amount=amount}) end
+    -- Los estados de Rudy duran su turno completo. Los de la anomalía se
+    -- consumen durante su propia acción; vulnerabilidad dura el turno de Rudy.
+    enc.player.weak=math.max(0,enc.player.weak-1)
+    enc.player.vulnerable=math.max(0,enc.player.vulnerable-1)
+    enc.enemy.vulnerable=math.max(0,enc.enemy.vulnerable-1)
+    if enc.enemy.shield>0 then
+        event(result,"shield_expire","enemy","El escudo anterior de la anomalía desaparece.",{amount=enc.enemy.shield})
+        enc.enemy.shield=0
+    end
+    local action=activeAction(enc)
+    enc.enemy.actionUses[action.id]=(enc.enemy.actionUses[action.id] or 0)+1
+    event(result,"enemy_action","enemy",enc.enemy.name.." utiliza "..action.name..".")
+    if action.kind=="attack" then
+        for _=1,(action.hits or 1) do if enc.player.hp>0 then damage(enc,"player",action.damage,result) end end
+        if enc.companion and enc.companion.hp>0 and action.companionDamage then damage(enc,"companion",action.companionDamage,result) end
+    elseif action.kind=="shield" then
+        enc.enemy.shield=action.shield
+        event(result,"shield","enemy","La anomalía gana "..action.shield.." escudo.",{amount=action.shield})
+    elseif action.kind=="prepare" then
+        event(result,"prepare","enemy","Acumula maná: su siguiente acción será un ataque de "..action.nextDamage.." daño.",{amount=action.nextDamage})
+    elseif action.kind=="status" then
+        enc.player[action.status]=action.duration
+        event(result,"status","player","Rudy recibe debilitamiento: -2 daño por golpe durante su próximo turno.",{status=action.status,amount=action.duration})
+    elseif action.kind=="interrupt" then
+        event(result,"interrupt","player","Rudy pierde "..action.actionLoss.." acción en su próximo turno. Puede seguir usando defensa o cartas.",{amount=action.actionLoss})
+    elseif action.kind=="recover" then
+        event(result,"recovery_exhausted","enemy","El enemigo agotó sus recuperaciones de escudo.")
+    end
+    enc.enemy.weak=math.max(0,enc.enemy.weak-1)
+    if not checkOutcome(enc,result) then
+        if enc.turn>=enc.maxTurns then
+            enc.player.hp=0
+            finish(enc,"defeat",result,"La amenaza te supera tras "..enc.maxTurns.." turnos. Regresa al punto seguro o reintenta.")
+        else
+            if enc.player.shield>0 then
+                event(result,"shield_expire","player","El escudo normal de Rudy desaparece al comenzar su turno.",{amount=enc.player.shield})
+            end
+            enc.player.shield=0;enc.player.physicalShield=0;enc.player.magicShield=0; enc.turn=enc.turn+1
+            enc.energy=math.max(1,R.energy-(action.kind=="interrupt" and action.actionLoss or 0)); enc.perTurn={}
+            enc.supportUsed={};enc.enemy.exposed=math.max(0,enc.enemy.exposed-1)
+            local pool=enc.context.curse.manaBlocked and "externalEnergy" or "mana"
+            local maximum=pool=="mana" and enc.player.maxMana or enc.player.maxExternalEnergy
+            local manaGain=math.min(R.manaRegen,maximum-enc.player[pool])
+            enc.player[pool]=enc.player[pool]+manaGain
+            if enc.companion then enc.companion.shield=0 end
+            event(result,"mana","player","Recarga de turno: +"..manaGain.." "..resourceName(pool)..".",{amount=manaGain})
+            draw(enc,math.max(0,R.handSize-#enc.hand),result)
+            enc.enemy.actionIndex=enc.enemy.actionIndex%#enc.enemy.actions+1
+            intent(enc)
+            event(result,"intent","enemy","Próxima intención: "..enc.enemy.intent.text)
+        end
+    end
+    return record(enc,result,{kind="endTurn"})
+end
+
+function Combat.canBasic(enc,id)
+    if not enc or enc.finished then return false,"El combate ya terminó." end
+    if id~="defend" and id~="dodge" and id~="counter" then return false,"Acción básica desconocida." end
+    if id=="counter" and (not enc.training or not enc.training.counterReady) then
+        return false,"Bloquea o esquiva un ataque real para abrir un contraataque en el turno siguiente."
+    end
+    if enc.energy<1 then return false,"Necesita una acción." end
+    if enc.perTurn[id] then return false,"Una vez por turno." end
+    return true
+end
+function Combat.basic(enc,id,expectedRevision)
+    if expectedRevision and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
+    local ok,err=Combat.canBasic(enc,id);if not ok then return nil,err end
+    enc.energy=enc.energy-1;enc.perTurn[id]=true
+    if id=="counter" then
+        enc.training.counterReady=false
+        local result={events={},actionName="Contraataque de entrenamiento"}
+        event(result,"counter","player","Rudy aprovecha la apertura defensiva con su bastón. Coste: 1 acción, sin maná.")
+        damage(enc,"enemy",Training.config(enc).counter.damage,result)
+        updateIntent(enc,result);checkOutcome(enc,result)
+        return record(enc,result,{kind="basic",id=id})
+    end
+    local amount=id=="defend" and 5 or 3
+    enc.player.shield=enc.player.shield+amount;enc.player.physicalShield=enc.player.physicalShield+amount
+    local result={events={},actionName=id=="defend" and "Defensa básica" or "Esquiva"}
+    event(result,"shield","player",result.actionName..": +"..amount.." escudo físico sin maná ni carta.",{amount=amount})
+    return record(enc,result,{kind="basic",id=id})
+end
+function Combat.canBreakSeal(enc)
+    return enc and not enc.finished and enc.enemy.phase=="seal" and not enc.enemy.sealBroken and enc.energy>=1
+end
+function Combat.breakSeal(enc,expectedRevision)
+    if expectedRevision and expectedRevision~=enc.revision then return nil,"Esta acción ya fue procesada." end
+    if not Combat.canBreakSeal(enc) then return nil,"Agota la resistencia de Badigadi y reserva una acción para el sello." end
+    enc.energy=enc.energy-1;enc.enemy.seal=math.max(0,enc.enemy.seal-6)
+    local result={events={},actionName="Neutralizar el sello"}
+    event(result,"seal","enemy","Rudy golpea los anclajes expuestos del sello: "..enc.enemy.seal.." resistencia restante.",{amount=6})
+    if enc.enemy.seal==0 then enc.enemy.sealBroken=true;enc.enemy.phase="victory" end
+    checkOutcome(enc,result)
+    return record(enc,result,{kind="breakSeal"})
+end
+function Combat.retry(enc)
+    return start(enc.deck,enc.context,enc.initial,enc.balanceVersion==1)
+end
+
+-- Reproduce el combate desde la apertura y compara todos los campos de reglas.
+-- No confía en vida/energía/resultados escritos en JSON, ni aplica recompensas.
+function Combat.restore(snapshot,deck,context)
+    if type(snapshot)=="table" and (not snapshot.context or snapshot.context.warVersion~=1) then return Legacy.restore(snapshot,deck,context) end
+    if type(snapshot)~="table" or snapshot.type~="combat" or snapshot.version~=2 then return nil end
+    local adapted,_,adjustments=Combat.adaptDeck(deck,context); if not adapted then return nil end
+    context=contextFor(context)
+    -- Los combates v3 de campaña anteriores no tenían versión de balance ni
+    -- presupuestos. Se reproducen con sus reglas originales hasta finalizarlos;
+    -- nunca se sortea otra mano ni se cambia el enemigo a mitad de la batalla.
+    local oldSnapshot=snapshot.balanceVersion==nil and snapshot.perBattle==nil and snapshot.companionHeals==nil
+        and type(snapshot.enemy)=="table" and snapshot.enemy.actionUses==nil
+        and type(snapshot.context)=="table" and snapshot.context.day==nil and snapshot.context.difficulty==nil
+    local legacyBalance=oldSnapshot or snapshot.balanceVersion==1
+    if snapshot.context and snapshot.context.progressionVersion~=1 then
+        context.progressionVersion,context.cardLevels,context.preparationShield=nil,nil,nil
+    end
+    if snapshot.balanceVersion~=3 then return nil end
+    if legacyBalance then context.day=nil;context.difficulty=nil end
+    if not same(snapshot.context,context) or not same(snapshot.deck,adapted) then return nil end
+    local initial=snapshot.initial
+    if type(initial)~="table" or not integer(initial.seed,1,2147483646) or type(initial.pile)~="table" or #initial.pile~=#adapted then return nil end
+    local expected={}; for _,id in ipairs(adapted) do expected[id]=true end
+    for _,id in ipairs(initial.pile) do if not expected[id] then return nil end; expected[id]=nil end
+    if next(expected) then return nil end
+    if type(snapshot.commands)~="table" or #snapshot.commands>1000 then return nil end
+    local restored=start(adapted,context,initial,legacyBalance)
+    for _,command in ipairs(snapshot.commands) do
+        if type(command)~="table" or restored.finished then return nil end
+        if command.kind=="play" then
+            if not integer(command.index,1,#restored.hand) or restored.hand[command.index]~=command.cardId then return nil end
+            if not Combat.play(restored,command.index,restored.revision) then return nil end
+        elseif command.kind=="endTurn" then
+            if not Combat.endTurn(restored,restored.revision) then return nil end
+        elseif command.kind=="basic" then
+            if not Combat.basic(restored,command.id,restored.revision) then return nil end
+        elseif command.kind=="breakSeal" then
+            if not Combat.breakSeal(restored,restored.revision) then return nil end
+        elseif command.kind=="tactic" then
+            if not Combat.tactic(restored,command.id,restored.revision) then return nil end
+        elseif command.kind=="support" then
+            if not Combat.support(restored,command.wife,command.id,restored.revision,command.confirmRisk) then return nil end
+        else return nil end
+    end
+    for _,key in ipairs({"player","enemy","hand","drawPile","discard","energy","turn","maxTurns","revision",
+        "finished","outcome","cause","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","allies","supportUsed","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
+        local expected=restored[key]
+        if oldSnapshot and key=="enemy" then expected=copy(expected);expected.actionUses=nil end
+        if not (oldSnapshot and (key=="perBattle" or key=="companionHeals")) and not same(expected,snapshot[key]) then return nil end
+    end
+    restored.deckAdjustments=adjustments
+    if type(snapshot.tutorial)=="table" then
+        restored.tutorial={}
+        for key,value in pairs(snapshot.tutorial) do
+            if type(key)=="string" and #key<64 and (type(value)=="boolean" or (type(value)=="string" and #value<128)
+                or integer(value,0,1000)) then restored.tutorial[key]=value end
+        end
+    end
+    return restored
+end
+
+-- Los combates ya guardados conservan reglas, comandos y resultados históricos.
+for _,name in ipairs({"canPlay","preview","play","canTactic","tactic","endTurn","canBasic","basic","canBreakSeal","breakSeal","retry"}) do
+    local current=Combat[name]
+    Combat[name]=function(enc,...)
+        if enc and enc.context and enc.context.warVersion~=1 then return Legacy[name](enc,...) end
+        return current(enc,...)
+    end
+end
+return Combat
+````
+
+## src/systems/combat_legacy.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/combat_legacy.lua`
+
+````lua
+-- Reglas puras: no audio, gráficos, campaña ni escritura de archivos.
+-- El registro de comandos permite restaurar y reintentar sin repetir premios.
+local Data=require("src.data.cards")
+local Techniques=require("src.data.combat_cards")
+local Enemies=require("src.data.enemies_legacy")
+local Training=require("src.systems.training")
+local Collection=require("src.systems.card_collection")
 local Combat={rules=Techniques.rules}
 local R=Techniques.rules
 local function copy(value)
@@ -9634,13 +10660,13 @@ function Tutorial.message(tutorial,enc)
     if not tutorial then return nil end
     local stage=tutorial.stage
     if stage=="attack" then
-        return "NANAHOSHI · 1/6: ATACAR","Golpe de bastón [1]: 1 acción y 0 maná; causa 4 daño. Seleccionar inspecciona; Jugar [Enter] confirma."
+        return "NANAHOSHI · 1/6: ATACAR","Golpe de bastón [1]: 1 acción y 0 maná; causa "..require("src.systems.combat").card("staff_strike",enc).effects.damage.." daño. Seleccionar inspecciona; Jugar [Enter] confirma."
     elseif stage=="attack_result" then
-        return "2/6: VIDA E INTENCIÓN","Enemigo: 22 > "..enc.enemy.hp.." PV. La intención anuncia 4 daño. No gastaste maná: la maldición sigue activa.",true
+        return "2/6: VIDA E INTENCIÓN","Enemigo: "..enc.enemy.maxHp.." > "..enc.enemy.hp.." PV. "..enc.enemy.intent.text.." No gastaste maná: la maldición sigue activa.",true
     elseif stage=="shield" then
         return "3/6: PROTEGERSE","Defensa básica [D]: 1 acción, sin magia ni carta. Ganarás 5 escudo, suficiente para el ataque anunciado."
     elseif stage=="end_turn" then
-        return "4/6: TURNO ENEMIGO","Tienes 5 escudo. Terminar turno [E] ejecuta el ataque de 4 daño y descarta la mano restante."
+        return "4/6: TURNO ENEMIGO","Tienes 5 escudo. Terminar turno [E] ejecuta la intención anunciada y descarta la mano restante."
     elseif stage=="enemy_result" then
         return "5/6: DAÑO Y BLOQUEO","El escudo absorbió el golpe. Rudy: "..enc.player.hp.."/30. Nueva mano, 3 acciones y maná natural bloqueado. El escudo caduca.",true
     elseif stage=="free" then
@@ -9649,6 +10675,53 @@ function Tutorial.message(tutorial,enc)
 end
 
 return Tutorial
+````
+
+## src/systems/companions.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/companions.lua`
+
+````lua
+local Data=require("src.data.battle_balance")
+local C={order={"sylphiette","roxy","eris"}}
+function C.affinity(r)
+ return ((r and r.love or 50)+(r and r.trust or 50))/2
+end
+function C.damage(base,r) return math.floor(base*math.max(0,math.min(100,C.affinity(r)))/100+.5) end
+function C.healing(r,maxHp)
+ local affinity=C.affinity(r)
+ local rate=affinity>=90 and .4 or affinity>=80 and .3 or affinity>=50 and .2 or affinity>=25 and .1 or -.4
+ return math.floor(maxHp*rate+.5),rate
+end
+function C.skill(id,skill)
+ for _,s in ipairs(Data.skills[id] or {}) do if s.id==skill then return s end end
+end
+function C.roster(context)
+ local out={}
+ for _,id in ipairs(C.order) do
+  local r=context.relationships and context.relationships[id]
+  local selected=context.team and context.team[id] or context.character==id
+  if selected and (not r or r.marriageState~="separated") then
+   local def=Data.support[id]
+   out[id]={id=id,name=def.name,role=def.role,love=r and r.love or 50,trust=r and r.trust or 50,
+    hp=20,maxHp=20,shield=0,weak=0,vulnerable=0,cooldowns={},uses={}}
+  end
+ end
+ return out
+end
+function C.context(session,definition)
+ local context={relationships=session.relationships,team={}}
+ if definition.enemyId=="badigadi_final" and session.decisions.day7_companion=="all" then
+  for _,id in ipairs(C.order) do context.team[id]=true end
+ elseif definition.character then context.team[definition.character]=true end
+ return context
+end
+function C.record(session,enc)
+ for id,ally in pairs(enc.allies or {})do
+  session.decisions["support_previous_"..id]=C.damage(Data.support[id].special,ally)
+ end
+end
+return C
 ````
 
 ## src/systems/conditions.lua
@@ -9915,11 +10988,12 @@ function Daily.battleDefinition(session)
     return {kind="magic",title=def.title,background=def.background,activity=true,training=def.battle=="duel",
         enemyId=def.battle=="duel" and "eris_training" or def.battle=="monsters" and ((Family.ensure(session).progress.monster_hunts or 0)>=2 and "ruins_guardian" or "forest_beast") or "mana_anomaly",
         character=def.battle=="monsters" and active.choice=="together" and "eris" or nil,
-        difficulty=def.battle=="practice" and 1 or math.min(3,session.day),intro=def.description}
+        difficulty=def.battle=="practice" and 1 or session.day,intro=def.description}
 end
 function Daily.finishBattle(session,enc)
     local def=Daily.battleDefinition(session)
     if not def or session.combat~=enc or not enc.finished then return nil,"El encuentro aún no ha terminado." end
+    require("src.systems.companions").record(session,enc)
     local activity=Catalog.byId[session.daily.active_activity.id]
     local won=enc.outcome=="victory"
     local effect,text
@@ -11630,7 +12704,7 @@ local function validate(catalog,options)
                     effect({id=selection.event,decision=selection.decision},id,node.day,nil,selection.to)
                     if selection.requires then guardedSelections[#guardedSelections+1]={from=id,to=selection.to,requires=selection.requires} end
                     if #(selection.options or {})==0 then fail(id,"selector sin opciones") end
-                    for _,characterId in ipairs(selection.options or {}) do character(characterId,id) end
+                    for _,characterId in ipairs(selection.options or {}) do if characterId~="all" then character(characterId,id) end end
                 end
                 if not graph[id] or not next(graph[id]) then fail(id,"lugar sin salida") end
             elseif raw.terminal then
@@ -11723,7 +12797,7 @@ local function validate(catalog,options)
         end
     end
     for id in pairs(nodes) do
-        if not reachable[id] then fail(id,"checkpoint inalcanzable desde el inicio") end
+        if not reachable[id] and not nodes[id].definition.legacyEncounter then fail(id,"checkpoint inalcanzable desde el inicio") end
         if not exits[id] then fail(id,"ruta bloqueada o ciclo sin un resumen terminal") end
     end
     return #errors==0,errors
@@ -11868,6 +12942,9 @@ function Progression.companion(session,checkpoint)
     local chapter=chapterFor(checkpoint or session.checkpoint)
     local key=chapter and chapter.companion and chapter.companion.decisionKey
     local id=key and (session.decisions or {})[key]
+    if id=="all" then
+        for _,wife in ipairs(Characters.romanceIds) do if require("src.systems.family").active(session,wife) then return wife end end
+    end
     if id and Characters.byId[id] and Characters.byId[id].romance and require("src.systems.family").active(session,id) then return id end
 end
 local function context(session,checkpoint) return {companion=Progression.companion(session,checkpoint)} end
@@ -11945,7 +13022,7 @@ function Progression.continueStory(session)
     if config.lockBeforeStory then
         local ok,err=Daily.lockActivities(session); if not ok then return nil,err end
     end
-    return move(session,config.story)
+    return move(session,session.day==7 and session.events.antidote_obtained and "day7_intro" or config.story)
 end
 function Progression.endDay(session)
     if not Daily.atAgenda(session) then return nil,"Vuelve a la agenda para finalizar el día." end
@@ -11958,7 +13035,7 @@ function Progression.availableCompanions(session)
     local selection=hub and hub.companion
     local available={}
     if selection and meets(session,selection.requires,session.checkpoint) then
-        for _,id in ipairs(selection.options or {}) do if require("src.systems.family").active(session,id) then available[#available+1]=id end end
+        for _,id in ipairs(selection.options or {}) do if id=="all" or require("src.systems.family").active(session,id) then available[#available+1]=id end end
         available[#available+1]="solo"
     end
     return available
@@ -12048,6 +13125,9 @@ function Progression.scene(session,id)
     if #scene.lines==0 then scene.lines={{speaker="narrator",text="Rudy respeta la decisión de quienes se marcharon y continúa con las responsabilidades pendientes."}} end
     if id=="day6_intro" and next(require("src.systems.family").ensure(session).departures) then
         scene.lines[1].text="Cliff vigila las lecturas y Zanoba lleva el contenedor. Rudy decidirá si viaja con una esposa disponible o afronta el desafío solo. Quienes se marcharon no están convocadas."
+    end
+    if id=="day6_close" and session.events.antidote_obtained then
+        scene.lines={{speaker="nanahoshi",expression="happy",text="El antídoto que ganaste sigue a salvo. Lo verificaremos al amanecer; no hace falta repetir el desafío."}}
     end
     if id=="day7_voice" and next(require("src.systems.family").ensure(session).departures) then
         for _,line in ipairs(scene.lines) do if line.speaker=="narrator" and line.text:find("las tres",1,true) then line.text="Rudy explica la maldición a quienes siguen a su lado. La recuperación de su voz no revoca ninguna separación." end end
@@ -12161,6 +13241,10 @@ end
 -- Los vínculos sociales jamás reciben deltas por infligir daño mágico.
 function Progression.finishCombat(session,enc)
     local def=Progression.encounter(session,session.checkpoint)
+    if def and def.enemyId=="orsted_trial" and session.combat==enc and enc.finished and enc.outcome=="defeat" then
+        Events.apply(session,"orsted_trial_completed",{text="Orsted detiene la prueba. Rudy conserva lo aprendido y sigue hacia el desafío final."})
+        return Progression.next(session,session.checkpoint,{score=0,trust=0,chemistry=0})
+    end
     if def and def.training then
         local Result=require("src.systems.training_result")
         if not Result.current(session,enc) then return nil,"El entrenamiento todavía no terminó." end
@@ -12173,6 +13257,7 @@ function Progression.finishCombat(session,enc)
     local checkpoint=session.checkpoint
     def=Progression.encounter(session,checkpoint)
     if not def or def.kind~="magic" then return nil,"No hay una anomalía activa." end
+    require("src.systems.companions").record(session,enc)
     local enemy=require("src.data.enemies").byId[enc.enemy.id]
     local key="combat_reward_"..checkpoint
     if not session.events[key] then
@@ -12800,6 +13885,12 @@ function Resources:portrait(id,expression,x,y,scale,grayscale)
     love.graphics.setShader(previous)
     return img
 end
+function Resources:portraitSmall(id,expression,x,y)
+    love.graphics.push()
+    love.graphics.translate(math.floor(x),math.floor(y));love.graphics.scale(.5,.5)
+    self:portrait(id,expression,0,0,1)
+    love.graphics.pop()
+end
 function Resources:getIcon(id)
     id=id or "magic"
     if not self.icons[id] then
@@ -12880,7 +13971,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=6,filename="campaign-v6.json",backup="campaign-v6.backup.json",optionsFile="options.json",
+local Save={version=7,maxBytes=2097152,filename="campaign-v7.json",backup="campaign-v7.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -12967,6 +14058,10 @@ function Save.validate(input)
         for _,favor in ipairs(type(input.pending_favors)=="table" and input.pending_favors or {}) do
             if type(favor)=="table" then favor.legacyDelivery=true end
         end
+    end
+    if input.version==6 then
+        input=Json.decode(assert(Json.encode(input)));input.version=7
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.warSource="campaign-v6.json"
     end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
@@ -13128,7 +14223,7 @@ function Save.validate(input)
         local companion=chapter.companion
         if companion then
             local key=companion.decisionKey
-            if type(s.decisions[key])~="string" or not s.relationships[s.decisions[key]] then
+            if type(s.decisions[key])~="string" or (not s.relationships[s.decisions[key]] and s.decisions[key]~="solo" and not (key=="day7_companion" and s.decisions[key]=="all")) then
                 s.decisions[key]=nil; s.events[companion.event]=nil
             end
         end
@@ -13180,7 +14275,9 @@ function Save.validate(input)
     if definition and definition.kind=="magic" and not s.encounter then
         if input.combatPreparation==true then s.combatPreparation=true end
         if not s.combatPreparation and type(input.combat)=="table" then
+            local support=require("src.systems.companions").context(s,definition)
             s.combat=Combat.restore(input.combat,s.deck,{character=definition.character,tutorial=definition.tutorial,
+                relationships=support.relationships,team=support.team,legacyEncounter=definition.legacyEncounter,
                 cardLevels=Collection.levels(s),preparationShield=type(input.combat.context)=="table" and input.combat.context.preparationShield,
                 enemyId=definition.enemyId,unlocked=s.unlocked,combatDeck=s.combatDeck,tacticalContext=definition.tacticalContext,curse=s.curse,externalEnergy=s.externalEnergy,
                 day=s.day,difficulty=definition.difficulty})
@@ -13210,7 +14307,7 @@ end
 local function readFile(path)
     local ok,info=pcall(love.filesystem.getInfo,path,"file")
     if not ok or not info then return nil,"No hay guardado disponible." end
-    if info.size and info.size>524288 then return nil,"El archivo de guardado es demasiado grande." end
+    if info.size and info.size>Save.maxBytes then return nil,"El archivo de guardado es demasiado grande." end
     local readOk,data,err=pcall(love.filesystem.read,path)
     if not readOk or not data then return nil,err or "No se pudo leer el archivo." end
     return data
@@ -13236,7 +14333,8 @@ function Save.write(session)
     end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v6.tmp.json",data)
+    if #data>Save.maxBytes then return false,"El progreso supera el tamaño máximo de guardado." end
+    local ok; ok,err=writeFile("campaign-v7.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -13244,7 +14342,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v6.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v7.tmp.json")
     return true
 end
 
@@ -13259,12 +14357,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5) then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña recuperada con progreso familiar. El archivo original se conserva; se guardará en v6." end
+            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v7." end
         end
     end
     return nil,err or "No hay guardado válido disponible."
@@ -13304,6 +14402,89 @@ function Save.writeOptions(value)
     return writeFile(Save.optionsFile,data)
 end
 return Save
+````
+
+## src/systems/support_actions.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/support_actions.lua`
+
+````lua
+local C=require("src.systems.companions")
+local Data=require("src.data.battle_balance")
+local Support={}
+function Support.install(Combat,api)
+ function Combat.supportPreview(enc,wife,id)
+  local ally=enc.allies and enc.allies[wife];local skill=C.skill(wife,id)
+  if not ally or not skill then return nil end
+  local raw=C.damage(skill.power or 0,ally)
+  local armor=enc.enemy.phase=="resolve" and enc.enemy.exposed<=0 and not skill.expose and id~="special" and Data.boss.armor or 0
+  local hit=api.damageAmount(ally,enc.enemy,math.max(0,raw-armor))
+  local shield=math.max(0,enc.enemy.shield-(skill.shatter or 0))
+  local hp=math.min(enc.enemy.hp,math.max(0,hit-shield))
+  local healing,rate=C.healing(ally,enc.player.maxHp)
+  return {skill=skill,affinity=C.affinity(ally),damage=raw,hpLost=hp,shield=skill.shield or 0,
+   heal=skill.heal and math.min(math.max(0,healing),enc.player.maxHp-enc.player.hp) or 0,
+   risk=skill.heal and rate<0,riskDamage=math.abs(healing),mana=skill.mana or 0,
+   cooldown=math.max(0,(ally.cooldowns[id] or 0)-enc.turn),uses=skill.uses and skill.uses-(ally.uses[id] or 0)}
+ end
+ function Combat.canSupport(enc,wife,id)
+  if not enc or enc.finished then return false,"El combate ya terminó." end
+  local p=Combat.supportPreview(enc,wife,id)
+  if not p or enc.allies[wife].hp<=0 then return false,"Esta compañera no puede participar." end
+  if enc.supportUsed[wife] then return false,"Ya actuó este turno." end
+  if p.cooldown>0 then return false,"Disponible en "..p.cooldown.." turno(s)." end
+  if p.uses and p.uses<=0 then return false,"Usos de combate agotados." end
+  local pool=enc.context.curse.manaBlocked and "externalEnergy" or "mana"
+  if enc.player[pool]<p.mana then return false,"Necesita "..p.mana.." de energía mágica." end
+  if p.skill.heal and not p.risk and p.heal==0 then return false,"Rudy ya tiene todos sus PV." end
+  return true
+ end
+ function Combat.support(enc,wife,id,revision,confirmRisk)
+  if revision~=nil and revision~=enc.revision then return nil,"Esta acción ya fue procesada." end
+  local ok,err=Combat.canSupport(enc,wife,id);if not ok then return nil,err end
+  local p=Combat.supportPreview(enc,wife,id)
+  if p.risk and not confirmRisk then return nil,"RIESGO: la maldición distorsiona la sincronización. Rudy perderá 40% de sus PV máximos. Confirma antes de usarla." end
+  local ally=enc.allies[wife];local skill=p.skill
+  local pool=enc.context.curse.manaBlocked and "externalEnergy" or "mana"
+  enc.player[pool]=enc.player[pool]-p.mana;enc.supportUsed[wife]=true
+  ally.cooldowns[id]=enc.turn+(skill.cooldown or 1);ally.uses[id]=(ally.uses[id] or 0)+1
+  local result={events={},actionName=skill.name,companionAction=id,companionId=wife,element=wife=="eris" and "sword" or "water"}
+  api.event(result,"companion_action","companion",ally.name..": "..skill.name..". Afinidad "..p.affinity.."; "..p.damage.." daño base; "..p.mana.." energía. Consume su acción de apoyo.")
+  if skill.shatter then
+   local removed=math.min(enc.enemy.shield,skill.shatter);enc.enemy.shield=enc.enemy.shield-removed
+   api.event(result,"shatter","enemy","Roxy disuelve "..removed.." escudo.",{amount=removed})
+  end
+  if skill.expose then enc.enemy.exposed=math.max(enc.enemy.exposed,skill.expose);api.event(result,"status","enemy","Roxy identifica la debilidad y anula la resistencia especial durante "..skill.expose.." turnos.") end
+  if skill.power then
+   local armor=enc.enemy.phase=="resolve" and enc.enemy.exposed<=0 and id~="special" and Data.boss.armor or 0
+   api.damage(enc,"enemy",math.max(0,p.damage-armor),result,ally)
+  end
+  if skill.weak then enc.enemy.weak=math.max(enc.enemy.weak,skill.weak);api.event(result,"status","enemy","El siguiente ataque pierde 2 de daño por golpe.",{status="weak",amount=skill.weak}) end
+  if skill.shield then
+   local kind=wife=="eris" and "physicalShield" or "magicShield"
+   enc.player.shield=enc.player.shield+skill.shield;enc.player[kind]=enc.player[kind]+skill.shield
+   api.event(result,"shield","player",ally.name.." protege a Rudy: +"..skill.shield.." escudo hasta su próximo turno.",{amount=skill.shield})
+  end
+  if skill.heal then
+   if p.risk then
+    local lost=math.min(enc.player.hp,p.riskDamage);enc.player.hp=enc.player.hp-lost
+    api.event(result,"damage","player","La maldición rompe la sincronización, no la capacidad de Sylphiette: Rudy pierde "..lost.." PV.",{rawDamage=p.riskDamage,damage=p.riskDamage,blocked=0,hpLost=lost,amount=lost})
+   else
+    enc.player.hp=enc.player.hp+p.heal;enc.companionHeals=enc.companionHeals+1
+    api.event(result,"heal","player","Sylphiette recupera "..p.heal.." PV de Rudy.",{amount=p.heal})
+   end
+  end
+  local recorded=false
+  for _,e in ipairs(enc.relationshipEvents)do if e.character==wife then recorded=true end end
+  if not recorded then enc.relationshipEvents[#enc.relationshipEvents+1]={id="combat_tactic_"..enc.enemy.id.."_"..wife,character=wife,love=1,trust=2,choice=id,reason="Coordinación acordada durante el combate.",context="combat",sharedMoment="battle_"..enc.enemy.id} end
+  api.updateIntent(enc,result);api.checkOutcome(enc,result)
+  return api.record(enc,result,{kind="support",wife=wife,id=id,confirmRisk=confirmRisk==true})
+ end
+ local aliases={together="attack",assist="attack",coordinate="special",protect="guard",group="guard",retreat="guard"}
+ function Combat.canTactic(enc,id) return Combat.canSupport(enc,enc.companion and enc.companion.id,aliases[id] or id) end
+ function Combat.tactic(enc,id,revision) return Combat.support(enc,enc.companion and enc.companion.id,aliases[id] or id,revision) end
+end
+return Support
 ````
 
 ## src/systems/training.lua
@@ -14492,33 +15673,12 @@ function Suite.run()
    if s.unlocked[id] and #equipped<10 then equipped[#equipped+1]=id end
   end
   if #equipped>=5 then s.combatDeck=equipped end
-  local enc=Combat.new(s.deck,{character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
+  local support=require("src.systems.companions").context(s,def)
+  local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
   s.combat=enc
-  local actionCount=0
-  while not enc.finished do
-   actionCount=actionCount+1;check(actionCount<200,"Combate finito: "..def.enemyId)
-   local chosenTactic=def.tacticalContext and def.tacticalContext.companionInjured and #enc.relationshipEvents==0 and "protect" or "coordinate"
-   if Combat.canBreakSeal and Combat.canBreakSeal(enc) then
-    check(Combat.breakSeal(enc)~=nil,"El sello exige una acción explícita después de agotar a Badigadi")
-   elseif enc.companion and Combat.canTactic(enc,chosenTactic) then
-    check(Combat.tactic(enc,chosenTactic)~=nil,"Compañera actúa realmente")
-   else
-    local best,index=-math.huge,nil
-    for i=1,#enc.hand do
-     if Combat.canPlay(enc,i) then
-      local c=Combat.card(enc.hand[i],enc);local e=c.effects
-      local score=(e.damage or 0)*3+(e.draw or 0)*5+(e.mana or 0)*.4+(e.energy or 0)*6
-      if enc.enemy.intent.kind=="attack" then score=score+math.min(e.shield or 0,math.max(0,enc.enemy.intent.damage-enc.player.shield))*1.3 end
-      score=score+math.min(e.heal or 0,enc.player.maxHp-enc.player.hp)*1.4-(c.hpCost or 0)*.8
-      if score>best then best,index=score,i end
-     end
-    end
-    if index then check(Combat.play(enc,index)~=nil,"Carta de combate legal")
-    else check(Combat.endTurn(enc)~=nil,"Turno enemigo ejecutado") end
-   end
-  end
+  require("tests.war_balance").solve(enc)
   check(enc.outcome=="victory","Victoria alcanzable: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
-  check(#enc.relationshipEvents<=1,"Como máximo una interpretación romántica por combate")
+  check(#enc.relationshipEvents<=3,"Como máximo una interpretación romántica por combate")
   local snapshot=round(s)
   check(snapshot.combat and snapshot.combat.outcome==enc.outcome,"Replay conserva victoria antes de recompensa")
   s=snapshot;enc=s.combat
@@ -15215,12 +16375,13 @@ return Suite
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/combat.lua`
 
 ````lua
+-- Regression of the preserved pre-phase-4 replay engine. Current balance: tests/war*.lua.
 local Suite={}
 function Suite.run()
-    local Combat=require("src.systems.combat")
+    local Combat=require("src.systems.combat_legacy")
     local Techniques=require("src.data.combat_cards")
     local Data=require("src.data.cards")
-    local Enemies=require("src.data.enemies")
+    local Enemies=require("src.data.enemies_legacy")
     local Json=require("src.systems.json")
     local checked=0
     local function check(value,message) assert(value,message);checked=checked+1 end
@@ -15368,11 +16529,12 @@ return Suite
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/combat_balance.lua`
 
 ````lua
+-- Regression of the preserved pre-phase-4 replay engine. Current balance: tests/war*.lua.
 -- Balance por datos y comandos legales. No requiere renderer ni modifica campaña.
 local Suite={}
 function Suite.run()
-    local Combat=require("src.systems.combat")
-    local Enemies=require("src.data.enemies")
+    local Combat=require("src.systems.combat_legacy")
+    local Enemies=require("src.data.enemies_legacy")
     local Techniques=require("src.data.combat_cards")
     local Chapters=require("src.data.chapters")
     local Json=require("src.systems.json")
@@ -15524,9 +16686,9 @@ function Suite.run()
     local lateDeck={"staff_strike","simple_cut","stone_throw","push","coordinated_attack","water_projectile","arcane_guard","heal","swamp","earth_wall"}
     local encounters=0
     for id,node in pairs(Chapters.checkpoints) do
-        if node.kind=="encounter" and node.definition.kind=="magic" then
+        if node.kind=="encounter" and node.definition.kind=="magic" and Enemies.byId[node.definition.enemyId] then
             encounters=encounters+1
-            check(node.day<=6,"No hay combates en el desenlace del día siete")
+            check(node.day<=7,"Los checkpoints modernos siguen aceptando el replay histórico")
             local def=node.definition
             local companions=def.requiresCompanion and {"sylphiette","roxy","eris"} or {def.character or false}
             for _,character in ipairs(companions) do for _,deck in ipairs({Techniques.starterDeck,lateDeck}) do for seed=1,6 do
@@ -15577,28 +16739,13 @@ function Suite.run(app)
             if character and chapter.companion then s.decisions[chapter.companion.decisionKey]=character end
         end
         local def=assert(Progression.encounter(s,s.checkpoint))
-        local c={character=def.character,tutorial=def.tutorial,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tacticalContext=def.tacticalContext,unlocked=s.unlocked,combatDeck=s.combatDeck,curse=s.curse,externalEnergy=s.externalEnergy}
+        local support=require("src.systems.companions").context(s,def)
+        local c={relationships=support.relationships,team=support.team,cardLevels=require("src.systems.card_collection").levels(s),character=def.character,tutorial=def.tutorial,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tacticalContext=def.tacticalContext,unlocked=s.unlocked,combatDeck=s.combatDeck,curse=s.curse,externalEnergy=s.externalEnergy}
         s.combat=Combat.new(s.deck,c,function() return 17 end)
         return s,c
     end
     local function win(e,useAlly)
-        local guard=0
-        while not e.finished do
-            guard=guard+1;assert(guard<500,"Estrategia de integración no termina")
-            if Combat.canBreakSeal(e) then Combat.breakSeal(e) end
-            if e.finished then break end
-            if useAlly and Combat.canTactic(e,"coordinate") then Combat.tactic(e,"coordinate")
-            elseif useAlly and Combat.canTactic(e,"together") then Combat.tactic(e,"together") end
-            local best,value
-            for i,id in ipairs(e.hand) do
-                if Combat.canPlay(e,i) then
-                    local card=Combat.card(id);local f=card.effects
-                    local score=(f.damage or 0)+(f.shield or 0)*.7+math.min(f.heal or 0,e.player.maxHp-e.player.hp)+math.min(f.mana or 0,e.player.maxMana-e.player.mana)*.5
-                    if not value or score>value then best,value=i,score end
-                end
-            end
-            if best then Combat.play(e,best) elseif not e.finished then Combat.endTurn(e) end
-        end
+        require("tests.war_balance").solve(e)
         check(e.outcome=="victory","La campaña ofrece una estrategia ganadora legal")
     end
     local s,c=prepare()
@@ -15620,11 +16767,8 @@ function Suite.run(app)
     check(not Progression.finishCombat(stored,finished) and once==encode(stored),"Confirmar otra vez no duplica cartas, puntos ni transición")
     local afterLoad=assert(Save.validate(clone(stored)))
     check(afterLoad.unlocked.self_joke and #afterLoad.rewardQueue==#stored.rewardQueue,"Carta y entrega pendiente sobreviven a cargar")
-    local battleId
-    for id,node in pairs(Chapters.checkpoints) do
-        if node.kind=="encounter" and node.definition.kind=="magic" and node.definition.requiresCompanion and node.day>=3 then battleId=id;break end
-    end
-    assert(battleId,"Falta encuentro con compañera para integración")
+    -- Escenario estable: este módulo verifica persistencia, no selección aleatoria de dificultad.
+    local battleId="day3_encounter"
     local companion=prepare(battleId,"eris")
     local prior=encode(companion.relationships)
     win(companion.combat,true)
@@ -15680,8 +16824,16 @@ local Suite={}
 -- Un paso de entrada por iteración para los recorridos generales de historia.
 function Suite.drive(screen)
     if screen:busy() then return end
+    if screen.briefingOpen then screen:keypressed("return");return end
     if screen.enc.finished then screen:keypressed("return");return end
     local stage=screen.tutorial and screen.tutorial.stage
+    if not stage and screen.enc.context.warVersion==1 and not screen.enc.training then
+        return require("tests.war_balance").step(screen.enc,function(name,a,b)
+            if name=="support" then screen.supportWife=a;return screen:support(b)
+            elseif name=="play" then screen:select(a);return screen:play()
+            else return screen[name](screen,a) end
+        end)
+    end
     if stage=="attack_result" or stage=="enemy_result" then screen:keypressed("return");return end
     if stage=="end_turn" then screen:keypressed("e");return end
     if stage=="shield" then screen:keypressed("d");return end
@@ -15703,8 +16855,9 @@ end
 
 function Suite.run(app)
     local Save=require("src.systems.save")
-    local Combat=require("src.systems.combat")
-    local Screen=require("src.screens.combat")
+    local Combat=require("src.systems.combat_legacy")
+    local Renderer=require("src.screens.combat")
+    local Screen={new=function(app,definition) definition=definition or {};definition.legacyEncounter=true;return Renderer.new(app,definition) end}
     local Json=require("src.systems.json")
     local checks,captures=0,0
     local function check(ok,message) assert(ok,message);checks=checks+1 end
@@ -16132,7 +17285,7 @@ function Suite.run()
     local final=agenda(7);final.inventory.antidote=true
     Daily.requestFavor(final,"cliff_notes",nil,true)
     check(final.pending_favors[1].due_day==7,"Encargo final se resuelve antes del epílogo")
-    check(Progression.continueStory(final)=="day7_intro","Historia final sigue accesible con cero actividades")
+    check(Progression.continueStory(final)=="day7_muster","Preparación final sigue accesible con cero actividades")
     check(final.daily.activities_locked and not Daily.startActivity(final,"time_roxy"),"Día siete fija atención antes de resolver matrimonios")
     local trust=final.relationships.roxy.trust
     Daily.applyAttention(final);check(final.relationships.roxy.trust==trust,"Atención final se aplica una sola vez")
@@ -16908,7 +18061,7 @@ function Suite.run()
     check(not Economy.grant(s,0/0,"invalid"),"Rechaza oro no finito sin mutar el saldo")
     local v4=clone(shop);v4.version=4;v4.collection=nil;v4.economy=nil;v4.gold=nil
     local migrated=assert(Save.validate(v4))
-    check(migrated.version==6 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
+    check(migrated.version==7 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
     bad=clone(v4);bad.daily="invalid";check(not Save.validate(bad),"Rechaza estado diario v4 inválido durante migración")
     local c=Save.newSession({love=65,trust=65});Events.apply(c,"starter_gift",{starter=true})
     c.checkpoint="day1_tutorial";c.events.tutorial_completed=true
@@ -16964,7 +18117,7 @@ function Suite.run()
     love.filesystem.setIdentity("cartas_del_destino_v5_migration_tests")
     love.filesystem.remove(Save.filename);love.filesystem.remove(Save.backup)
     assert(love.filesystem.write("campaign-v4.json",original))
-    local disk=assert(Save.load());check(disk.version==6 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
+    local disk=assert(Save.load());check(disk.version==7 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
     check(Save.write(disk) and love.filesystem.read("campaign-v4.json")==original,"Escribir v5 conserva exactamente el archivo v4")
     love.filesystem.setIdentity(identity)
     local costs=Collection.view(s,"water_cannon",10)
@@ -17628,7 +18781,7 @@ function Suite.run()
   for _,id in ipairs(deck) do if not s.unlocked[id] then Collection.grant(s,id,1) end end
   s.combatDeck=deck;s.externalEnergy=12
   assert(Daily.startActivity(s,"eris_duel"));assert(Daily.resolveActivity(s,"duel"))
-  s.combat=Combat.new(s.deck,{enemyId="eris_training",day=5,difficulty=3,combatDeck=deck,unlocked=s.unlocked,curse=s.curse,externalEnergy=12,cardLevels=Collection.levels(s)},function()return 17 end)
+  s.combat=Combat.new(s.deck,{enemyId="eris_training",day=5,difficulty=5,combatDeck=deck,unlocked=s.unlocked,curse=s.curse,externalEnergy=12,cardLevels=Collection.levels(s)},function()return 17 end)
   require("tests.training").solve(s.combat,case.mode)
   check(Daily.finishBattle(s,s.combat) and s.decisions.activity_duel_result==case.result,"Actividad evalúa desempeño real: "..case.result)
   round(s)
@@ -17648,11 +18801,11 @@ function Suite.run()
  malformed=clone(s);malformed.family.queue={{id="bad",character="rudeus",kind="departure",phase=1}}
  check(not Save.validate(malformed),"Rechaza partida de quien no es esposa")
  local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_family_v5_migration_tests")
- for _,file in ipairs({Save.filename,Save.backup,"campaign-v6.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
+ for _,file in ipairs({Save.filename,Save.backup,"campaign-v7.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
  local old=fresh();old.version=5;old.family=nil;old.relationships.roxy.love=65
  local bytes=assert(Json.encode(old));assert(love.filesystem.write("campaign-v5.json",bytes))
- local migrated=assert(Save.load());check(migrated.version==6 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
- check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v6 conserva bytes originales v5")
+ local migrated=assert(Save.load());check(migrated.version==7 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v7 conserva bytes originales v5")
  love.filesystem.setIdentity(identity)
  local oldSocial,definition=require("tests.dialogue_branching").fixture("encounter_eris",{"listen","be_honest","encourage","subtle_flirt","light_joke"})
  oldSocial.relationships.eris.love=2;oldSocial.relationships.eris.trust=1
@@ -18433,7 +19586,7 @@ function Suite.run()
         check(Events.apply(s,"promise_"..id,{character=id,love=3,trust=3,promise={id="return",status="kept"}}),"Promesa cumplida "..id)
     end
     local s=Save.newSession({love=65,trust=65})
-    check(s.version==6 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
+    check(s.version==7 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
     check(#s.deck==0 and #s.combatDeck==0 and next(s.unlocked)==nil,"Sin cartas antes de Nanahoshi")
     for _,id in ipairs(names) do
         check(s.relationships[id].love==65 and s.relationships[id].trust==65,"Matrimonio comienza positivamente")
@@ -18559,7 +19712,7 @@ function Suite.run()
     end)
     love=oldLove
     assert(tested,err)
-    print("Marriages/save v6: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
+    print("Marriages/save v7: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
     return checked
 end
 return Suite
@@ -18993,7 +20146,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==6,"Sin apariencia global persistida en el formato de progresión")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==7,"Sin apariencia global persistida en el formato de progresión")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2
@@ -19642,7 +20795,7 @@ function Suite.run()
             else click(app.session.day==7 and "Cerrar tiempo libre e ir a la historia" or "Continuar historia") end
         elseif node.kind=="hub" then
             local companions=Progression.availableCompanions(app.session)
-            if #companions>0 then click("Elegir compañía") else click("Visitar") end
+            if cp=="day7_muster" then click("Todas las disponibles") elseif #companions>0 then click("Elegir compañía") else click("Visitar") end
         elseif node.kind=="encounter" then
             if s.enc.type=="combat" then
                 capture("combat-"..s.enc.enemy.id)
@@ -19652,7 +20805,7 @@ function Suite.run()
                 elseif not s:busy() and not s.enc.finished and s.enc.training and s.enc.enemy.intent.kind=="attack"
                     and s.enc.enemy.intent.damage>=6 and Combat.canBasic(s.enc,"defend") then
                     s:basic("defend")
-                elseif not s:busy() and not s.enc.finished and s.enc.companion and Combat.canTactic(s.enc,"coordinate") then
+                elseif not s.briefingOpen and not s:busy() and not s.enc.finished and s.enc.companion and Combat.canTactic(s.enc,"coordinate") then
                     s:tactic("coordinate")
                 else require("tests.combat_visual").drive(s) end
             else
@@ -19745,8 +20898,9 @@ return function()
     io.stdout:setvbuf("no")
     local group=os.getenv("DATESIM_TEST_GROUP")
     local module=os.getenv("DATESIM_TEST_MODULE")
-    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v6_tests_"..module);require("tests."..module).run();return end
-    love.filesystem.setIdentity("cartas_del_destino_v6_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v7_tests_"..module);require("tests."..module).run();return end
+    love.filesystem.setIdentity("cartas_del_destino_v7_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="war" or group=="war-ui" then require("tests.war").run();require("tests.war_balance").run();if group=="war-ui" then require("tests.war_ui").run() end;return end
     if group=="family" or group=="family-ui" then require("tests.family").run();if group=="family-ui" then require("tests.family_ui").run() end;return end
     if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
     elseif group=="narrative" then require("tests.curse_social").run();require("tests.dialogue_branching").run();require("tests.dialogue_visual").run();return
@@ -19781,6 +20935,9 @@ return function()
     require("tests.combat").run()
     require("tests.combat_balance").run()
     require("tests.training").run()
+    require("tests.war").run()
+    require("tests.war_balance").run()
+    require("tests.war_ui").run()
     require("tests.relationship_bars").run()
     require("tests.affinity").run()
     require("tests.training_integration").run()
@@ -20543,6 +21700,294 @@ end
 return Suite
 ````
 
+## tests/war.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/war.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Combat=require("src.systems.combat");local C=require("src.systems.companions")
+ local Sim=require("tests.war_balance");local Json=require("src.systems.json");local Save=require("src.systems.save")
+ local checks=0;local function check(ok,msg)assert(ok,msg);checks=checks+1 end
+ for _,a in ipairs({24.99,25,49,50,79,80,89,90,100,-100})do
+  for id,base in pairs({sylphiette=90,eris=150,roxy=110})do
+   local r={love=a,trust=a};local expected=math.floor(base*math.max(0,math.min(100,a))/100+.5)
+   check(C.damage(base,r)==expected,"Fórmula de daño: "..id.." / "..a)
+   local attack=Sim.make(5,3,a,17)
+   assert(Combat.support(attack,id,"special",attack.revision))
+   check(1000-attack.enemy.hp==expected,"Daño real según afinidad: "..id)
+  end
+  local e=Sim.make(5,3,a,17);e.player.hp=15
+  local expected=a>=90 and 12 or a>=80 and 9 or a>=50 and 6 or a>=25 and 3 or -12
+  local p=Combat.supportPreview(e,"sylphiette","heal")
+  check((expected<0 and p.risk and p.riskDamage==12)or p.heal==expected,"Umbral de curación: "..a)
+  local revision=e.revision
+  if expected<0 then check(not Combat.support(e,"sylphiette","heal",revision),"Riesgo exige confirmar")end
+  check(Combat.support(e,"sylphiette","heal",revision,true),"Habilidad válida")
+  check(e.player.hp==15+expected,"Cambio real de PV")
+  check(not Combat.support(e,"sylphiette","heal",revision,true),"No duplicar acción")
+ end
+ local e,ctx=Sim.make(5,3,90,17);check(Combat.support(e,"eris","special",e.revision),"Especial")
+ check(e.energy==3 and not Combat.canSupport(e,"eris","attack"),"Apoyo tiene cupo propio")
+ local guard=Sim.make(5,3,90,17)
+ assert(Combat.support(guard,"eris","guard"))
+ check(guard.player.physicalShield==5 and guard.player.magicShield==0,"Eris protege físicamente")
+ Combat.endTurn(guard)
+ check(guard.player.shield==0,"La protección expira después del ataque enemigo")
+ local restored=Combat.restore(assert(Json.decode(assert(Json.encode(e)))),{},ctx)
+ check(restored and restored.enemy.hp==e.enemy.hp,"Replay guarda daño, usos y recarga")
+ local cooldown=Sim.make(5,3,100,17)
+ for use=1,3 do
+  check(Combat.support(cooldown,"eris","special",cooldown.revision),"Uso limitado "..use)
+  for wait=1,3 do
+   if Combat.canBasic(cooldown,"defend")then Combat.basic(cooldown,"defend")end
+   if Combat.canBasic(cooldown,"dodge")then Combat.basic(cooldown,"dodge")end
+   Combat.endTurn(cooldown)
+   if wait<3 then check(not Combat.canSupport(cooldown,"eris","special"),"Recarga impide repetir especial")end
+  end
+ end
+ check(not Combat.canSupport(cooldown,"eris","special"),"Tres usos no se recargan con los turnos")
+ local full=Sim.make(5,1,100,17);full.player.hp=29
+ assert(Combat.support(full,"sylphiette","heal",full.revision))
+ check(full.player.hp==30,"Curación recortada a la vida máxima")
+ check(C.damage(150,{love=100,trust=0})==75,"Promedia amor y confianza, no solo una estadística")
+ local shatter=Sim.make(5,3,100,17)
+ shatter.enemy.phase="resolve";shatter.enemy.hp=300;shatter.enemy.shield=8
+ local predicted=Combat.supportPreview(shatter,"roxy","shatter").hpLost
+ assert(Combat.support(shatter,"roxy","shatter"))
+ check(300-shatter.enemy.hp==predicted and predicted==10,"La vista previa incluye disolver escudo y exponer antes del daño")
+ e=Sim.make(5,1,24.99,17);e.player.hp=10;Combat.support(e,"sylphiette","heal",e.revision,true)
+ check(e.outcome=="defeat" and e.player.hp==0,"Interferencia puede derrotar")
+ local valid,errors=require("src.systems.narrative_validator").validate(require("src.data.chapters"),{checkFiles=false})
+ check(valid,table.concat(errors,"; "))
+ check(require("src.data.chapters").get("day7_boss").day==7,"Jefe final en día siete")
+ local Progression=require("src.systems.progression")
+ local optional=Save.newSession();optional.day=6;optional.checkpoint="day6_orsted_offer"
+ check(not Progression.choose(optional,optional.checkpoint,"accept"),"Orsted requiere investigar las runas")
+ optional.decisions.observatory_research="tested"
+ check(Progression.choose(optional,optional.checkpoint,"accept"),"Investigación habilita prueba opcional")
+ check(Progression.next(optional,optional.checkpoint)=="day6_orsted","La decisión conecta con Orsted")
+ optional.combat=Sim.make(5,0,50,17,"orsted_trial",6)
+ while not optional.combat.finished do Combat.endTurn(optional.combat)end
+ local trial=optional.combat;local gold=optional.gold
+ check(Progression.finishCombat(optional,trial)=="day6_close","Perder contra Orsted continúa sin bloquear la campaña")
+ check(optional.gold==gold and not optional.inventory.antidote,"Derrota opcional no entrega premios ni antídoto")
+ local previousHp=0
+ for day=1,6 do
+  local enemy=require("src.data.enemies").resolve("forest_beast",{day=day})
+  check(enemy.maxHp>previousHp,"PV progresivos por día");previousHp=enemy.maxHp
+  for seed=1,6 do
+   local trial=Sim.solve(Sim.make(math.max(1,day-1),0,50,seed*19,"forest_beast",day))
+   check(trial.finished,"Enemigo intermedio sin bloqueos")
+   check(trial.outcome=="victory","Intermedio ganable: día "..day.." semilla "..seed)
+  end
+ end
+ e,ctx=Sim.make(5,3,100,17)
+ ctx.relationships.eris.marriageState="separated"
+ local absent=Combat.new({},ctx,function()return 17 end)
+ check(not absent.allies.eris and not Combat.canSupport(absent,"eris","special"),"Separación excluye todo apoyo")
+ local phaseSet={}
+ while not e.finished do
+  phaseSet[e.enemy.phase]=true;assert(Sim.step(e))
+ end
+ check(phaseSet.endurance and phaseSet.six_arms and phaseSet.resolve and phaseSet.seal and e.enemy.sealBroken,"Las cuatro fases se ejecutan y el sello requiere acción")
+ e=Sim.make(10,3,100,17)
+ while not e.finished do Combat.endTurn(e) end
+ check(e.outcome=="defeat","N10 y tres esposas no vuelven invencible a Rudy")
+ local s=Save.newSession();require("src.systems.events").apply(s,"starter_gift",{starter=true});s.rewardQueue={}
+ s.day=7;s.checkpoint="day7_boss";require("src.systems.daily").ensure(s);s.decisions.day7_companion="all";s.externalEnergy=30
+ local sc=require("src.systems.companions").context(s,require("src.systems.progression").encounter(s,s.checkpoint))
+ s.combat=Combat.new(s.deck,{enemyId="badigadi_final",day=7,character="sylphiette",team=sc.team,relationships=s.relationships,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=30,cardLevels=require("src.systems.card_collection").levels(s)},function()return 17 end)
+ assert(Combat.support(s.combat,"roxy","special"));check(Save.write(s),"Guardar apoyo real")
+ local loaded=assert(Save.load());check(loaded.combat and loaded.combat.supportUsed.roxy and loaded.combat.enemy.hp==s.combat.enemy.hp,"Recarga y daño exactos al cargar")
+ local long=Combat.retry(s.combat)
+ for turn=1,69 do
+  for _,wife in ipairs(C.order)do assert(Combat.support(long,wife,"guard"))end
+  assert(Combat.basic(long,"defend"));assert(Combat.basic(long,"dodge"));assert(Combat.endTurn(long))
+ end
+ s.combat=long
+ -- Un historial extenso más 70 turnos supera el antiguo tope de 512 KiB.
+ for i=1,600 do s.journal[i]={id="history_"..i,text=string.rep("a",500)}end
+ check(Save.write(s),"Guardar batalla larga con muchos apoyos")
+ local lengthy=assert(Save.load())
+ check(lengthy.combat and lengthy.combat.turn==70 and #lengthy.combat.commands==#long.commands,"Cargar batalla larga sin reiniciar comandos")
+ check(#assert(Json.encode(s))>524288 and #lengthy.journal==600,"El límite ampliado admite historial y combate juntos")
+ print("War long battle save: "..#assert(Json.encode(s)).." bytes, "..#long.commands.." commands.")
+ local broken=assert(Json.decode(assert(Json.encode(s))));broken.combat.allies.roxy.uses.special=0
+ check(not assert(Save.validate(broken)).combat,"No acepta usos manipulados sin replay")
+ local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_war_v6_migration")
+ for _,path in ipairs({Save.filename,Save.backup})do love.filesystem.remove(path)end
+ local legacy=Save.newSession();require("src.systems.events").apply(legacy,"starter_gift",{starter=true});legacy.rewardQueue={}
+ legacy.version=6;legacy.day=6;legacy.checkpoint="day6_boss";legacy.decisions.day6_companion="roxy";require("src.systems.daily").ensure(legacy)
+ local lc={enemyId="badigadi_final",day=6,character="roxy",combatDeck=legacy.combatDeck,unlocked=legacy.unlocked,curse=legacy.curse,externalEnergy=legacy.externalEnergy,tacticalContext={danger=true,companionInjured=true},cardLevels=require("src.systems.card_collection").levels(legacy)}
+ legacy.combat=require("src.systems.combat_legacy").new(legacy.deck,lc,function()return 17 end)
+ Combat.endTurn(legacy.combat)
+ local bytes=assert(Json.encode(legacy));assert(love.filesystem.write("campaign-v6.json",bytes))
+ local migrated=assert(Save.load())
+ check(migrated.version==7 and migrated.combat and migrated.combat.enemy.maxHp==72 and migrated.combat.turn==2,"Combate v6 continúa con sus reglas originales")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v6.json")==bytes,"v7 conserva los bytes de v6")
+ love.filesystem.setIdentity(identity)
+ print("War rules: "..checks.." checks passed.")
+ return checks
+end
+return Suite
+````
+
+## tests/war_balance.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/war_balance.lua`
+
+````lua
+local Suite={}
+local Combat=require("src.systems.combat")
+local C=require("src.systems.companions")
+local function incoming(enc) local a=enc.enemy.intent;return a.kind=="attack" and a.damage*(a.hits or 1) or 0 end
+function Suite.step(enc,execute)
+ local function act(name,...) if execute then return execute(name,...) end;return Combat[name](enc,...) end
+ if Combat.canBreakSeal(enc) then return act("breakSeal") end
+ for _,wife in ipairs(C.order)do if enc.allies[wife] and not enc.supportUsed[wife] then
+  local id="attack"
+  local need=math.max(0,incoming(enc)-enc.player.shield)
+  if wife=="sylphiette" and C.affinity(enc.allies[wife])>=25 and enc.player.hp<=enc.player.maxHp-6 and Combat.canSupport(enc,wife,"heal") then id="heal"
+  elseif wife=="roxy" and enc.enemy.phase=="resolve" and enc.enemy.exposed==0 and Combat.canSupport(enc,wife,"analyze") then id="analyze"
+  elseif wife=="eris" and need>=5 and Combat.canSupport(enc,wife,"interrupt") then id="interrupt"
+  elseif Combat.canSupport(enc,wife,"special") then id="special"
+  elseif wife=="sylphiette" and need>=5 and Combat.canSupport(enc,wife,"guard") then id="guard"
+  elseif wife=="eris" and Combat.canSupport(enc,wife,"strong") then id="strong"
+  elseif wife=="roxy" and need>=5 and Combat.canSupport(enc,wife,"analyze") then id="analyze"
+  end
+  if Combat.canSupport(enc,wife,id) then return act("support",wife,id,enc.revision) end
+ end end
+ local index,basic,best=nil,nil,0
+ local needed=math.max(0,incoming(enc)-enc.player.shield)
+ for i,id in ipairs(enc.hand)do if Combat.canPlay(enc,i)then
+  local card=Combat.card(id,enc);local p=Combat.preview(enc,i);local e=card.effects
+  local score=(p.hpLost or 0)+math.min(e.shield or 0,needed)*3.2+math.min(e.heal or 0,enc.player.maxHp-enc.player.hp)*3
+  if e.weak and incoming(enc)>0 and enc.enemy.weak<e.weak then score=score+math.min(needed,2*(enc.enemy.intent.hits or 1))*3.2 end
+  score=score-(card.hpCost or 0)*2
+  score=score/math.max(1,card.cost)
+  if score>best then best,index,basic=score,i,nil end
+ end end
+ for _,id in ipairs({"defend","dodge"})do
+  local score=math.min(needed,id=="defend" and 5 or 3)*3.2
+  if Combat.canBasic(enc,id) and score>best then best,index,basic=score,nil,id end
+ end
+ if basic then return act("basic",basic) elseif index then return act("play",index) end
+ return act("endTurn")
+end
+function Suite.solve(enc)
+ for _=1,800 do if enc.finished then return enc end;assert(Suite.step(enc))end
+ error("Combate bloqueado")
+end
+Suite.deck={"staff_strike","water_projectile","magic_bolt","arcane_guard","earth_wall","swamp","heal","coordinated_attack","water_cannon","heavy_spell"}
+function Suite.make(level,count,affinity,seed,enemy,day,mask)
+ local context={enemyId=enemy or "badigadi_final",day=day or 7,combatDeck=Suite.deck,curse={active=true,manaBlocked=true},externalEnergy=30,cardLevels={},team={},relationships={}}
+ for _,id in ipairs(Suite.deck)do context.cardLevels[id]=level end
+ for i,id in ipairs(C.order)do context.team[id]=mask~=nil and math.floor(mask/2^(i-1))%2==1 or mask==nil and i<=count;context.relationships[id]={love=affinity,trust=affinity,marriageState="married"}end
+ return Combat.new({},context,function()return seed end),context
+end
+function Suite.run()
+ local checks=0;local rows={"level,mask,wives,affinity,seeds,wins,mean_turns,mean_hp,mean_damage_per_turn,mean_healing,mean_shield"}
+ local function check(ok,msg)assert(ok,msg);checks=checks+1 end
+ for _,level in ipairs({1,5,10})do for mask=0,7 do
+  local count=0;for i=1,3 do count=count+math.floor(mask/2^(i-1))%2 end
+  for _,affinity in ipairs({20,50,90})do
+  local wins,turns,hp,damage,healing,shield=0,0,0,0,0,0
+  for seed=1,8 do
+   local enc=Suite.solve(Suite.make(level,count,affinity,seed*17,nil,nil,mask))
+   check(enc.finished and enc.turn<=75,"Encuentro termina dentro del límite")
+   check(enc.enemy.maxHp==1000 and enc.player.hp>=0 and enc.player.hp<=30,"PV y jefe invariantes")
+   if enc.outcome=="victory" then wins=wins+1 end
+   turns=turns+enc.turn;hp=hp+enc.player.hp;damage=damage+(1000-enc.enemy.hp)/enc.turn
+   for _,log in ipairs(enc.log)do for _,event in ipairs(log.events or {})do
+    if event.kind=="heal" and event.target=="player" then healing=healing+event.amount end
+    if event.kind=="shield" and event.target=="player" then shield=shield+event.amount end
+   end end
+  end
+  if level>=5 then check(wins==8,"Estrategia viable con cartas medias/altas para cada composición")end
+  rows[#rows+1]=string.format("%d,%d,%d,%d,8,%d,%.2f,%.2f,%.2f,%.2f,%.2f",level,mask,count,affinity,wins,turns/8,hp/8,damage/8,healing/8,shield/8)
+  print(rows[#rows])
+ end end end
+ local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/war-balance.csv","wb"));file:write(table.concat(rows,"\n"));file:close()
+ print("War balance: "..checks.." checks; 576 seeded boss simulations, all eight family compositions.")
+ return checks
+end
+return Suite
+````
+
+## tests/war_ui.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/war_ui.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Save=require("src.systems.save");local Events=require("src.systems.events")
+ local Combat=require("src.systems.combat");local Sim=require("tests.war_balance")
+ local checks,captures=0,0;local function check(ok,msg)assert(ok,msg);checks=checks+1 end
+ local previousOptions=Save.readOptions;Save.readOptions=function()return {muted=true,textAnimation=false,reducedMotion=false}end
+ local app=require("src.app").new();app.mouse=function()return nil,nil end
+ local function settle()app:update(2);app:draw()end
+ local function capture(name)
+  app.toastTime=0;app:draw();local pixels=app.canvas:newImageData();local bytes=pixels:encode("png")
+  local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/war-"..name..".png","wb"));file:write(bytes:getString());file:close();pixels:release();bytes:release();captures=captures+1
+ end
+ local function click(label)
+  app:draw()
+  for _,b in ipairs(app.manager.current.buttons)do if b.label==label and not b.disabled then
+   app:mousepressed(app.offsetX+(b.x+b.w/2)*app.scale,app.offsetY+(b.y+b.h/2)*app.scale,1);return
+  end end
+  error("Botón no disponible: "..label)
+ end
+ local function open(affinity)
+  local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true})
+  for _,id in ipairs(Sim.deck)do if not s.unlocked[id] then Events.apply(s,"fixture_"..id,{unlock={id}})end;s.collection[id].level=5 end
+  s.combatDeck=Sim.deck;s.rewardQueue={};s.day=7;s.checkpoint="day7_boss";s.decisions.day7_companion="all";s.externalEnergy=30
+  for _,r in pairs(s.relationships)do r.love=affinity;r.trust=affinity end
+  require("src.systems.daily").ensure(s);app.session=s;app:resume();settle();return app.manager.current
+ end
+ local screen=open(90)
+ check(screen.briefingOpen and screen.enc.enemy.maxHp==1000,"Preparación real antes del jefe")
+ capture("preparation");click("Habilidades [T]");settle();click("Roxy");capture("roxy-skills")
+ local before=screen.enc.revision;screen:support("special")
+ -- Las acciones en la interfaz están deshabilitadas hasta cerrar preparación.
+ if screen.enc.revision~=before then error("La preparación permite ejecutar una habilidad")end
+ click("Volver [Esc / T]");click("Comenzar [Enter]");screen:keypressed("t");settle();click("Roxy")
+ local expected=Combat.supportPreview(screen.enc,"roxy","special").hpLost
+ click("Conjuro combinado");local revision=screen.enc.revision
+ screen:support("special");check(screen.enc.revision==revision,"Pulsaciones rápidas no duplican apoyo")
+ settle();check(screen.enc.enemy.hp==1000-expected and screen.displayHp.enemy==screen.enc.enemy.hp,"PV y barra muestran daño real")
+ capture("combined-impact")
+ local loaded=assert(Save.load());check(loaded.combat and loaded.combat.supportUsed.roxy,"Apoyo consumido persiste")
+ app:continueGame();settle();screen=app.manager.current
+ check(not Combat.canSupport(screen.enc,"roxy","special"),"Cargar no recupera acción ni recarga")
+ local phases={}
+ while not screen.enc.finished do
+  local phase=screen.enc.enemy.phase
+  if not phases[phase] then phases[phase]=true;capture("phase-"..phase)end
+  require("tests.combat_visual").drive(screen);settle()
+ end
+ check(phases.six_arms and phases.resolve and phases.seal,"Cuatro fases visibles en la pantalla real")
+ capture("boss-victory");screen:continue();settle()
+ check(app.session.inventory.antidote and app.session.curse.active,"Victoria entrega antídoto sin curar automáticamente")
+ local gold=app.session.gold;screen:continue();check(app.session.gold==gold,"Recompensa final única")
+ screen=open(24.99);capture("low-affinity-preparation");click("Comenzar [Enter]")
+ while screen.enc.player.hp>10 do Combat.endTurn(screen.enc)end
+ app:save();app:resume();settle();screen=app.manager.current;screen:keypressed("t");settle();click("Sylphiette")
+ capture("healing-warning");click("Curar a Rudy");capture("risk-confirmation")
+ local hp=screen.enc.player.hp;local rev=screen.enc.revision
+ click("Cancelar");check(screen.enc.player.hp==hp and screen.enc.revision==rev,"Cancelar no gasta ni causa daño")
+ click("Curar a Rudy");click("Confirmar el riesgo");settle()
+ check(screen.enc.outcome=="defeat" and screen.enc.player.hp==0 and screen.displayHp.player==0,"Interferencia puede derrotar y muestra cero real")
+ capture("interference-defeat")
+ Save.readOptions=previousOptions
+ print("War UI: "..checks.." checks; "..captures.." real-renderer captures.")
+ return checks
+end
+return Suite
+````
+
 ## tools/export_source.py
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tools/export_source.py`
@@ -20566,7 +22011,7 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "guardado v6, animaciones y audio sintetizado.\n\n"
+          "Badigadi de 1000 PV, apoyos por afinidad, guardado v7, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

@@ -1,9 +1,10 @@
+-- Regression of the preserved pre-phase-4 replay engine. Current balance: tests/war*.lua.
 local Suite={}
 function Suite.run()
-    local Combat=require("src.systems.combat")
+    local Combat=require("src.systems.combat_legacy")
     local Techniques=require("src.data.combat_cards")
     local Data=require("src.data.cards")
-    local Enemies=require("src.data.enemies")
+    local Enemies=require("src.data.enemies_legacy")
     local Json=require("src.systems.json")
     local checked=0
     local function check(value,message) assert(value,message);checked=checked+1 end

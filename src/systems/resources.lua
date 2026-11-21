@@ -407,6 +407,12 @@ function Resources:portrait(id,expression,x,y,scale,grayscale)
     love.graphics.setShader(previous)
     return img
 end
+function Resources:portraitSmall(id,expression,x,y)
+    love.graphics.push()
+    love.graphics.translate(math.floor(x),math.floor(y));love.graphics.scale(.5,.5)
+    self:portrait(id,expression,0,0,1)
+    love.graphics.pop()
+end
 function Resources:getIcon(id)
     id=id or "magic"
     if not self.icons[id] then

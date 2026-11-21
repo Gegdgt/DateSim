@@ -1,6 +1,6 @@
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 6. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 7. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
 
@@ -51,6 +51,8 @@ Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el histori
 Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolution`, compromiso explícito y ausencia de conflictos o incumplimientos sin reparar. La familia unida requiere además 75/75 en cada una. `Relationships.ending` devuelve `family_united`, `roxy`, `eris`, `sylphiette` o `solitary`. Si quedan varias relaciones viables sin cumplir la unión, devuelve `resolution_required`: el día siete abre la conversación correspondiente. No existe un sexto final ni selección automática por puntuación.
 
 ## Cartas sociales y combate
+
+`battle_balance.lua` declara enemigos por día y habilidades de apoyo. `companions.lua` toma las relaciones persistentes; `support_actions.lua` aplica afinidad, costes, acciones y recargas. `war_chapters.lua` coloca el jefe en el Día 7. El guardado v7 reproduce apoyos mediante comandos y conserva batallas anteriores con módulos `*_legacy`. [Arquitectura y balance](FASE_4_COMBATE.md).
 
 Las cartas sociales declaran ID, categoría, tono, coste, contextos, frases, efectos, modificadores y obtención. El encuentro conserva la mano y sus acciones; la vista previa no muta el estado. La resolución muestra frase encantada, reacción y cambios, y bloquea entradas repetidas durante la animación. Repetir el mismo acontecimiento no acumula amor.
 

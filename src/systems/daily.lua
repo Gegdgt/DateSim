@@ -98,11 +98,12 @@ function Daily.battleDefinition(session)
     return {kind="magic",title=def.title,background=def.background,activity=true,training=def.battle=="duel",
         enemyId=def.battle=="duel" and "eris_training" or def.battle=="monsters" and ((Family.ensure(session).progress.monster_hunts or 0)>=2 and "ruins_guardian" or "forest_beast") or "mana_anomaly",
         character=def.battle=="monsters" and active.choice=="together" and "eris" or nil,
-        difficulty=def.battle=="practice" and 1 or math.min(3,session.day),intro=def.description}
+        difficulty=def.battle=="practice" and 1 or session.day,intro=def.description}
 end
 function Daily.finishBattle(session,enc)
     local def=Daily.battleDefinition(session)
     if not def or session.combat~=enc or not enc.finished then return nil,"El encuentro aún no ha terminado." end
+    require("src.systems.companions").record(session,enc)
     local activity=Catalog.byId[session.daily.active_activity.id]
     local won=enc.outcome=="victory"
     local effect,text

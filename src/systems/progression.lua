@@ -17,6 +17,9 @@ function Progression.companion(session,checkpoint)
     local chapter=chapterFor(checkpoint or session.checkpoint)
     local key=chapter and chapter.companion and chapter.companion.decisionKey
     local id=key and (session.decisions or {})[key]
+    if id=="all" then
+        for _,wife in ipairs(Characters.romanceIds) do if require("src.systems.family").active(session,wife) then return wife end end
+    end
     if id and Characters.byId[id] and Characters.byId[id].romance and require("src.systems.family").active(session,id) then return id end
 end
 local function context(session,checkpoint) return {companion=Progression.companion(session,checkpoint)} end
@@ -94,7 +97,7 @@ function Progression.continueStory(session)
     if config.lockBeforeStory then
         local ok,err=Daily.lockActivities(session); if not ok then return nil,err end
     end
-    return move(session,config.story)
+    return move(session,session.day==7 and session.events.antidote_obtained and "day7_intro" or config.story)
 end
 function Progression.endDay(session)
     if not Daily.atAgenda(session) then return nil,"Vuelve a la agenda para finalizar el día." end
@@ -107,7 +110,7 @@ function Progression.availableCompanions(session)
     local selection=hub and hub.companion
     local available={}
     if selection and meets(session,selection.requires,session.checkpoint) then
-        for _,id in ipairs(selection.options or {}) do if require("src.systems.family").active(session,id) then available[#available+1]=id end end
+        for _,id in ipairs(selection.options or {}) do if id=="all" or require("src.systems.family").active(session,id) then available[#available+1]=id end end
         available[#available+1]="solo"
     end
     return available
@@ -197,6 +200,9 @@ function Progression.scene(session,id)
     if #scene.lines==0 then scene.lines={{speaker="narrator",text="Rudy respeta la decisión de quienes se marcharon y continúa con las responsabilidades pendientes."}} end
     if id=="day6_intro" and next(require("src.systems.family").ensure(session).departures) then
         scene.lines[1].text="Cliff vigila las lecturas y Zanoba lleva el contenedor. Rudy decidirá si viaja con una esposa disponible o afronta el desafío solo. Quienes se marcharon no están convocadas."
+    end
+    if id=="day6_close" and session.events.antidote_obtained then
+        scene.lines={{speaker="nanahoshi",expression="happy",text="El antídoto que ganaste sigue a salvo. Lo verificaremos al amanecer; no hace falta repetir el desafío."}}
     end
     if id=="day7_voice" and next(require("src.systems.family").ensure(session).departures) then
         for _,line in ipairs(scene.lines) do if line.speaker=="narrator" and line.text:find("las tres",1,true) then line.text="Rudy explica la maldición a quienes siguen a su lado. La recuperación de su voz no revoca ninguna separación." end end
@@ -310,6 +316,10 @@ end
 -- Los vínculos sociales jamás reciben deltas por infligir daño mágico.
 function Progression.finishCombat(session,enc)
     local def=Progression.encounter(session,session.checkpoint)
+    if def and def.enemyId=="orsted_trial" and session.combat==enc and enc.finished and enc.outcome=="defeat" then
+        Events.apply(session,"orsted_trial_completed",{text="Orsted detiene la prueba. Rudy conserva lo aprendido y sigue hacia el desafío final."})
+        return Progression.next(session,session.checkpoint,{score=0,trust=0,chemistry=0})
+    end
     if def and def.training then
         local Result=require("src.systems.training_result")
         if not Result.current(session,enc) then return nil,"El entrenamiento todavía no terminó." end
@@ -322,6 +332,7 @@ function Progression.finishCombat(session,enc)
     local checkpoint=session.checkpoint
     def=Progression.encounter(session,checkpoint)
     if not def or def.kind~="magic" then return nil,"No hay una anomalía activa." end
+    require("src.systems.companions").record(session,enc)
     local enemy=require("src.data.enemies").byId[enc.enemy.id]
     local key="combat_reward_"..checkpoint
     if not session.events[key] then

@@ -1,4 +1,39 @@
-# Verificación de familia y actividades — Fase 3
+# Verificación de combate y afinidad — Fase 4
+
+Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real e identidades de prueba aisladas. **39 126 comprobaciones**, tomando una ejecución válida de cada módulo y sin sumar repeticiones. Los PNG y ASE originales no cambiaron.
+
+La ejecución general completó reglas, narrativa y los **35 recorridos de campaña**. Una prueba de integración anterior elegía un encuentro mediante `pairs` y atacaba sin defenderse: se sustituyó por un escenario estable de persistencia y la estrategia actual, que lee intenciones y usa acciones legales. Se volvió a ejecutar el grupo gráfico completo. Los grupos focalizados finales y la campaña gráfica terminaron con **`ALL TESTS PASSED`, salida 0**; la validación final consta de la suite general y esas ejecuciones focalizadas, no de una segunda corrida completa.
+
+| Cobertura | Resultado |
+| --- | --- |
+| Reglas nuevas: fórmulas, umbrales, daño real, curación, recargas, Orsted, separación, guardado y migración | 217 comprobaciones; incluye 36 batallas intermedias |
+| Balance de Badigadi | 1 200 comprobaciones; 576 simulaciones, ocho composiciones familiares |
+| Interfaz de apoyo, preparación, cuatro fases, antídoto y confirmación de riesgo | 10 comprobaciones; 12 capturas reales |
+| Campaña de siete días, cinco finales, distribución libre y compras legales | 24 306 comprobaciones; 35 recorridos completos |
+| Campaña gráfica | 1 339 comprobaciones; 767 pasos de pantalla |
+| Combate gráfico e integración | 44 + 24 comprobaciones |
+| Compatibilidad de combates históricos | 1 620 + 956 comprobaciones; 120 + 300 victorias |
+| Entrenamiento y su integración | 84 + 444 comprobaciones |
+| Familia e interfaz | 228 + 2 400 comprobaciones |
+| Ciclo diario e interfaz | 1 017 + 36 comprobaciones |
+| Niveles, economía e interfaz | 398 + 25 comprobaciones |
+| Diálogos e interfaz | 73 + 2 788 + 277 comprobaciones |
+| Barras, afinidad e introducción | 138 + 260 + 34 comprobaciones |
+| Recursos, movimiento, retratos, audio y matrimonios | 654 + 172 + 181 + 101 + 100 comprobaciones |
+
+El balance actual se evalúa en `war_balance`, `war`, `campaign` y las pantallas. `combat` y `combat_balance` mantienen fixtures del motor histórico para comprobar compatibilidad; sus victorias no se presentan como medidas del nuevo jefe. Los perfiles actuales de días 5/6 usan 180/260 PV base y se probaron en los 35 recorridos finales.
+
+Badigadi mantiene 1000 PV en todas las simulaciones. Con cartas de nivel 5 o 10 gana la estrategia de prueba en las ocho semillas de cada combinación; con nivel 1 y Rudy solo gana 6/8 y pierde dos por plazo. [CSV completo](BALANCE_FASE_4.csv) y [metodología, mazo y métricas](FASE_4_COMBATE.md). Las simulaciones de nivel homogéneo aíslan variables; los recorridos de campaña usan únicamente cartas adquiridas y mejoras pagadas. La especialización alcanza Bastón y Dar ánimo a nivel 10: ingreso 1 908 oro, saldo 1 106 y 238 994 bytes de progreso final. Orsted no es requisito para ninguna victoria del jefe.
+
+Se probaron 24.99, 25, 49, 50, 79, 80, 89, 90 y 100 de afinidad, además de valores negativos y amor distinto de confianza. Los tests comparan la fórmula con el daño aplicado, no solo la vista previa. La interferencia de Sylphiette exige confirmar; cancelar no gasta y aceptar puede dejar a Rudy en cero PV. Las barras convergen al resultado real. Roxy muestra el daño posterior a disolver escudo y exponer resistencia.
+
+La migración v6→v7 conserva los bytes del original y reanuda una batalla histórica contra Badigadi con sus antiguos 72 PV. Los comandos alterados se rechazan. La prueba extensa guarda **582 563 bytes**, **414 comandos** y 600 entradas de historial, y recupera el turno 70 sin reponer apoyos. El límite de lectura/escritura pasa a 2 MiB para admitir historia y batallas largas. Las migraciones de economía y familia siguen pasando.
+
+Capturas inspeccionadas del renderizador real: [preparación](../tests/artifacts/war-preparation.png), [habilidades de Roxy](../tests/artifacts/war-roxy-skills.png), [resistencia reforzada](../tests/artifacts/war-phase-resolve.png), [sello](../tests/artifacts/war-phase-seal.png), [confirmación de interferencia](../tests/artifacts/war-risk-confirmation.png) y [derrota por interferencia](../tests/artifacts/war-interference-defeat.png). Se reutilizan retratos y fondos existentes, con desplazamiento de ataque cercano para Eris y apoyos mágicos diferenciados.
+
+Registros locales: `war-final.log`, `war-final-targeted.log`, `war-persistence.log` y `war-final-ui-campaign.log` en `tests/artifacts/`. Las capturas y logs se excluyen de Git; el CSV publicado permanece en `docs/`. Las pruebas automatizadas y la inspección visual no sustituyen sesiones de balance con jugadores ni equivalen a una partida manual completa.
+
+## Registro anterior — Fase 3
 
 Fecha: **21 de noviembre de 2026**. Pruebas ejecutadas con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados. **44 224 comprobaciones** sumando los módulos de la suite y sus ejecuciones focalizadas finales, sin contar repeticiones. No se modificaron los PNG ni los ASE originales.
 

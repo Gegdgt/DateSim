@@ -10,7 +10,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=6,filename="campaign-v6.json",backup="campaign-v6.backup.json",optionsFile="options.json",
+local Save={version=7,maxBytes=2097152,filename="campaign-v7.json",backup="campaign-v7.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -97,6 +97,10 @@ function Save.validate(input)
         for _,favor in ipairs(type(input.pending_favors)=="table" and input.pending_favors or {}) do
             if type(favor)=="table" then favor.legacyDelivery=true end
         end
+    end
+    if input.version==6 then
+        input=Json.decode(assert(Json.encode(input)));input.version=7
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.warSource="campaign-v6.json"
     end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
@@ -258,7 +262,7 @@ function Save.validate(input)
         local companion=chapter.companion
         if companion then
             local key=companion.decisionKey
-            if type(s.decisions[key])~="string" or not s.relationships[s.decisions[key]] then
+            if type(s.decisions[key])~="string" or (not s.relationships[s.decisions[key]] and s.decisions[key]~="solo" and not (key=="day7_companion" and s.decisions[key]=="all")) then
                 s.decisions[key]=nil; s.events[companion.event]=nil
             end
         end
@@ -310,7 +314,9 @@ function Save.validate(input)
     if definition and definition.kind=="magic" and not s.encounter then
         if input.combatPreparation==true then s.combatPreparation=true end
         if not s.combatPreparation and type(input.combat)=="table" then
+            local support=require("src.systems.companions").context(s,definition)
             s.combat=Combat.restore(input.combat,s.deck,{character=definition.character,tutorial=definition.tutorial,
+                relationships=support.relationships,team=support.team,legacyEncounter=definition.legacyEncounter,
                 cardLevels=Collection.levels(s),preparationShield=type(input.combat.context)=="table" and input.combat.context.preparationShield,
                 enemyId=definition.enemyId,unlocked=s.unlocked,combatDeck=s.combatDeck,tacticalContext=definition.tacticalContext,curse=s.curse,externalEnergy=s.externalEnergy,
                 day=s.day,difficulty=definition.difficulty})
@@ -340,7 +346,7 @@ end
 local function readFile(path)
     local ok,info=pcall(love.filesystem.getInfo,path,"file")
     if not ok or not info then return nil,"No hay guardado disponible." end
-    if info.size and info.size>524288 then return nil,"El archivo de guardado es demasiado grande." end
+    if info.size and info.size>Save.maxBytes then return nil,"El archivo de guardado es demasiado grande." end
     local readOk,data,err=pcall(love.filesystem.read,path)
     if not readOk or not data then return nil,err or "No se pudo leer el archivo." end
     return data
@@ -366,7 +372,8 @@ function Save.write(session)
     end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v6.tmp.json",data)
+    if #data>Save.maxBytes then return false,"El progreso supera el tamaño máximo de guardado." end
+    local ok; ok,err=writeFile("campaign-v7.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -374,7 +381,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v6.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v7.tmp.json")
     return true
 end
 
@@ -389,12 +396,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5) then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña recuperada con progreso familiar. El archivo original se conserva; se guardará en v6." end
+            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v7." end
         end
     end
     return nil,err or "No hay guardado válido disponible."

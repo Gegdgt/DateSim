@@ -3,8 +3,16 @@ local Suite={}
 -- Un paso de entrada por iteración para los recorridos generales de historia.
 function Suite.drive(screen)
     if screen:busy() then return end
+    if screen.briefingOpen then screen:keypressed("return");return end
     if screen.enc.finished then screen:keypressed("return");return end
     local stage=screen.tutorial and screen.tutorial.stage
+    if not stage and screen.enc.context.warVersion==1 and not screen.enc.training then
+        return require("tests.war_balance").step(screen.enc,function(name,a,b)
+            if name=="support" then screen.supportWife=a;return screen:support(b)
+            elseif name=="play" then screen:select(a);return screen:play()
+            else return screen[name](screen,a) end
+        end)
+    end
     if stage=="attack_result" or stage=="enemy_result" then screen:keypressed("return");return end
     if stage=="end_turn" then screen:keypressed("e");return end
     if stage=="shield" then screen:keypressed("d");return end
@@ -26,8 +34,9 @@ end
 
 function Suite.run(app)
     local Save=require("src.systems.save")
-    local Combat=require("src.systems.combat")
-    local Screen=require("src.screens.combat")
+    local Combat=require("src.systems.combat_legacy")
+    local Renderer=require("src.screens.combat")
+    local Screen={new=function(app,definition) definition=definition or {};definition.legacyEncounter=true;return Renderer.new(app,definition) end}
     local Json=require("src.systems.json")
     local checks,captures=0,0
     local function check(ok,message) assert(ok,message);checks=checks+1 end

@@ -1,8 +1,9 @@
+-- Regression of the preserved pre-phase-4 replay engine. Current balance: tests/war*.lua.
 -- Balance por datos y comandos legales. No requiere renderer ni modifica campaña.
 local Suite={}
 function Suite.run()
-    local Combat=require("src.systems.combat")
-    local Enemies=require("src.data.enemies")
+    local Combat=require("src.systems.combat_legacy")
+    local Enemies=require("src.data.enemies_legacy")
     local Techniques=require("src.data.combat_cards")
     local Chapters=require("src.data.chapters")
     local Json=require("src.systems.json")
@@ -154,9 +155,9 @@ function Suite.run()
     local lateDeck={"staff_strike","simple_cut","stone_throw","push","coordinated_attack","water_projectile","arcane_guard","heal","swamp","earth_wall"}
     local encounters=0
     for id,node in pairs(Chapters.checkpoints) do
-        if node.kind=="encounter" and node.definition.kind=="magic" then
+        if node.kind=="encounter" and node.definition.kind=="magic" and Enemies.byId[node.definition.enemyId] then
             encounters=encounters+1
-            check(node.day<=6,"No hay combates en el desenlace del día siete")
+            check(node.day<=7,"Los checkpoints modernos siguen aceptando el replay histórico")
             local def=node.definition
             local companions=def.requiresCompanion and {"sylphiette","roxy","eris"} or {def.character or false}
             for _,character in ipairs(companions) do for _,deck in ipairs({Techniques.starterDeck,lateDeck}) do for seed=1,6 do

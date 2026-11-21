@@ -14,6 +14,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+La **Fase 4** añade enemigos por día, apoyos con afinidad persistente, costes y recargas, preparación de combate y Badigadi de **1000 PV en el Día 7**. Puede vencerse sin compañeras ni el evento opcional de Orsted. [Reglas y simulaciones](docs/FASE_4_COMBATE.md).
+
 Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
 
 La **Fase 3** incorpora 16 actividades: combates y duelos con Eris, responsabilidades familiares con Sylphiette e investigación y librería con Roxy, además de reconciliación. No visitar a una esposa cuesta **−20 amor y −20 confianza** al cierre. Las advertencias preceden a una separación por abandono; la partida conserva la separación, su escena y el retrato gris. Cliff y Zanoba entregan al día siguiente; ayudar consume un espacio y adelanta la entrega. [Reglas, recompensas y archivos](docs/FASE_3_FAMILIA.md).
@@ -27,8 +29,8 @@ Cada día dispone de **tres interacciones libres**, repetibles con cualquier esp
 | 3 · El primer fragmento | Investigación con Nanahoshi, bosque, ruinas, compañera elegida, combates y magia alimentada por energía externa. |
 | 4 · El precio del silencio | Investigación del sello con Nanahoshi, conflictos familiares, emisario, recuerdo de la poción y pistas sobre Badigadi. |
 | 5 · Lazos puestos a prueba | Duelo de entrenamiento con Eris; misiones personales, compromisos, reconciliaciones y cartas de compañeras. |
-| 6 · El desafío del rey inmortal | Posible revancha con Eris; viaje a la arena, enfrentamientos previos y Badigadi en varias fases; neutralizar el sello libera el antídoto. |
-| 7 · La verdadera voz | Uso del antídoto, conversación directa, resolución de relaciones y epílogo. |
+| 6 · El último cerco | Revancha opcional con Eris, reflejo de Rudy, lacayo de Hitogami y prueba opcional no letal de Orsted si investigaste las runas. |
+| 7 · El desafío y la verdadera voz | Preparación del equipo; Badigadi de 1000 PV y cuatro fases; antídoto, conversación directa, resolución de relaciones y epílogo. |
 
 Hitogami manipula la historia; no es un enemigo físico convencional. Orsted es aliado. Badigadi acepta la derrota y sobrevive. Hay exactamente **cinco finales**: las tres esposas, solamente Roxy, solamente Eris, solamente Sylphiette o ninguna. Las parejas viables pendientes se resuelven mediante decisiones narrativas, sin escoger automáticamente el mayor amor. [Capítulos y condiciones](docs/CAPITULOS.md).
 
@@ -73,7 +75,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 6**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v6.json`, con respaldo `campaign-v6.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 7**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v7.json`, con respaldo `campaign-v7.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v6/v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -81,6 +83,6 @@ La continuidad `rudy_curse` usa **versión 6**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v6_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v7_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.

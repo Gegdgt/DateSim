@@ -357,7 +357,7 @@ local function validate(catalog,options)
                     effect({id=selection.event,decision=selection.decision},id,node.day,nil,selection.to)
                     if selection.requires then guardedSelections[#guardedSelections+1]={from=id,to=selection.to,requires=selection.requires} end
                     if #(selection.options or {})==0 then fail(id,"selector sin opciones") end
-                    for _,characterId in ipairs(selection.options or {}) do character(characterId,id) end
+                    for _,characterId in ipairs(selection.options or {}) do if characterId~="all" then character(characterId,id) end end
                 end
                 if not graph[id] or not next(graph[id]) then fail(id,"lugar sin salida") end
             elseif raw.terminal then
@@ -450,7 +450,7 @@ local function validate(catalog,options)
         end
     end
     for id in pairs(nodes) do
-        if not reachable[id] then fail(id,"checkpoint inalcanzable desde el inicio") end
+        if not reachable[id] and not nodes[id].definition.legacyEncounter then fail(id,"checkpoint inalcanzable desde el inicio") end
         if not exits[id] then fail(id,"ruta bloqueada o ciclo sin un resumen terminal") end
     end
     return #errors==0,errors

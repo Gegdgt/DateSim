@@ -65,14 +65,14 @@ Rudy tiene 30 PV y tres acciones por turno. Sus ataques físicos iniciales no co
 | D | Defensa básica: cinco de escudo físico, una acción, una vez por turno. |
 | V | Esquiva: tres de escudo físico, una acción, una vez por turno. |
 | C | Contraataque contra Eris tras bloquear o esquivar efectivamente: una acción. |
-| T | Elegir táctica de la compañera. |
+| T | Elegir compañera y habilidad de apoyo. |
 | E | Terminar turno y robar una nueva mano después de la acción enemiga. |
 | H | Consultar historial de daños, bloqueos y acciones. |
 | B | Neutralizar un anclaje del sello de Badigadi cuando esté expuesto. |
 
-Defensa y esquiva no necesitan cartas. El escudo absorbe antes que la vida y caduca al comenzar el siguiente turno. Los fragmentos recuperados permiten usar energía externa para los hechizos de agua y tierra: el indicador natural continúa bloqueado hasta la cura. Sylphiette cura/protege, Roxy analiza/conjura y Eris golpea/interrumpe. Sus tácticas pueden tener consecuencias afectivas según peligro y heridas.
+Defensa y esquiva no necesitan cartas. El escudo absorbe antes que la vida y caduca al comenzar el siguiente turno. Los fragmentos recuperados permiten usar energía externa para los hechizos de agua y tierra: el indicador natural continúa bloqueado hasta la cura. Sylphiette cura/protege, Roxy analiza/conjura y Eris golpea/interrumpe. Cada compañera tiene una acción propia por turno; sus ataques escalan con el promedio de amor y confianza. Antes de comenzar se muestran potencia, costes, recargas y usos. Las separadas no participan. Con afinidad menor de 25, la curación de Sylphiette exige confirmar el riesgo: la interferencia causa daño del 40% de los PV máximos y puede derrotar a Rudy.
 
-Badigadi entra en la fase de seis brazos al perder la mitad de su resistencia. Cuando llega a cero PV, el sello aún protege el antídoto. Usa **Romper sello [B]** dos veces, una acción por anclaje. Badigadi acepta su derrota y sigue vivo. Perder permite reintentar o preparar el mazo; no es un final adicional.
+Badigadi tiene 1000 PV en el Día 7. A 750 entra en la fase de seis brazos; a 350 refuerza su resistencia, que el agua, análisis y especiales combinados ayudan a superar. Cuando llega a cero PV, el sello aún protege el antídoto. Usa **Romper sello [B]** dos veces, una acción por anclaje. Badigadi acepta su derrota y sigue vivo. Perder permite reintentar o preparar el mazo; no es un final adicional.
 
 ## Entrenar con Eris
 
@@ -86,4 +86,4 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v6.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v7.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
