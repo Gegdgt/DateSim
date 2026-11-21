@@ -4,7 +4,11 @@
 
 Los contextos incluyen sueño de Hitogami, hogar, misterio, tensión, investigación, conversación, romance, exploración, combate, Badigadi, victoria, derrota y finales. `src/data/presentation.lua` elige el contexto por escena y permite que cada definición lo especifique. Los contextos anteriores que siguen en el manifiesto pueden reutilizarse sin determinar la premisa de la campaña.
 
+La Fase 6 completa **20 contextos musicales** con `orsted`, `separation` y `final_victory`; el último no se repite en bucle. Son melodías originales generadas como PCM a 22050 Hz por el gestor existente, sin depender de archivos externos. La demostración de Orsted mantiene su contexto propio al terminar; la separación tiene el suyo durante la escena y la victoria del jefe activa el cierre final.
+
 La carta narrativa utiliza `paper`, `envelope_open` y `revelation`. Los intentos de agua/tierra usan `magic_fail`; las entregas usan `card_gift` y `unlock`. También hay señales de escritura, selección, robo, uso y descarte de cartas, cambios de estadísticas, ataques, defensa, curación y transición. Las líneas de silencio de Rudy no ejecutan `text_blip`.
+
+Las señales `new_day`, `card_gift`, `upgrade`, `gold`, `training`, `combat_start`, `heal`, `separation`, `orsted`, `badigadi` y `final_victory` cubren las once acciones solicitadas. La integración prueba muestras no silenciosas y amplitud acotada, y crea fuentes reales de LÖVE. El aumento de oro se detecta una vez; reanudar una sesión no repite su efecto. Las pruebas se ejecutan silenciadas y no certifican la calidad auditiva de la mezcla.
 
 El cambio musical aplica un fundido de 0,45 segundos. Opciones permite silencio y volúmenes general, música y efectos independientes; `options.json` conserva las preferencias globales. La escritura y la selección tienen límites de frecuencia para evitar sonidos acumulados por repetición de entradas.
 

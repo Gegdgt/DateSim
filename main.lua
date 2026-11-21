@@ -7,6 +7,10 @@ function love.load(args)
     love.keyboard.setKeyRepeat(false)
     love.math.setRandomSeed(os.time())
     for _, value in ipairs(args or {}) do
+        if value == "--qa-campaign" then
+            app=require("tests.manual_campaign").new(17)
+            return
+        end
         if value == "--qa-dialogue" then
             app=require("tests.manual_review").new()
             return
@@ -28,6 +32,7 @@ function love.mousepressed(x,y,button)
     if app then app:mousepressed(x,y,button) end
 end
 function love.keypressed(key,scancode,isrepeat)
+    if app and app.qaCapture and key=="f8" and not isrepeat then app:qaCapture();return end
     if app and app.qaNext and key=="f6" and not isrepeat then app:qaNext(); return end
     if app and not isrepeat then app:keypressed(key) end
 end

@@ -1,4 +1,26 @@
-# Verificación del cierre narrativo — Fase 5
+# Verificación de integración y balance — Fase 6
+
+Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT** y guardados aislados. La suite general terminó en una ejecución completa: **44 545 comprobaciones**, `ALL TESTS PASSED`, salida 0. Después se verificó una ampliación de la prueba visual del manual: **323 comprobaciones focalizadas**, sin sumar de nuevo las 322 que ya estaban en la suite.
+
+| Ejecución | Resultado |
+| --- | --- |
+| Suite general | 44 545 comprobaciones; 40 campañas completas y cinco finales con/sin Orsted |
+| Recorrido gráfico, incluido en la suite | 1462 comprobaciones; 825 pasos de pantalla |
+| Matriz de Badigadi, incluida en la suite | 1200 comprobaciones; 576 batallas, ocho equipos; 570 victorias y seis derrotas reales a N1 |
+| Audio/opciones, incluido en la suite | 116 comprobaciones; 20 contextos musicales |
+| Integración de Fase 6, última ejecución focalizada | 323 comprobaciones; nueve capturas; HUD, relaciones negativas, persistencia, Orsted, libro y PCM real |
+| Balance adicional de siete días | 23 382 comprobaciones; 11 perfiles × tres semillas = 33 campañas; todas llegan a epílogo |
+| Reproducción adicional | `balanced`, semilla 17: métricas JSON idénticas a la campaña principal; 737 comprobaciones, excluidas del total de campañas distintas |
+
+Las filas de recorrido gráfico, matriz y audio desglosan la suite; **no se suman de nuevo**. El código de juego de la suite general coincide con el entregado salvo una corrección textual posterior del rango de relaciones en el manual. La ejecución focalizada posterior comprueba su fórmula visible y añade una captura. No se modificó después la lógica de economía, familia o combate.
+
+Los resultados y su método están en el [informe de Fase 6](FASE_6_INFORME.md); los recursos, niveles, relaciones, daño, curación, escudo y finales constan en el [CSV de 33 campañas](BALANCE_FASE_6.csv). Las semillas son 17, 43 y 97. Las campañas usan comandos legales y guardado/carga; no equiparan la actuación del agente de prueba a la de un jugador humano.
+
+Registros locales: `tests/artifacts/phase6-full.log`, `phase6-balance-final.log`, `phase6-reproducibility.log`, `phase6-integration.log`. Las capturas reales de agenda, actividades, relaciones, colección, separaciones, combate, victoria y desenlaces se inspeccionaron visualmente. **No se completó una partida manual continua ni una revisión auditiva humana**; la herramienta de control de ventanas requerida no estaba disponible. `./revisar.ps1` prepara esa revisión pendiente en una identidad independiente, con captura F8.
+
+Se conservan los PNG/ASE originales. La corrección del libro elimina una compra dominada; el regalo de Orsted ahora completa la colección incluso con separaciones sin devolver habilidades. Las pruebas de guardado, doble gasto y doble recompensa siguen pasando. Los avisos de recursos ausentes en la suite pertenecen a fixtures deliberadas de fallos, no a nuevas referencias de producción sin archivo.
+
+## Registro anterior — Fase 5
 
 Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados: **44 192 comprobaciones**, sumando una ejecución válida de cada módulo y sin contar repeticiones. Los grupos `regression` y `campaign` finalizaron con **`ALL TESTS PASSED`, salida 0**. La verificación se realizó en esos dos grupos; no se presenta como una sola ejecución monolítica.
 

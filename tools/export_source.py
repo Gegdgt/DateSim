@@ -3,7 +3,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 destination = root / "docs" / "CODIGO_COMPLETO.md"
-extensions = {".lua": "lua", ".ps1": "powershell", ".py": "python", ".md": "markdown"}
+extensions = {".lua": "lua", ".ps1": "powershell", ".py": "python", ".md": "markdown", ".csv": "csv"}
 files = sorted(p for p in root.rglob("*") if p.is_file()
                and (p.suffix in extensions or p.name in {".gitignore", ".gitkeep"}) and p != destination
                and not any(part in {".git", ".tmp", "dist", ".codex", ".agents", "sprite_sources", "artifacts"} for part in p.relative_to(root).parts))
@@ -16,7 +16,8 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, animaciones y audio sintetizado.\n\n"
+          "Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, "
+          "HUD diario persistente, conflicto visible, simulaciones de siete días con semillas, revisión manual aislada, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

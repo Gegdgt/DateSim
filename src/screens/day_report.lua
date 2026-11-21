@@ -13,8 +13,8 @@ function Report.new(app,report,back)
     local used=0
     local function entry(text)
         local height=Font.height(text,576)+8
-        if used+height>128 and #pages[#pages]>0 then pages[#pages+1]={}; used=0 end
-        pages[#pages][#pages[#pages]+1]={text=text,y=160+used}
+        if used+height>108 and #pages[#pages]>0 then pages[#pages+1]={}; used=0 end
+        pages[#pages][#pages[#pages]+1]={text=text,y=180+used}
         used=used+height
     end
     if #(report.rewards or {})>0 then
@@ -26,6 +26,14 @@ function Report.new(app,report,back)
         entry("Cartas recibidas: "..table.concat(names,", ")..".")
     end
     for _,change in ipairs(report.changes or {}) do entry(change.text) end
+    s.bars={}
+    for _,id in ipairs(Characters.romanceIds)do
+        local old=(report.before or {})[id] or app.session.relationships[id]
+        local after=(report.after or {})[id] or app.session.relationships[id]
+        local bars=require("src.ui.relationship_bars").new({relationships={[id]=old},events={}},id,{reducedMotion=app.options.reducedMotion})
+        bars:apply("daily_report",{relationships={[id]=after}});s.bars[id]=bars
+    end
+    function s:update(dt)for _,b in pairs(self.bars)do b:update(dt)end end
     function s:draw()
         self:begin()
         app.resources:background("home")
@@ -36,9 +44,12 @@ function Report.new(app,report,back)
             local before=(report.before or {})[id] or app.session.relationships[id]
             local after=(report.after or {})[id] or app.session.relationships[id]
             local state=({married="casados",strained="en tensión",separated="separados"})[after.marriageState] or after.marriageState
-            self:text(Characters.byId[id].shortName.." · visitas "..(report.visits[id] or 0).." · Amor "..string.format("%+d",after.love-before.love).." / Conf. "..string.format("%+d",after.trust-before.trust).." · "..state,32,78+(i-1)*18,576,P.ink)
+            local x=32+(i-1)*193
+            self.bars[id]:draw({x=x,y=121,w=184,h=1})
+            self:text("Visitas "..(report.visits[id] or 0).." · "..state,x,124,184,P.ink)
+            self:text("Día: "..string.format("%+d amor / %+d conf.",after.love-before.love,after.trust-before.trust),x,140,184,P.teal)
         end
-        self:text("DECISIONES Y RECOMPENSAS · "..self.page.."/"..#pages,32,140,576,P.gold)
+        self:text("DECISIONES Y RECOMPENSAS · "..self.page.."/"..#pages,32,164,576,P.gold)
         for _,item in ipairs(pages[self.page]) do self:text(item.text,32,item.y,576,P.ink) end
         self:button("Anterior",32,298,120,29,function() self.page=self.page-1 end,self.page==1)
         self:button("Siguiente",160,298,120,29,function() self.page=self.page+1 end,self.page==#pages)

@@ -9,6 +9,7 @@ function Books.new(app,returnTo)
   self:begin();app.resources:background("library");W.panel(12,10,616,336)
   self:text("LIBRERÍA · ORO "..app.session.gold,24,24,460,P.gold,2)
   self:button("Volver",514,20,100,26,self.returnTo)
+  require("src.ui.daily_hud").draw(self,app,48,true)
   local family=require("src.systems.family").ensure(app.session)
   for i,book in ipairs(require("src.data.books")) do
    local y=65+(i-1)*82

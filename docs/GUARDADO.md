@@ -11,6 +11,8 @@
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
+La Fase 6 conserva el esquema v8. Sus contadores, barras y vistas derivan del estado existente; no generan otra fuente de verdad. El ajuste del precio del libro afecta compras futuras, sin rehacer recibos antiguos. El modo `--qa-campaign` usa la identidad separada `cartas_del_destino_phase6_manual`; F8 escribe evidencias en `tests/artifacts/` sin tocar el guardado normal.
+
 ## Estado persistido
 
 La versión 8 añade `eris_training_days` (fechas con claves de cadena), los eventos de entrenamiento, `orsted_reward` (elecciones, revisión y presentación pendiente), la investigación del emisario, los eventos de las dos mejoras gratuitas y la devolución a Nanahoshi. `curse.chantlessBlocked` se restaura según el consumo del antídoto. Las elecciones y sus niveles se reconstruyen desde eventos y decisiones: cargar durante el destello no vuelve a premiar ni gastar. La devolución conserva la colección completa. [Reglas del cierre](FASE_5_CIERRE.md).

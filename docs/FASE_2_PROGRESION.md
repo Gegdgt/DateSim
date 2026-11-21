@@ -1,6 +1,6 @@
 # Fase 2 — Cartas, duplicados y economía
 
-> Las fórmulas y los diez niveles siguen vigentes. La [Fase 3](FASE_3_FAMILIA.md) añade actividades, libros únicos, recetas de descuento, afinidad positiva/negativa y guardado v6 compatible con v5. El límite diario de +10 por estadística permanece.
+> Las fórmulas y los diez niveles siguen vigentes. La [Fase 3](FASE_3_FAMILIA.md) añade actividades, libros únicos, recetas de descuento y afinidad positiva/negativa. El guardado actual es v8 y conserva las migraciones anteriores. La [Fase 6](FASE_6_INFORME.md) ajusta el libro consumible a 5 oro y publica el balance vigente. El límite diario de +10 por estadística permanece.
 
 La colección conserva los **40 IDs**, los dos mazos y todos los PNG y ASE existentes. Cada ID tiene una sola entrada mejorable. La pantalla **MEJORAR CARTAS** se abre desde **M → Mejorar**; desde ella se accede a la tienda.
 
@@ -71,16 +71,16 @@ Oro inicial: **120**. No se permite gastar más del saldo. El stock se controla 
 | Entrenamiento evaluado | 45 | 3 Bastón |
 | Victoria, días 1–6 | 30 / 40 / 50 / 60 / 70 / 90 | 2 de la primera técnica equipada |
 
-El resultado de entrenamiento y la conclusión victoriosa son eventos distintos; ambos solo se conceden una vez. No hay ingresos por reintentar derrotas ni por releer recompensas. El Día 7 no introduce nuevas batallas.
+El resultado de entrenamiento y la conclusión victoriosa son eventos distintos; ambos solo se conceden una vez. No hay ingresos por reintentar derrotas ni por releer recompensas. El Día 7 incluye a Badigadi, cuya victoria entrega el antídoto sin añadir oro ordinario de combate. Las actividades específicas de la Fase 3 sustituyen las recompensas genéricas donde corresponde y completan misiones que pagan 15 oro al cierre.
 
 | Compra | Precio | Stock diario | Uso |
 | --- | ---: | ---: | --- |
 | Copias de carta adquirida | Según clase | 30 por ID | Comprar lotes de 1, 5 o 10 |
-| Libro de estudio | 12 | 4 | Consumir para recibir 3 copias sociales |
+| Libro de estudio | 5 | 4 | Consumir para recibir 3 copias sociales |
 | Material mágico | 20 | 3 | Consumir para +4 energía externa, máximo 30 |
 | Preparación | 30 | 1 | +4 escudo al iniciar la siguiente batalla, sin acumulación |
 
-Los ingresos permiten elegir algunas especializaciones; no se espera completar las cuarenta cartas en una campaña. La prueba completa obtuvo 2 007 de oro y llevó Bastón y Dar ánimo a N10 gastando 796, con duplicados ganados y comprados. Las técnicas nuevas siguen requiriendo sus desbloqueos narrativos. Los libros pueden ser útiles para las exclusivas más caras; tienen stock limitado.
+Los ingresos permiten elegir algunas especializaciones; no se espera completar las cuarenta cartas en una campaña. La regresión vigente llega a Bastón y Dar ánimo N10 sin Orsted, con 1839 de oro contando los 120 iniciales y 1037 restantes. Las técnicas nuevas siguen requiriendo sus desbloqueos narrativos. El libro cuesta menos que tres copias comunes y tiene stock limitado. Las [33 campañas de Fase 6](BALANCE_FASE_6.csv) distinguen ingresos obtenidos, gastos y saldo.
 
 ## Integración y extensión
 
@@ -93,7 +93,7 @@ Los ingresos permiten elegir algunas especializaciones; no se espera completar l
 | `src/systems/relationship_budget.lua` | Presupuesto compartido por esposa y jornada |
 | `src/systems/events.lua` | Aplicación única de efectos, oro y lotes de copias |
 | `src/screens/upgrades.lua`, `shop.lua`, `reward.lua` | Comparación, animación, compras y duplicados |
-| `src/systems/save.lua` | Formato v5 y migración de v4 sin sobrescribir el original |
+| `src/systems/save.lua` | Formato actual v8; conserva migración desde v4/v5/v6/v7 sin sobrescribir originales |
 
 Ejemplo de recompensa extensible:
 

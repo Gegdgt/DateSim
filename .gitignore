@@ -1,6 +1,7 @@
 tests/artifacts/*.png
 tests/artifacts/*.log
 tests/artifacts/*.csv
+tests/artifacts/*.json
 dist/
 *.love
 __pycache__/

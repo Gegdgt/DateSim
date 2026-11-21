@@ -10,6 +10,8 @@ En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibi�
 
 ## Organizar la jornada
 
+La cabecera de la agenda muestra día y oro; la franja inferior muestra espacios libres, encargo, cartas y misiones. **Cartas** abre los patrones recibidos hoy y sus copias disponibles; **Misiones** muestra objetivo, promesas y entregas pendientes. El incremento de cartas cuenta tipos recibidos, incluidos duplicados. Los tres personajes y la colección siguen accesibles mientras resuelves una actividad: consultar otra esposa permite leer sus opciones sin consumir otro espacio; **Volver a la actividad** retoma la decisión pendiente.
+
 Dispones de tres actividades libres al día. **Elegir actividad** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
 
 En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades y entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. **Ayudar hoy** muestra una advertencia: gasta una interacción, sin visita matrimonial, para recibir la recompensa hoy. El día 7 solo se aceptan encargos con ayuda inmediata. Una carta ya adquirida entrega copias para mejorarla.
@@ -30,6 +32,8 @@ Abre **M → Mejorar**. Selecciona una carta para ver imagen, nivel, efectos act
 
 La **Tienda** vende copias de cartas que ya tienes, libros (+3 copias sociales al usarlos), materiales (+4 energía externa, máximo 30) y preparación (+4 escudo al comenzar la siguiente batalla). Las existencias se renuevan al cambiar de día. Actividades, encargos, misiones, entrenamientos y combates entregan oro. Elegir algunas cartas para especializar es suficiente; no necesitas mejorar las cuarenta.
 
+El Libro de estudio cuesta **5 oro**, con un máximo de cuatro compras por día. Es un consumible diferente de los títulos únicos de la librería de Roxy. Cada actividad completada también entrega **15 oro al cerrar** por su misión; la agenda anuncia ese pago diferido. La colección y **MEJORAR CARTAS** muestran si la carta está desbloqueada y equipada, el efecto actual/siguiente y ambos requisitos. Movimiento reducido muestra el resultado estático de la mejora.
+
 **¡CARTA REPETIDA!** indica cuántas copias se añadieron al inventario. Las mejoras sociales aumentan solo las bonificaciones propias de cada carta: Escuchar sigue dando confianza y Coqueteo sutil sigue dando amor. Las penalizaciones dependen de la respuesta y la situación. Las técnicas de combate tienen curvas distintas; las más potentes también imponen costes y límites de uso. [Tabla completa de costes](FASE_2_PROGRESION.md).
 
 ## Elegir una respuesta
@@ -45,6 +49,8 @@ Nanahoshi muestra **Confianza e Interés** durante el tutorial y las investigaci
 ## Cuidar los matrimonios
 
 Las tres relaciones comienzan con 50 de amor y confianza y admiten valores de −100 a 100. Roxy valora cercanía y respeto intelectual; Sylphiette, responsabilidad y apoyo familiar; Eris, igualdad y confianza en su capacidad. Las decisiones, promesas y conflictos quedan en el diario; repetir acciones no borra lo ocurrido. La afinidad alta facilita pequeñas bonificaciones; la negativa reduce ganancias ordinarias, pero permite reconciliación.
+
+La marca central de cada barra es cero. El tramo rojo hacia la izquierda y el indicador **!** señalan conflicto; el número conserva su signo. El resumen muestra las visitas, las pérdidas por abandono y los cambios reales mediante barras animadas. Releerlo o cargar no vuelve a aplicar sus consecuencias.
 
 El abandono reiterado puede provocar una separación a −30 o menos después de advertencias anteriores; una decisión crítica también puede romper el matrimonio. La esposa devuelve el anillo y se marcha (Sylphiette con su hija). Su retrato queda gris, sus actividades se bloquean y no podrá acompañarte ni conceder nuevas habilidades matrimoniales. Guardar, cargar y recuperar la voz no la hacen regresar. [Detalle de las reglas](FASE_3_FAMILIA.md).
 
@@ -73,6 +79,8 @@ Rudy tiene 30 PV y tres acciones por turno. Sus ataques físicos iniciales no co
 Defensa y esquiva no necesitan cartas. El escudo absorbe antes que la vida y caduca al comenzar el siguiente turno. Los fragmentos recuperados permiten usar energía externa para los hechizos de agua y tierra: el indicador natural continúa bloqueado hasta la cura. Sylphiette cura/protege, Roxy analiza/conjura y Eris golpea/interrumpe. Cada compañera tiene una acción propia por turno; sus ataques escalan con el promedio de amor y confianza. Antes de comenzar se muestran potencia, costes, recargas y usos. Las separadas no participan. Con afinidad menor de 25, la curación de Sylphiette exige confirmar el riesgo: la interferencia causa daño del 40% de los PV máximos y puede derrotar a Rudy.
 
 Badigadi tiene 1000 PV en el Día 7. A 750 entra en la fase de seis brazos; a 350 refuerza su resistencia, que el agua, análisis y especiales combinados ayudan a superar. Cuando llega a cero PV, el sello aún protege el antídoto. Usa **Romper sello [B]** dos veces, una acción por anclaje. Badigadi acepta su derrota y sigue vivo. Perder permite reintentar o preparar el mazo; no es un final adicional.
+
+En **Manual → Reglas → Turnos y compañeras** puedes consultar la fórmula: `afinidad = (amor + confianza) / 2`; `multiplicador = max(0, min(100, afinidad)) / 100`; `daño = floor(base × multiplicador + 0.5)`. El especial de Eris, por ejemplo, hace 75 antes de defensas con 50/50 y llega a 150 con 100/100. No todos sus ataques son especiales: cada habilidad muestra costes, recarga, potencia y usos. Las barras de vida y el historial muestran el daño y la curación realmente aplicados.
 
 ## Entrenar con Eris
 

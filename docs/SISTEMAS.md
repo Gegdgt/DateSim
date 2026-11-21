@@ -1,6 +1,6 @@
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 7. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 8. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
 
@@ -11,6 +11,14 @@ La campaña usa `continuity="rudy_curse"` y esquema de guardado 7. `src/data/cha
 `Daily` centraliza los tres espacios, visitas repetibles, reservas pendientes, encargo independiente y cierre único. `src/data/activities.lua` declara actividades y encargos; `src/data/day_cycle.lua` conecta las siete agendas sin reemplazar las escenas existentes. Las escenas tienen `interactionRule="narrative"`, coste cero e IDs distintos de las actividades.
 
 La jornada puede terminar con espacios libres una vez resuelta su historia. Registra atención, entrega encargos vencidos, actualiza misiones y matrimonios, guarda y presenta el resumen antes de avanzar. El Día 7 fija la atención antes de las conversaciones finales. `daily_history` permite consultar ayer; `events_by_day` conserva los identificadores de cada jornada. [Esquema, reglas y extensión](FASE_1_ACTIVIDADES.md).
+
+## Presentación e instrumentación de Fase 6
+
+`src/ui/daily_hud.lua` deriva los contadores del estado canónico; no conserva otro saldo, presupuesto ni copia de visitas. `daily_status.lua` consulta cartas recibidas, objetivo narrativo, promesas y encargos. El HUD completo se usa en la agenda y el compacto durante librería, combates de actividad y presentaciones. Las pestañas pueden consultarse durante una reserva; sus acciones de inicio quedan deshabilitadas hasta resolverla.
+
+`relationship_bars.lua` mantiene números reales, cero central y conflicto rojo. El resumen construye barras con `report.before` y anima hacia `report.after`; no invoca eventos ni modifica afinidad. `App:update` observa cambios positivos de oro para reproducir una señal una vez y reinicia su referencia al cambiar de sesión.
+
+`tests/seven_day_balance.lua` define once políticas y tres semillas; `tests/campaign.lua` ejecuta las transiciones reales y `campaign_metrics.lua` registra recursos, niveles, relaciones, visitas y combates. No se introducen efectos de simulación en los módulos del juego. `--qa-campaign` usa una identidad separada para revisión humana normal; F8 captura el canvas y un registro del checkpoint. [Resultados, límites y comandos](FASE_6_INFORME.md).
 
 ## Maldición y comunicación
 
@@ -40,13 +48,13 @@ Las líneas admiten `delivery`: `dream`, `thought`, `note`, `enchanted`, `silenc
 | `mission`, `enemyDefeated`, `familyEvent` | Registra acontecimientos de campaña. |
 | `batch` | Aplica varios efectos con la misma clave de acontecimiento. |
 
-La carta se adquiere antes de animarse. `rewardQueue` contiene únicamente cartas recién obtenidas; cerrar la presentación consume la cola. Guardar durante la entrega conserva su página, colección y evento, sin concederlos otra vez.
+La carta se adquiere antes de animarse. `rewardQueue` conserva entregas nuevas y duplicados, con cantidades y presentación diferenciadas; cerrar la presentación consume la cola. Guardar durante la entrega conserva su página, colección y evento, sin concederlos otra vez. El evento `orsted_collection_gift` permite archivar todas las cartas de la colección, incluidas exclusivas de matrimonios separados; el filtro de uso y apoyos permanece independiente.
 
 ## Relaciones y finales
 
 `Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 50/50. `love` y `trust` se limitan a −100–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
 
-Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión narrativa explícita. El diario registra los cambios efectivos después de aplicar los límites.
+Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión crítica o deterioro grave por abandono con advertencia e historial previos. El diario registra los cambios efectivos después de aplicar los límites.
 
 Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolution`, compromiso explícito y ausencia de conflictos o incumplimientos sin reparar. La familia unida requiere además 75/75 en cada una. `Relationships.ending` devuelve `family_united`, `roxy`, `eris`, `sylphiette` o `solitary`. Si quedan varias relaciones viables sin cumplir la unión, devuelve `resolution_required`: el día siete abre la conversación correspondiente. No existe un sexto final ni selección automática por puntuación.
 

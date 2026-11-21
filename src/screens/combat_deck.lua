@@ -31,18 +31,20 @@ function Editor.new(app,returnTo)
     function s:draw()
         self:begin(); app.resources:background("library")
         love.graphics.setColor(.025,.035,.07,.9); love.graphics.rectangle("fill",0,0,640,360)
-        self:text("MAZO DE COMBATE · 5–10 CARTAS",18,18,490,P.gold)
+        self:text("MAZO DE COMBATE · ORO "..app.session.gold,18,18,404,P.gold)
+        self:button("Mejorar",440,10,100,24,function()app:switch(require("src.screens.upgrades").new(app,self.catalog[self.selected]))end)
         self:button("Volver",548,10,76,24,self.returnTo)
         W.panel(14,43,290,204); W.panel(314,43,312,204)
         self:text("POSICIÓN / QUITAR Y SUSTITUIR",24,53,270,P.teal)
         for i=1,10 do
             local c=Combat.card(self.draft[i]); self:button(i..". "..(c and c.name or "Vacía"),24,70+(i-1)*17,270,16,function() self.slot=i end,false,self.slot==i)
         end
-        self:text("COLECCIÓN · [+] LIBRE · [X] BLOQUEADA",324,53,290,P.teal)
+        self:text("[E] EQUIPADA · [+] LIBRE · [X] BLOQUEADA",324,53,290,P.teal)
+        local equipped={};for _,id in ipairs(app.session.combatDeck)do equipped[id]=true end
         for row=1,8 do
             local index=(self.page-1)*8+row; local id=self.catalog[index]
             if id then local c=Combat.card(id)
-                self:button((app.session.unlocked[id] and "[+] " or "[X] ")..c.name,324,70+(row-1)*17,290,16,function() self.selected=index end,false,self.selected==index)
+                self:button((equipped[id] and "[E] " or app.session.unlocked[id] and "[+] " or "[X] ").."N"..require("src.systems.card_collection").level(app.session,id).." "..c.name,324,70+(row-1)*17,290,16,function() self.selected=index end,false,self.selected==index)
             end
         end
         local pages=math.ceil(#self.catalog/8)

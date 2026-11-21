@@ -58,7 +58,7 @@ function Upgrades.new(app,selected)
         local card=Collection.list[self.index];local view=Collection.view(app.session,card.id)
         local nextView=view.level<10 and Collection.view(app.session,card.id,view.level+1)
         self:text(card.name,228,57,386,P.gold)
-        local elevation=self.pending and math.floor(12*math.min(1,self.pending.age/.3)) or 0
+        local elevation=self.pending and not app.options.reducedMotion and math.floor(12*math.min(1,self.pending.age/.3)) or 0
         CardView.draw(app.resources,card,229,87-elevation)
         if self.pending and self.pending.age>.2 and self.pending.age<.7 and not app.options.reducedMotion then
             love.graphics.setColor(1,.85,.45,.8)
@@ -69,6 +69,9 @@ function Upgrades.new(app,selected)
         local after=self.pending and self.pending.result and self.pending.result.after or nextView
         self:text("ACTUAL"..(self.pending and " (ANTES)" or "").."\n"..Upgrades.effects(before),324,118,286,P.ink)
         self:text(after and ((self.pending and self.pending.result and "DESPUÉS / N" or "SIGUIENTE / N")..after.level.."\n"..Upgrades.effects(after)) or "NIVEL MÁXIMO",324,167,286,P.gold)
+        local equipped={}
+        for _,deck in ipairs({app.session.deck,app.session.combatDeck})do for _,id in ipairs(deck)do equipped[id]=true end end
+        self:text(not view.unlocked and "BLOQUEADA" or equipped[card.id] and "DESBLOQUEADA · EQUIPADA" or "DESBLOQUEADA · SIN EQUIPAR",228,200,386,view.unlocked and P.teal or P.muted)
         self:text("Copias: "..view.copies.." / "..view.copiesRequired.." necesarias · Oro: "..view.goldRequired,228,217,386,P.ink)
         self:text((view.socialCost and ("Social: "..view.socialCost.." energía. ") or "")..(view.combatCost and ("Combate: "..view.combatCost.." A / "..view.manaCost.." M / "..view.hpCost.." PV.") or ""),228,240,386,P.teal)
         if nextView and (nextView.manaCost~=view.manaCost or nextView.hpCost~=view.hpCost) then
@@ -85,6 +88,7 @@ function Upgrades.new(app,selected)
             end,not view.effect or not view.unlocked or view.level==10 or (Economy.ensure(app.session).items.study_book or 0)<1)
         end
         self:text(self.message or reason or (view.discount and "Receta activa: ahorro del 20%; se consume al mejorar.") or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
+        W.panel(8,342,624,17)
         self:text("Tab y Enter: botones · Las mejoras no cambian los mazos equipados.",18,347,604,P.ink)
     end
     function s:keypressed(key)

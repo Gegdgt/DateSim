@@ -9,6 +9,10 @@ local function pixel(x,y,w,h,color)
 end
 function Scene.new(app)
  local s=Screen.new(app);s.kind="family_scene";s.entry=assert(Family.ensure(app.session).queue[1])
+ if s.entry.kind=="departure" then
+  app.audio:setContext("separation")
+  if s.entry.phase==1 and s.entry.elapsed==0 then app.audio:effect("separation")end
+ end
  function s:update(dt) self.entry.elapsed=math.min(20,self.entry.elapsed+dt) end
  function s:advance()
   if self.finished then if app:save() then app:resume() end;return end
@@ -58,6 +62,7 @@ function Scene.new(app)
   self:text(require("src.data.characters").byId[e.character].shortName,30,236,570,P.gold)
   self:text(text,30,257,570,P.ink)
   self:button("Continuar",430,310,178,25,function() self:advance() end,departure and (e.phase==3 or e.phase==4) and e.elapsed<1.2 and not app.options.reducedMotion)
+  if require("src.systems.daily").atAgenda(app.session)then require("src.ui.daily_hud").draw(self,app,347,true)end
  end
  function s:keypressed(key) if key=="return" or key=="space" then self:advance() elseif key=="f5" then app:save() else self:navigate(key) end end
  return s

@@ -62,6 +62,7 @@ function Reward.new(app)
             or (count>1 and ("Primera copia: nivel 1. Además recibiste "..(count-1).." duplicados."))
             or (self.starter and "Orsted → Nanahoshi → Rudy. Cinco sociales y cinco físicas." or "Guardada en tu colección. Consulta Mejorar cartas."),42,287,556,P.muted,1,"center")
         self:button(self.page<#self.cards and "Siguiente carta" or "Continuar",226,309,188,25,function() self:continue() end)
+        if require("src.systems.daily").atAgenda(app.session)then require("src.ui.daily_hud").draw(self,app,347,true)end
     end
     function s:keypressed(key)
         if key=="return" or key=="space" or key=="escape" then self:continue() else self:navigate(key) end

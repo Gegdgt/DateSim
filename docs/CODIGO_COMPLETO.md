@@ -1,6 +1,6 @@
 # Código completo del proyecto
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, animaciones y audio sintetizado.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, HUD diario persistente, conflicto visible, simulaciones de siete días con semillas, revisión manual aislada, animaciones y audio sintetizado.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -12,6 +12,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 tests/artifacts/*.png
 tests/artifacts/*.log
 tests/artifacts/*.csv
+tests/artifacts/*.json
 dist/
 *.love
 __pycache__/
@@ -348,13 +349,138 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 
 Los contextos incluyen sueño de Hitogami, hogar, misterio, tensión, investigación, conversación, romance, exploración, combate, Badigadi, victoria, derrota y finales. `src/data/presentation.lua` elige el contexto por escena y permite que cada definición lo especifique. Los contextos anteriores que siguen en el manifiesto pueden reutilizarse sin determinar la premisa de la campaña.
 
+La Fase 6 completa **20 contextos musicales** con `orsted`, `separation` y `final_victory`; el último no se repite en bucle. Son melodías originales generadas como PCM a 22050 Hz por el gestor existente, sin depender de archivos externos. La demostración de Orsted mantiene su contexto propio al terminar; la separación tiene el suyo durante la escena y la victoria del jefe activa el cierre final.
+
 La carta narrativa utiliza `paper`, `envelope_open` y `revelation`. Los intentos de agua/tierra usan `magic_fail`; las entregas usan `card_gift` y `unlock`. También hay señales de escritura, selección, robo, uso y descarte de cartas, cambios de estadísticas, ataques, defensa, curación y transición. Las líneas de silencio de Rudy no ejecutan `text_blip`.
+
+Las señales `new_day`, `card_gift`, `upgrade`, `gold`, `training`, `combat_start`, `heal`, `separation`, `orsted`, `badigadi` y `final_victory` cubren las once acciones solicitadas. La integración prueba muestras no silenciosas y amplitud acotada, y crea fuentes reales de LÖVE. El aumento de oro se detecta una vez; reanudar una sesión no repite su efecto. Las pruebas se ejecutan silenciadas y no certifican la calidad auditiva de la mezcla.
 
 El cambio musical aplica un fundido de 0,45 segundos. Opciones permite silencio y volúmenes general, música y efectos independientes; `options.json` conserva las preferencias globales. La escritura y la selección tienen límites de frecuencia para evitar sonidos acumulados por repetición de entradas.
 
 Para añadir una grabación propia o con permiso, declara `path="assets/audio/nombre.ogg"` en el contexto del manifiesto. `synth` puede mantenerse como respaldo. Un contexto sin archivo ni síntesis queda en silencio. No hace falta convertir las melodías actuales en archivos para ejecutar el juego.
 
 La suite de audio valida el manifiesto y el comportamiento del gestor; consulta sus resultados reales en [VERIFICACION.md](VERIFICACION.md). Las pruebas de combate comprobaron que las acciones y transiciones ejecutan la interfaz sin errores, pero no sustituyen una revisión auditiva de mezcla, volumen y fatiga durante una sesión prolongada.
+````
+
+## docs/BALANCE_FASE_4.csv
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/BALANCE_FASE_4.csv`
+
+````csv
+level,mask,wives,affinity,seeds,wins,mean_turns,mean_hp,mean_damage_per_turn,mean_healing,mean_shield
+1,0,0,20,8,6,71.63,19.38,13.98,4.00,200.00
+1,0,0,50,8,6,71.63,19.38,13.98,4.00,200.00
+1,0,0,90,8,6,71.63,19.38,13.98,4.00,200.00
+1,1,1,20,8,8,63.50,26.88,15.78,6.25,265.13
+1,1,1,50,8,8,57.75,27.88,17.33,4.63,260.13
+1,1,1,90,8,8,42.25,29.13,23.68,3.13,190.38
+1,2,1,20,8,8,44.50,29.25,22.48,5.25,68.88
+1,2,1,50,8,8,35.38,29.63,28.29,1.50,63.38
+1,2,1,90,8,8,26.75,29.63,37.42,1.88,51.88
+1,3,2,20,8,8,41.88,28.63,23.90,4.25,116.75
+1,3,2,50,8,8,27.63,29.13,36.22,2.63,75.63
+1,3,2,90,8,8,15.63,30.00,64.06,3.00,41.75
+1,4,1,20,8,8,54.38,29.13,18.42,2.13,124.50
+1,4,1,50,8,8,37.50,29.88,26.71,1.00,89.88
+1,4,1,90,8,8,16.25,29.25,61.89,1.13,35.63
+1,5,2,20,8,8,55.63,28.25,17.98,3.75,249.88
+1,5,2,50,8,8,27.75,29.13,36.09,0.75,132.88
+1,5,2,90,8,8,9.13,30.00,109.72,1.13,26.50
+1,6,2,20,8,8,32.50,28.88,30.82,2.25,53.38
+1,6,2,50,8,8,16.50,29.13,60.66,1.50,34.25
+1,6,2,90,8,8,8.00,28.88,125.00,0.38,15.63
+1,7,3,20,8,8,32.13,29.88,31.15,1.75,90.00
+1,7,3,50,8,8,13.63,29.88,73.58,0.13,38.00
+1,7,3,90,8,8,7.00,29.63,142.86,0.25,20.88
+5,0,0,20,8,8,22.25,23.75,45.07,9.75,44.00
+5,0,0,50,8,8,22.25,23.75,45.07,9.75,44.00
+5,0,0,90,8,8,22.25,23.75,45.07,9.75,44.00
+5,1,1,20,8,8,22.00,29.13,45.57,6.88,74.00
+5,1,1,50,8,8,19.63,29.25,51.11,5.13,66.00
+5,1,1,90,8,8,16.00,29.38,62.73,5.25,53.88
+5,2,1,20,8,8,18.63,29.25,53.84,7.50,29.75
+5,2,1,50,8,8,15.88,28.13,63.22,4.75,29.50
+5,2,1,90,8,8,12.63,27.75,79.59,4.38,20.38
+5,3,2,20,8,8,19.63,27.50,51.08,4.63,52.00
+5,3,2,50,8,8,14.50,29.00,69.14,3.38,33.75
+5,3,2,90,8,8,9.38,29.38,107.29,3.50,18.50
+5,4,1,20,8,8,18.63,27.88,53.76,7.13,30.88
+5,4,1,50,8,8,13.75,28.13,73.17,4.00,21.00
+5,4,1,90,8,8,9.50,25.63,105.90,3.38,13.63
+5,5,2,20,8,8,21.50,28.38,46.56,5.38,73.00
+5,5,2,50,8,8,12.38,28.50,80.93,4.00,34.00
+5,5,2,90,8,8,7.13,29.50,140.63,1.25,25.75
+5,6,2,20,8,8,16.13,28.50,62.16,3.00,22.38
+5,6,2,50,8,8,10.25,27.50,97.73,2.25,17.38
+5,6,2,90,8,8,7.00,29.38,142.86,1.25,14.63
+5,7,3,20,8,8,18.13,28.63,55.37,2.63,43.00
+5,7,3,50,8,8,9.75,29.63,102.78,2.75,23.88
+5,7,3,90,8,8,5.25,30.00,191.67,0.88,19.38
+10,0,0,20,8,8,8.88,26.00,115.08,9.88,21.00
+10,0,0,50,8,8,8.88,26.00,115.08,9.88,21.00
+10,0,0,90,8,8,8.88,26.00,115.08,9.88,21.00
+10,1,1,20,8,8,10.63,29.88,95.10,10.75,51.00
+10,1,1,50,8,8,9.25,29.50,110.72,10.25,36.25
+10,1,1,90,8,8,7.75,30.00,131.30,11.13,29.00
+10,2,1,20,8,8,9.00,28.00,112.41,7.88,23.13
+10,2,1,50,8,8,7.50,26.13,133.93,7.00,16.63
+10,2,1,90,8,8,6.50,25.25,154.76,6.75,10.50
+10,3,2,20,8,8,10.13,24.88,100.41,4.63,26.75
+10,3,2,50,8,8,8.25,29.13,123.36,8.88,20.63
+10,3,2,90,8,8,6.38,29.38,160.12,9.13,16.63
+10,4,1,20,8,8,9.00,28.13,114.69,9.00,25.00
+10,4,1,50,8,8,6.88,27.50,146.58,10.00,12.50
+10,4,1,90,8,8,5.25,25.00,191.67,8.88,8.38
+10,5,2,20,8,8,10.88,24.88,94.16,4.63,47.00
+10,5,2,50,8,8,6.88,28.38,146.58,8.25,19.63
+10,5,2,90,8,8,4.63,29.88,218.75,9.00,11.75
+10,6,2,20,8,8,9.00,26.13,112.06,5.25,20.00
+10,6,2,50,8,8,5.63,21.63,180.36,3.88,7.00
+10,6,2,90,8,8,4.13,22.63,243.75,3.25,3.50
+10,7,3,20,8,8,10.50,25.88,96.94,5.00,29.63
+10,7,3,50,8,8,6.75,29.38,150.74,6.75,16.88
+10,7,3,90,8,8,4.25,28.75,237.50,9.25,8.75
+````
+
+## docs/BALANCE_FASE_6.csv
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/BALANCE_FASE_6.csv`
+
+````csv
+strategy,seed,earned,spent,gold,cards,copies,max_level,levels_upgraded,separations,max_card_damage,healing_cards,orsted,boss_win,boss_turns,boss_hp,boss_dpt,boss_healing,boss_shield,ending,sylphiette_love,sylphiette_trust,roxy_love,roxy_trust,eris_love,eris_trust
+balanced,17,1757,754,1123,40,50,10,6,0,26,2,true,true,19,27,52.63,0,38,family_united,99,100,100,100,96,97
+balanced,43,1757,754,1123,40,50,10,6,0,26,2,true,true,19,25,52.63,0,35,family_united,99,100,100,100,96,97
+balanced,97,1757,754,1123,40,50,10,6,0,26,2,true,true,19,29,52.63,0,46,family_united,99,100,100,100,96,97
+eris_only,17,2100,746,1474,40,62,10,6,2,26,1,true,true,12,30,83.33,0,27,eris,-49,-44,-34,-31,100,100
+eris_only,43,2100,746,1474,40,62,10,6,2,26,1,true,true,12,30,83.33,0,27,eris,-49,-44,-34,-31,100,100
+eris_only,97,2100,746,1474,40,62,10,6,2,26,1,true,true,12,30,83.33,0,32,eris,-49,-44,-34,-31,100,100
+roxy_only,17,1575,714,981,34,37,6,4,2,26,1,false,true,19,27,52.63,0,38,roxy,-49,-44,100,100,-46,-46
+roxy_only,43,1575,714,981,34,37,6,4,2,26,1,false,true,19,25,52.63,0,35,roxy,-49,-44,100,100,-46,-46
+roxy_only,97,1575,714,981,34,37,6,4,2,26,1,false,true,19,30,52.63,0,55,roxy,-49,-44,100,100,-46,-46
+sylphiette_only,17,1792,782,1130,34,52,6,4,2,26,2,false,true,31,27,32.26,0,141,sylphiette,100,100,-34,-31,-46,-46
+sylphiette_only,43,1792,782,1130,34,52,6,4,2,26,2,false,true,29,27,34.48,0,131,sylphiette,100,100,-34,-31,-46,-46
+sylphiette_only,97,1792,782,1130,34,52,6,4,2,26,2,false,true,28,29,35.71,0,124,sylphiette,100,100,-34,-31,-46,-46
+gold,17,2671,0,2791,34,112,1,0,2,15,1,false,true,13,27,76.92,0,24,eris,-49,-44,-34,-31,100,100
+gold,43,2671,0,2791,34,112,1,0,2,15,1,false,true,13,30,76.92,0,28,eris,-49,-44,-34,-31,100,100
+gold,97,2671,0,2791,34,112,1,0,2,15,1,false,true,13,30,76.92,0,33,eris,-49,-44,-34,-31,100,100
+upgrades,17,1757,788,1089,40,64,10,4,0,20,2,true,true,21,30,47.62,0,40,family_united,99,100,100,100,96,97
+upgrades,43,1757,788,1089,40,64,10,4,0,20,2,true,true,21,28,47.62,0,43,family_united,99,100,100,100,96,97
+upgrades,97,1757,788,1089,40,64,10,4,0,20,2,true,true,21,21,47.62,0,33,family_united,99,100,100,100,96,97
+without_orsted,17,1659,754,1025,36,41,6,4,0,26,2,false,true,19,27,52.63,0,38,family_united,99,100,100,100,100,100
+without_orsted,43,1659,754,1025,36,41,6,4,0,26,2,false,true,19,25,52.63,0,35,family_united,99,100,100,100,100,100
+without_orsted,97,1659,754,1025,36,41,6,4,0,26,2,false,true,19,29,52.63,0,46,family_united,99,100,100,100,100,100
+with_orsted,17,1757,754,1123,40,50,10,6,0,250,2,true,true,15,24,66.67,0,35,family_united,99,100,100,100,96,97
+with_orsted,43,1757,754,1123,40,50,10,6,0,250,2,true,true,14,21,71.43,0,32,family_united,99,100,100,100,96,97
+with_orsted,97,1757,754,1123,40,50,10,6,0,250,2,true,true,14,24,71.43,0,42,family_united,99,100,100,100,96,97
+lose_one,17,1674,742,1052,35,44,6,4,2,26,1,false,true,19,27,52.63,0,38,roxy,100,100,100,100,-46,-46
+lose_one,43,1674,742,1052,35,44,6,4,2,26,1,false,true,19,25,52.63,0,35,roxy,100,100,100,100,-46,-46
+lose_one,97,1674,742,1052,35,44,6,4,2,26,1,false,true,19,30,52.63,0,55,roxy,100,100,100,100,-46,-46
+lose_two,17,1390,714,796,34,30,6,4,2,26,1,false,true,19,27,52.63,0,38,roxy,-32,-29,100,100,-32,-32
+lose_two,43,1390,714,796,34,30,6,4,2,26,1,false,true,19,25,52.63,0,35,roxy,-32,-29,100,100,-32,-32
+lose_two,97,1390,714,796,34,30,6,4,2,26,1,false,true,19,30,52.63,0,55,roxy,-32,-29,100,100,-32,-32
+lose_three,17,1075,782,413,33,23,6,4,3,26,1,false,true,44,24,22.73,0,123,solitary,-32,-29,-57,-55,-32,-32
+lose_three,43,1075,782,413,33,23,6,4,3,26,1,false,true,48,18,20.83,0,143,solitary,-32,-29,-57,-55,-32,-32
+lose_three,97,1075,782,413,33,23,6,4,3,26,1,false,true,45,25,22.22,0,116,solitary,-32,-29,-57,-55,-32,-32
 ````
 
 ## docs/CAPITULOS.md
@@ -983,7 +1109,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Fase 2 — Cartas, duplicados y economía
 
-> Las fórmulas y los diez niveles siguen vigentes. La [Fase 3](FASE_3_FAMILIA.md) añade actividades, libros únicos, recetas de descuento, afinidad positiva/negativa y guardado v6 compatible con v5. El límite diario de +10 por estadística permanece.
+> Las fórmulas y los diez niveles siguen vigentes. La [Fase 3](FASE_3_FAMILIA.md) añade actividades, libros únicos, recetas de descuento y afinidad positiva/negativa. El guardado actual es v8 y conserva las migraciones anteriores. La [Fase 6](FASE_6_INFORME.md) ajusta el libro consumible a 5 oro y publica el balance vigente. El límite diario de +10 por estadística permanece.
 
 La colección conserva los **40 IDs**, los dos mazos y todos los PNG y ASE existentes. Cada ID tiene una sola entrada mejorable. La pantalla **MEJORAR CARTAS** se abre desde **M → Mejorar**; desde ella se accede a la tienda.
 
@@ -1054,16 +1180,16 @@ Oro inicial: **120**. No se permite gastar más del saldo. El stock se controla 
 | Entrenamiento evaluado | 45 | 3 Bastón |
 | Victoria, días 1–6 | 30 / 40 / 50 / 60 / 70 / 90 | 2 de la primera técnica equipada |
 
-El resultado de entrenamiento y la conclusión victoriosa son eventos distintos; ambos solo se conceden una vez. No hay ingresos por reintentar derrotas ni por releer recompensas. El Día 7 no introduce nuevas batallas.
+El resultado de entrenamiento y la conclusión victoriosa son eventos distintos; ambos solo se conceden una vez. No hay ingresos por reintentar derrotas ni por releer recompensas. El Día 7 incluye a Badigadi, cuya victoria entrega el antídoto sin añadir oro ordinario de combate. Las actividades específicas de la Fase 3 sustituyen las recompensas genéricas donde corresponde y completan misiones que pagan 15 oro al cierre.
 
 | Compra | Precio | Stock diario | Uso |
 | --- | ---: | ---: | --- |
 | Copias de carta adquirida | Según clase | 30 por ID | Comprar lotes de 1, 5 o 10 |
-| Libro de estudio | 12 | 4 | Consumir para recibir 3 copias sociales |
+| Libro de estudio | 5 | 4 | Consumir para recibir 3 copias sociales |
 | Material mágico | 20 | 3 | Consumir para +4 energía externa, máximo 30 |
 | Preparación | 30 | 1 | +4 escudo al iniciar la siguiente batalla, sin acumulación |
 
-Los ingresos permiten elegir algunas especializaciones; no se espera completar las cuarenta cartas en una campaña. La prueba completa obtuvo 2 007 de oro y llevó Bastón y Dar ánimo a N10 gastando 796, con duplicados ganados y comprados. Las técnicas nuevas siguen requiriendo sus desbloqueos narrativos. Los libros pueden ser útiles para las exclusivas más caras; tienen stock limitado.
+Los ingresos permiten elegir algunas especializaciones; no se espera completar las cuarenta cartas en una campaña. La regresión vigente llega a Bastón y Dar ánimo N10 sin Orsted, con 1839 de oro contando los 120 iniciales y 1037 restantes. Las técnicas nuevas siguen requiriendo sus desbloqueos narrativos. El libro cuesta menos que tres copias comunes y tiene stock limitado. Las [33 campañas de Fase 6](BALANCE_FASE_6.csv) distinguen ingresos obtenidos, gastos y saldo.
 
 ## Integración y extensión
 
@@ -1076,7 +1202,7 @@ Los ingresos permiten elegir algunas especializaciones; no se espera completar l
 | `src/systems/relationship_budget.lua` | Presupuesto compartido por esposa y jornada |
 | `src/systems/events.lua` | Aplicación única de efectos, oro y lotes de copias |
 | `src/screens/upgrades.lua`, `shop.lua`, `reward.lua` | Comparación, animación, compras y duplicados |
-| `src/systems/save.lua` | Formato v5 y migración de v4 sin sobrescribir el original |
+| `src/systems/save.lua` | Formato actual v8; conserva migración desde v4/v5/v6/v7 sin sobrescribir originales |
 
 Ejemplo de recompensa extensible:
 
@@ -1407,6 +1533,226 @@ Remove-Item Env:DATESIM_TEST_GROUP
 `tests/finale.lua` cubre los 32 calendarios, repetición, combate controlado con niveles 1/5/10, premios, elecciones, persistencia, revelación y devolución. `tests/finale_ui.lua` usa las pantallas y el renderizador de LÖVE, incluida la carga durante una mejora y los cinco epílogos. `tests/campaign.lua` recorre todas las composiciones familiares y los cinco finales tanto con la ruta especial como sin ella; la especialización económica paga sus mejoras sin Orsted. Las cifras ejecutadas y sus límites se registran en [VERIFICACION.md](VERIFICACION.md).
 ````
 
+## docs/FASE_6_INFORME.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_6_INFORME.md`
+
+````markdown
+# Fase 6 — Integración, economía y verificación
+
+Fecha: **21 de noviembre de 2026**. Implementación sobre el repositorio existente, ejecutada en **LÖVE 11.5 / LuaJIT**. Se conservan los 40 identificadores, los mazos, los PNG y los ASE originales. El guardado sigue en **v8**; no se necesita una migración para estos cambios de presentación y precios.
+
+## Auditoría de las cinco fases anteriores
+
+Se inspeccionaron datos, pantallas, sistemas, guardado y pruebas antes de modificar el proyecto. Ya existían implementaciones funcionales de:
+
+| Sistema | Estado comprobado |
+| --- | --- |
+| Jornada | Siete días, tres espacios repetibles, un encargo independiente, historia obligatoria sin gasto automático, cierre voluntario y resumen idempotente. |
+| Colección y economía | 40 cartas, diez niveles, duplicados por ID, oro, tienda, mazos persistentes y mejoras con bloqueo de pulsaciones repetidas. |
+| Familia | 16 actividades, relaciones negativas, límite diario compartido, reconciliaciones, abandono, advertencias, separaciones permanentes y encargos acelerables. |
+| Combate | Enemigos por día, cartas escaladas, energía externa, defensa, curación, habilidades por afinidad y Badigadi con 1000 PV. |
+| Desenlace | Entrenamiento de Eris por fecha, Orsted opcional, investigación del emisario, antídoto, recuperación de voz/magia, devolución de cartas y cinco epílogos. |
+
+La Fase 6 integra y corrige esos sistemas. No sustituye el motor narrativo ni reconstruye el juego desde cero.
+
+## Cambios implementados
+
+- Agenda con día, espacios restantes, disponibilidad del encargo, oro, cartas recibidas y misiones. Los accesos a las tres esposas, encargos, colección y cierre permanecen visibles mientras se decide una actividad. Consultar otra esposa no reserva un cuarto espacio ni pierde la actividad en curso. Finalizar queda deshabilitado mientras falta resolverla.
+- Seguimiento de cartas del día y misiones desde el HUD. El contador de cartas indica patrones desbloqueados; el incremento de hoy cuenta **IDs recibidos distintos**, incluidos duplicados, no el número total de copias. La lista muestra nivel y copias disponibles.
+- Recompensas y costes de actividades visibles, incluido el bono de **15 oro al cerrar** por su misión completada. Librería, recompensas, escenas familiares y combates de actividad conservan un HUD compacto.
+- Barras con cero central, tramo rojo y `!` para relaciones negativas, conservando el valor numérico real. El resumen anima el estado anterior hacia el definitivo; cargar no vuelve a aplicar las pérdidas.
+- Colección con oro, nivel, efecto siguiente, requisitos y equipamiento. La vista de edición ahora usa el nivel real. La mano de combate muestra niveles. Movimiento reducido elimina también la elevación de la mejora.
+- Manual interno con fórmula de afinidad, ejemplo, costes y riesgo de curación. Se corrigió una descripción antigua que limitaba visualmente las relaciones a 0–100.
+- Sonidos sintetizados reales para oro, entrenamiento, separación, Orsted, Badigadi y victoria final, además de los existentes para jornada, recompensa, mejora, combate y curación. Tres contextos musicales nuevos: `orsted`, `separation`, `final_victory`.
+- El regalo de Orsted desbloquea los patrones faltantes incluso de esposas separadas. La colección se completa; el filtro de combate mantiene bloqueadas sus técnicas y apoyos. La entrega sigue siendo única.
+- Libro de estudio reducido de **12 a 5 oro**, con stock de cuatro al día. Antes costaba más que sus tres copias sociales comunes compradas por separado.
+- Simulador de campañas con perfiles y semillas, métricas por combate/día, CSV y JSON. Modo de revisión humana aislado con capturas F8.
+
+Las separaciones conservan diálogos propios, expresiones, anillo, salida a caballo dibujada con primitivas pixel art y retratos grises. La de Sylphiette narra expresamente la partida con su hija. No se añadieron imágenes externas ni referencias a archivos de audio ausentes.
+
+## Niveles y economía
+
+Desde nivel `L`: **2 × L copias** y **5 × L × factor de clase** de oro. El factor de clase es 1/2/3/4/5 para básica/intermedia/avanzada/especial/definitiva. Los descuentos de recetas se consumen; ninguna mejora ordinaria es ilimitadamente gratuita.
+
+| Nivel alcanzado | Copias de este paso | Copias acumuladas, con original | Oro del paso, básica | Efecto positivo con base +1 |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 1 original | 1 | 0 | 1 |
+| 2 | 2 | 3 | 5 | 1 |
+| 3 | 4 | 7 | 10 | 2 |
+| 4 | 6 | 13 | 15 | 2 |
+| 5 | 8 | 21 | 20 | 3 |
+| 6 | 10 | 31 | 25 | 3 |
+| 7 | 12 | 43 | 30 | 4 |
+| 8 | 14 | 57 | 35 | 4 |
+| 9 | 16 | 73 | 40 | 5 |
+| 10 | 18 | 91 | 45 | 5 |
+
+Una básica consume **225 oro** en las nueve mejoras; comprar sus 90 duplicados costaría otros 180. Las recompensas y libros reducen las compras necesarias. N10 no pide más copias ni habilita N11. La fórmula social es `baseEffect * (1 + floor((level - 1) / 2))` solamente para componentes positivos definidos; las penalizaciones dependen de la respuesta narrativa.
+
+El saldo inicial es **120**. Las actividades y encargos tienen recompensas específicas en sus datos; una misión completada aporta 15, un capítulo 30 y el entrenamiento evaluado 45. Las victorias ordinarias de días 1–6 aportan 30/40/50/60/70/90. Badigadi entrega el antídoto; no añade la recompensa ordinaria de oro del Día 7.
+
+| Compra | Precio | Límite |
+| --- | ---: | --- |
+| Copia adquirida, por clase | 2 / 4 / 7 / 10 / 14 | 30 por ID y día; no comprar para N10 |
+| Libro de estudio: tres copias sociales | 5 | Cuatro al día; consumir una vez |
+| Material: +4 energía externa | 20 | Tres al día; energía máxima 30 |
+| Preparación: +4 escudo inicial | 30 | Una al día; no se acumula |
+
+La librería de Roxy mantiene sus títulos únicos de 35/50/70 oro, habilidades y recetas. Es distinta del consumible Libro de estudio de la tienda general.
+
+Cada transacción conserva ID/revisión. El simulador comprueba `saldo = 120 + ingresos - gastos`; guardar y cargar no renueva stock ni recompensas. En el CSV, **ingresos excluye los 120 iniciales**. La campaña de especialización de la regresión llega a Bastón y Dar ánimo N10 sin Orsted: 1839 contando el saldo inicial, 1037 restantes. No se exige maximizar las cuarenta cartas.
+
+## Método de simulación
+
+Se ejecutaron **11 estrategias × tres semillas (17, 43, 97): 33 campañas completas**, con **23 382 comprobaciones**. Usan eventos, actividades, compras, cartas y comandos legales, con guardado/carga entre checkpoints. No se asignan niveles, oro o victorias desde fuera del juego. Una derrota obligatoria se registra como bloqueo; no se transforma en victoria. La demostración narrativa de Orsted y las derrotas de entrenamiento conservan sus reglas particulares.
+
+El agente de prueba busca respuestas sociales favorables y usa una política de combate que consulta intenciones, compara daño/escudo/curación y respeta acciones, recursos y recargas. En cada encuentro reinicia el generador con la semilla de la campaña. Esto hace comparables los perfiles, pero **no simula el aprendizaje ni los errores de un jugador**. Las tres semillas son una muestra pequeña; 3/3 no es una probabilidad garantizada de victoria.
+
+Estas campañas eligen **una compañera** preferida para el jefe, si está disponible. La ruta familiar lleva a Roxy aunque conserve las tres esposas. La matriz separada de 576 batallas cubre las ocho composiciones posibles. La repetición adicional de `balanced`, semilla 17, produjo **JSON de métricas idéntico** al de la corrida principal; esa repetición no se suma como otra campaña distinta.
+
+Resultados completos: [33 campañas y métricas en CSV](BALANCE_FASE_6.csv). El JSON generado localmente incluye niveles por ID, visitas, relaciones por día, daños reales, curación, escudo y equipo de cada combate.
+
+### Recursos y finales (tres semillas por fila)
+
+| Estrategia | Ingresos / gasto | Saldo | IDs / duplicados restantes | Niveles mejorados | Separaciones D6 → final | Final |
+| --- | ---: | ---: | ---: | --- | ---: | --- |
+| Equilibrada | 1757 / 754 | 1123 | 40 / 50 | 4 en N6; 2 en N10 | 0 → 0 | Familia unida |
+| Tres con Eris | 2100 / 746 | 1474 | 40 / 62 | 4 en N6; 2 en N10 | 2 → 2 | Eris |
+| Tres con Roxy | 1575 / 714 | 981 | 34 / 37 | 4 en N6 | 2 → 2 | Roxy |
+| Tres con Sylphiette | 1792 / 782 | 1130 | 34 / 52 | 4 en N6 | 2 → 2 | Sylphiette |
+| Priorizar oro | 2671 / 0 | 2791 | 34 / 112 | Ninguno (N1) | 2 → 2 | Eris |
+| Priorizar mejoras | 1757 / 788 | 1089 | 40 / 64 | 4 en N10 | 0 → 0 | Familia unida |
+| Sin Orsted | 1659 / 754 | 1025 | 36 / 41 | 4 en N6 | 0 → 0 | Familia unida |
+| Cañón N10 de Orsted | 1757 / 754 | 1123 | 40 / 50 | 4 en N6; 2 en N10 | 0 → 0 | Familia unida |
+| Perder una antes del final | 1674 / 742 | 1052 | 35 / 44 | 4 en N6 | 1 → 2 | Roxy |
+| Perder dos | 1390 / 714 | 796 | 34 / 30 | 4 en N6 | 2 → 2 | Roxy |
+| Perder tres | 1075 / 782 | 413 | 33 / 23 | 4 en N6 | 3 → 3 | Rudy solo |
+
+Los N10 gratuitos de Orsted están incluidos en la columna de niveles. Los duplicados son el inventario restante después de las mejoras, no las copias acumuladas recibidas.
+
+### Badigadi (rango observado entre las tres semillas)
+
+| Estrategia | Victorias | Turnos | PV restantes | Daño/turno | Mayor daño base de carta disponible | Curación real / escudo generado | Cartas que pueden curar |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Equilibrada | 3/3 | 19 | 25–29 | 52.63 | 26 | 0 / 35–46 | 2 |
+| Tres con Eris | 3/3 | 12 | 30 | 83.33 | 26 | 0 / 27–32 | 1 |
+| Tres con Roxy | 3/3 | 19 | 25–30 | 52.63 | 26 | 0 / 35–55 | 1 |
+| Tres con Sylphiette | 3/3 | 28–31 | 27–29 | 32.26–35.71 | 26 | 0 / 124–141 | 2 |
+| Priorizar oro | 3/3 | 13 | 27–30 | 76.92 | 15 | 0 / 24–33 | 1 |
+| Priorizar mejoras | 3/3 | 21 | 21–30 | 47.62 | 20 | 0 / 33–43 | 2 |
+| Sin Orsted | 3/3 | 19 | 25–29 | 52.63 | 26 | 0 / 35–46 | 2 |
+| Cañón N10 de Orsted | 3/3 | 14–15 | 21–24 | 66.67–71.43 | 250 | 0 / 32–42 | 2 |
+| Perder una antes del final | 3/3 | 19 | 25–30 | 52.63 | 26 | 0 / 35–55 | 1 |
+| Perder dos | 3/3 | 19 | 25–30 | 52.63 | 26 | 0 / 35–55 | 1 |
+| Perder tres | 3/3 | 44–48 | 18–25 | 20.83–22.73 | 26 | 0 / 116–143 | 1 |
+
+Daño/turno usa PV enemigos realmente perdidos. El máximo de carta es su efecto base a ese nivel, antes de defensa/debilidad; no es una suma de ataques ni garantiza ese impacto. Curación real y escudo son acumulados del combate. Las cartas curativas se cuentan en la colección utilizable; no necesariamente se equiparon. La política no necesitó curarse en varias rutas; la curación y el riesgo se ejercitan además en las pruebas de combate.
+
+### Amor/confianza al terminar
+
+| Estrategia | Sylphiette | Roxy | Eris |
+| --- | ---: | ---: | ---: |
+| Equilibrada | 99 / 100 | 100 / 100 | 96 / 97 |
+| Tres con Eris | -49 / -44 | -34 / -31 | 100 / 100 |
+| Tres con Roxy | -49 / -44 | 100 / 100 | -46 / -46 |
+| Tres con Sylphiette | 100 / 100 | -34 / -31 | -46 / -46 |
+| Priorizar oro | -49 / -44 | -34 / -31 | 100 / 100 |
+| Priorizar mejoras | 99 / 100 | 100 / 100 | 96 / 97 |
+| Sin Orsted | 99 / 100 | 100 / 100 | 100 / 100 |
+| Cañón N10 de Orsted | 99 / 100 | 100 / 100 | 96 / 97 |
+| Perder una antes del final | 100 / 100 | 100 / 100 | -46 / -46 |
+| Perder dos | -32 / -29 | 100 / 100 | -32 / -32 |
+| Perder tres | -32 / -29 | -57 / -55 | -32 / -32 |
+
+Los tres valores finales fueron iguales entre semillas en cada perfil. El estado matrimonial se consulta por separado; una puntuación alta no anula una separación explícita.
+
+## Interpretación del balance
+
+La atención equilibrada consigue familia unida con y sin Orsted. La atención exclusiva alcanza cada final individual, a costa de dos matrimonios. Buscar oro mediante monstruos deja el mayor saldo, pero pierde dos apoyos y no obtiene mejoras: no domina simultáneamente economía, familia y colección.
+
+La ruta `upgrades` compra y mejora Bastón y Dar ánimo hasta N10; además cumple la condición de Orsted y recibe dos máximos gratuitos de utilidad. No deben atribuirse esos cuatro N10 al gasto ordinario. `with_orsted` escoge Cañón de agua N10 y Dar ánimo N10, de modo que el regalo aporta una mejora de combate mucho más visible. `balanced` recibe otros máximos gratuitos; un N10 de utilidad no equivale a 250 de daño.
+
+`lose_one` llega al cierre del Día 6 con una separación. Las conversaciones finales resuelven las dos relaciones restantes mediante la elección explícita de Roxy; termina con dos separaciones. Esto responde al catálogo de **exactamente cinco finales**: no existe epílogo con dos esposas. Los valores altos de Sylphiette en esa fila no reactivan el matrimonio terminado.
+
+Sin compañeras, la política necesita 44–48 turnos contra Badigadi, frente a 19 con Roxy en las rutas equilibradas. Su vida sigue siendo 1000. No se detectaron bloqueos, saldos negativos, niveles superiores a diez ni duplicación de entregas en estas rutas. El nivel 1 con Eris puede vencer, pero ello no demuestra que cualquier mazo inicial o una estrategia sin defensa resulte viable.
+
+La matriz independiente de combate ejecutó **576 batallas**: niveles 1/5/10, ocho equipos, afinidades 20/50/90 y ocho semillas. Resultados: **186/192 victorias a N1**, **192/192 a N5** y **192/192 a N10**. Las seis derrotas de N1 son resultados reales, no fallos ocultados. Las medias de turnos por celda van de 7 a 71,63 en N1, 5,25 a 22,25 en N5 y 4,13 a 10,88 en N10. Estas son configuraciones de combate preparadas; no prueban que toda esa colección sea obtenible al mismo tiempo en una campaña.
+
+## Relaciones y combate
+
+Cada esposa empieza en **50/50**; el intervalo es **−100 a 100**. Ganancias reales de todas las fuentes comparten **+10 por estadística y día**. Las pérdidas no consumen ni restauran ese margen. Dos valores de al menos 75 añaden una pequeña bonificación a ganancias ordinarias de dos o más; un valor negativo reduce las ganancias ordinarias. Reconciliar mantiene una vía de recuperación, limitada por el mismo presupuesto. Cero visitas implica **−20/−20** una sola vez; las advertencias y decisiones justifican las separaciones.
+
+```lua
+local affinity = (love + trust) / 2
+local multiplier = math.max(0, math.min(100, affinity)) / 100
+local damage = math.floor(baseDamage * multiplier + 0.5)
+```
+
+Especiales máximos: Sylphiette 90, Eris 150, Roxy 110; ataques normales menores, costes, recargas y usos acotados. Las separadas no actúan. Curación de Sylphiette: 40% desde 90, 30% desde 80, 20% desde 50 y 10% desde 25; por debajo de 25, la maldición causa 40% de daño a Rudy con confirmación previa. Se prueban 24,99 / 25 / 49 / 50 / 79 / 80 / 89 / 90 / 100.
+
+Los ataques básicos empiezan en 1–3. Bastón llega a 20, Proyectil de agua a 55 y Cañón de agua a 250. La definitiva desde N7 requiere 12 de energía, 6 PV y admite un uso. La curación tiene límites; el escudo caduca. Las fases, debilidades, intenciones y acciones de apoyo siguen siendo necesarias aunque suba el nivel. La pantalla distingue daño base, bloqueo y PV realmente perdidos.
+
+## Pruebas y revisión visual
+
+La [verificación consolidada](VERIFICACION.md) detalla la regresión ejecutada, campañas, matriz de combate, guardado y recorrido gráfico. La prueba nueva de integración verifica HUD persistente, consulta sin consumo extra, estado negativo, guardado/carga, resumen, 16 actividades, restricciones de Orsted, libro acotado, audio real y legibilidad de la fórmula: **323 comprobaciones y nueve capturas** en su última ejecución focalizada.
+
+Se inspeccionaron imágenes producidas por el renderizador real: [agenda](../tests/artifacts/phase6-agenda.png), [actividad](../tests/artifacts/phase6-activity-hud.png), [conflicto](../tests/artifacts/phase6-negative-affinity.png), [resumen](../tests/artifacts/phase6-day-report.png), [colección](../tests/artifacts/phase6-collection.png), [mejoras](../tests/artifacts/phase6-upgrades-state.png), [misiones](../tests/artifacts/phase6-missions.png), [anillo](../tests/artifacts/family-ring-eris.png), [partida de Sylphiette](../tests/artifacts/family-horse-sylphiette.png), [retrato gris](../tests/artifacts/family-gray-character.png), [fase de ataques múltiples](../tests/artifacts/war-phase-six_arms.png), [habilidades](../tests/artifacts/war-roxy-skills.png), [victoria](../tests/artifacts/war-boss-victory.png), [devolución](../tests/artifacts/finale-return-cards.png) y [epílogo familiar](../tests/artifacts/finale-epilogue-family_united.png). Son capturas de pruebas; algunas preparan estados específicos y no representan una partida humana continua. Se generan localmente y se excluyen de Git.
+
+Los 11 efectos solicitados producen PCM no silencioso y acotado, y crean fuentes reales de LÖVE. El manifiesto contiene **20 contextos musicales sintetizados**. No son grabaciones ni una banda sonora comercial. La escucha humana de mezcla, volumen y fatiga sigue pendiente.
+
+## Límites y trabajo pendiente
+
+- **No se completó una partida manual de principio a fin.** Sí se ejecutaron campañas automatizadas y el recorrido de pantallas reales. La herramienta `node_repl` no estaba disponible. La [habilidad computer-use](C:/Users/gegdg/.codex/plugins/cache/openai-bundled/computer-use/26.1111.21308/skills/computer-use/SKILL.md) requiere leer su [guía](C:/Users/gegdg/.codex/plugins/cache/openai-bundled/computer-use/26.1111.21308/docs/guidance.md), que indica: “Use `node_repl` JavaScript for all Computer Use actions.” No se sustituyó ese control por automatización de ventanas desde PowerShell.
+- Falta validar con jugadores la dificultad percibida, el tiempo de lectura, la fatiga de sonido y la comodidad con teclado/ratón. Los resultados del agente de prueba no resuelven estas preguntas.
+- La presentación de partida a caballo es una animación sencilla con primitivas y sprites existentes. No hay doblaje grabado ni ilustraciones nuevas.
+- El precio del libro era una compra dominada y fue corregido. No se detectaron actividades inútiles ni recursos infinitos en la cobertura ejecutada; eso no equivale a una demostración exhaustiva de todas las secuencias posibles.
+
+## Ejecución y reproducción
+
+```powershell
+./ejecutar.ps1                     # Juego normal, guardado del jugador
+./probar.ps1                       # Suite general en LÖVE 11.5
+
+# Las 33 estrategias; no modifica la campaña del jugador.
+$env:DATESIM_TEST_GROUP=$null
+$env:DATESIM_TEST_MODULE='seven_day_balance'
+$env:DATESIM_BALANCE_PROFILE=$null
+$env:DATESIM_BALANCE_SEED=$null
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+
+# Reproducir una de las campañas:
+$env:DATESIM_BALANCE_PROFILE='balanced'
+$env:DATESIM_BALANCE_SEED='17'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+
+# Dejar el entorno listo para la suite general:
+$env:DATESIM_TEST_MODULE=$null
+$env:DATESIM_TEST_GROUP=$null
+$env:DATESIM_BALANCE_PROFILE=$null
+$env:DATESIM_BALANCE_SEED=$null
+
+./revisar.ps1                      # Partida humana aislada; F8 guarda evidencia
+```
+
+El modo `--qa-campaign` usa `cartas_del_destino_phase6_manual`, empieza en el menú y no salta checkpoints ni entrega recursos. F8 escribe PNG 640×360 y JSON con pantalla/checkpoint en `tests/artifacts/manual-...`. Estos archivos registran lo visto; no certifican por sí solos una partida completa. Para cerrar la revisión pendiente, jugar desde el sueño hasta un epílogo y registrar actividades, encargo, mejoras, defensas, curación, emisario, antídoto y devolución. Usar recorridos adicionales para Orsted y las separaciones incompatibles con esa primera ruta.
+
+## Archivos de extensión
+
+| Archivo | Responsabilidad |
+| --- | --- |
+| `src/ui/daily_hud.lua`, `src/screens/daily_status.lua` | Estado diario y consulta de recompensas/misiones |
+| `src/screens/agenda.lua`, `day_report.lua` | Actividades, consultas, costes y resumen animado |
+| `src/ui/relationship_bars.lua` | Valores negativos y animación de cambios reales |
+| `src/data/economy.lua`, `card_progression.lua`, `family_activities.lua` | Precios, curvas, recompensas y actividades |
+| `src/data/audio.lua`, `src/systems/audio.lua` | Contextos, señales y síntesis original |
+| `tests/seven_day_balance.lua`, `campaign.lua`, `campaign_metrics.lua` | Perfiles, ejecución legal y métricas reproducibles |
+| `tests/integration_final.lua` | Integración visual, persistencia y audio |
+| `tests/manual_campaign.lua`, `revisar.ps1` | Preparación de la revisión humana aislada |
+
+Registros principales: `tests/artifacts/phase6-full.log`, `phase6-balance-final.log`, `phase6-reproducibility.log` y `phase6-integration.log`. Los módulos, reglas de datos y fórmulas se documentan también en [SISTEMAS](SISTEMAS.md), [MANUAL](MANUAL.md), [Fase 2](FASE_2_PROGRESION.md), [Fase 4](FASE_4_COMBATE.md) y [Fase 5](FASE_5_CIERRE.md).
+````
+
 ## docs/GUARDADO.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/GUARDADO.md`
@@ -1424,6 +1770,8 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
+
+La Fase 6 conserva el esquema v8. Sus contadores, barras y vistas derivan del estado existente; no generan otra fuente de verdad. El ajuste del precio del libro afecta compras futuras, sin rehacer recibos antiguos. El modo `--qa-campaign` usa la identidad separada `cartas_del_destino_phase6_manual`; F8 escribe evidencias en `tests/artifacts/` sin tocar el guardado normal.
 
 ## Estado persistido
 
@@ -1572,6 +1920,8 @@ En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibi�
 
 ## Organizar la jornada
 
+La cabecera de la agenda muestra día y oro; la franja inferior muestra espacios libres, encargo, cartas y misiones. **Cartas** abre los patrones recibidos hoy y sus copias disponibles; **Misiones** muestra objetivo, promesas y entregas pendientes. El incremento de cartas cuenta tipos recibidos, incluidos duplicados. Los tres personajes y la colección siguen accesibles mientras resuelves una actividad: consultar otra esposa permite leer sus opciones sin consumir otro espacio; **Volver a la actividad** retoma la decisión pendiente.
+
 Dispones de tres actividades libres al día. **Elegir actividad** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
 
 En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades y entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. **Ayudar hoy** muestra una advertencia: gasta una interacción, sin visita matrimonial, para recibir la recompensa hoy. El día 7 solo se aceptan encargos con ayuda inmediata. Una carta ya adquirida entrega copias para mejorarla.
@@ -1592,6 +1942,8 @@ Abre **M → Mejorar**. Selecciona una carta para ver imagen, nivel, efectos act
 
 La **Tienda** vende copias de cartas que ya tienes, libros (+3 copias sociales al usarlos), materiales (+4 energía externa, máximo 30) y preparación (+4 escudo al comenzar la siguiente batalla). Las existencias se renuevan al cambiar de día. Actividades, encargos, misiones, entrenamientos y combates entregan oro. Elegir algunas cartas para especializar es suficiente; no necesitas mejorar las cuarenta.
 
+El Libro de estudio cuesta **5 oro**, con un máximo de cuatro compras por día. Es un consumible diferente de los títulos únicos de la librería de Roxy. Cada actividad completada también entrega **15 oro al cerrar** por su misión; la agenda anuncia ese pago diferido. La colección y **MEJORAR CARTAS** muestran si la carta está desbloqueada y equipada, el efecto actual/siguiente y ambos requisitos. Movimiento reducido muestra el resultado estático de la mejora.
+
 **¡CARTA REPETIDA!** indica cuántas copias se añadieron al inventario. Las mejoras sociales aumentan solo las bonificaciones propias de cada carta: Escuchar sigue dando confianza y Coqueteo sutil sigue dando amor. Las penalizaciones dependen de la respuesta y la situación. Las técnicas de combate tienen curvas distintas; las más potentes también imponen costes y límites de uso. [Tabla completa de costes](FASE_2_PROGRESION.md).
 
 ## Elegir una respuesta
@@ -1607,6 +1959,8 @@ Nanahoshi muestra **Confianza e Interés** durante el tutorial y las investigaci
 ## Cuidar los matrimonios
 
 Las tres relaciones comienzan con 50 de amor y confianza y admiten valores de −100 a 100. Roxy valora cercanía y respeto intelectual; Sylphiette, responsabilidad y apoyo familiar; Eris, igualdad y confianza en su capacidad. Las decisiones, promesas y conflictos quedan en el diario; repetir acciones no borra lo ocurrido. La afinidad alta facilita pequeñas bonificaciones; la negativa reduce ganancias ordinarias, pero permite reconciliación.
+
+La marca central de cada barra es cero. El tramo rojo hacia la izquierda y el indicador **!** señalan conflicto; el número conserva su signo. El resumen muestra las visitas, las pérdidas por abandono y los cambios reales mediante barras animadas. Releerlo o cargar no vuelve a aplicar sus consecuencias.
 
 El abandono reiterado puede provocar una separación a −30 o menos después de advertencias anteriores; una decisión crítica también puede romper el matrimonio. La esposa devuelve el anillo y se marcha (Sylphiette con su hija). Su retrato queda gris, sus actividades se bloquean y no podrá acompañarte ni conceder nuevas habilidades matrimoniales. Guardar, cargar y recuperar la voz no la hacen regresar. [Detalle de las reglas](FASE_3_FAMILIA.md).
 
@@ -1635,6 +1989,8 @@ Rudy tiene 30 PV y tres acciones por turno. Sus ataques físicos iniciales no co
 Defensa y esquiva no necesitan cartas. El escudo absorbe antes que la vida y caduca al comenzar el siguiente turno. Los fragmentos recuperados permiten usar energía externa para los hechizos de agua y tierra: el indicador natural continúa bloqueado hasta la cura. Sylphiette cura/protege, Roxy analiza/conjura y Eris golpea/interrumpe. Cada compañera tiene una acción propia por turno; sus ataques escalan con el promedio de amor y confianza. Antes de comenzar se muestran potencia, costes, recargas y usos. Las separadas no participan. Con afinidad menor de 25, la curación de Sylphiette exige confirmar el riesgo: la interferencia causa daño del 40% de los PV máximos y puede derrotar a Rudy.
 
 Badigadi tiene 1000 PV en el Día 7. A 750 entra en la fase de seis brazos; a 350 refuerza su resistencia, que el agua, análisis y especiales combinados ayudan a superar. Cuando llega a cero PV, el sello aún protege el antídoto. Usa **Romper sello [B]** dos veces, una acción por anclaje. Badigadi acepta su derrota y sigue vivo. Perder permite reintentar o preparar el mazo; no es un final adicional.
+
+En **Manual → Reglas → Turnos y compañeras** puedes consultar la fórmula: `afinidad = (amor + confianza) / 2`; `multiplicador = max(0, min(100, afinidad)) / 100`; `daño = floor(base × multiplicador + 0.5)`. El especial de Eris, por ejemplo, hace 75 antes de defensas con 50/50 y llega a 150 con 100/100. No todos sus ataques son especiales: cada habilidad muestra costes, recarga, potencia y usos. Las barras de vida y el historial muestran el daño y la curación realmente aplicados.
 
 ## Entrenar con Eris
 
@@ -1840,7 +2196,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 7. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 8. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
 
@@ -1851,6 +2207,14 @@ La campaña usa `continuity="rudy_curse"` y esquema de guardado 7. `src/data/cha
 `Daily` centraliza los tres espacios, visitas repetibles, reservas pendientes, encargo independiente y cierre único. `src/data/activities.lua` declara actividades y encargos; `src/data/day_cycle.lua` conecta las siete agendas sin reemplazar las escenas existentes. Las escenas tienen `interactionRule="narrative"`, coste cero e IDs distintos de las actividades.
 
 La jornada puede terminar con espacios libres una vez resuelta su historia. Registra atención, entrega encargos vencidos, actualiza misiones y matrimonios, guarda y presenta el resumen antes de avanzar. El Día 7 fija la atención antes de las conversaciones finales. `daily_history` permite consultar ayer; `events_by_day` conserva los identificadores de cada jornada. [Esquema, reglas y extensión](FASE_1_ACTIVIDADES.md).
+
+## Presentación e instrumentación de Fase 6
+
+`src/ui/daily_hud.lua` deriva los contadores del estado canónico; no conserva otro saldo, presupuesto ni copia de visitas. `daily_status.lua` consulta cartas recibidas, objetivo narrativo, promesas y encargos. El HUD completo se usa en la agenda y el compacto durante librería, combates de actividad y presentaciones. Las pestañas pueden consultarse durante una reserva; sus acciones de inicio quedan deshabilitadas hasta resolverla.
+
+`relationship_bars.lua` mantiene números reales, cero central y conflicto rojo. El resumen construye barras con `report.before` y anima hacia `report.after`; no invoca eventos ni modifica afinidad. `App:update` observa cambios positivos de oro para reproducir una señal una vez y reinicia su referencia al cambiar de sesión.
+
+`tests/seven_day_balance.lua` define once políticas y tres semillas; `tests/campaign.lua` ejecuta las transiciones reales y `campaign_metrics.lua` registra recursos, niveles, relaciones, visitas y combates. No se introducen efectos de simulación en los módulos del juego. `--qa-campaign` usa una identidad separada para revisión humana normal; F8 captura el canvas y un registro del checkpoint. [Resultados, límites y comandos](FASE_6_INFORME.md).
 
 ## Maldición y comunicación
 
@@ -1880,13 +2244,13 @@ Las líneas admiten `delivery`: `dream`, `thought`, `note`, `enchanted`, `silenc
 | `mission`, `enemyDefeated`, `familyEvent` | Registra acontecimientos de campaña. |
 | `batch` | Aplica varios efectos con la misma clave de acontecimiento. |
 
-La carta se adquiere antes de animarse. `rewardQueue` contiene únicamente cartas recién obtenidas; cerrar la presentación consume la cola. Guardar durante la entrega conserva su página, colección y evento, sin concederlos otra vez.
+La carta se adquiere antes de animarse. `rewardQueue` conserva entregas nuevas y duplicados, con cantidades y presentación diferenciadas; cerrar la presentación consume la cola. Guardar durante la entrega conserva su página, colección y evento, sin concederlos otra vez. El evento `orsted_collection_gift` permite archivar todas las cartas de la colección, incluidas exclusivas de matrimonios separados; el filtro de uso y apoyos permanece independiente.
 
 ## Relaciones y finales
 
 `Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 50/50. `love` y `trust` se limitan a −100–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
 
-Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión narrativa explícita. El diario registra los cambios efectivos después de aplicar los límites.
+Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión crítica o deterioro grave por abandono con advertencia e historial previos. El diario registra los cambios efectivos después de aplicar los límites.
 
 Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolution`, compromiso explícito y ausencia de conflictos o incumplimientos sin reparar. La familia unida requiere además 75/75 en cada una. `Relationships.ending` devuelve `family_united`, `roxy`, `eris`, `sylphiette` o `solitary`. Si quedan varias relaciones viables sin cumplir la unión, devuelve `resolution_required`: el día siete abre la conversación correspondiente. No existe un sexto final ni selección automática por puntuación.
 
@@ -1910,7 +2274,29 @@ La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERI
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación del cierre narrativo — Fase 5
+# Verificación de integración y balance — Fase 6
+
+Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT** y guardados aislados. La suite general terminó en una ejecución completa: **44 545 comprobaciones**, `ALL TESTS PASSED`, salida 0. Después se verificó una ampliación de la prueba visual del manual: **323 comprobaciones focalizadas**, sin sumar de nuevo las 322 que ya estaban en la suite.
+
+| Ejecución | Resultado |
+| --- | --- |
+| Suite general | 44 545 comprobaciones; 40 campañas completas y cinco finales con/sin Orsted |
+| Recorrido gráfico, incluido en la suite | 1462 comprobaciones; 825 pasos de pantalla |
+| Matriz de Badigadi, incluida en la suite | 1200 comprobaciones; 576 batallas, ocho equipos; 570 victorias y seis derrotas reales a N1 |
+| Audio/opciones, incluido en la suite | 116 comprobaciones; 20 contextos musicales |
+| Integración de Fase 6, última ejecución focalizada | 323 comprobaciones; nueve capturas; HUD, relaciones negativas, persistencia, Orsted, libro y PCM real |
+| Balance adicional de siete días | 23 382 comprobaciones; 11 perfiles × tres semillas = 33 campañas; todas llegan a epílogo |
+| Reproducción adicional | `balanced`, semilla 17: métricas JSON idénticas a la campaña principal; 737 comprobaciones, excluidas del total de campañas distintas |
+
+Las filas de recorrido gráfico, matriz y audio desglosan la suite; **no se suman de nuevo**. El código de juego de la suite general coincide con el entregado salvo una corrección textual posterior del rango de relaciones en el manual. La ejecución focalizada posterior comprueba su fórmula visible y añade una captura. No se modificó después la lógica de economía, familia o combate.
+
+Los resultados y su método están en el [informe de Fase 6](FASE_6_INFORME.md); los recursos, niveles, relaciones, daño, curación, escudo y finales constan en el [CSV de 33 campañas](BALANCE_FASE_6.csv). Las semillas son 17, 43 y 97. Las campañas usan comandos legales y guardado/carga; no equiparan la actuación del agente de prueba a la de un jugador humano.
+
+Registros locales: `tests/artifacts/phase6-full.log`, `phase6-balance-final.log`, `phase6-reproducibility.log`, `phase6-integration.log`. Las capturas reales de agenda, actividades, relaciones, colección, separaciones, combate, victoria y desenlaces se inspeccionaron visualmente. **No se completó una partida manual continua ni una revisión auditiva humana**; la herramienta de control de ventanas requerida no estaba disponible. `./revisar.ps1` prepara esa revisión pendiente en una identidad independiente, con captura F8.
+
+Se conservan los PNG/ASE originales. La corrección del libro elimina una compra dominada; el regalo de Orsted ahora completa la colección incluso con separaciones sin devolver habilidades. Las pruebas de guardado, doble gasto y doble recompensa siguen pasando. Los avisos de recursos ausentes en la suite pertenecen a fixtures deliberadas de fallos, no a nuevas referencias de producción sin archivo.
+
+## Registro anterior — Fase 5
 
 Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados: **44 192 comprobaciones**, sumando una ejecución válida de cada módulo y sin contar repeticiones. Los grupos `regression` y `campaign` finalizaron con **`ALL TESTS PASSED`, salida 0**. La verificación se realizó en esos dos grupos; no se presenta como una sola ejecución monolítica.
 
@@ -2268,6 +2654,10 @@ function love.load(args)
     love.keyboard.setKeyRepeat(false)
     love.math.setRandomSeed(os.time())
     for _, value in ipairs(args or {}) do
+        if value == "--qa-campaign" then
+            app=require("tests.manual_campaign").new(17)
+            return
+        end
         if value == "--qa-dialogue" then
             app=require("tests.manual_review").new()
             return
@@ -2289,6 +2679,7 @@ function love.mousepressed(x,y,button)
     if app then app:mousepressed(x,y,button) end
 end
 function love.keypressed(key,scancode,isrepeat)
+    if app and app.qaCapture and key=="f8" and not isrepeat then app:qaCapture();return end
     if app and app.qaNext and key=="f6" and not isrepeat then app:qaNext(); return end
     if app and not isrepeat then app:keypressed(key) end
 end
@@ -2331,6 +2722,8 @@ Juego narrativo de cartas en español para **LÖVE 11.5 / LuaJIT**. En esta cont
 No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, canvas lógico de 640 × 360 y filtro `nearest`. El menú ofrece campaña, continuación, práctica social y de combate, combate libre, manual y opciones.
 
 ## Campaña completa
+
+La **Fase 6** integra el HUD de actividades, seguimiento de misiones y cartas, relaciones negativas visibles, resumen animado, información de mejoras y audio sintetizado. Incluye simulación reproducible de **33 campañas**, además de la regresión de 40 rutas y 576 batallas de Badigadi. Los cinco finales se alcanzaron; la partida manual completa y la revisión auditiva quedan pendientes. [Informe, costes, resultados y límites](docs/FASE_6_INFORME.md) · [CSV de balance](docs/BALANCE_FASE_6.csv).
 
 La **Fase 5** completa la investigación del emisario, la revelación del antídoto y el regreso a Nanahoshi. Entrenar con Eris en cada uno de los días 1–5 abre la demostración controlada de Orsted y dos mejoras gratuitas elegidas por el jugador. Los cinco finales tienen escenas propias y también son alcanzables sin su ayuda. [Eventos, reglas y persistencia](docs/FASE_5_CIERRE.md).
 
@@ -2405,7 +2798,24 @@ La continuidad `rudy_curse` usa **versión 8**, en `%APPDATA%\LOVE\cartas_del_de
 
 La suite usa la identidad aislada `cartas_del_destino_v8_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
+Para revisar una partida humana sin tocar tu guardado habitual, ejecuta `./revisar.ps1`. Abre una campaña normal con identidad separada; **F8** guarda una captura y su checkpoint. Para ejecutar los once perfiles de balance usa `DATESIM_TEST_MODULE=seven_day_balance`; el [informe](docs/FASE_6_INFORME.md#ejecución-y-reproducción) contiene los comandos completos y la selección de semilla.
+
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.
+````
+
+## revisar.ps1
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/revisar.ps1`
+
+````powershell
+# Campaña manual aislada. F8 guarda captura y checkpoint en tests/artifacts/.
+$ErrorActionPreference = 'Stop'
+Push-Location $PSScriptRoot
+try {
+    & 'C:\Program Files\LOVE\love.exe' . --qa-campaign
+} finally {
+    Pop-Location
+}
 ````
 
 ## src/app.lua
@@ -2662,6 +3072,11 @@ function App:combatSafeExit()
 end
 
 function App:update(dt)
+    if self.session~=self.audioSession then self.audioSession=self.session;self.audioGold=self.session and self.session.gold
+    elseif self.session then
+        if self.audioGold and self.session.gold>self.audioGold then self.audio:effect("gold") end
+        self.audioGold=self.session.gold
+    end
     self.toastTime=math.max(0,self.toastTime-dt)
     self.audio:update(dt)
     self.manager:update(dt)
@@ -2974,6 +3389,9 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 return {
     fadeDuration=.45,
     music={
+        orsted={synth={notes={38,45,50,57,38,44,51,62},beat=.44}},
+        separation={synth={notes={57,52,55,50,48,52,47,45},beat=.9}},
+        final_victory={loop=false,synth={notes={60,64,67,72,67,72,76,79,84},beat=.3}},
         dream={synth={notes={48,54,55,61,47,53,60,54},beat=.95}},
         home={synth={notes={60,64,67,64,62,65,69,65},beat=.8}},
         boss={synth={notes={40,47,52,53,40,46,51,58},beat=.2}},
@@ -2993,6 +3411,12 @@ return {
         defeat={loop=false,synth={notes={57,55,52,48,45},beat=.42}},
     },
     effects={
+        gold={notes={84,91,88},duration=.18,gain=.12},
+        training={notes={55,62,67},duration=.22,gain=.16},
+        separation={notes={64,59,52,45},duration=.65,gain=.12},
+        orsted={notes={38,50,57,62},duration=.55,gain=.17},
+        badigadi={notes={40,47,52,59,64},duration=.5,gain=.18},
+        final_victory={notes={60,67,72,76,79,84},duration=.75,gain=.18},
         upgrade={notes={60,67,72,79,84,88},duration=.65,gain=.18},
         paper={notes={89,82,86,74},duration=.15,gain=.09},
         envelope_open={notes={74,78,82},duration=.22,gain=.1},
@@ -4909,7 +5333,7 @@ return {startingGold=120,maxGold=1000000,copyStock=30,
     rewards={activity=12,mission=15,chapter=30,training=45,combat={30,40,50,60,70,90,0},cliff=45,zanoba=40},
     activityCopies={sylphiette="listen",roxy="be_honest",eris="encourage"},
     items={
-        study_book={name="Libro de estudio",price=12,stock=4,description="Úsalo en una carta social adquirida: +3 copias.",copies=3},
+        study_book={name="Libro de estudio",price=5,stock=4,description="3 copias sociales por 5 oro; cuatro libros al día.",copies=3},
         magic_material={name="Material mágico",price=20,stock=3,description="Usar: +4 energía externa (máx. 30).",energy=4},
         battle_preparation={name="Preparar el próximo combate",price=30,stock=1,description="Empiezas el próximo combate con 4 de escudo; no se acumula.",shield=4},
     },itemOrder={"study_book","magic_material","battle_preparation"}}
@@ -5391,13 +5815,13 @@ return {
         {title="Mejorar cartas hasta nivel 10",text="Abre M, pulsa Mejorar y selecciona una carta. La primera copia desbloquea el nivel 1. Subir desde nivel L consume 2 por L copias y oro: necesitas 91 copias totales para llegar al nivel 10. Las copias repetidas se guardan; tu carta equipada permanece en el mazo.\n\nLa pantalla compara efectos, costes y copias antes de confirmar. El nivel máximo no pide más copias. Espera a terminar el destello y pulsa Continuar antes de otra mejora."},
         {title="Efectos y límite diario",text="Una bonificación social de +1 sube a +2 en nivel 3, +3 en nivel 5, +4 en nivel 7 y +5 en nivel 9. Escuchar solo aumenta confianza; Coqueteo sutil solo amor. Las respuestas inapropiadas conservan las penalizaciones de su situación.\n\nCada esposa puede ganar hasta +10 amor y +10 confianza al día entre cartas, actividades, combates y eventos. Ves el valor realmente disponible. Perder puntos no devuelve capacidad para ganar más ese día."},
         {title="Oro, copias y suministros",text="Actividades, encargos, misiones, entrenamientos y victorias entregan oro. Mejorar abre la Tienda: vende copias de cartas adquiridas, con existencias diarias. Puedes especializar algunas cartas durante los siete días.\n\nLos libros entregan tres copias de una carta social; los materiales aumentan la energía externa hasta 30; preparar un combate concede cuatro de escudo inicial una sola vez. Revisa precios y oro antes de comprar."},
-        {title="Agenda: tres actividades y un encargo",text="Cada día tienes tres espacios libres. Puedes repartirlos entre Sylphiette, Roxy y Eris o repetir la misma esposa. Cada actividad reserva un espacio y luego ofrece una decisión. Cliff y Zanoba comparten un encargo independiente por día; la agenda muestra sus premios y plazos.\n\nLa historia obligatoria no consume espacios. Después del tutorial también hay actividades del Día 1. Finalizar día permite dormir con espacios libres: se pierden, no se acumulan. Cambios de ayer conserva visitas, recompensas y relaciones."},
+        {title="Agenda: tres actividades y un encargo",text="Cada día tienes tres espacios libres. Puedes repartirlos entre Sylphiette, Roxy y Eris o repetir la misma esposa. Cada actividad reserva un espacio y luego ofrece una decisión. Cliff y Zanoba comparten un encargo independiente por día; la agenda muestra sus premios y plazos.\n\nLa historia obligatoria no consume espacios. La actividad abierta conserva día, oro, interacciones, encargo, cartas, misiones y accesos. Consultar otra esposa no reserva un segundo espacio. Después del tutorial también hay actividades del Día 1. Finalizar día permite dormir con espacios libres: se pierden, no se acumulan. Cambios de ayer conserva visitas, recompensas y relaciones."},
         {title="Atención y cierre de la jornada",text="Una esposa visitada recibe hasta +1 confianza al cerrar el día; sin visita pierde 20 de amor y 20 de confianza. La historia obligatoria no sustituye las visitas. La tercera interacción con una esposa incluye su reacción sobre las responsabilidades familiares.\n\nPuedes dormir con espacios libres. El Día 7 cierra el tiempo libre antes de los acuerdos finales. El resumen registra visitas, premios y pérdidas una sola vez. Guardar y cargar conserva las reservas y todos sus efectos."},
-        {title="Amor y confianza persistentes",text="Cada matrimonio comienza con 50 de amor y 50 de confianza; acepta valores de -100 a 100. Con ambos valores al menos en 75, las ganancias ordinarias de 2 o más reciben +1. Si alguno es negativo, se reducen a la mitad. Siempre rige el límite diario de +10 por estadística.\n\nReparar un compromiso permite hasta +8/+8 sin reducción por afinidad negativa. Las decisiones, conflictos y reconciliaciones quedan en el diario. Una relación negativa se puede recuperar antes de una separación definitiva."},
+        {title="Amor y confianza persistentes",text="Cada matrimonio comienza con 50 de amor y 50 de confianza; acepta valores de -100 a 100. La marca central de la barra indica cero: el tramo rojo a la izquierda y ! señalan conflicto; el número real permanece visible. Con ambos valores al menos en 75, las ganancias ordinarias de 2 o más reciben +1. Si alguno es negativo, se reducen a la mitad. Siempre rige el límite diario de +10 por estadística.\n\nReparar un compromiso permite hasta +8/+8 sin reducción por afinidad negativa. Las decisiones, conflictos y reconciliaciones quedan en el diario. Una relación negativa se puede recuperar antes de una separación definitiva."},
         {title="Actividades y responsabilidades",text="Eris ofrece coordinación, práctica física, monstruos y duelos reales. Sylphiette necesita ayuda en el hogar, recados de vuestra hija, Zenith y Lilia. Roxy propone magia, cartas encantadas, libros e investigación. Cada actividad usa un espacio y admite repetición.\n\nPrometer un recado fija un plazo al cierre de mañana (día 7 como máximo). Incumplirlo cuesta -3 amor/-5 confianza; cumplirlo repara el conflicto. Oro y copias disminuyen ligeramente en visitas repetidas. Los hitos de trabajo conjunto desbloquean habilidades."},
         {title="Encargos y librería",text="Cliff y Zanoba comparten una solicitud diaria: entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. Ayudar hoy exige confirmar el gasto de una interacción y no cuenta como visita a una esposa. El día 7 solo admite pedir y ayudar con espacio disponible.\n\nRoxy te acompaña a la librería: cada título cuesta oro y se compra una vez. Los libros desbloquean cartas, conocimientos y recetas. Cada receta reduce un 20% el oro de una mejora, mínimo 1, y se consume; los duplicados siguen siendo necesarios."},
         {title="Separaciones definitivas",text="El abandono puede provocar una separación a -30 o menos, tras ausencias reiteradas y una advertencia de un día anterior. Las decisiones críticas también pueden romper el matrimonio. Una cifra negativa aislada no basta.\n\nLa esposa devuelve el anillo y se marcha; Sylphiette lleva a su hija. El retrato queda gris y se bloquean actividades, nuevas cartas matrimoniales y apoyo en combate. Puedes viajar solo. Guardar, cargar o recuperar la voz no la hacen regresar."},
-        {title="Barras y cambios visibles",text="Sobre el retrato, cada esposa muestra Amor y Confianza con valores de 0 a 100. La reacción aplica el cambio una sola vez; sus números indican cuánto ganaste o perdiste realmente. Las barras se animan durante 0,6 segundos y puedes seguir leyendo.\n\nLos cambios positivos muestran un signo + y los negativos un signo menos. Movimiento reducido conserva números y efectos estáticos. Guardar conserva el valor definitivo: cargar o avanzar no repite puntos ni sonidos."},
+        {title="Barras y cambios visibles",text="Sobre el retrato, cada esposa muestra Amor y Confianza con valores de -100 a 100. La reacción aplica el cambio una sola vez; sus números indican cuánto ganaste o perdiste realmente. Las barras se animan durante 0,6 segundos y puedes seguir leyendo.\n\nLos cambios positivos muestran un signo + y los negativos un signo menos. Movimiento reducido conserva números y efectos estáticos. Guardar conserva el valor definitivo: cargar o avanzar no repite puntos ni sonidos."},
         {title="La curiosidad de Nanahoshi",text="Nanahoshi muestra Confianza e Interés en el tutorial y las investigaciones de los días tres y cuatro. Solo Escuchar, Hablar con honestidad, Dar ánimo, Broma ligera y Coqueteo sutil pueden aumentar su interés según el contexto. Las demás pueden afectar su confianza.\n\nRepetir una carta en la misma conversación no repite la recompensa. Un halago puede sorprenderla o provocar sarcasmo: no la convierte en esposa ni abre otro final. Su afinidad se guarda aparte de los matrimonios."},
         {title="Cinco desenlaces",text="Familia Greyrat unida, Roxy, Eris, Sylphiette o El camino solitario. Se valoran amor, confianza, eventos personales, compromisos y conflictos pendientes. El desenlace familiar exige resolver los problemas de las tres.\n\nSi dos matrimonios siguen siendo viables, las conversaciones del festival resuelven los planes incompatibles de forma explícita. Una respuesta final no borra los siete días anteriores."},
         {title="Colección y obtención",text="Nanahoshi entrega exactamente cinco cartas sociales y cinco físicas durante el tutorial. Misiones, investigaciones y victorias desbloquean nuevas cartas. El paso de los días no concede premios automáticamente.\n\nMagia Compartida, Conjuro Combinado y Espada y Magia requieren los eventos personales y confianza de sus esposas. Los regalos se animan una vez y quedan guardados. Las cartas bloqueadas muestran cómo obtenerlas."},
@@ -5414,7 +5838,7 @@ return {
         {title="Curación con costes y límites",text="Curación básica recupera 5 PV en nivel 1 y 10 en nivel 10: una acción, tres de energía y tres usos. Sylphiette cuesta dos de energía, recarga en dos turnos y tiene tres usos. Nunca superas tus PV máximos.\n\nSegún su afinidad media: 90 o más cura 40%; 80–89 cura 30%; 50–79 cura 20%; 25–49 cura 10%. Por debajo de 25, la maldición interfiere y causa 40% de daño a Rudy. Debes confirmar el riesgo: puede derrotarlo. No disminuye la capacidad profesional de Sylphiette."},
         {title="Dificultad a lo largo de los días",text="PV de referencia por día: 10, 20, 36, 55, 180 y 260. Los guardianes y reflejos tienen variaciones. Día 2 introduce defensa; día 3 golpes preparados; día 4 debilitamiento; días 5 y 6 ataques múltiples y mayor necesidad de apoyo.\n\nDía 6: investigación del emisario y evento de Orsted si entrenaste con Eris cada día del 1 al 5. Día 7: desafío final; puedes vencer incluso viajando solo. Prepara el mazo, consulta las habilidades y observa las intenciones antes de comenzar."},
         {title="Mano, daño y estados",text="Selecciona con clic, 1–3 o flechas; confirma con Jugar o Enter. Inspeccionar no gasta recursos. E termina el turno: descarta la mano, ejecuta la intención visible del enemigo y roba tres cartas. El descarte se baraja si se agota el mazo.\n\nDebilitamiento reduce daño y vulnerabilidad aumenta daño recibido. El historial H explica costes, bloqueo y efectos. La energía externa es independiente de la maldición. Siempre hay defensa y esquiva disponibles."},
-        {title="Turnos y compañeras",text="Rudy tiene tres acciones. Cada compañera presente tiene una acción propia por turno; puedes intercalarlas. Al terminar, actúa el enemigo y se renuevan las acciones. Escudos y esquiva duran hasta ese ataque.\n\nLa afinidad es el promedio de amor y confianza, acotado a 0–100 para calcular daño. Especiales máximos: Sylphiette 90, Eris 150, Roxy 110; tres usos y recarga de tres turnos. Sus ataques normales son menores. Las separadas no participan. T abre habilidades, costes y resultados."},
+        {title="Turnos y compañeras",text="Rudy tiene tres acciones. Cada compañera presente tiene una acción propia por turno; puedes intercalarlas. Al terminar, actúa el enemigo y se renuevan las acciones. Escudos y esquiva duran hasta ese ataque.\n\nAfinidad = (amor + confianza) / 2. Multiplicador = max(0, min(100, afinidad)) / 100. Daño = floor(base x multiplicador + 0.5). Ejemplo: Eris con 50/50 aplica 75 de su especial de 150. Especiales máximos: Sylphiette 90, Eris 150, Roxy 110; tres usos y recarga de tres turnos. Sus ataques normales son menores. Las separadas no participan. T abre habilidades, costes y resultados."},
         {title="Badigadi y el antídoto",requiresReveal=true,text="Fase 1: resiste y ataca. Al bajar a 750 PV usa tres golpes de dos puntos; al llegar a 350, tres de tres y resistencia de seis. El agua, el análisis de Roxy y los ataques combinados permiten aprovechar sus debilidades.\n\nA cero PV empieza la cuarta fase: rompe dos anclajes con B, una acción cada uno. Badigadi acepta la derrota, sigue vivo y entrega el antídoto. Usarlo restaura voz y magia; no repara matrimonios. Puedes ganar sin la prueba de Orsted ni compañeras."},
         {title="Victoria, derrota y guardado",text="La victoria neutraliza la amenaza y entrega su recompensa una sola vez. Derrota permite Reintentar o volver al punto seguro para editar el mazo; no borra las decisiones. La práctica del menú es descartable.\n\nF5 guarda; la campaña también guarda al decidir y cambiar de escena. La campaña usa un guardado con copia de respaldo y conserva sus pistas narrativas. Las campañas de otra continuidad se conservan; empieza una partida nueva para seguir la maldición."},
         {title="Conversaciones y controles",text="Las cartas sociales reproducen la voz encantada de Rudy. Leer en silencio no la utiliza. Los encuentros sociales miden avance, amor y confianza; no infligen daño. P toma un respiro. En una selección social, Esc cancela la carta; sin selección abre la pausa.\n\nJ: diario. M: mazos. H: historial de combate. F11: pantalla completa. Tab y Enter: botones. Opciones permite texto instantáneo, movimiento reducido y volúmenes separados. La música y los efectos son originales sintetizados; no incluyen doblaje grabado."},
@@ -5632,21 +6056,46 @@ local Catalog=require("src.data.activities")
 local Family=require("src.systems.family")
 local Budget=require("src.systems.relationship_budget")
 local Progression=require("src.systems.progression")
+local Hud=require("src.ui.daily_hud")
+local Bars=require("src.ui.relationship_bars")
 local Agenda={}
 function Agenda.new(app)
  local s=Screen.new(app);s.kind="agenda";s.tab="sylphiette";s.page=1;s.provider="cliff"
+ local pending=Daily.ensure(app.session).active_activity
+ if pending and Catalog.byId[pending.id]then s.tab=Catalog.byId[pending.id].character end
+ s.relationshipBars={}
+ for _,id in ipairs({"sylphiette","roxy","eris"})do s.relationshipBars[id]=Bars.new(app.session,id,{reducedMotion=app.options.reducedMotion})end
+ function s:update(dt)for _,b in pairs(self.relationshipBars)do b:sync(app.session);b:update(dt)end end
  local function commit(ok,err)
   if not ok then app:notify(err);return end
   if app:save() then app:resume() end
  end
  function s:draw()
   self:begin();local session=app.session;local d=Daily.ensure(session)
-  app.resources:background("home");self:header("DÍA "..session.day.." / AGENDA · ORO "..session.gold)
+  local active=d.active_activity;local activity=active and Catalog.byId[active.id]
+  app.resources:background(activity and not self.inspect and activity.background or "home")
+  self:header("DÍA "..session.day.." / AGENDA · ORO "..session.gold)
+  Hud.draw(self,app,43)
+  for i,id in ipairs({"sylphiette","roxy","eris","favors"})do
+   self:button(({sylphiette="Sylphiette",roxy="Roxy",eris="Eris",favors="Encargos"})[id],18+(i-1)*120,72,114,25,function()self.tab=id;self.page=1;self.inspect=active~=nil;self.keyboardFocus=nil end,false,self.tab==id)
+  end
+  self:button("Ayer",498,72,124,25,function()app:switch(require("src.screens.day_report").new(app,session.daily_history[tostring(session.day-1)],function()app:resume()end))end,not session.daily_history[tostring(session.day-1)])
+  local function footer()
+   local finalLock=session.day==7 and not d.activities_locked
+   self:button(active and "Volver a la actividad" or finalLock and "Cerrar tiempo libre e ir a la historia" or "Continuar historia",18,311,330,27,function()
+    if active then self.inspect=nil else commit(Progression.continueStory(session))end
+   end,not active and Daily.storyComplete(session))
+   self:button("Finalizar día",358,311,264,27,function()app:endDay()end,active~=nil or not Daily.storyComplete(session))
+   W.panel(18,341,604,17)
+   self:text(active and "Termina la actividad reservada antes de dormir. Puedes consultar los tres personajes." or "Puedes dormir sin agotar los tres espacios. Sin visita: -20 amor y -20 confianza.",24,345,592,P.muted)
+  end
+  footer()
   if self.confirmHelp then
-   W.panel(65,70,510,245)
-   self:text("AYUDAR CONSUME UNA INTERACCIÓN",85,91,470,P.gold)
-   self:text("El encargo se entregará hoy. Gastarás uno de los tres espacios que podrías dedicar a tus esposas. Ayudar a Cliff o Zanoba no cuenta como visita matrimonial.",85,126,470,P.ink)
-   self:text("Sin ninguna visita, cada esposa pierde 20 de amor y 20 de confianza al cerrar el día.",85,190,470,P.danger)
+   self.buttons={}
+   W.panel(65,100,510,206)
+   self:text("AYUDAR CONSUME UNA INTERACCIÓN",85,110,470,P.gold)
+   self:text("El encargo se entregará hoy. Gastarás uno de los tres espacios que podrías dedicar a tus esposas. Ayudar a Cliff o Zanoba no cuenta como visita matrimonial.",85,133,470,P.ink)
+   self:text("Sin ninguna visita, cada esposa pierde 20 de amor y 20 de confianza al cerrar el día.",85,195,470,P.danger)
    self:button("Confirmar: gastar 1 espacio",85,257,300,34,function()
     local request=self.confirmHelp;self.confirmHelp=nil
     if request.instance then commit(Daily.accelerateFavor(session,request.instance))
@@ -5655,83 +6104,71 @@ function Agenda.new(app)
    self:button("Cancelar",400,257,152,34,function()self.confirmHelp=nil end)
    return
   end
-  if d.active_activity then
+  if d.active_activity and not self.inspect then
    local active=d.active_activity;local def=Catalog.byId[active.id]
-   app.resources:background(def.background);W.panel(18,48,604,282)
-   app.resources:portrait(def.character,(active.visit or 1)==3 and "worried" or "happy",42,86,2)
-   self:text(def.title,190,65,410,P.gold)
-   self:text(def.description,190,91,408,P.ink)
-   self:text("Visita "..(active.visit or 1).." de hoy · quedan "..Daily.remaining(session).."/3",190,150,408,P.teal)
-   self:text(def.reward,190,175,408,P.gold)
+   W.panel(18,104,604,200)
+   app.resources:portrait(def.character,(active.visit or 1)==3 and "worried" or "happy",42,164,2)
+   self.relationshipBars[def.character]:draw({x=42,y=164,w=128,h=128})
+   self:text(def.title,190,113,410,P.gold)
+   self:text(def.description,190,133,408,P.ink)
+   self:text("Visita "..(active.visit or 1).." de hoy · quedan "..Daily.remaining(session).."/3",190,167,408,P.teal)
+   self:text(Hud.reward(def),190,183,408,P.gold)
    for i,choice in ipairs(def.choices) do
     local delta=Budget.preview(session,def.character,choice.effects)
     local label=choice.label..(def.battle and "" or " ("..string.format("%+d amor / %+d conf.",delta.love,delta.trust)..")")
-    self:button(label,190,205+(i-1)*42,410,34,function()commit(Daily.resolveActivity(session,choice.id))end)
+    self:button(label,190,225+(i-1)*39,410,32,function()commit(Daily.resolveActivity(session,choice.id))end)
    end
-   if def.books then self:button("Entrar a la librería",190,254,410,34,function()app:switch(require("src.screens.books").new(app))end) end
-   self:text("El espacio ya está reservado. Guardar conserva la actividad y su resultado pendiente.",24,340,592,P.muted)
+   if def.books then self:button("Entrar a la librería",190,264,410,32,function()app:switch(require("src.screens.books").new(app))end) end
    return
   end
-  for i,id in ipairs({"sylphiette","roxy","eris","favors"}) do
-   self:button(({sylphiette="Sylphiette",roxy="Roxy",eris="Eris",favors="Encargos"})[id],18+(i-1)*120,47,114,27,function()self.tab=id;self.page=1;self.keyboardFocus=nil end,false,self.tab==id)
-  end
-  self:button("Ayer",498,47,124,27,function()
-   app:switch(require("src.screens.day_report").new(app,session.daily_history[tostring(session.day-1)],function()app:resume()end))
-  end,not session.daily_history[tostring(session.day-1)])
-  W.panel(18,79,604,28)
-  self:text("Libres: "..Daily.remaining(session).."/3 · Encargo: "..(d.favor_used and "solicitado" or "disponible"),24,88,412,P.gold)
+  W.panel(18,101,604,23)
+  Hud.relationship(self,session,self.tab,24,108,418)
   local list={}
   if self.tab=="favors" then
    for _,def in ipairs(Catalog.favors) do for _,provider in ipairs(def.providers) do if provider==self.provider then list[#list+1]=def end end end
   else for _,def in ipairs(Catalog.list) do if def.character==self.tab then list[#list+1]=def end end end
   local perPage=self.tab=="favors" and 2 or 3;local pages=math.max(1,math.ceil(#list/perPage))
-  self:button("<",450,81,35,25,function()self.page=self.page-1 end,self.page==1)
-  self:text(self.page.."/"..pages,492,90,78,P.ink)
-  self:button(">",582,81,40,25,function()self.page=self.page+1 end,self.page==pages)
+  self:button("<",450,101,35,22,function()self.page=self.page-1 end,self.page==1)
+  self:text(self.page.."/"..pages,492,108,78,P.ink)
+  self:button(">",582,101,40,22,function()self.page=self.page+1 end,self.page==pages)
   if self.tab=="favors" then
-   self:button("Cliff",18,112,130,24,function()self.provider="cliff";self.page=1 end,false,self.provider=="cliff")
-   self:button("Zanoba",156,112,130,24,function()self.provider="zanoba";self.page=1 end,false,self.provider=="zanoba")
-   W.panel(294,112,328,24)
-   self:text("Mañana al comenzar · Ayudar: 1 espacio",304,120,312,P.muted)
+   self:button("Cliff",18,128,130,24,function()self.provider="cliff";self.page=1 end,false,self.provider=="cliff")
+   self:button("Zanoba",156,128,130,24,function()self.provider="zanoba";self.page=1 end,false,self.provider=="zanoba")
+   W.panel(294,128,328,24)
+   self:text("Mañana al comenzar · Ayudar: 1 espacio",304,135,312,P.muted)
    for row=1,2 do
     local def=list[(self.page-1)*2+row]
     if def then
-     local y=143+(row-1)*59;W.panel(18,y,604,54)
-     self:text(def.title,28,y+7,400,P.gold);self:text(def.reward,28,y+23,400,P.ink)
+     local y=157+(row-1)*59;W.panel(18,y,604,54)
+     self:text(def.title,28,y+7,400,P.gold);self:text(def.reward.." · +"..require("src.data.economy").rewards.mission.." oro al cierre",28,y+23,400,P.ink)
      local accelerated=session.day==7
      local ok,err=Daily.favorAvailable(session,def.id,self.provider,accelerated)
      self:button(accelerated and "Pedir y ayudar" or "Solicitar",452,y+8,158,25,function()
       if accelerated then self.confirmHelp={id=def.id,provider=self.provider} else commit(Daily.requestFavor(session,def.id,self.provider)) end
-     end,not ok)
+     end,not ok or active~=nil)
      if not ok then self:text(err,28,y+37,580,P.muted) end
     end
    end
    for _,favor in ipairs(session.pending_favors) do if favor.status=="pending" then
-    W.panel(18,259,604,25)
-    self:text("Pendiente: "..Catalog.favorsById[favor.id].title,24,267,385,P.ink)
-    self:button("Ayudar hoy (1 espacio)",410,259,210,25,function()self.confirmHelp={instance=favor.instance_id}end,Daily.remaining(session)<1 or d.activities_locked)
+    W.panel(18,279,604,25)
+    self:text("Pendiente: "..Catalog.favorsById[favor.id].title,24,287,385,P.ink)
+    self:button("Ayudar hoy (1 espacio)",410,279,210,25,function()self.confirmHelp={instance=favor.instance_id}end,Daily.remaining(session)<1 or d.activities_locked or active~=nil)
    end end
   else
    for row=1,3 do
     local def=list[(self.page-1)*3+row]
     if def then
-     local x=18+(row-1)*204;W.panel(x,114,196,167)
+     local x=18+(row-1)*204;W.panel(x,128,196,176)
      local separated=not Family.active(session,def.character)
-     app.resources:portrait(def.character,separated and "worried" or "neutral",x+10,121,1,separated)
-     self:text(def.title,x+80,125,106,P.gold)
-     self:text("Visitas: "..d.visits[def.character],x+80,164,106,P.teal)
-     self:text(def.reward,x+10,195,176,P.ink)
-     self:button(separated and "Separación definitiva" or "Elegir actividad",x+10,246,176,25,function()commit(Daily.startActivity(session,def.id))end,separated or Daily.remaining(session)==0 or d.activities_locked or d.ending_processed)
+     app.resources:portrait(def.character,separated and "worried" or "neutral",x+10,135,1,separated)
+     self:text(def.title,x+80,137,106,P.gold)
+     self:text("Visitas: "..d.visits[def.character],x+80,175,106,P.teal)
+     self:text(Hud.reward(def),x+10,207,176,P.ink)
+     self:button(separated and "Separación definitiva" or "Elegir actividad",x+10,273,176,25,function()commit(Daily.startActivity(session,def.id))end,separated or Daily.remaining(session)==0 or d.activities_locked or d.ending_processed or active~=nil)
     end
    end
   end
-  W.panel(18,284,604,22)
-  self:text("Sin visita: -20 amor y -20 confianza. La historia no sustituye las actividades.",24,291,592,P.ink)
-  local finalLock=session.day==7 and not d.activities_locked
-  self:button(finalLock and "Cerrar tiempo libre e ir a la historia" or "Continuar historia",18,311,330,27,function()commit(Progression.continueStory(session))end,Daily.storyComplete(session))
-  self:button("Finalizar día",358,311,264,27,function()app:endDay()end,not Daily.storyComplete(session))
-  W.panel(18,341,604,17)
-  self:text("Puedes dormir sin agotar los tres espacios. Los encargos normales tardan un día.",24,346,592,P.muted)
+
  end
  function s:keypressed(key)
   if self:navigate(key) then return end
@@ -5759,6 +6196,7 @@ function Books.new(app,returnTo)
   self:begin();app.resources:background("library");W.panel(12,10,616,336)
   self:text("LIBRERÍA · ORO "..app.session.gold,24,24,460,P.gold,2)
   self:button("Volver",514,20,100,26,self.returnTo)
+  require("src.ui.daily_hud").draw(self,app,48,true)
   local family=require("src.systems.family").ensure(app.session)
   for i,book in ipairs(require("src.data.books")) do
    local y=65+(i-1)*82
@@ -6034,7 +6472,7 @@ function Collection.new(app)
         self:text("[E] equipada [+] libre [X] bloqueada",367,227,210,P.muted)
         self:button(">",586,225,30,24,function() self:selectCandidate((self.candidatePage%math.ceil(#Data.list/8))*8+1) end)
         local candidate=Data.list[self.candidate]
-        local detail=Collection.details(candidate,{deck=self.draft,unlocked=app.session.unlocked})
+        local detail=Collection.details(candidate,{deck=self.draft,unlocked=app.session.unlocked,collection=app.session.collection})
         self:text(candidate.name.." · social: "..candidate.cost.." energía · "..detail.base,18,268,604,P.ink)
         self:text(Collection.combatDetail(candidate),18,292,604,P.teal)
         local proposal=Collection.replace(self.draft,self.slot,candidate.id,app.session.unlocked)
@@ -6055,7 +6493,7 @@ function Collection.new(app)
         app.resources:background("library")
         love.graphics.setColor(.025,.035,.07,.78)
         love.graphics.rectangle("fill",0,0,640,360)
-        self:header("COLECCIÓN / "..#app.session.deck.." CARTAS EN EL MAZO",true)
+        self:header("COLECCIÓN · ORO "..app.session.gold,true)
         W.panel(14,46,299,296)
         local position=1
         for i,index in ipairs(self.order) do if index==self.selected then position=i; break end end
@@ -6087,10 +6525,13 @@ function Collection.new(app)
         self:text(detail.affinity,429,155,183,P.muted)
         self:text(detail.description,337,198,275,P.ink)
         self:text(detail.base,337,234,275,P.teal)
-        self:text("RECOMENDADA EN",337,261,275,P.gold)
-        self:text(detail.contexts,337,274,275,P.ink)
+        local view=require("src.systems.card_collection").view(app.session,card.id)
+        local nextView=view.level<10 and require("src.systems.card_collection").view(app.session,card.id,view.level+1)
+        self:text(nextView and "SIGUIENTE NIVEL "..nextView.level or "NIVEL MÁXIMO",337,261,275,P.gold)
+        self:text(nextView and (require("src.screens.upgrades").effects(nextView).." · "..view.copiesRequired.." copias / "..view.goldRequired.." oro") or "No requiere más copias ni oro.",337,274,275,P.ink)
         self:text("OBTENCIÓN: "..detail.unlock,337,299,275,P.muted)
-        self:text("Editar [E]: añadir, quitar o sustituir (5–10).",337,328,275,P.muted)
+        self:text("Editar [E]: mazo de 5–10 cartas.",337,328,275,P.muted)
+        W.panel(8,342,624,17)
         self:text("Flechas: inspeccionar · Tab: botones · Enter: seleccionar · Esc: volver",18,347,604,P.muted)
         self:button("Social [E]",345,12,94,20,function() self:startEditing() end)
         self:button("Combate",444,12,94,20,function() app:switch(require("src.screens.combat_deck").new(app)) end)
@@ -6232,8 +6673,15 @@ function CombatScreen.new(app,definition)
     s.displayHp={player=s.enc.player.hp,enemy=s.enc.enemy.hp,mana=s.enc.player.mana}
     s.tutorial=s.definition.tutorial and Tutorial.restore(s.enc.tutorial,s.enc) or nil
     s.enc.tutorial=s.tutorial
-    if app.audio then app.audio:setContext(s.enc.finished and s.enc.outcome or s.enc.training and "training" or s.enc.enemy.boss and "boss" or "combat") end
-    if not s.enc.finished and s.enc.turn==1 and s.enc.revision==0 then sound(app,"combat_start") end
+    local function music(enc)
+        if enc.narrativeDefeat or enc.enemy.id=="orsted_demonstration" then return "orsted" end
+        if enc.finished then return enc.outcome=="victory" and enc.enemy.id=="badigadi_final" and "final_victory" or enc.outcome end
+        return (enc.training or s.definition.background=="training") and "training" or enc.enemy.boss and "boss" or "combat"
+    end
+    if app.audio then app.audio:setContext(music(s.enc)) end
+    if not s.enc.finished and s.enc.turn==1 and s.enc.revision==0 then
+        sound(app,s.enc.enemy.id=="orsted_demonstration" and "orsted" or s.enc.enemy.id=="badigadi_final" and "badigadi" or s.definition.background=="training" and "training" or "combat_start")
+    end
     app:save()
 
     function s:busy() return self.motion~=nil end
@@ -6382,8 +6830,8 @@ function CombatScreen.new(app,definition)
         if progress>=1 then
             self.motion=nil;self.displayHp.player=self.enc.player.hp;self.displayHp.enemy=self.enc.enemy.hp;self.displayHp.mana=self.enc.player.mana
             if self.enc.finished then
-                if app.audio then app.audio:setContext(self.enc.outcome) end
-                sound(app,self.enc.outcome);self.resultAge=0
+                if app.audio then app.audio:setContext(music(self.enc)) end
+                sound(app,self.enc.narrativeDefeat and "orsted" or self.enc.outcome=="victory" and self.enc.enemy.id=="badigadi_final" and "final_victory" or self.enc.outcome);self.resultAge=0
             end
         end
     end
@@ -6538,6 +6986,7 @@ function CombatScreen.new(app,definition)
                 if selected then rect(P.gold,x-2,y-2,84,116) end
                 app.resources:cardBase(x,y,1);app.resources:cardFrame(card.category or "initiative",x,y,1)
                 self:text(card.shortName or card.name,x+8,y+11,64,{.17,.14,.21,1},1,"center")
+                self:text("N"..require("src.systems.card_collection").level(app.session,card.id),x+8,y+37,64,{.17,.14,.21,1},1,"center")
                 if require("src.data.assets").cardIcons[card.icon or card.id] then app.resources:icon(card.icon or card.id,x+28,y+65,1)
                 elseif CardData.byId[card.id] then app.resources:icon(card.id,x+28,y+65,1) else CombatScreen.icon(card.id,x+28,y+65) end
                 self:text(card.cost.."A "..(card.manaCost or 0)..(self.enc.context.curse.manaBlocked and "X " or "M ")..(card.hpCost or 0).."PV",x+4,y+95,72,{.17,.14,.21,1},1,"center")
@@ -6690,6 +7139,7 @@ function CombatScreen.new(app,definition)
         if self.briefingOpen then require("src.screens.support_panel").briefing(self,app) end
         if self.tacticsOpen and self.enc.companion then self:drawTactics() end
         if self.historyOpen then self:drawHistory() end
+        if self.definition.activity then require("src.ui.daily_hud").draw(self,app,347,true) end
     end
     function s:mousepressed(x,y,button) self:click(x,y,button) end
     function s:keypressed(key)
@@ -6778,18 +7228,20 @@ function Editor.new(app,returnTo)
     function s:draw()
         self:begin(); app.resources:background("library")
         love.graphics.setColor(.025,.035,.07,.9); love.graphics.rectangle("fill",0,0,640,360)
-        self:text("MAZO DE COMBATE · 5–10 CARTAS",18,18,490,P.gold)
+        self:text("MAZO DE COMBATE · ORO "..app.session.gold,18,18,404,P.gold)
+        self:button("Mejorar",440,10,100,24,function()app:switch(require("src.screens.upgrades").new(app,self.catalog[self.selected]))end)
         self:button("Volver",548,10,76,24,self.returnTo)
         W.panel(14,43,290,204); W.panel(314,43,312,204)
         self:text("POSICIÓN / QUITAR Y SUSTITUIR",24,53,270,P.teal)
         for i=1,10 do
             local c=Combat.card(self.draft[i]); self:button(i..". "..(c and c.name or "Vacía"),24,70+(i-1)*17,270,16,function() self.slot=i end,false,self.slot==i)
         end
-        self:text("COLECCIÓN · [+] LIBRE · [X] BLOQUEADA",324,53,290,P.teal)
+        self:text("[E] EQUIPADA · [+] LIBRE · [X] BLOQUEADA",324,53,290,P.teal)
+        local equipped={};for _,id in ipairs(app.session.combatDeck)do equipped[id]=true end
         for row=1,8 do
             local index=(self.page-1)*8+row; local id=self.catalog[index]
             if id then local c=Combat.card(id)
-                self:button((app.session.unlocked[id] and "[+] " or "[X] ")..c.name,324,70+(row-1)*17,290,16,function() self.selected=index end,false,self.selected==index)
+                self:button((equipped[id] and "[E] " or app.session.unlocked[id] and "[+] " or "[X] ").."N"..require("src.systems.card_collection").level(app.session,id).." "..c.name,324,70+(row-1)*17,290,16,function() self.selected=index end,false,self.selected==index)
             end
         end
         local pages=math.ceil(#self.catalog/8)
@@ -6845,6 +7297,55 @@ end
 return Safe
 ````
 
+## src/screens/daily_status.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/daily_status.lua`
+
+````lua
+local Status={}
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+function Status.new(app,tab)
+ local s=Screen.new(app);s.kind="daily_status";s.tab=tab;s.page=1
+ function s:lines()
+  local out={};local session=app.session
+  if self.tab=="cards" then
+   local ids={};for _,id in ipairs(session.daily.rewards_granted)do ids[id]=true end
+   for _,c in ipairs(require("src.systems.card_collection").list)do if ids[c.id]then
+    local v=require("src.systems.card_collection").view(session,c.id)
+    out[#out+1]=c.name.." · Nivel "..v.level.." · Copias disponibles "..v.copies
+   end end
+   if #out==0 then out[1]="Todavía no recibiste cartas durante esta jornada."end
+  else
+   out[1]="Objetivo: "..(session.events.enchanted_cards_returned and "Semana completada; acuerdos familiares registrados." or session.inventory.antidoteUsed and "Hablar con quienes permanecen y devolver las cartas." or session.events.antidote_holder_revealed and "Preparar el desafío de Badigadi y obtener el antídoto." or session.events.emissary_investigation_started and "Seguir el registro y localizar al emisario de la poción." or "Investigar la maldición y cumplir los compromisos familiares.")
+   for _,id in ipairs({"sylphiette","roxy","eris"})do
+    local r=session.relationships[id];local pending=0
+    for _,state in pairs(r.promises)do if state=="pending" or state=="broken" then pending=pending+1 end end
+    out[#out+1]=require("src.data.characters").byId[id].shortName..": "..pending.." promesa(s) pendiente(s); "..(r.events.personal_resolution and "misión personal resuelta." or "misión personal por resolver.")
+   end
+   for _,f in ipairs(session.pending_favors)do if f.status=="pending" then out[#out+1]="Encargo: "..require("src.data.activities").favorsById[f.id].title.." · entrega Día "..f.due_day end end
+   out[#out+1]="El historial del diario conserva las decisiones y las misiones completadas."
+  end
+  return out
+ end
+ function s:draw()
+  self:begin();app.resources:background("library");self:header("DÍA "..app.session.day.." / SEGUIMIENTO",true)
+  self:button("Cartas obtenidas",22,49,190,27,function()self.tab="cards";self.page=1 end,false,self.tab=="cards")
+  self:button("Misiones",224,49,190,27,function()self.tab="missions";self.page=1 end,false,self.tab=="missions")
+  self:button("Colección [M]",426,49,190,27,function()app:overlay("deck")end)
+  W.panel(18,85,604,218);local lines=self:lines();local pages=math.max(1,math.ceil(#lines/5))
+  for row=1,5 do self:text(lines[(self.page-1)*5+row],30,99+(row-1)*39,576,P.ink)end
+  self:button("Anterior",24,317,150,27,function()self.page=self.page-1 end,self.page==1)
+  W.panel(185,317,254,27);self:text(self.page.." / "..pages,192,326,200,P.gold)
+  self:button("Siguiente",452,317,164,27,function()self.page=self.page+1 end,self.page>=pages)
+ end
+ function s:keypressed(key)if key=="escape" then app:resume()elseif key=="m" then app:overlay("deck")else self:navigate(key)end end
+ return s
+end
+return Status
+````
+
 ## src/screens/day_report.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/day_report.lua`
@@ -6865,8 +7366,8 @@ function Report.new(app,report,back)
     local used=0
     local function entry(text)
         local height=Font.height(text,576)+8
-        if used+height>128 and #pages[#pages]>0 then pages[#pages+1]={}; used=0 end
-        pages[#pages][#pages[#pages]+1]={text=text,y=160+used}
+        if used+height>108 and #pages[#pages]>0 then pages[#pages+1]={}; used=0 end
+        pages[#pages][#pages[#pages]+1]={text=text,y=180+used}
         used=used+height
     end
     if #(report.rewards or {})>0 then
@@ -6878,6 +7379,14 @@ function Report.new(app,report,back)
         entry("Cartas recibidas: "..table.concat(names,", ")..".")
     end
     for _,change in ipairs(report.changes or {}) do entry(change.text) end
+    s.bars={}
+    for _,id in ipairs(Characters.romanceIds)do
+        local old=(report.before or {})[id] or app.session.relationships[id]
+        local after=(report.after or {})[id] or app.session.relationships[id]
+        local bars=require("src.ui.relationship_bars").new({relationships={[id]=old},events={}},id,{reducedMotion=app.options.reducedMotion})
+        bars:apply("daily_report",{relationships={[id]=after}});s.bars[id]=bars
+    end
+    function s:update(dt)for _,b in pairs(self.bars)do b:update(dt)end end
     function s:draw()
         self:begin()
         app.resources:background("home")
@@ -6888,9 +7397,12 @@ function Report.new(app,report,back)
             local before=(report.before or {})[id] or app.session.relationships[id]
             local after=(report.after or {})[id] or app.session.relationships[id]
             local state=({married="casados",strained="en tensión",separated="separados"})[after.marriageState] or after.marriageState
-            self:text(Characters.byId[id].shortName.." · visitas "..(report.visits[id] or 0).." · Amor "..string.format("%+d",after.love-before.love).." / Conf. "..string.format("%+d",after.trust-before.trust).." · "..state,32,78+(i-1)*18,576,P.ink)
+            local x=32+(i-1)*193
+            self.bars[id]:draw({x=x,y=121,w=184,h=1})
+            self:text("Visitas "..(report.visits[id] or 0).." · "..state,x,124,184,P.ink)
+            self:text("Día: "..string.format("%+d amor / %+d conf.",after.love-before.love,after.trust-before.trust),x,140,184,P.teal)
         end
-        self:text("DECISIONES Y RECOMPENSAS · "..self.page.."/"..#pages,32,140,576,P.gold)
+        self:text("DECISIONES Y RECOMPENSAS · "..self.page.."/"..#pages,32,164,576,P.gold)
         for _,item in ipairs(pages[self.page]) do self:text(item.text,32,item.y,576,P.ink) end
         self:button("Anterior",32,298,120,29,function() self.page=self.page-1 end,self.page==1)
         self:button("Siguiente",160,298,120,29,function() self.page=self.page+1 end,self.page==#pages)
@@ -7793,6 +8305,10 @@ local function pixel(x,y,w,h,color)
 end
 function Scene.new(app)
  local s=Screen.new(app);s.kind="family_scene";s.entry=assert(Family.ensure(app.session).queue[1])
+ if s.entry.kind=="departure" then
+  app.audio:setContext("separation")
+  if s.entry.phase==1 and s.entry.elapsed==0 then app.audio:effect("separation")end
+ end
  function s:update(dt) self.entry.elapsed=math.min(20,self.entry.elapsed+dt) end
  function s:advance()
   if self.finished then if app:save() then app:resume() end;return end
@@ -7842,6 +8358,7 @@ function Scene.new(app)
   self:text(require("src.data.characters").byId[e.character].shortName,30,236,570,P.gold)
   self:text(text,30,257,570,P.ink)
   self:button("Continuar",430,310,178,25,function() self:advance() end,departure and (e.phase==3 or e.phase==4) and e.elapsed<1.2 and not app.options.reducedMotion)
+  if require("src.systems.daily").atAgenda(app.session)then require("src.ui.daily_hud").draw(self,app,347,true)end
  end
  function s:keypressed(key) if key=="return" or key=="space" then self:advance() elseif key=="f5" then app:save() else self:navigate(key) end end
  return s
@@ -8494,6 +9011,7 @@ function Reward.new(app)
             or (count>1 and ("Primera copia: nivel 1. Además recibiste "..(count-1).." duplicados."))
             or (self.starter and "Orsted → Nanahoshi → Rudy. Cinco sociales y cinco físicas." or "Guardada en tu colección. Consulta Mejorar cartas."),42,287,556,P.muted,1,"center")
         self:button(self.page<#self.cards and "Siguiente carta" or "Continuar",226,309,188,25,function() self:continue() end)
+        if require("src.systems.daily").atAgenda(app.session)then require("src.ui.daily_hud").draw(self,app,347,true)end
     end
     function s:keypressed(key)
         if key=="return" or key=="space" or key=="escape" then self:continue() else self:navigate(key) end
@@ -8829,7 +9347,7 @@ function Upgrades.new(app,selected)
         local card=Collection.list[self.index];local view=Collection.view(app.session,card.id)
         local nextView=view.level<10 and Collection.view(app.session,card.id,view.level+1)
         self:text(card.name,228,57,386,P.gold)
-        local elevation=self.pending and math.floor(12*math.min(1,self.pending.age/.3)) or 0
+        local elevation=self.pending and not app.options.reducedMotion and math.floor(12*math.min(1,self.pending.age/.3)) or 0
         CardView.draw(app.resources,card,229,87-elevation)
         if self.pending and self.pending.age>.2 and self.pending.age<.7 and not app.options.reducedMotion then
             love.graphics.setColor(1,.85,.45,.8)
@@ -8840,6 +9358,9 @@ function Upgrades.new(app,selected)
         local after=self.pending and self.pending.result and self.pending.result.after or nextView
         self:text("ACTUAL"..(self.pending and " (ANTES)" or "").."\n"..Upgrades.effects(before),324,118,286,P.ink)
         self:text(after and ((self.pending and self.pending.result and "DESPUÉS / N" or "SIGUIENTE / N")..after.level.."\n"..Upgrades.effects(after)) or "NIVEL MÁXIMO",324,167,286,P.gold)
+        local equipped={}
+        for _,deck in ipairs({app.session.deck,app.session.combatDeck})do for _,id in ipairs(deck)do equipped[id]=true end end
+        self:text(not view.unlocked and "BLOQUEADA" or equipped[card.id] and "DESBLOQUEADA · EQUIPADA" or "DESBLOQUEADA · SIN EQUIPAR",228,200,386,view.unlocked and P.teal or P.muted)
         self:text("Copias: "..view.copies.." / "..view.copiesRequired.." necesarias · Oro: "..view.goldRequired,228,217,386,P.ink)
         self:text((view.socialCost and ("Social: "..view.socialCost.." energía. ") or "")..(view.combatCost and ("Combate: "..view.combatCost.." A / "..view.manaCost.." M / "..view.hpCost.." PV.") or ""),228,240,386,P.teal)
         if nextView and (nextView.manaCost~=view.manaCost or nextView.hpCost~=view.hpCost) then
@@ -8856,6 +9377,7 @@ function Upgrades.new(app,selected)
             end,not view.effect or not view.unlocked or view.level==10 or (Economy.ensure(app.session).items.study_book or 0)<1)
         end
         self:text(self.message or reason or (view.discount and "Receta activa: ahorro del 20%; se consume al mejorar.") or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
+        W.panel(8,342,624,17)
         self:text("Tab y Enter: botones · Las mejoras no cambian los mazos equipados.",18,347,604,P.ink)
     end
     function s:keypressed(key)
@@ -12440,7 +12962,9 @@ function Events.apply(session,id,effects)
     local grants={}
     local function unlock(cardId,count)
         local owner=require("src.data.family").specialOwners[cardId]
-        if owner and not require("src.systems.family").active(session,owner) then return end
+        -- El regalo de Orsted archiva también técnicas de matrimonios perdidos;
+        -- su uso sigue filtrado por la compañera en cartas/combate.
+        if owner and not require("src.systems.family").active(session,owner) and id~="orsted_collection_gift" then return end
         grants[#grants+1]=assert(Collection.grant(session,cardId,count or 1))
     end
     local function apply(effect,path,inheritedText,inheritedHidden)
@@ -15448,6 +15972,44 @@ end
 return Card
 ````
 
+## src/ui/daily_hud.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/ui/daily_hud.lua`
+
+````lua
+local Hud={}
+local Daily=require("src.systems.daily")
+local P=require("src.ui.palette")
+local W=require("src.ui.widgets")
+function Hud.snapshot(s)
+ local cards,missions,today=0,0,{}
+ for _,v in pairs(s.unlocked)do if v then cards=cards+1 end end
+ for _,v in pairs(s.missions)do if v then missions=missions+1 end end
+ for _,id in ipairs(Daily.ensure(s).rewards_granted)do today[id]=true end
+ local received=0;for _ in pairs(today)do received=received+1 end
+ return {day=s.day,remaining=Daily.remaining(s),favor=s.daily.favor_used and "ocupado" or "libre",gold=s.gold,cards=cards,today=received,missions=missions}
+end
+function Hud.draw(screen,app,y,compact)
+ local v=Hud.snapshot(app.session);W.panel(18,y,604,compact and 13 or 23)
+ if compact then
+  screen:text("D"..v.day.." · Libres "..v.remaining.."/3 · Encargo "..v.favor.." · Oro "..v.gold.." · Cartas "..v.cards.." (+"..v.today..") · Misiones "..v.missions,24,y+3,592,P.gold)
+ else
+  screen:text("Libres "..v.remaining.."/3 · Encargo "..v.favor,25,y+8,287,P.gold)
+  screen:button("Cartas "..v.cards.." (+"..v.today.." hoy)",313,y+2,175,19,function()app:switch(require("src.screens.daily_status").new(app,"cards"))end)
+  screen:button("Misiones "..v.missions,494,y+2,121,19,function()app:switch(require("src.screens.daily_status").new(app,"missions"))end)
+ end
+end
+function Hud.relationship(screen,s,id,x,y,width)
+ local r=s.relationships[id];if not r then return end
+ local conflict=r.love<0 or r.trust<0
+ screen:text("Amor "..r.love.." · Conf. "..r.trust..(r.marriageState=="separated" and " · Separada" or conflict and " · CONFLICTO" or ""),x,y,width,conflict and P.danger or P.teal)
+end
+function Hud.reward(def)
+ return "1 interacción · "..def.reward..". +"..require("src.data.economy").rewards.mission.." oro al cerrar."
+end
+return Hud
+````
+
 ## src/ui/font.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/ui/font.lua`
@@ -15704,16 +16266,24 @@ function Bars:draw(anchor)
     local shake=feedback and feedback.negative and not reduced and feedback.age<.4
         and math.floor(math.sin(feedback.age*45)*(1-feedback.age/.4)*2) or 0
     local x,y=box.x+shake,box.y
-    rect(P.border,x,y,box.w,box.h,alpha); rect(P.panel,x+1,y+1,box.w-2,box.h-2,alpha)
+    local conflict=(self.target.love or 0)<0 or (self.target.trust or 0)<0
+    rect(conflict and P.danger or P.border,x,y,box.w,box.h,alpha); rect(P.panel,x+1,y+1,box.w-2,box.h-2,alpha)
     Font.draw(self.name,x+4,y+3,{maxWidth=box.w-8,align="center",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
     for i,field in ipairs(self.fields) do
         local row=y+13+(i-1)*14
         Font.draw(field.label,x+5,row,{maxWidth=58,color={P.muted[1],P.muted[2],P.muted[3],alpha}})
         local value=math.floor(clamp(self.value[field.key])+.5)
-        Font.draw(tostring(value),x+box.w-34,row,{maxWidth=29,align="right",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
+        local tint=value<0 and P.danger or P.ink
+        Font.draw(tostring(value),x+box.w-34,row,{maxWidth=29,align="right",color={tint[1],tint[2],tint[3],alpha}})
         rect(P.shadow,x+5,row+9,box.w-10,4,alpha)
-        local fraction=self.character=="nanahoshi" and clamp(self.value[field.key])/100 or (clamp(self.value[field.key])+100)/200
-        rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*fraction),2,alpha)
+        if self.character=="nanahoshi" then
+            rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*math.max(0,clamp(self.value[field.key]))/100),2,alpha)
+        else
+            local middle=x+math.floor(box.w/2)
+            local length=math.floor((box.w-12)/2*math.abs(clamp(self.value[field.key]))/100)
+            rect(value<0 and P.danger or Bars.colors[field.key],value<0 and middle-length or middle,row+10,length,2,alpha)
+            rect(P.muted,middle,row+9,1,4,alpha)
+        end
         local delta=feedback and feedback.deltas[field.key] or 0
         if delta~=0 then
             local lift=reduced and 0 or math.floor(math.min(1,feedback.age/.8)*4)
@@ -15721,7 +16291,9 @@ function Bars:draw(anchor)
             Font.draw(signed(delta),x+box.w-51,row-lift,{maxWidth=24,align="right",color={tint[1],tint[2],tint[3],alpha}})
         end
     end
-    if feedback and feedback.positive and not feedback.negative then
+    if conflict then
+        Font.draw("!",x+4,y+3,{color=P.danger})
+    elseif feedback and feedback.positive and not feedback.negative then
         if self.character=="nanahoshi" then
             rect(Bars.colors.interest,x+box.w-12,y+4,2,6,alpha); rect(Bars.colors.interest,x+box.w-14,y+6,6,2,alpha)
         else
@@ -16117,7 +16689,8 @@ function Suite.run()
     manager:update(.1)
     check(manager:effect("card_select"),"Navegación disponible tras intervalo")
     for _,id in ipairs({"confirm","cancel","card_draw","card_play","positive","negative","magic","new_day",
-        "text_blip","card_discard","scene_change","combat_start","attack","guard","hurt","heal","victory","defeat"}) do
+        "text_blip","card_discard","scene_change","combat_start","attack","guard","hurt","heal","victory","defeat",
+        "gold","training","separation","orsted","badigadi","final_victory"}) do
         check(manager:effect(id),"Efecto sintetizado: "..id)
         check(#manager.effectVoices<=4,"Límite de voces: "..id)
     end
@@ -16129,7 +16702,7 @@ function Suite.run()
         check(manager.current and manager.current.source.playing,"Contexto musical original: "..id)
         contexts=contexts+1
     end
-    check(contexts==17 and Manifest.music.training and samples>0,"Diecisiete contextos, incluido entrenamiento, contienen PCM sintetizado")
+    check(contexts==20 and Manifest.music.training and samples>0,"Veinte contextos, incluidos Orsted, separación y victoria final, contienen PCM sintetizado")
     manager:setContext("victory")
     check(manager.current.source.looping==false,"La fanfarria de victoria no se repite")
     manager:stop()
@@ -16184,7 +16757,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 -- Recorridos completos: decisiones reales, mazos legales, combates ejecutados y
 -- carga entre checkpoints. No se inyectan estadísticas para fabricar finales.
 local Suite={}
-function Suite.run()
+function Suite.run(simulations)
  Suite.completed={}
  local Chapters=require("src.data.chapters")
  local Progression=require("src.systems.progression")
@@ -16216,12 +16789,16 @@ function Suite.run()
  local function rng(seed)
   return function(n) seed=(seed*48271)%2147483647;return seed%n+1 end
  end
+ local function clone(value)
+  if type(value)~="table" then return value end
+  local out={};for k,v in pairs(value)do out[k]=clone(v)end;return out
+ end
  local function bestSocial(enc)
   if enc.finished then return enc.score,0 end
   local best,index=-math.huge,0
   for i=0,#enc.hand do
    if i==0 or Cards.canPlay(enc,i) then
-    local nextState=copy(enc)
+    local nextState=clone(enc)
     if i==0 then Cards.pass(nextState) else Cards.play(nextState,i) end
     local score=bestSocial(nextState)
     if score>best then best,index=score,i end
@@ -16229,9 +16806,9 @@ function Suite.run()
   end
   return best,index
  end
- local function social(s,def)
+ local function social(s,def,config)
   -- Seed 17 is a legal, reproducible shuffle; retries are not used for rewards.
-  local enc=Cards.new(s.deck,require("src.systems.dialogue_resolver").context(s,def),rng(17))
+  local enc=Cards.new(s.deck,require("src.systems.dialogue_resolver").context(s,def),rng(config.seed or 17))
   s.encounter=enc
   while not enc.finished do
    local _,index=bestSocial(enc)
@@ -16245,7 +16822,7 @@ function Suite.run()
  end
  local function battle(s,def,config)
   -- Preparation uses earned gold and ordinary shop stock, including solo routes.
-  if not config.specialize then
+  if not config.specialize and config.spending~="none" then
    for _,id in ipairs({"staff_strike","water_projectile","arcane_guard","simple_cut"}) do
     local v=Collection.view(s,id)
     while v and v.unlocked and v.level<math.min(6,s.day+1) do
@@ -16268,22 +16845,33 @@ function Suite.run()
   end
   if #equipped>=5 then s.combatDeck=equipped end
   local support=require("src.systems.companions").context(s,def)
-  local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
+  local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(config.seed or 37))
   s.combat=enc
   require("tests.war_balance").solve(enc)
-  check(enc.outcome=="victory" or enc.narrativeDefeat=="orsted_demonstration","Resultado previsto: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
+  if config.metrics then
+   require("tests.campaign_metrics").battle(s,enc,config.metrics)
+   if enc.outcome~="victory" and not enc.narrativeDefeat and not def.training and not def.activity then
+    config.metrics.blockedAt=s.checkpoint;return s,false
+   end
+  end
+  check(def.activity or def.training or enc.outcome=="victory" or enc.narrativeDefeat=="orsted_demonstration","Resultado previsto: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
   check(#enc.relationshipEvents<=3,"Como máximo una interpretación romántica por combate")
   local snapshot=round(s)
   check(snapshot.combat and snapshot.combat.outcome==enc.outcome,"Replay conserva victoria antes de recompensa")
   s=snapshot;enc=s.combat
+  if def.activity then
+   check(require("src.systems.daily").finishBattle(s,enc),"Actividad de combate completada")
+   return s,true
+  end
   if def.training then
    check(require("src.systems.training_result").commit(s,enc)~=nil,"La reacción del entrenamiento aplica su resultado antes de salir")
   end
   check(Progression.finishCombat(s,enc)~=nil,"Victoria continúa la historia")
-  return s
+  return s,true
  end
  local function run(config)
   local s=Save.newSession();local visited={};local steps=0
+  local metrics=config.metrics
   while true do
    Progression.skipUnavailable(s)
    -- Pure campaign driver acknowledges presentation-only family scenes.
@@ -16336,6 +16924,15 @@ function Suite.run()
     if config.specialize then
      for _,id in ipairs({"staff_strike","encourage"}) do
       local entry=Collection.ensure(s)[id]
+      if config.useBooks and id=="encourage" then
+       for _=1,4 do
+        if entry.level==10 or entry.copies>=90-entry.level*(entry.level-1) then break end
+        local book=Economy.quote(s,"study_book")
+        if not book or book.reason or s.gold<book.price+25 then break end
+        assert(Economy.buy(s,"study_book",book.revision))
+        assert(Economy.use(s,"study_book",id,s.economy.revision))
+       end
+      end
       local quote=Economy.quote(s,id)
       while entry.level<10 and quote and not quote.reason and s.gold>quote.price+25 and entry.copies<90-entry.level*(entry.level-1) do
        local quantity=math.min(10,quote.stock,math.floor((s.gold-25)/quote.price),90-entry.level*(entry.level-1)-entry.copies)
@@ -16348,21 +16945,31 @@ function Suite.run()
     while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      if not id or s.relationships[id].marriageState=="separated" then break end
-     if config.favors and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
+     if config.favors and config.accelerateFinal~=false and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
      local recovery=config.skipErisTraining and id=="eris"
-     check(Daily.startActivity(s,recovery and "reconcile_eris" or "time_"..id)~=nil,"Actividad libre con "..id)
+     local activity,decision=recovery and "reconcile_eris" or "time_"..id,recovery and "repair" or "together"
+     if config.activityPlan then activity,decision=config.activityPlan(s) end
+     if not activity then break end
+     check(Daily.startActivity(s,activity)~=nil,"Actividad libre con "..id)
      s=round(s)
-     check(Daily.resolveActivity(s,recovery and "repair" or "together")~=nil,"Decisión de actividad guardada")
+     check(Daily.resolveActivity(s,decision)~=nil,"Decisión de actividad guardada")
+     local activityBattle=Daily.battleDefinition(s)
+     if activityBattle then s=battle(s,activityBattle,config)end
     end
-    if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
+    if config.favors and (s.day<7 or config.accelerateFinal~=false) and not s.daily.favor_used and not s.daily.activities_locked then
      check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
-    if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
+    if Daily.storyComplete(s) then
+     check(Progression.endDay(s)~=nil,"Cierre diario explícito")
+     if metrics then require("tests.campaign_metrics").day(s,metrics)end
     else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.definition.orstedReward then
     local Finale=require("src.systems.finale")
     for _,kind in ipairs({"combat","social"})do
-     for _,id in ipairs(Finale.options(s,kind))do if Finale.canChoose(s,kind,id) then
+     local options=Finale.options(s,kind)
+     local preferred=config.orstedCards and config.orstedCards[kind]
+     if preferred then table.insert(options,1,preferred)end
+     for _,id in ipairs(options)do if Finale.canChoose(s,kind,id) then
       assert(Finale.choose(s,kind,id,s.orsted_reward.revision));s=round(s);Finale.acknowledge(s);break
      end end
     end
@@ -16380,7 +16987,10 @@ function Suite.run()
     end
    elseif node.kind=="encounter" then
     local def=Progression.encounter(s,checkpoint)
-    if def.kind=="magic" then s=battle(s,def,config) else social(s,def) end
+    if def.kind=="magic" then
+     local ok;s,ok=battle(s,def,config)
+     if ok==false then return s,nil,visited end
+    else social(s,def,config) end
    else check(Progression.next(s)~=nil,"Continuidad entre capítulos") end
    s=round(s)
   end
@@ -16401,6 +17011,15 @@ function Suite.run()
   end
   routesRun=routesRun+1;print("Campaign route "..routesRun..": "..ending.."; Orsted="..tostring(visited.day6_orsted_arrival==true))
   return s,ending,visited
+ end
+ if simulations then
+  local results={}
+  for _,config in ipairs(simulations)do
+   config.metrics={days={},battles={}};local s,ending,visited=run(config)
+   results[#results+1]=require("tests.campaign_metrics").finish(s,ending,visited,config)
+   print("Simulation: "..config.id.." seed "..config.seed.." => "..tostring(ending or config.metrics.blockedAt))
+  end
+  return results,count
  end
  local function specialize()
   return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true,skipErisTraining=true})
@@ -16466,6 +17085,54 @@ function Suite.run()
  return count
 end
 return Suite
+````
+
+## tests/campaign_metrics.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/campaign_metrics.lua`
+
+````lua
+local Metrics={}
+local Collection=require("src.systems.card_collection")
+local Json=require("src.systems.json")
+local function copy(v)return assert(Json.decode(assert(Json.encode(v))))end
+function Metrics.day(s,m)
+ m.days[#m.days+1]={day=s.day,gold=s.gold,visits=copy(s.daily.visits),relations=copy(s.relationships)}
+end
+function Metrics.battle(s,e,m)
+ local entry={day=s.day,id=e.enemy.id,turns=e.turn,outcome=e.outcome,hp=e.player.hp,maxHp=e.enemy.maxHp,healing=0,shield=0,maxHit=0,damage=0,team={}}
+ for id in pairs(e.allies)do entry.team[#entry.team+1]=id end;table.sort(entry.team)
+ for _,log in ipairs(e.log)do for _,v in ipairs(log.events or {})do
+  if v.kind=="damage" and v.target=="enemy" then entry.maxHit=math.max(entry.maxHit,v.hpLost or 0);entry.damage=entry.damage+(v.hpLost or 0)end
+  if v.kind=="heal" and v.target=="player" then entry.healing=entry.healing+(v.amount or 0)end
+  if v.kind=="shield" and v.target=="player" then entry.shield=entry.shield+(v.amount or 0)end
+ end end
+ entry.damagePerTurn=entry.damage/e.turn;m.battles[#m.battles+1]=entry
+ if e.enemy.id=="badigadi_final" then m.boss=entry end
+end
+function Metrics.finish(s,ending,visited,config)
+ local result={strategy=config.id,seed=config.seed,ending=ending or "defeat",gold=s.gold,earned=0,spent=0,cards=0,copies=0,levels={},relations={},separations=0,maxDamage=0,healingCards=0,
+  orsted=visited.day6_orsted_arrival==true,metrics=config.metrics}
+ for _,receipt in pairs(s.economy.transactions)do if receipt.gold>0 then result.earned=result.earned+receipt.gold else result.spent=result.spent-receipt.gold end end
+ for _,card in ipairs(Collection.list)do
+  local v=Collection.view(s,card.id)
+  if v.unlocked then
+   result.cards=result.cards+1;result.copies=result.copies+v.copies;result.levels[card.id]=v.level
+   local owner=card.conditions and card.conditions.character
+   if not owner or s.relationships[owner].marriageState~="separated" then
+    result.maxDamage=math.max(result.maxDamage,v.combatEffect and v.combatEffect.damage or 0)
+    if v.combatEffect and v.combatEffect.heal then result.healingCards=result.healingCards+1 end
+   end
+  end
+ end
+ for _,id in ipairs({"sylphiette","roxy","eris"})do
+  local r=s.relationships[id];result.relations[id]={love=r.love,trust=r.trust,state=r.marriageState}
+  if r.marriageState=="separated" then result.separations=result.separations+1 end
+ end
+ assert(s.gold==require("src.data.economy").startingGold+result.earned-result.spent,"El balance contable debe cerrar")
+ return result
+end
+return Metrics
 ````
 
 ## tests/card_collection.lua
@@ -19991,6 +20658,111 @@ end
 return Suite
 ````
 
+## tests/integration_final.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/integration_final.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Save=require("src.systems.save");local Daily=require("src.systems.daily");local Events=require("src.systems.events")
+ local Json=require("src.systems.json");local Hud=require("src.ui.daily_hud");local Collection=require("src.systems.card_collection")
+ local old=Save.readOptions;Save.readOptions=function()return {muted=true,textAnimation=false,reducedMotion=false}end
+ local app=require("src.app").new();app.mouse=function()return nil,nil end
+ local checks,captures=0,0;local function check(ok,msg)assert(ok,msg);checks=checks+1 end
+ local function fresh(day)
+  local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={};s.day=day or 1;s.checkpoint="day"..s.day.."_agenda";Daily.ensure(s)
+  app.session=s;return s
+ end
+ local function settle()app:update(2);if app.manager.transition>0 then app:update(2)end;app:draw()end
+ local function capture(id)
+  app.toastTime=0;app:draw();local pixels=app.canvas:newImageData();local data=pixels:encode("png")
+  local f=assert(io.open(love.filesystem.getSource().."/tests/artifacts/phase6-"..id..".png","wb"));f:write(data:getString());f:close();pixels:release();data:release();captures=captures+1
+ end
+ local function button(label)
+  app:draw();for _,b in ipairs(app.manager.current.buttons)do if b.label==label then return b end end
+ end
+ local function click(label)
+  local b=assert(button(label),"Falta botón "..label);check(not b.disabled,"Accesible: "..label)
+  app:mousepressed(app.offsetX+(b.x+b.w/2)*app.scale,app.offsetY+(b.y+b.h/2)*app.scale,1);settle()
+ end
+ local function drain()
+  for _=1,100 do
+   local screen=app.manager.current
+   if screen.kind=="reward"then screen:continue()elseif screen.kind=="family_scene"then screen:advance()else return end
+   settle()
+  end;error("Presentación bloqueada")
+ end
+ local s=fresh();app:resume();settle();capture("agenda")
+ check(s.relationships.eris.love==50 and s.relationships.eris.trust==50,"Valores iniciales reales 50/50")
+ click("Elegir actividad");capture("activity-hud")
+ check(Hud.snapshot(s).remaining==2 and s.daily.visits.sylphiette==1,"Reserva exacta reflejada en HUD")
+ for _,label in ipairs({"Sylphiette","Roxy","Eris","Encargos","Finalizar día","Mazo [M]"})do check(button(label),"Acceso permanece: "..label)end
+ check(button("Finalizar día").disabled,"No abandona un resultado pendiente")
+ click("Roxy");capture("inspect-roxy")
+ for _,b in ipairs(app.manager.current.buttons)do if b.label=="Elegir actividad"then check(b.disabled,"Consulta no puede reservar otro espacio")end end
+ check(s.daily.interactions_used==1 and s.daily.active_activity.id=="time_sylphiette","Consultar no modifica la actividad")
+ click("Volver a la actividad");click("Misiones 0");capture("missions");click("Volver")
+ click("Mazo [M]");capture("collection");click("Mejorar");capture("upgrades-state");click("Volver");click("Volver")
+ s.relationships.sylphiette.love=-15;s.relationships.sylphiette.trust=-3;app:resume();settle();capture("negative-affinity")
+ check(app.manager.current.relationshipBars.sylphiette.target.love==-15,"La barra conserva el valor negativo")
+ check(Save.write(s),"Guardar actividad y relación negativa");app:continueGame();settle();s=app.session
+ check(s.daily.interactions_used==1 and s.relationships.sylphiette.love==-15,"Cargar no repone espacios ni borra conflicto")
+ assert(Daily.resolveActivity(s,"together"));s.rewardQueue={};s.family.queue={};Events.apply(s,"day1_complete",{})
+ app:resume();settle();app:endDay();settle();drain();capture("day-report")
+ check(app.manager.current.kind=="day_report","Resumen animado al cerrar")
+ for _,id in ipairs({"sylphiette","roxy","eris"})do
+  local b=app.manager.current.bars[id];check(b.target.love==s.relationships[id].love and b.value.trust==s.relationships[id].trust,"Resumen coincide con "..id)
+ end
+ -- Todas las actividades muestran costes y recompensas sin desbordar sus botones.
+ local Font=require("src.ui.font")
+ for _,def in ipairs(require("src.data.activities").list)do
+  s=fresh(3);assert(Daily.startActivity(s,def.id));app:resume();settle()
+  for _,b in ipairs(app.manager.current.buttons)do check(Font.height(b.label,b.w-12)<=b.h-4,"Texto cabe: "..def.id.." / "..b.label)end
+ end
+ -- El regalo archiva las 40 cartas aunque no quede ninguna esposa; no devuelve habilidades.
+ s=fresh(6);for _,r in pairs(s.relationships)do r.marriageState="separated"end
+ s.checkpoint="day6_orsted_gifts";s.events.orsted_demonstration_completed=true
+ assert(require("src.systems.finale").advance(s,"orsted_grant"))
+ for _,card in ipairs(Collection.list)do check(s.unlocked[card.id],"Orsted archiva "..card.id)end
+ local before=assert(Json.encode(s.collection));require("src.systems.finale").advance(s,"orsted_grant")
+ check(assert(Json.encode(s.collection))==before,"Regalo no duplica copias")
+ local combat=require("src.systems.combat").new(s.deck,{enemyId="badigadi_final",day=7,team={sylphiette=true,roxy=true,eris=true},relationships=s.relationships,
+  combatDeck={"shared_magic","combined_spell","sword_magic","staff_strike","simple_cut"},unlocked=s.unlocked,cardLevels=Collection.levels(s),curse=s.curse})
+ check(next(combat.allies)==nil,"Sin apoyos de matrimonios separados")
+ for _,id in ipairs(combat.initial.pile)do check(id~="shared_magic" and id~="combined_spell" and id~="sword_magic","Sin técnicas exclusivas de las separadas")end
+ -- El libro ofrece una ventaja limitada respecto de tres copias comunes.
+ local data=require("src.data.economy");check(data.items.study_book.price<3*require("src.data.card_progression").classes.basic.copyPrice,"Libro útil también para cartas comunes")
+ s=fresh();local E=require("src.systems.economy")
+ for _=1,4 do assert(E.buy(s,"study_book",s.economy.revision))end
+ check(not E.buy(s,"study_book",s.economy.revision),"Stock diario limita el descuento")
+ local gold=s.gold;assert(E.use(s,"study_book","listen",s.economy.revision))
+ check(s.gold==gold and s.collection.listen.copies==3 and s.economy.items.study_book==3,"Uso consume un libro sin duplicar oro")
+ -- PCM real, no rutas nominales a archivos ausentes.
+ local Audio=require("src.systems.audio");local manifest=require("src.data.audio")
+ for _,id in ipairs({"new_day","card_gift","upgrade","gold","training","combat_start","heal","separation","orsted","badigadi","final_victory"})do
+  local pcm=Audio.synthesize(manifest.effects[id],false,love.sound.newSoundData);local peak=0
+  for i=0,pcm:getSampleCount()-1 do peak=math.max(peak,math.abs(pcm:getSample(i)))end
+  check(peak>0 and peak<=1 and pcm:getDuration()>0,"PCM audible y acotado: "..id);pcm:release()
+  check(app.audio:source(id,manifest.effects[id],false),"Fuente real: "..id)
+ end
+ local sounds=0;local effect=app.audio.effect
+ app.audio.effect=function(self,id)if id=="gold"then sounds=sounds+1 end;return effect(self,id)end
+ app:update(.1);Events.apply(s,"sound_gold",{gold=9});app:update(.1);app:update(.1)
+ check(sounds==1,"El oro suena una sola vez al obtenerlo")
+ app.session=assert(Save.validate(s));app:update(.1);check(sounds==1,"Cargar no repite sonido de oro")
+ local manual=require("src.screens.manual").new(app);app:switch(manual);manual:changeSection(5)
+ for i,rule in ipairs(require("src.data.manual").rules)do if rule.title=="Turnos y compañeras" then
+  manual.page=i;settle();capture("manual-affinity")
+  check(Font.height(rule.text,578)<=180,"La fórmula de afinidad cabe en el manual")
+ end end
+ Save.readOptions=old;app.audio:stop()
+ print("Final integration: "..checks.." checks; "..captures.." real-renderer captures; persistent HUD, negative bars, collection, Orsted restrictions and real PCM.")
+ return checks
+end
+return Suite
+````
+
 ## tests/legacy_run_v1.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/legacy_run_v1.lua`
@@ -20235,6 +21007,36 @@ return function()
     for key,value in pairs(old) do Save[key]=value end
     print("Integration: "..count.." checks passed; "..steps.." screen steps.")
 end
+````
+
+## tests/manual_campaign.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/manual_campaign.lua`
+
+````lua
+-- Revisión humana sin editar la campaña del jugador ni saltar checkpoints.
+local Review={}
+function Review.new(seed)
+ love.filesystem.setIdentity("cartas_del_destino_phase6_manual")
+ love.math.setRandomSeed(seed or 17)
+ local app=require("src.app").new()
+ local sequence=0;local runId=os.date("%Y%m%d-%H%M%S")
+ function app:qaCapture()
+  sequence=sequence+1
+  local checkpoint=self.session and self.session.checkpoint or "menu"
+  local prefix=string.format("manual-%s-%03d-%s",runId,sequence,checkpoint)
+  local root=love.filesystem.getSource().."/tests/artifacts/"
+  self.toastTime=0;self:draw()
+  local pixels=self.canvas:newImageData();local bytes=pixels:encode("png")
+  local f=assert(io.open(root..prefix..".png","wb"));f:write(bytes:getString());f:close();pixels:release();bytes:release()
+  local record={checkpoint=checkpoint,day=self.session and self.session.day,screen=self.manager.current.kind or "dialogue",seed=seed or 17,
+   note="Captura solicitada con F8; no certifica una partida manual completa."}
+  f=assert(io.open(root..prefix..".json","wb"));f:write(assert(require("src.systems.json").encode(record)));f:close()
+  self:notify("Captura guardada: "..prefix..".png")
+ end
+ return app
+end
+return Review
 ````
 
 ## tests/manual_deck.lua
@@ -21804,6 +22606,7 @@ return function()
     require("tests.war_ui").run()
     require("tests.finale").run()
     require("tests.finale_ui").run()
+    require("tests.integration_final").run()
     require("tests.relationship_bars").run()
     require("tests.affinity").run()
     require("tests.training_integration").run()
@@ -21814,6 +22617,59 @@ return function()
     if group~="regression" then require("tests.campaign").run() end
     require("tests.restructure_integration").run()
 end
+````
+
+## tests/seven_day_balance.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/seven_day_balance.lua`
+
+````lua
+local Suite={}
+local wives={"sylphiette","roxy","eris"}
+local profiles={
+ {id="balanced",name="Una visita a cada esposa"},
+ {id="eris_only",name="Tres entrenamientos con Eris",dailyWife="eris",activity="eris_physical",choice="practice"},
+ {id="roxy_only",name="Tres estudios con Roxy",dailyWife="roxy"},
+ {id="sylphiette_only",name="Tres actividades con Sylphiette",dailyWife="sylphiette"},
+ {id="gold",name="Priorizar oro",dailyWife="eris",activity="eris_monsters",choice="together",spending="none"},
+ {id="upgrades",name="Priorizar dos mejoras",specialize=true,useBooks=true},
+ {id="without_orsted",name="Progreso sin Orsted",skipErisTraining=true},
+ {id="with_orsted",name="Aprovechar el regalo de Orsted",orstedCards={combat="water_cannon",social="encourage"}},
+ {id="lose_one",name="Desatender a Eris",alternate=true},
+ {id="lose_two",name="Desatender a Sylphiette y Eris",dailyWife="roxy",dismiss={sylphiette=true,eris=true}},
+ {id="lose_three",name="Desatender a las tres",skipActivities=true,dismiss={sylphiette=true,roxy=true,eris=true}},
+}
+Suite.profiles=profiles
+function Suite.run()
+ local configs={};local filter=os.getenv("DATESIM_BALANCE_PROFILE")
+ local requested=tonumber(os.getenv("DATESIM_BALANCE_SEED"))
+ assert(not requested or requested>0 and requested<2147483647 and requested%1==0,"Semilla entera entre 1 y 2147483646")
+ for _,p in ipairs(profiles)do if not filter or filter==p.id then for _,seed in ipairs(requested and {requested} or {17,43,97})do
+  local c={keep={},preferred=p.dailyWife or "roxy",companion=p.dailyWife or "roxy",favors=true,accelerateFinal=false,id=p.id,seed=seed}
+  for k,v in pairs(p)do c[k]=v end
+  for _,wife in ipairs(wives)do c.keep[wife]=not (p.dismiss and p.dismiss[wife])end
+  if p.alternate then
+   c.activityPlan=function(s)local id=({"sylphiette","roxy"})[(s.daily.interactions_used+s.day)%2+1];return "time_"..id,"together"end
+  elseif p.activity then c.activityPlan=function()return p.activity,p.choice end end
+  configs[#configs+1]=c
+ end end end
+ local results,checks=require("tests.campaign").run(configs)
+ local rows={"strategy,seed,earned,spent,gold,cards,copies,max_level,levels_upgraded,separations,max_card_damage,healing_cards,orsted,boss_win,boss_turns,boss_hp,boss_dpt,boss_healing,boss_shield,ending,sylphiette_love,sylphiette_trust,roxy_love,roxy_trust,eris_love,eris_trust"}
+ for _,r in ipairs(results)do
+  local level,upgraded=1,0;for _,v in pairs(r.levels)do level=math.max(level,v);if v>1 then upgraded=upgraded+1 end end
+  local b=r.metrics.boss or {};local cols={r.strategy,r.seed,r.earned,r.spent,r.gold,r.cards,r.copies,level,upgraded,r.separations,r.maxDamage,r.healingCards,tostring(r.orsted),tostring(b.outcome=="victory"),b.turns or 0,b.hp or 0,string.format("%.2f",b.damagePerTurn or 0),b.healing or 0,b.shield or 0,r.ending}
+  for _,id in ipairs(wives)do cols[#cols+1]=r.relations[id].love;cols[#cols+1]=r.relations[id].trust end
+  for i,v in ipairs(cols)do cols[i]=tostring(v)end;rows[#rows+1]=table.concat(cols,",")
+  assert(r.gold>=0 and level<=10,"Recursos y niveles acotados")
+ end
+ local suffix=filter and ("-"..filter) or ""
+ local root=love.filesystem.getSource().."/tests/artifacts/seven-day-balance"..suffix
+ local file=assert(io.open(root..".csv","wb"));file:write(table.concat(rows,"\n"));file:close()
+ file=assert(io.open(root..".json","wb"));file:write(assert(require("src.systems.json").encode(results)));file:close()
+ print("Seven-day balance: "..checks.." checks; "..#results.." seeded campaigns; metrics in tests/artifacts/seven-day-balance"..suffix..".csv")
+ return checks
+end
+return Suite
 ````
 
 ## tests/story.lua
@@ -22864,7 +23720,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 destination = root / "docs" / "CODIGO_COMPLETO.md"
-extensions = {".lua": "lua", ".ps1": "powershell", ".py": "python", ".md": "markdown"}
+extensions = {".lua": "lua", ".ps1": "powershell", ".py": "python", ".md": "markdown", ".csv": "csv"}
 files = sorted(p for p in root.rglob("*") if p.is_file()
                and (p.suffix in extensions or p.name in {".gitignore", ".gitkeep"}) and p != destination
                and not any(part in {".git", ".tmp", "dist", ".codex", ".agents", "sprite_sources", "artifacts"} for part in p.relative_to(root).parts))
@@ -22877,7 +23733,8 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, animaciones y audio sintetizado.\n\n"
+          "Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, "
+          "HUD diario persistente, conflicto visible, simulaciones de siete días con semillas, revisión manual aislada, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

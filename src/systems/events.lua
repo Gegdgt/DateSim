@@ -83,7 +83,9 @@ function Events.apply(session,id,effects)
     local grants={}
     local function unlock(cardId,count)
         local owner=require("src.data.family").specialOwners[cardId]
-        if owner and not require("src.systems.family").active(session,owner) then return end
+        -- El regalo de Orsted archiva también técnicas de matrimonios perdidos;
+        -- su uso sigue filtrado por la compañera en cartas/combate.
+        if owner and not require("src.systems.family").active(session,owner) and id~="orsted_collection_gift" then return end
         grants[#grants+1]=assert(Collection.grant(session,cardId,count or 1))
     end
     local function apply(effect,path,inheritedText,inheritedHidden)

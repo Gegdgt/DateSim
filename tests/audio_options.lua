@@ -69,7 +69,8 @@ function Suite.run()
     manager:update(.1)
     check(manager:effect("card_select"),"Navegación disponible tras intervalo")
     for _,id in ipairs({"confirm","cancel","card_draw","card_play","positive","negative","magic","new_day",
-        "text_blip","card_discard","scene_change","combat_start","attack","guard","hurt","heal","victory","defeat"}) do
+        "text_blip","card_discard","scene_change","combat_start","attack","guard","hurt","heal","victory","defeat",
+        "gold","training","separation","orsted","badigadi","final_victory"}) do
         check(manager:effect(id),"Efecto sintetizado: "..id)
         check(#manager.effectVoices<=4,"Límite de voces: "..id)
     end
@@ -81,7 +82,7 @@ function Suite.run()
         check(manager.current and manager.current.source.playing,"Contexto musical original: "..id)
         contexts=contexts+1
     end
-    check(contexts==17 and Manifest.music.training and samples>0,"Diecisiete contextos, incluido entrenamiento, contienen PCM sintetizado")
+    check(contexts==20 and Manifest.music.training and samples>0,"Veinte contextos, incluidos Orsted, separación y victoria final, contienen PCM sintetizado")
     manager:setContext("victory")
     check(manager.current.source.looping==false,"La fanfarria de victoria no se repite")
     manager:stop()

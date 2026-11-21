@@ -247,6 +247,11 @@ function App:combatSafeExit()
 end
 
 function App:update(dt)
+    if self.session~=self.audioSession then self.audioSession=self.session;self.audioGold=self.session and self.session.gold
+    elseif self.session then
+        if self.audioGold and self.session.gold>self.audioGold then self.audio:effect("gold") end
+        self.audioGold=self.session.gold
+    end
     self.toastTime=math.max(0,self.toastTime-dt)
     self.audio:update(dt)
     self.manager:update(dt)

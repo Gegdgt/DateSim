@@ -4,6 +4,9 @@
 return {
     fadeDuration=.45,
     music={
+        orsted={synth={notes={38,45,50,57,38,44,51,62},beat=.44}},
+        separation={synth={notes={57,52,55,50,48,52,47,45},beat=.9}},
+        final_victory={loop=false,synth={notes={60,64,67,72,67,72,76,79,84},beat=.3}},
         dream={synth={notes={48,54,55,61,47,53,60,54},beat=.95}},
         home={synth={notes={60,64,67,64,62,65,69,65},beat=.8}},
         boss={synth={notes={40,47,52,53,40,46,51,58},beat=.2}},
@@ -23,6 +26,12 @@ return {
         defeat={loop=false,synth={notes={57,55,52,48,45},beat=.42}},
     },
     effects={
+        gold={notes={84,91,88},duration=.18,gain=.12},
+        training={notes={55,62,67},duration=.22,gain=.16},
+        separation={notes={64,59,52,45},duration=.65,gain=.12},
+        orsted={notes={38,50,57,62},duration=.55,gain=.17},
+        badigadi={notes={40,47,52,59,64},duration=.5,gain=.18},
+        final_victory={notes={60,67,72,76,79,84},duration=.75,gain=.18},
         upgrade={notes={60,67,72,79,84,88},duration=.65,gain=.18},
         paper={notes={89,82,86,74},duration=.15,gain=.09},
         envelope_open={notes={74,78,82},duration=.22,gain=.1},

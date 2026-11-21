@@ -100,16 +100,24 @@ function Bars:draw(anchor)
     local shake=feedback and feedback.negative and not reduced and feedback.age<.4
         and math.floor(math.sin(feedback.age*45)*(1-feedback.age/.4)*2) or 0
     local x,y=box.x+shake,box.y
-    rect(P.border,x,y,box.w,box.h,alpha); rect(P.panel,x+1,y+1,box.w-2,box.h-2,alpha)
+    local conflict=(self.target.love or 0)<0 or (self.target.trust or 0)<0
+    rect(conflict and P.danger or P.border,x,y,box.w,box.h,alpha); rect(P.panel,x+1,y+1,box.w-2,box.h-2,alpha)
     Font.draw(self.name,x+4,y+3,{maxWidth=box.w-8,align="center",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
     for i,field in ipairs(self.fields) do
         local row=y+13+(i-1)*14
         Font.draw(field.label,x+5,row,{maxWidth=58,color={P.muted[1],P.muted[2],P.muted[3],alpha}})
         local value=math.floor(clamp(self.value[field.key])+.5)
-        Font.draw(tostring(value),x+box.w-34,row,{maxWidth=29,align="right",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
+        local tint=value<0 and P.danger or P.ink
+        Font.draw(tostring(value),x+box.w-34,row,{maxWidth=29,align="right",color={tint[1],tint[2],tint[3],alpha}})
         rect(P.shadow,x+5,row+9,box.w-10,4,alpha)
-        local fraction=self.character=="nanahoshi" and clamp(self.value[field.key])/100 or (clamp(self.value[field.key])+100)/200
-        rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*fraction),2,alpha)
+        if self.character=="nanahoshi" then
+            rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*math.max(0,clamp(self.value[field.key]))/100),2,alpha)
+        else
+            local middle=x+math.floor(box.w/2)
+            local length=math.floor((box.w-12)/2*math.abs(clamp(self.value[field.key]))/100)
+            rect(value<0 and P.danger or Bars.colors[field.key],value<0 and middle-length or middle,row+10,length,2,alpha)
+            rect(P.muted,middle,row+9,1,4,alpha)
+        end
         local delta=feedback and feedback.deltas[field.key] or 0
         if delta~=0 then
             local lift=reduced and 0 or math.floor(math.min(1,feedback.age/.8)*4)
@@ -117,7 +125,9 @@ function Bars:draw(anchor)
             Font.draw(signed(delta),x+box.w-51,row-lift,{maxWidth=24,align="right",color={tint[1],tint[2],tint[3],alpha}})
         end
     end
-    if feedback and feedback.positive and not feedback.negative then
+    if conflict then
+        Font.draw("!",x+4,y+3,{color=P.danger})
+    elseif feedback and feedback.positive and not feedback.negative then
         if self.character=="nanahoshi" then
             rect(Bars.colors.interest,x+box.w-12,y+4,2,6,alpha); rect(Bars.colors.interest,x+box.w-14,y+6,6,2,alpha)
         else

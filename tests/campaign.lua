@@ -1,7 +1,7 @@
-﻿-- Recorridos completos: decisiones reales, mazos legales, combates ejecutados y
+-- Recorridos completos: decisiones reales, mazos legales, combates ejecutados y
 -- carga entre checkpoints. No se inyectan estadísticas para fabricar finales.
 local Suite={}
-function Suite.run()
+function Suite.run(simulations)
  Suite.completed={}
  local Chapters=require("src.data.chapters")
  local Progression=require("src.systems.progression")
@@ -33,12 +33,16 @@ function Suite.run()
  local function rng(seed)
   return function(n) seed=(seed*48271)%2147483647;return seed%n+1 end
  end
+ local function clone(value)
+  if type(value)~="table" then return value end
+  local out={};for k,v in pairs(value)do out[k]=clone(v)end;return out
+ end
  local function bestSocial(enc)
   if enc.finished then return enc.score,0 end
   local best,index=-math.huge,0
   for i=0,#enc.hand do
    if i==0 or Cards.canPlay(enc,i) then
-    local nextState=copy(enc)
+    local nextState=clone(enc)
     if i==0 then Cards.pass(nextState) else Cards.play(nextState,i) end
     local score=bestSocial(nextState)
     if score>best then best,index=score,i end
@@ -46,9 +50,9 @@ function Suite.run()
   end
   return best,index
  end
- local function social(s,def)
+ local function social(s,def,config)
   -- Seed 17 is a legal, reproducible shuffle; retries are not used for rewards.
-  local enc=Cards.new(s.deck,require("src.systems.dialogue_resolver").context(s,def),rng(17))
+  local enc=Cards.new(s.deck,require("src.systems.dialogue_resolver").context(s,def),rng(config.seed or 17))
   s.encounter=enc
   while not enc.finished do
    local _,index=bestSocial(enc)
@@ -62,7 +66,7 @@ function Suite.run()
  end
  local function battle(s,def,config)
   -- Preparation uses earned gold and ordinary shop stock, including solo routes.
-  if not config.specialize then
+  if not config.specialize and config.spending~="none" then
    for _,id in ipairs({"staff_strike","water_projectile","arcane_guard","simple_cut"}) do
     local v=Collection.view(s,id)
     while v and v.unlocked and v.level<math.min(6,s.day+1) do
@@ -85,22 +89,33 @@ function Suite.run()
   end
   if #equipped>=5 then s.combatDeck=equipped end
   local support=require("src.systems.companions").context(s,def)
-  local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
+  local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(config.seed or 37))
   s.combat=enc
   require("tests.war_balance").solve(enc)
-  check(enc.outcome=="victory" or enc.narrativeDefeat=="orsted_demonstration","Resultado previsto: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
+  if config.metrics then
+   require("tests.campaign_metrics").battle(s,enc,config.metrics)
+   if enc.outcome~="victory" and not enc.narrativeDefeat and not def.training and not def.activity then
+    config.metrics.blockedAt=s.checkpoint;return s,false
+   end
+  end
+  check(def.activity or def.training or enc.outcome=="victory" or enc.narrativeDefeat=="orsted_demonstration","Resultado previsto: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
   check(#enc.relationshipEvents<=3,"Como máximo una interpretación romántica por combate")
   local snapshot=round(s)
   check(snapshot.combat and snapshot.combat.outcome==enc.outcome,"Replay conserva victoria antes de recompensa")
   s=snapshot;enc=s.combat
+  if def.activity then
+   check(require("src.systems.daily").finishBattle(s,enc),"Actividad de combate completada")
+   return s,true
+  end
   if def.training then
    check(require("src.systems.training_result").commit(s,enc)~=nil,"La reacción del entrenamiento aplica su resultado antes de salir")
   end
   check(Progression.finishCombat(s,enc)~=nil,"Victoria continúa la historia")
-  return s
+  return s,true
  end
  local function run(config)
   local s=Save.newSession();local visited={};local steps=0
+  local metrics=config.metrics
   while true do
    Progression.skipUnavailable(s)
    -- Pure campaign driver acknowledges presentation-only family scenes.
@@ -153,6 +168,15 @@ function Suite.run()
     if config.specialize then
      for _,id in ipairs({"staff_strike","encourage"}) do
       local entry=Collection.ensure(s)[id]
+      if config.useBooks and id=="encourage" then
+       for _=1,4 do
+        if entry.level==10 or entry.copies>=90-entry.level*(entry.level-1) then break end
+        local book=Economy.quote(s,"study_book")
+        if not book or book.reason or s.gold<book.price+25 then break end
+        assert(Economy.buy(s,"study_book",book.revision))
+        assert(Economy.use(s,"study_book",id,s.economy.revision))
+       end
+      end
       local quote=Economy.quote(s,id)
       while entry.level<10 and quote and not quote.reason and s.gold>quote.price+25 and entry.copies<90-entry.level*(entry.level-1) do
        local quantity=math.min(10,quote.stock,math.floor((s.gold-25)/quote.price),90-entry.level*(entry.level-1)-entry.copies)
@@ -165,21 +189,31 @@ function Suite.run()
     while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      if not id or s.relationships[id].marriageState=="separated" then break end
-     if config.favors and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
+     if config.favors and config.accelerateFinal~=false and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
      local recovery=config.skipErisTraining and id=="eris"
-     check(Daily.startActivity(s,recovery and "reconcile_eris" or "time_"..id)~=nil,"Actividad libre con "..id)
+     local activity,decision=recovery and "reconcile_eris" or "time_"..id,recovery and "repair" or "together"
+     if config.activityPlan then activity,decision=config.activityPlan(s) end
+     if not activity then break end
+     check(Daily.startActivity(s,activity)~=nil,"Actividad libre con "..id)
      s=round(s)
-     check(Daily.resolveActivity(s,recovery and "repair" or "together")~=nil,"Decisión de actividad guardada")
+     check(Daily.resolveActivity(s,decision)~=nil,"Decisión de actividad guardada")
+     local activityBattle=Daily.battleDefinition(s)
+     if activityBattle then s=battle(s,activityBattle,config)end
     end
-    if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
+    if config.favors and (s.day<7 or config.accelerateFinal~=false) and not s.daily.favor_used and not s.daily.activities_locked then
      check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
-    if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
+    if Daily.storyComplete(s) then
+     check(Progression.endDay(s)~=nil,"Cierre diario explícito")
+     if metrics then require("tests.campaign_metrics").day(s,metrics)end
     else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.definition.orstedReward then
     local Finale=require("src.systems.finale")
     for _,kind in ipairs({"combat","social"})do
-     for _,id in ipairs(Finale.options(s,kind))do if Finale.canChoose(s,kind,id) then
+     local options=Finale.options(s,kind)
+     local preferred=config.orstedCards and config.orstedCards[kind]
+     if preferred then table.insert(options,1,preferred)end
+     for _,id in ipairs(options)do if Finale.canChoose(s,kind,id) then
       assert(Finale.choose(s,kind,id,s.orsted_reward.revision));s=round(s);Finale.acknowledge(s);break
      end end
     end
@@ -197,7 +231,10 @@ function Suite.run()
     end
    elseif node.kind=="encounter" then
     local def=Progression.encounter(s,checkpoint)
-    if def.kind=="magic" then s=battle(s,def,config) else social(s,def) end
+    if def.kind=="magic" then
+     local ok;s,ok=battle(s,def,config)
+     if ok==false then return s,nil,visited end
+    else social(s,def,config) end
    else check(Progression.next(s)~=nil,"Continuidad entre capítulos") end
    s=round(s)
   end
@@ -218,6 +255,15 @@ function Suite.run()
   end
   routesRun=routesRun+1;print("Campaign route "..routesRun..": "..ending.."; Orsted="..tostring(visited.day6_orsted_arrival==true))
   return s,ending,visited
+ end
+ if simulations then
+  local results={}
+  for _,config in ipairs(simulations)do
+   config.metrics={days={},battles={}};local s,ending,visited=run(config)
+   results[#results+1]=require("tests.campaign_metrics").finish(s,ending,visited,config)
+   print("Simulation: "..config.id.." seed "..config.seed.." => "..tostring(ending or config.metrics.blockedAt))
+  end
+  return results,count
  end
  local function specialize()
   return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true,skipErisTraining=true})

@@ -101,8 +101,15 @@ function CombatScreen.new(app,definition)
     s.displayHp={player=s.enc.player.hp,enemy=s.enc.enemy.hp,mana=s.enc.player.mana}
     s.tutorial=s.definition.tutorial and Tutorial.restore(s.enc.tutorial,s.enc) or nil
     s.enc.tutorial=s.tutorial
-    if app.audio then app.audio:setContext(s.enc.finished and s.enc.outcome or s.enc.training and "training" or s.enc.enemy.boss and "boss" or "combat") end
-    if not s.enc.finished and s.enc.turn==1 and s.enc.revision==0 then sound(app,"combat_start") end
+    local function music(enc)
+        if enc.narrativeDefeat or enc.enemy.id=="orsted_demonstration" then return "orsted" end
+        if enc.finished then return enc.outcome=="victory" and enc.enemy.id=="badigadi_final" and "final_victory" or enc.outcome end
+        return (enc.training or s.definition.background=="training") and "training" or enc.enemy.boss and "boss" or "combat"
+    end
+    if app.audio then app.audio:setContext(music(s.enc)) end
+    if not s.enc.finished and s.enc.turn==1 and s.enc.revision==0 then
+        sound(app,s.enc.enemy.id=="orsted_demonstration" and "orsted" or s.enc.enemy.id=="badigadi_final" and "badigadi" or s.definition.background=="training" and "training" or "combat_start")
+    end
     app:save()
 
     function s:busy() return self.motion~=nil end
@@ -251,8 +258,8 @@ function CombatScreen.new(app,definition)
         if progress>=1 then
             self.motion=nil;self.displayHp.player=self.enc.player.hp;self.displayHp.enemy=self.enc.enemy.hp;self.displayHp.mana=self.enc.player.mana
             if self.enc.finished then
-                if app.audio then app.audio:setContext(self.enc.outcome) end
-                sound(app,self.enc.outcome);self.resultAge=0
+                if app.audio then app.audio:setContext(music(self.enc)) end
+                sound(app,self.enc.narrativeDefeat and "orsted" or self.enc.outcome=="victory" and self.enc.enemy.id=="badigadi_final" and "final_victory" or self.enc.outcome);self.resultAge=0
             end
         end
     end
@@ -407,6 +414,7 @@ function CombatScreen.new(app,definition)
                 if selected then rect(P.gold,x-2,y-2,84,116) end
                 app.resources:cardBase(x,y,1);app.resources:cardFrame(card.category or "initiative",x,y,1)
                 self:text(card.shortName or card.name,x+8,y+11,64,{.17,.14,.21,1},1,"center")
+                self:text("N"..require("src.systems.card_collection").level(app.session,card.id),x+8,y+37,64,{.17,.14,.21,1},1,"center")
                 if require("src.data.assets").cardIcons[card.icon or card.id] then app.resources:icon(card.icon or card.id,x+28,y+65,1)
                 elseif CardData.byId[card.id] then app.resources:icon(card.id,x+28,y+65,1) else CombatScreen.icon(card.id,x+28,y+65) end
                 self:text(card.cost.."A "..(card.manaCost or 0)..(self.enc.context.curse.manaBlocked and "X " or "M ")..(card.hpCost or 0).."PV",x+4,y+95,72,{.17,.14,.21,1},1,"center")
@@ -559,6 +567,7 @@ function CombatScreen.new(app,definition)
         if self.briefingOpen then require("src.screens.support_panel").briefing(self,app) end
         if self.tacticsOpen and self.enc.companion then self:drawTactics() end
         if self.historyOpen then self:drawHistory() end
+        if self.definition.activity then require("src.ui.daily_hud").draw(self,app,347,true) end
     end
     function s:mousepressed(x,y,button) self:click(x,y,button) end
     function s:keypressed(key)
