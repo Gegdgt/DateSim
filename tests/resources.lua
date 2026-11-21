@@ -13,6 +13,14 @@ function Suite.run()
     local ok,err=xpcall(function()
         local resources=Resources.new():preload()
         check(#resources.warnings==0,"Todos los PNG definitivos cargan sin reservas")
+        check(Assets.characters.rudeus_japones=="assets/characters/rudeus_japones.png","Ruta estable de la apariencia japonesa")
+        check(love.filesystem.getInfo("sprite_sources/characters/rudeus_japones.ase","file"),"Fuente editable japonesa conservada")
+        local japanesePng=assert(love.filesystem.read(Assets.characters.rudeus_japones))
+        check(japanesePng:byte(25)==8 and japanesePng:byte(26)==6,"PNG japonés RGBA de 8 bits")
+        check(resources:getPortrait("rudeus")~=resources:getPortrait("rudeus_japones"),"Ambas apariencias se cargan independientemente")
+        check(Characters.byId.rudeus and not Characters.byId.rudeus_japones,"La apariencia japonesa no crea una segunda identidad")
+        check(Characters.expressions.neutral==0 and Characters.expressions.happy==1 and
+            Characters.expressions.worried==2 and Characters.expressions.angry==3,"Orden de expresiones: neutral, feliz, preocupado, enojado")
         local loaded=0
         for path,source in pairs(resources.sources) do
             loaded=loaded+1
@@ -23,7 +31,13 @@ function Suite.run()
             local w,h=data:getDimensions()
             check(w==source.width and h==source.height,"Dimensiones reales: "..path)
         end
-        check(loaded==42,"42 PNG únicos: 7 personajes, 8 fondos, 27 capas e iconos de cartas")
+        local paths={}
+        for _,group in ipairs({Assets.characters,Assets.backgrounds,Assets.cardIcons,Assets.cardFrames,Assets.categoryIcons}) do
+            for _,path in pairs(group) do paths[path]=true end
+        end
+        for _,path in ipairs({Assets.cardBase,Assets.cardBack,Assets.manaIcon}) do paths[path]=true end
+        local expected=0; for _ in pairs(paths) do expected=expected+1 end
+        check(loaded==expected,"Todos los PNG definitivos del manifiesto se cargan")
         local expectedBackgrounds={laboratory="laboratorio",courtyard="patio_universidad",library="biblioteca",
             ruins="ruinas",garden="patio_universidad",training="bosque",forest="bosque",observatory="observatorio",
             mirror_dimension="dimension_espejo",festival="festival"}
@@ -45,9 +59,9 @@ function Suite.run()
             shared_magic="magia_compartida",combined_spell="conjuro_combinado",sword_magic="espada_y_magia",
             choose_together="elegir_juntos"}
         local expectedFrames={empathy="empatia",humor="humor",sincerity="sinceridad",initiative="magia_iniciativa"}
-        check(#Cards.list==16,"Dieciséis cartas jugables definidas")
+        check(#Cards.list==21,"Veintiuna cartas sociales definidas")
         for _,card in ipairs(Cards.list) do
-            local path="assets/cards/iconos/"..expectedIcons[card.id]..".png"
+            local path=expectedIcons[card.id] and ("assets/cards/iconos/"..expectedIcons[card.id]..".png") or Assets.cardIcons[card.id]
             check(Assets.cardIcons[card.id]==path,"Icono español para el ID real "..card.id)
             check(resources:getIcon(card.id)==resources.images[path],"Carta usa icono definitivo: "..card.id)
             check(Assets.cardFrames[card.category]=="assets/cards/marcos/marco_"..expectedFrames[card.category]..".png",
@@ -65,7 +79,10 @@ function Suite.run()
             love.graphics.setCanvas()
             return target:newImageData()
         end
-        for _,character in ipairs(Characters.list) do
+        local portraitVariants={}
+        for _,character in ipairs(Characters.list) do portraitVariants[#portraitVariants+1]=character end
+        portraitVariants[#portraitVariants+1]={id="rudeus_japones"}
+        for _,character in ipairs(portraitVariants) do
             local path=Assets.characters[character.id]
             local source=love.image.newImageData(path)
             check(resources:getPortrait(character.id):typeOf("Image"),"PNG de personaje real: "..character.id)
@@ -81,12 +98,32 @@ function Suite.run()
                 end end
                 check(matches,"Expresión exacta y alfa intacto: "..character.id.."/"..expression)
                 check(transparent,"La expresión conserva fondo transparente: "..character.id.."/"..expression)
-                local x,y,w,h=resources.quads[index-1]:getViewport()
+                local x,y,w,h=resources.quads[(index-1)..":64"]:getViewport()
                 check(x==(index-1)*64 and y==0 and w==64 and h==64,"Quad estable: "..expression)
                 local _,_,_,outside=rendered:getPixel(68,67)
                 check(outside==0,"El recorte no invade el cuadro vecino")
             end
         end
+        -- Verifica los cuatro cuadros a escala 2: cada píxel ocupa exactamente
+        -- 2x2 píxeles, con el mismo alfa, sin interpolación ni deformación.
+        local scaledTarget=love.graphics.newCanvas(136,136)
+        local japaneseSource=love.image.newImageData(Assets.characters.rudeus_japones)
+        for index,expression in ipairs({"neutral","happy","worried","angry"}) do
+            love.graphics.setCanvas(scaledTarget); love.graphics.origin(); love.graphics.clear(0,0,0,0)
+            resources:portrait("rudeus_japones",expression,4,4,2)
+            love.graphics.setCanvas()
+            local rendered=scaledTarget:newImageData()
+            local matches=true
+            for y=0,127 do for x=0,127 do
+                local sr,sg,sb,sa=japaneseSource:getPixel((index-1)*64+math.floor(x/2),math.floor(y/2))
+                local rr,rg,rb,ra=rendered:getPixel(x+4,y+4)
+                if math.abs(sa-ra)>.005 or (sa>0 and
+                    (math.abs(sr-rr)>.005 or math.abs(sg-rg)>.005 or math.abs(sb-rb)>.005)) then matches=false end
+            end end
+            check(matches,"Rudy japonés conserva proporciones, píxeles y alfa a escala 2: "..expression)
+            rendered:release()
+        end
+        japaneseSource:release(); scaledTarget:release()
         for _,card in ipairs(Cards.list) do
             local source=love.image.newImageData(Assets.cardIcons[card.id])
             love.graphics.setCanvas(target); love.graphics.clear(0,0,0,0)
@@ -106,13 +143,15 @@ function Suite.run()
         local calls={}
         love.graphics.draw=function(...) calls[#calls+1]={...} end
         resources:portrait("rudeus","neutral",4.8,5.6,2.75)
+        resources:portrait("rudeus_japones","worried",4.8,5.6,2.75)
         resources:icon("listen",4.8,5.6,2.75)
         resources:cardBase(4.8,5.6,2.75)
         resources:cardFrame("empathy",4.8,5.6,2.75)
         resources:cardBack(4.8,5.6,2.75)
         love.graphics.draw=originalDraw
         check(calls[1][3]==4 and calls[1][4]==5 and calls[1][6]==2 and calls[1][7]==2,"Retratos a escala y posición enteras")
-        for i=2,#calls do
+        check(calls[2][3]==4 and calls[2][4]==5 and calls[2][6]==2 and calls[2][7]==2,"Rudy japonés usa escala uniforme y posición entera")
+        for i=3,#calls do
             check(calls[i][2]==4 and calls[i][3]==5 and calls[i][5]==2 and calls[i][6]==2,"Capas a escala y posición enteras")
         end
         -- Los colores detectan cuadros cambiados incluso con expresiones iguales.
@@ -150,6 +189,7 @@ function Suite.run()
         end
         local cases={
             {path=Assets.characters.rudeus,w=256,h=64,get=function(res) return res:getPortrait("rudeus") end},
+            {path=Assets.characters.rudeus_japones,w=256,h=64,get=function(res) return res:getPortrait("rudeus_japones") end},
             {path=Assets.backgrounds.library,w=320,h=180,get=function(res) return res:getBackground("library") end},
             {path=Assets.cardIcons.listen,w=24,h=24,get=function(res) return res:getIcon("listen") end},
             {path=Assets.cardFrames.empathy,w=80,h=112,get=function(res) return res:getCardFrame("empathy") end},
@@ -167,6 +207,14 @@ function Suite.run()
                     "La reserva conserva diagnóstico consultable")
                 check(#resources.warnings==1 and resources.warnings[1]:find(failingPath,1,true),"Diagnóstico identifica la ruta")
                 check(case.get(resources)==fallback and #resources.warnings==1,"No repetir carga ni avisos por fotograma")
+                if case.path==Assets.characters.rudeus_japones then
+                    check(resources:getPortrait("rudeus"):typeOf("Image"),"Un fallo japonés no afecta al retrato normal")
+                    for _,expression in ipairs({"neutral","happy","worried","angry"}) do
+                        local rendered=renderPortrait("rudeus_japones",expression)
+                        check(rendered:getWidth()==72,"La reserva japonesa dibuja la expresión "..expression)
+                        rendered:release()
+                    end
+                end
             end
         end
         love.filesystem.getInfo,love.graphics.newImage=originalInfo,originalImage
@@ -178,7 +226,7 @@ function Suite.run()
     love.filesystem.getInfo,love.graphics.newImage,love.graphics.draw=originalInfo,originalImage,originalDraw
     love.graphics.setCanvas(); love.graphics.pop()
     assert(ok,err)
-    print("Resources: "..count.." checks passed (42 real PNGs, mappings, expressions, transparency and diagnosed fallbacks).")
+    print("Resources: "..count.." checks passed (all mapped PNGs, mappings, expressions, transparency and diagnosed fallbacks).")
     return count
 end
 return Suite

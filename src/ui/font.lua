@@ -53,7 +53,7 @@ for char, base in pairs(accents) do
     glyphs[char] = rows
 end
 local upper = { ["á"]="Á", ["é"]="É", ["í"]="Í", ["ó"]="Ó", ["ú"]="Ú", ["ñ"]="Ñ", ["ü"]="Ü" }
-local aliases = { ["—"]="-", ["–"]="-", ["‘"]="'", ["’"]="'", ["“"]='"', ["”"]='"', ["•"]="*", ["→"]=">", ["♥"]="*" }
+local aliases = { ["—"]="-", ["–"]="-", ["‘"]="'", ["’"]="'", ["“"]='"', ["”"]='"', ["«"]='"', ["»"]='"', ["•"]="*", ["→"]=">", ["♥"]="*" }
 local function chars(text)
     local result = {}
     for char in tostring(text or ""):gmatch("[%z\1-\127\194-\244][\128-\191]*") do result[#result + 1] = char end

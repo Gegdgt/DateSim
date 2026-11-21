@@ -1,33 +1,38 @@
 local Screen=require("src.ui.screen")
 local W=require("src.ui.widgets")
 local P=require("src.ui.palette")
-local Story=require("src.data.story")
 local Characters=require("src.data.characters")
 local Progression=require("src.systems.progression")
 local Controls=require("src.config.controls")
 local Hub={}
 function Hub.new(app)
     local s=Screen.new(app)
+    s.definition=assert(Progression.hub(app.session))
     function s:draw()
         self:begin()
-        app.resources:background("courtyard")
-        self:header("DÍA 2 / REENCUENTROS EN RANOA")
+        local def=self.definition
+        app.resources:background(def.background or "courtyard")
+        self:header(def.title)
         W.panel(18,47,604,41)
         local companions=Progression.availableCompanions(app.session)
-        local ready=#companions==3
-        self:text(ready and "EL SELLO DE LA MEMORIA" or "TRES CAMINOS QUE VUELVEN A ENCONTRARSE",30,58,578,P.gold)
-        self:text(ready and "Elige quién vendrá a las ruinas. La ruta romántica se decidirá más adelante." or "Visita a las tres. Cada encuentro revela una forma distinta de conectar.",30,74,578,P.ink)
-        for i,place in ipairs(Story.locations) do
+        local ready=#companions>0
+        self:text(ready and (def.readyHeading or def.heading) or def.heading,30,58,578,P.gold)
+        self:text(ready and (def.readyDescription or def.description) or def.description,30,74,578,P.ink)
+        for i,place in ipairs(def.locations) do
             local id=place.character
             local char=Characters.byId[id]
             local x=18+(i-1)*204
             W.panel(x,99,196,231)
-            app.resources:portrait(id,app.session.events["meeting_"..id] and "happy" or "neutral",x+34,108,2)
+            local visited=place.completedEvent and app.session.events[place.completedEvent]
+            app.resources:portrait(id,visited and "happy" or "neutral",x+34,108,2)
             self:text(char.shortName,x+10,241,176,P.gold,1,"center")
-            self:text(place.title,x+10,258,176,P.muted,1,"center")
-            local r=app.session.relationships[id]
-            self:text("Conf. "..r.trust.."  /  Química "..r.chemistry,x+10,276,176,P.ink,1,"center")
-            local visited=app.session.events["meeting_"..id]
+            if place.scene then
+                self:text(place.title,x+10,258,176,P.muted,1,"center")
+                local r=app.session.relationships[id]
+                self:text("Conf. "..r.trust.."  /  Amor "..r.chemistry,x+10,276,176,P.ink,1,"center")
+            else
+                self:text(place.description,x+10,258,176,P.muted,1,"center")
+            end
             self:button(ready and "Elegir compañía" or (visited and "Encuentro completo" or "Visitar"),x+8,297,180,24,function()
                 local nextId,err
                 if ready then nextId,err=Progression.selectCompanion(app.session,id)

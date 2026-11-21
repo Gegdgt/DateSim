@@ -222,6 +222,7 @@ local backgrounds={courtyard=courtyard,library=library,laboratory=laboratory,gar
 
 local profiles={
     rudeus={hair="9C7954",light="C3A174",shade="674E3E",coat="697B6E",trim="CAB48F",eyes="578B78",style="short"},
+    rudeus_japones={hair="373238",light="62585A",shade="24212A",coat="77747C",trim="A6A0A5",eyes="635650",style="glasses"},
     sylphiette={hair="DFDDD0",light="F8EDDA",shade="A9B6B0",coat="6E9E90",trim="DCD2B4",eyes="B55F72",style="elf"},
     roxy={hair="7288BB",light="9CAED3",shade="48577F",coat="606D97",trim="C7B7C6",eyes="6389AE",style="witch"},
     eris={hair="B6535A",light="DA7A70",shade="773C4F",coat="E0D1BB",trim="A45259",eyes="A54D52",style="long"},
@@ -373,7 +374,8 @@ function Resources:background(id) return draw(self:getBackground(id),0,0,2) end
 function Resources:getPortrait(id)
     id=id or "rudeus"
     if not self.portraits[id] then
-        self.portraits[id]=self:_load(Assets.characters[id],SHEET_WIDTH,SPRITE_HEIGHT,function()
+        local wide,tall=id=="badigadi_battle" and 512 or SHEET_WIDTH,id=="badigadi_battle" and 128 or SPRITE_HEIGHT
+        self.portraits[id]=self:_load(Assets.characters[id],wide,tall,function()
             for name,index in pairs(EXPRESSIONS) do
                 love.graphics.push()
                 love.graphics.translate(index*SPRITE_WIDTH,0)
@@ -387,12 +389,14 @@ end
 function Resources:portrait(id,expression,x,y,scale)
     local img=self:getPortrait(id)
     local frame=EXPRESSIONS[expression or "neutral"] or 0
-    if not self.quads[frame] then
-        self.quads[frame]=love.graphics.newQuad(frame*SPRITE_WIDTH,0,SPRITE_WIDTH,SPRITE_HEIGHT,SHEET_WIDTH,SPRITE_HEIGHT)
+    local width,height=img:getWidth()/4,img:getHeight()
+    local key=frame..":"..width
+    if not self.quads[key] then
+        self.quads[key]=love.graphics.newQuad(frame*width,0,width,height,img:getWidth(),height)
     end
     scale=integerScale(scale)
     love.graphics.setColor(1,1,1,1)
-    love.graphics.draw(img,self.quads[frame],math.floor(x),math.floor(y),0,scale,scale)
+    love.graphics.draw(img,self.quads[key],math.floor(x),math.floor(y),0,scale,scale)
     return img
 end
 function Resources:getIcon(id)

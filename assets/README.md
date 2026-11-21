@@ -1,52 +1,53 @@
 # Recursos de pixel art
 
-LÖVE utiliza los PNG existentes de estas carpetas. Las rutas y dimensiones esperadas se centralizan en [`src/data/assets.lua`](../src/data/assets.lua); [`src/systems/resources.lua`](../src/systems/resources.lua) valida cada imagen y aplica `nearest`. Los PNG originales no se renombraron ni redibujaron.
+LÖVE carga los PNG desde `assets/`. El manifiesto [`src/data/assets.lua`](../src/data/assets.lua) declara las rutas y [`src/systems/resources.lua`](../src/systems/resources.lua) valida dimensiones, aplica `nearest` y mantiene una caché. Los editables ASE permanecen en `sprite_sources/`. Esta reestructuración conecta los recursos existentes; no sustituye las ilustraciones por nuevas imágenes provisionales.
 
-| Carpeta de ejecución | Contenido | Fuente editable desde la raíz |
+| Carpeta | Recursos existentes | Fuentes editables |
 | --- | --- | --- |
-| `assets/characters/` | 7 hojas PNG de 256 × 64 | `sprite_sources/characters/` |
-| `assets/backgrounds/` | 8 fondos PNG de 320 × 180 | `sprite_sources/backgrounds/` |
-| `assets/cards/bases/` | Pergamino de 80 × 112 | `sprite_sources/cards/bases/` |
-| `assets/cards/marcos/` | 4 marcos de 80 × 112 | `sprite_sources/cards/marcos/` |
-| `assets/cards/reverso/` | Reverso de 80 × 112 | `sprite_sources/cards/reverso/` |
-| `assets/cards/iconos/` | 16 iconos de carta y 5 auxiliares de 24 × 24 | `sprite_sources/cards/iconos/` |
-| `assets/cards/extras/` | Atlas, vista previa, manifiestos y ejemplo independientes | Se conservan como auxiliares |
-| `assets/audio/` | Reservada; esta versión no contiene audio | Pendiente |
+| `characters/` | 15 hojas: catorce de 256 × 64 y `badigadi_battle.png` de 512 × 128. | `sprite_sources/characters/` |
+| `backgrounds/` | 12 fondos de 320 × 180. | `sprite_sources/backgrounds/` |
+| `cards/bases/` | Pergamino de 80 × 112. | `sprite_sources/cards/bases/` |
+| `cards/marcos/` | Cuatro marcos de 80 × 112. | `sprite_sources/cards/marcos/` |
+| `cards/reverso/` | Reverso de 80 × 112. | `sprite_sources/cards/reverso/` |
+| `cards/iconos/` | 41 iconos de 24 × 24, incluidas categorías y recursos auxiliares. | `sprite_sources/cards/iconos/` |
+| `cards/extras/` | Atlas, vista previa, manifiestos y ejemplo independientes. | Auxiliares conservados. |
+| `audio/` | Destino para grabaciones locales opcionales. | La versión actual sintetiza música y efectos desde Lua. |
 
-Los 42 ASE se trasladaron conservando subcarpetas y contenido, comprobado mediante SHA-256 antes y después. Siguen siendo parte versionada del proyecto. `assets/source/` es una carpeta histórica vacía conservada; los nuevos editables pertenecen a `sprite_sources/`.
+El árbol `sprite_sources/` contiene 74 ASE. Estos recuentos proceden de la inspección del repositorio; los resultados de carga real se registran en [VERIFICACION.md](../docs/VERIFICACION.md).
 
-## Personajes
+## Personajes y expresiones
 
-Las hojas son `rudeus.png`, `sylphiette.png`, `roxy.png`, `eris.png`, `nanahoshi.png`, `zanoba.png` y `cliff.png`. Cada una contiene cuatro cuadros horizontales de **64 × 64**, sin espacios, en este orden: `neutral=0`, `happy=1`, `worried=2`, `angry=3`. El recorte comienza en `x = índice × 64`, `y = 0`.
+Están disponibles Rudy, Sylphiette, Roxy, Eris, Nanahoshi, Zanoba, Cliff, Hitogami, Orsted, Emisario, Badigadi, Anomalía de maná y Guardián de las ruinas, además de la hoja grande de Badigadi. El orden de cada hoja es `neutral=0`, `happy=1`, `worried=2`, `angry=3`.
 
-Conserva el canal alfa y la alineación original de los cuatro cuadros. Una expresión desconocida utiliza el cuadro neutral. El cargador no recoloca las expresiones ni adapta hojas de otras dimensiones. Los retratos se dibujan con escalas enteras.
+`rudeus_japones.png` es una segunda apariencia de Rudy, no otro personaje: PNG RGBA de 256 × 64, acompañado por `sprite_sources/characters/rudeus_japones.ase` (cuatro cuadros de 64 × 64 y 32 bits). Ambos archivos existentes se conservan intactos. El contexto narrativo `hitogami_dream` selecciona esta hoja; el despertar y el combate físico utilizan `rudeus.png`. [Retratos contextuales](../docs/RETRATOS.md).
+
+Los cuadros normales miden 64 × 64, sin separación. La hoja grande contiene cuatro cuadros de 128 × 128 y el cargador la trata explícitamente. Las animaciones mueven los retratos sin estirarlos; la escala es igual en ambos ejes. El combate usa la hoja normal de Badigadi para mantener legible su interfaz, y también precarga la grande.
+
+La silueta corregida de Sylphiette ya estaba en el proyecto y se conserva junto con su ASE. Al reexportar una hoja, mantén transparencia, disposición horizontal, dimensiones nativas y ausencia de recorte o separación entre cuadros. No suavices ni estires los retratos.
 
 ## Escenarios
 
-El canvas lógico mide 640 × 360: cada fondo de 320 × 180 se dibuja a escala 2. Los identificadores de la historia permanecen en inglés; no es necesario renombrar PNG:
+Cada fondo de 320 × 180 se dibuja a escala 2 sobre el canvas de 640 × 360.
 
-| Identificador | PNG en `assets/backgrounds/` |
+| ID | PNG en `assets/backgrounds/` |
 | --- | --- |
+| `dream` | `sueno_hitogami.png` |
+| `home` | `hogar_greyrat.png` |
 | `laboratory` | `laboratorio.png` |
-| `courtyard` | `patio_universidad.png` |
+| `apothecary` | `botica_oculta.png` |
+| `arena` | `arena_badigadi.png` |
+| `courtyard`, `garden` | `patio_universidad.png` |
 | `library` | `biblioteca.png` |
+| `forest`, `training` | `bosque.png` |
 | `ruins` | `ruinas.png` |
-| `garden` | `patio_universidad.png` (reutilización temporal) |
-| `training` | `bosque.png` (reutilización temporal) |
-| `forest` | `bosque.png` |
 | `observatory` | `observatorio.png` |
-| `mirror_dimension` | `dimension_espejo.png` |
+| `mirror_dimension` | `dimension_espejo.png`, conservado para reutilización. |
 | `festival` | `festival.png` |
 
-## Cartas y mantenimiento
+## Cartas y documentos
 
-Las cartas combinan pergamino, marco de categoría, nombre, icono, coste y disponibilidad. Los textos siguen en Lua y los detalles se muestran fuera del área de 80 × 112. Consulta [`cards/LEEME.md`](cards/LEEME.md) y el mapa completo de iconos en [`docs/RECURSOS.md`](../docs/RECURSOS.md).
+Las cartas combinan pergamino, marco, texto, icono y coste. Los iconos nuevos de bastón, corte, piedra, empuje, coordinación, agua, tierra, fragmentos, poción, sello y antídoto están conectados mediante IDs estables. Los recursos auxiliares y las ilustraciones anteriores se conservan.
 
-Para incorporar un recurso nuevo:
+El sobre y su solapa se dibujan con geometría pixel art dentro de LÖVE. Su movimiento usa escalas enteras y el contenido se presenta en el visor de documentos; no se crea un PNG nuevo para la carta narrativa.
 
-1. Guarda el editable ASE en la subcarpeta de `sprite_sources/` correspondiente.
-2. Exporta el PNG al árbol de `assets/`, con dimensiones nativas y transparencia donde corresponda.
-3. Declara su identificador, ruta y tamaño en `src/data/assets.lua`; conserva los identificadores narrativos y de cartas existentes.
-4. Reinicia el juego para renovar la caché y ejecuta `./probar.ps1`.
-
-Los PNG válidos tienen prioridad. Un archivo ausente, ilegible o de tamaño incorrecto activa el dibujo provisional existente y un diagnóstico con la ruta y la causa. Usa `lovec.exe` para ver los mensajes de consola. No se generan ni sobrescriben PNG cuando se activa ese respaldo.
+Para añadir recursos: guarda el ASE en su carpeta, exporta el PNG sin alterar su tamaño, declara la ruta en el manifiesto y ejecuta `./probar.ps1`. Un PNG ausente, ilegible o de dimensiones incorrectas activa el respaldo ya existente y un diagnóstico con ruta y causa; no sobrescribe el archivo original. Los enemigos sin un PNG específico pueden seguir usando las figuras programadas disponibles.

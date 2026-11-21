@@ -1,0 +1,8 @@
+-- Pistas narrativas: nunca pertenecen a los mazos jugables.
+return {
+ apothecary_label={id="apothecary_label",title="Etiqueta de la botica",background="apothecary",signature="Registro de investigación",text="La etiqueta hallada coincide con el pequeño regalo que Rudy aceptó. El proveedor trabajaba con una botica oculta; hay que rastrear sus entregas."},
+ mana_fragment={id="mana_fragment",title="El primer fragmento",background="ruins",signature="Notas de Nanahoshi",text="El fragmento almacena energía externa. Las cartas pueden canalizarla sin usar el maná de Rudy. No repara su voz, ni rompe la maldición."},
+ potion_origin={id="potion_origin",title="El origen de la poción",background="apothecary",signature="Recuerdo recuperado",text="Un emisario presentó la poción como un tónico para el cansancio. Rudy la bebió sin conocer su contenido. El registro de entregas revela el compromiso de Badigadi con el antídoto. Hitogami organizó el engaño."},
+ hitogami_letter={id="hitogami_letter",title="La carta firmada por —H",background="home",signature="—H",
+ text="Querido Rudy:\n\nEspero que hayas descansado bien.\n\nSeguramente recuerdas aquel pequeño regalo que aceptaste hace poco. A veces, las cosas más insignificantes producen las consecuencias más interesantes.\n\nTal vez hayas comenzado a comprenderlo.\n\nHay verdades que es mejor guardar, especialmente cuando se trata de las personas que más amas.\n\nSi intentas revelarles lo que te ha sucedido, podrías perder aquello que más deseas proteger.\n\nTe recomiendo que midas cuidadosamente tus próximas palabras.\n\nPor cierto, tienes siete días.\n\nCon mis mejores deseos,"},
+}

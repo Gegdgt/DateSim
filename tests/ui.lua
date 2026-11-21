@@ -22,6 +22,8 @@ function Suite.run()
         end
     end
     for _,card in ipairs(Data.list) do
+        check(CardView.labels(card).name==card.shortName and Font.width(card.shortName)<=CardView.regions.name.w,
+            "Etiqueta breve legible sin reducir tipografía: "..card.id)
         for key,label in pairs(CardView.labels(card)) do
             local region=CardView.regions[key]
             check(Font.height(label,region.w)<=region.h,"Texto cabe en carta: "..card.id.."/"..key)
@@ -101,15 +103,16 @@ function Suite.run()
         local app=require("src.app").new()
         local mx,my
         app.mouse=function() return mx,my end
-        local function render() app:update(.3); app:draw() end
+        local function render(dt) app:update(dt or 1.6); app:draw() end
         local function click(x,y)
             app:mousepressed(app.offsetX+x*app.scale,app.offsetY+y*app.scale,1)
         end
         render()
         app:keypressed("tab")
         app:keypressed("down")
-        check(app.manager.current.buttons[app.manager.current.keyboardFocus].label=="Opciones",
+        check(app.manager.current.buttons[app.manager.current.keyboardFocus].label=="Práctica: social y combate",
             "Teclado del menú salta Continuar deshabilitado")
+        app:keypressed("down"); app:keypressed("down")
         app:keypressed("return")
         check(app.manager.current.kind=="options","Enter abre opción enfocada")
         render()
@@ -145,9 +148,21 @@ function Suite.run()
         click(153,209)
         check(screen.enc.turn==2 and #screen.enc.discard==1,"Doble entrada de teclado/ratón no juega carta recién robada")
         render()
+        check(screen.phase=="result" and not screen:busy(),"La animación termina mostrando el resultado antes del próximo turno")
+        app:keypressed("return")
+        check(screen.phase=="hand" and screen.enc.turn==2,"Confirmar resultado vuelve a la mano sin aplicar otra carta")
+        render()
         click(153,209)
+        check(screen.enc.turn==2 and screen.confirmReady,"Clic en carta consulta su efecto antes de consumir energía")
+        app:draw()
+        local playButton
+        for _,button in ipairs(screen.buttons) do if button.label=="Jugar carta [Enter]" then playButton=button end end
+        check(playButton~=nil,"Confirmación de carta tiene un botón real")
+        click(playButton.x+4,playButton.y+4)
         check(screen.enc.turn==3 and screen.enc.energy==0 and screen.enc.discard[2]=="combined_spell",
-            "Ratón usa hitbox de carta y respeta su coste")
+            "Ratón selecciona y confirma una carta respetando su coste")
+        render()
+        app:keypressed("return")
         render()
         local textSeen={}
         Font.draw=function(text,...)
@@ -167,6 +182,7 @@ function Suite.run()
         app:keypressed("return")
         check(screen.enc.finished and screen.enc.energy==0 and screen.enc.discard[3]=="admit_error",
             "Carta de coste cero disponible al agotarse energía")
+        render()
         app:overlay("deck")
         mx,my=nil,nil
         render()
@@ -177,7 +193,10 @@ function Suite.run()
         app:keypressed("return")
         check(screen.selected==2,"Colección permite inspeccionar cartas con teclado")
         app:draw()
-        click(40,79+15*16+7)
+        local lockedRow
+        for _,button in ipairs(screen.buttons) do if button.cardIndex==16 then lockedRow=button end end
+        check(lockedRow~=nil,"Carta futura presente en el grupo de bloqueadas")
+        click(lockedRow.x+4,lockedRow.y+4)
         check(screen.selected==16,"Colección permite inspeccionar una carta futura bloqueada")
         app:draw()
     end,debug.traceback)

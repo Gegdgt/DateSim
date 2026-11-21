@@ -20,6 +20,11 @@ end
 function Screen:button(label,x,y,w,h,action,disabled,selected)
     local mx,my = self.app:mouse()
     local hover = mx and mx >= x and mx < x+w and my >= y and my < y+h
+    if hover and not disabled then
+        local target=label..":"..x..":"..y
+        if self.hoveredButton~=target and self.app.audio then self.app.audio:effect("menu") end
+        self.hoveredButton=target
+    end
     W.button(label,x,y,w,h,{hover=hover,disabled=disabled,selected=selected or self.keyboardFocus==#self.buttons+1})
     self.buttons[#self.buttons+1]={label=label,x=x,y=y,w=w,h=h,action=action,disabled=disabled}
     return hover
@@ -30,7 +35,10 @@ function Screen:click(x,y,button)
     self.keyboardFocus=nil
     for _,b in ipairs(self.buttons) do
         if x >= b.x and x < b.x+b.w and y >= b.y and y < b.y+b.h then
-            if not b.disabled then b.action() end
+            if not b.disabled then
+                if self.app.audio then self.app.audio:effect("confirm") end
+                b.action()
+            end
             return true
         end
     end
@@ -49,13 +57,21 @@ function Screen:navigate(key)
         for _=1,count do
             current=(current-1+direction)%count+1
             local button=self.buttons[current]
-            if button.label and not button.disabled then self.keyboardFocus=current; return true end
+            if button.label and not button.disabled then
+                self.keyboardFocus=current
+                if self.app.audio then self.app.audio:effect("menu") end
+                return true
+            end
         end
         return true
     end
     if self.keyboardFocus and Controls.matches(Controls.advance,key) then
         local button=self.buttons[self.keyboardFocus]
-        if button and not button.disabled then button.action() end
+        if not button then self.keyboardFocus=nil; return false end
+        if button and not button.disabled then
+            if self.app.audio then self.app.audio:effect("confirm") end
+            button.action()
+        end
         return true
     end
     return false

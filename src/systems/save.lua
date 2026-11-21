@@ -4,12 +4,14 @@ local CardData=require("src.data.cards")
 local Characters=require("src.data.characters")
 local Relationships=require("src.systems.relationships")
 local Story=require("src.data.story")
-local Save={filename="save.json",backup="save.backup.json",optionsFile="options.json"}
-local checkpoints={intro=1,day1_tutorial=1,day1_result=1,day1_close=1,hub=2,
-    meet_sylphiette=2,meet_roxy=2,meet_eris=2,encounter_sylphiette=2,encounter_roxy=2,encounter_eris=2,
-    result_sylphiette=2,result_roxy=2,result_eris=2,seal_intro=2,seal_encounter=2,seal_result=2,day2_close=2,phase_complete=2}
+local Chapters=require("src.data.chapters")
+local Progression=require("src.systems.progression")
+local Options=require("src.systems.options")
+local Save={version=3,filename="campaign-v3.json",backup="campaign-v3.backup.json",optionsFile="options.json",
+    legacyFilename="save.json",legacyBackup="save.backup.json"}
+
 local function number(value,default,min,max)
-    if type(value)~="number" or value~=value or value==math.huge or value==-math.huge then return default end
+    if type(value)~="number" or value~=value or math.abs(value)==math.huge then return default end
     return math.max(min,math.min(max,value))
 end
 local function map(value,booleans)
@@ -17,94 +19,188 @@ local function map(value,booleans)
     if type(value)~="table" then return out end
     local count=0
     for key,item in pairs(value) do
-        if type(key)=="string" and #key<=100 then
+        if type(key)=="string" and #key<=150 then
             if booleans then
                 if item==true then out[key]=true end
             elseif type(item)=="boolean" or (type(item)=="string" and #item<=1000) then out[key]=item
             elseif type(item)=="number" and item==item and math.abs(item)<=100000 then out[key]=item end
             count=count+1
-            if count>=256 then break end
+            if count>=2048 then break end
         end
     end
     return out
 end
-local function options(value)
-    value=type(value)=="table" and value or {}
-    return {volume=number(value.volume,0.6,0,1),muted=value.muted==true}
+local function records(value)
+    local out={}
+    if type(value)~="table" then return out end
+    for _,entry in ipairs(value) do
+        if #out>=1024 then break end
+        if type(entry)=="table" and type(entry.id)=="string" and #entry.id<=150 then out[#out+1]=map(entry,false) end
+    end
+    return out
 end
-local function starter()
-    local deck,unlocked={},{}
-    for i,id in ipairs(CardData.starterDeck) do deck[i]=id; unlocked[id]=true end
-    return deck,unlocked
+local function copyList(source)
+    local out={}; for i,id in ipairs(source or {}) do out[i]=id end; return out
 end
 
-function Save.newSession()
-    local deck,unlocked=starter()
-    return {version=1,day=1,checkpoint="intro",dialogueIndex=1,relationships=Relationships.new(),
-        unlocked=unlocked,deck=deck,events={},decisions={},options=options()}
+function Save.newSession(config)
+    return {version=Save.version,continuity="rudy_curse",day=Chapters.first.day,checkpoint=Chapters.first.initial,
+        dialogueIndex=1,relationships=Relationships.new(config),affinities=require("src.systems.affinity").new(),unlocked={},deck={},combatDeck={},events={},decisions={},
+        curse=require("src.systems.curse").new(),clues={},inventory={},externalEnergy=0,
+        journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},options=Options.normalize()}
 end
 
 function Save.validate(input)
     if type(input)~="table" or input==Json.null then return nil,"El guardado no contiene una partida." end
-    if input.version~=nil and input.version~=1 then return nil,"Versión de guardado no compatible." end
     if not next(input) then return nil,"El guardado está vacío." end
+    if input.version==1 or input.version==nil then
+        return nil,"Esta partida pertenece a la continuidad anterior. Inicia una nueva campaña compatible; el archivo original se conserva."
+    end
+    if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
-    s.checkpoint=checkpoints[input.checkpoint] and input.checkpoint or "intro"
-    s.day=checkpoints[s.checkpoint]
+    s.checkpoint=Chapters.get(input.checkpoint) and input.checkpoint or Chapters.first.initial
+    s.day=Chapters.get(s.checkpoint).day
     s.dialogueIndex=math.floor(number(input.dialogueIndex,1,1,100))
     s.events=map(input.events,true); s.decisions=map(input.decisions,false)
-    s.options=options(input.options)
+    s.affinities=require("src.systems.affinity").normalize(input.affinities)
+    s.trainingResults=require("src.systems.training_result").normalize(input.trainingResults,s.events)
+    s.dialogueMemory={used={}}
+    for id,count in pairs(map(type(input.dialogueMemory)=="table" and input.dialogueMemory.used,false)) do
+        if type(count)=="number" then s.dialogueMemory.used[id]=math.floor(number(count,0,0,10000)) end
+    end
+    s.options=Options.normalize(input.options)
+    s.clues=map(input.clues,true); s.inventory=map(input.inventory,true)
+    s.externalEnergy=number(input.externalEnergy,0,0,30)
+    if type(input.curse)=="table" then
+        s.curse.discoveredVoice=input.curse.discoveredVoice==true
+        s.curse.discoveredMana=input.curse.discoveredMana==true
+    end
+    if s.inventory.antidoteUsed then
+        s.curse.active=false; s.curse.voiceSealed=false; s.curse.manaBlocked=false
+    end
+    if type(input.documentState)=="table" and require("src.data.documents")[input.documentState.id] then
+        local phases={resting=true,lifting=true,opening=true,reading=true,signature=true}
+        s.documentState={id=input.documentState.id,phase=phases[input.documentState.phase] and input.documentState.phase or "resting",
+            page=math.floor(number(input.documentState.page,1,1,100)),elapsed=number(input.documentState.elapsed,0,0,3600)}
+    end
+    s.journal=records(input.journal)
+    for _,field in ipairs({"rewards","missions","defeatedEnemies","familyEvents"}) do s[field]=map(input[field],true) end
+    if type(input.migration)=="table" then s.migration=map(input.migration,false) end
     if type(input.relationships)=="table" then
         for _,id in ipairs(Characters.romanceIds) do
             local data=input.relationships[id]
             if type(data)=="table" then
                 local r=s.relationships[id]
-                r.trust=number(data.trust,0,0,10); r.chemistry=number(data.chemistry,0,0,10)
-                r.events=map(data.events,true); r.decisions=map(data.decisions,false)
-                local states={unmet=true,friend=true,chosen=true,romance=true,friendship=true,active=true}
-                if states[data.routeState] then r.routeState=data.routeState end
+                r.trust=number(data.trust,65,0,100); r.love=number(data.love,65,0,100)
+                r.events=map(data.events,true); r.personalEvents=r.events
+                r.decisions=map(data.decisions,false); r.criticalDecisions=map(data.criticalDecisions,false)
+                for _,field in ipairs({"brokenPromises","sharedMoments","pendingConflicts","reconciliations"}) do r[field]=map(data[field],true) end
+                for key,status in pairs(map(data.promises,false)) do
+                    if status=="pending" or status=="kept" or status=="broken" or status=="reconciled" then r.promises[key]=status end
+                end
+                r.history=records(data.history)
+                if data.marriageState=="separated" then r.marriageState="separated" end
+                Relationships.refresh(r)
             end
         end
     end
-    for id in pairs(map(input.unlocked,true)) do if CardData.byId[id] then s.unlocked[id]=true end end
+    local CombatData=require("src.data.combat_cards")
+    for id in pairs(map(input.unlocked,true)) do if CardData.byId[id] or CombatData.byId[id] then s.unlocked[id]=true end end
+    -- Repair only an earned starter gift. This is not a new reward and never
+    -- queues its animation or reapplies the story decision.
+    if s.events.starter_gift then
+        for _,id in ipairs(CardData.starterDeck) do s.unlocked[id]=true end
+        for _,id in ipairs(CombatData.starterDeck or {}) do s.unlocked[id]=true end
+    end
     if Cards.validateDeck(input.deck,s.unlocked) then
-        s.deck={}; for i,id in ipairs(input.deck) do s.deck[i]=id end
+        s.deck=copyList(input.deck)
+    elseif Cards.validateDeck(CardData.starterDeck,s.unlocked) then s.deck=copyList(CardData.starterDeck) end
+    local Combat=require("src.systems.combat")
+    if Combat.validateDeck and Combat.validateDeck(input.combatDeck,s.unlocked) then
+        s.combatDeck=copyList(input.combatDeck)
+    elseif CombatData.starterDeck and Combat.validateDeck and Combat.validateDeck(CombatData.starterDeck,s.unlocked) then
+        s.combatDeck=copyList(CombatData.starterDeck)
+    end
+    local queued={}
+    for _,reward in ipairs(type(input.rewardQueue)=="table" and input.rewardQueue or {}) do
+        if type(reward)=="table" and type(reward.id)=="string" and type(reward.eventId)=="string"
+            and s.events[reward.eventId] and not queued[reward.id] and #s.rewardQueue<128 then
+            local entry={id=reward.id,eventId=reward.eventId,presenter=Characters.byId[reward.presenter] and reward.presenter or "nanahoshi",cards={}}
+            local seen={}
+            for _,id in ipairs(type(reward.cards)=="table" and reward.cards or {}) do
+                if s.unlocked[id] and not seen[id] then entry.cards[#entry.cards+1]=id; seen[id]=true end
+            end
+            if #entry.cards>0 then
+                entry.presentationPage=math.floor(number(reward.presentationPage,1,1,#entry.cards))
+                s.rewardQueue[#s.rewardQueue+1]=entry; queued[entry.id]=true
+            end
+        end
     end
     if type(input.route)=="string" and s.relationships[input.route] then s.route=input.route end
     if type(input.selectedCompanion)=="string" and s.relationships[input.selectedCompanion] then s.selectedCompanion=input.selectedCompanion end
-    if type(s.decisions.companion)~="string" or not s.relationships[s.decisions.companion] then
-        s.decisions.companion=nil
-        s.events.companion_selected=nil
+    for _,chapter in ipairs(Chapters.list) do
+        local companion=chapter.companion
+        if companion then
+            local key=companion.decisionKey
+            if type(s.decisions[key])~="string" or not s.relationships[s.decisions[key]] then
+                s.decisions[key]=nil; s.events[companion.event]=nil
+            end
+        end
     end
-    -- Keep only known choice IDs. Progression.scene hides already answered
-    -- choices while preserving the saved dialogue position.
-    for _,id in ipairs(Characters.romanceIds) do
-        local sceneId="meet_"..id
+    for sceneId in pairs(Story.scenes) do
         local key="choice_"..sceneId
         local selected=s.decisions[key]
         local valid=false
-        for _,choice in ipairs(Story.scenes[sceneId].choices) do
-            if selected==choice.id then valid=true end
-        end
+        for _,choice in ipairs(Progression.choices(s,sceneId)) do if selected==choice.id then valid=true end end
         if not valid then s.decisions[key]=nil end
     end
-    local needsCompanion=s.checkpoint:match("^seal_") or s.checkpoint=="day2_close" or s.checkpoint=="phase_complete"
-    if needsCompanion and not s.decisions.companion then
-        s.checkpoint="hub"; s.dialogueIndex=1
+    local node=Chapters.get(s.checkpoint)
+    local chapter=Chapters.chapterFor(s.checkpoint)
+    if node.definition.requiresCompanion and chapter.companion and not s.decisions[chapter.companion.decisionKey] then
+        s.checkpoint=chapter.companion.selectionCheckpoint; s.dialogueIndex=1
+        s.day=Chapters.get(s.checkpoint).day
     end
-    local context
-    local definition=Story.encounters[s.checkpoint]
+    if (Chapters.get(s.checkpoint).kind=="encounter" or s.day>1) and (not Cards.validateDeck(s.deck,s.unlocked) or not Combat.validateDeck(s.combatDeck,s.unlocked)) then
+        s.checkpoint=Chapters.get("day1_cards") and "day1_cards" or Chapters.first.initial
+        s.day=Chapters.get(s.checkpoint).day; s.dialogueIndex=1
+        s.recoveryNotice="El mazo guardado estaba incompleto. Nanahoshi revisará la entrega; las decisiones permanecen registradas."
+    end
+    local definition=Progression.encounter(s,s.checkpoint)
     if definition then
-        context={kind=definition.kind,character=definition.character}
-        if context.character=="companion" then context.character=s.decisions.companion end
+        local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
+        if definition.tutorial and type(input.encounter)=="table" and type(input.encounter.context)=="table"
+            and input.encounter.context.socialTutorial then
+            context=require("src.systems.dialogue_resolver").context(s,{kind="conversation",character="nanahoshi"},"nanahoshi_test")
+            context.socialTutorial=true
+        end
+        s.encounter=Cards.restore(input.encounter,s.deck,context)
     end
-    if context then s.encounter=Cards.restore(input.encounter,s.deck,context) end
+    if s.encounter and #s.encounter.log>0 and input.encounterReview==true then s.encounterReview=true end
+    if definition and definition.tutorial and input.tutorial and not s.events.tutorial_completed then
+        s.tutorial=require("src.systems.tutorial").restore(input.tutorial,s.encounter)
+    end
+    if definition and definition.kind=="magic" and not s.encounter then
+        if input.combatPreparation==true then s.combatPreparation=true end
+        if not s.combatPreparation and type(input.combat)=="table" then
+            s.combat=Combat.restore(input.combat,s.deck,{character=definition.character,tutorial=definition.tutorial,
+                enemyId=definition.enemyId,unlocked=s.unlocked,combatDeck=s.combatDeck,tacticalContext=definition.tacticalContext,curse=s.curse,externalEnergy=s.externalEnergy,
+                day=s.day,difficulty=definition.difficulty})
+        end
+    end
     if type(input.lastResult)=="table" then
-        s.lastResult={score=number(input.lastResult.score,0,0,100),success=input.lastResult.success==true,
-            targetScore=number(input.lastResult.targetScore,3,0,100),
-            trust=number(input.lastResult.trust,0,-30,30),chemistry=number(input.lastResult.chemistry,0,-30,30)}
-        if type(input.lastResult.title)=="string" and #input.lastResult.title<=200 then s.lastResult.title=input.lastResult.title end
-        if Characters.byId[input.lastResult.character] then s.lastResult.character=input.lastResult.character end
+        local result=input.lastResult
+        s.lastResult={score=number(result.score,0,0,100),success=result.success==true,targetScore=number(result.targetScore,3,0,100),
+            trust=number(result.trust,0,-100,100),chemistry=number(result.chemistry,0,-100,100),love=number(result.love or result.chemistry,0,-100,100)}
+        if type(result.title)=="string" and #result.title<=200 then s.lastResult.title=result.title end
+        if Characters.byId[result.character] then s.lastResult.character=result.character end
+    end
+    if definition and definition.training and s.combat and s.combat.finished then
+        local result=require("src.systems.training").evaluate(s.combat)
+        local data=result and require("src.data.training_dialogue")[result.id]
+        if data then
+            local review=type(input.trainingReview)=="table" and input.trainingReview or {}
+            s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
+        end
     end
     return s
 end
@@ -133,7 +229,7 @@ function Save.write(session)
     if not clean then return false,err end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("save.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v3.tmp.json",data)
     if not ok then return false,err end
     local old=readFile(Save.filename)
     if old and decodeSession(old) then
@@ -142,7 +238,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"save.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v3.tmp.json")
     return true
 end
 
@@ -150,7 +246,7 @@ function Save.load()
     local raw,err=readFile(Save.filename)
     if raw then
         local session; session,err=decodeSession(raw)
-        if session then return session end
+        if session then return session,session.recoveryNotice end
     end
     local backup=readFile(Save.backup)
     if backup then
@@ -159,18 +255,38 @@ function Save.load()
     end
     return nil,err or "No hay guardado válido disponible."
 end
-
 function Save.exists() return Save.load()~=nil end
+
+-- The UI explicitly offers a new continuity. Original files stay untouched.
+function Save.legacyInfo()
+    for _,path in ipairs({"campaign-v2.json","campaign-v2.backup.json",Save.legacyFilename,Save.legacyBackup}) do
+        local raw=readFile(path)
+        local input=raw and Json.decode(raw)
+        if type(input)=="table" and input~=Json.null and (input.version==2 or input.version==1 or input.version==nil) and next(input) then
+            return {source=path,day=number(input.day,1,1,7),checkpoint=type(input.checkpoint)=="string" and input.checkpoint or "intro",
+                unlocked=map(input.unlocked,true),options=Options.normalize(input.options)}
+        end
+    end
+end
+function Save.migrateLegacy(accepted)
+    if accepted~=true then return nil,"Confirma la nueva continuidad de la maldición antes de importar la colección." end
+    local legacy=Save.legacyInfo()
+    if not legacy then return nil,"No hay una partida anterior compatible para importar." end
+    local s=Save.newSession()
+    s.options=legacy.options
+    local count=0
+    for id in pairs(legacy.unlocked) do if CardData.byId[id] then s.unlocked[id]=true; count=count+1 end end
+    s.migration={source=legacy.source,previousDay=legacy.day,previousCheckpoint=legacy.checkpoint,acceptedContinuity=true,importedCards=count}
+    return s,"Nueva campaña matrimonial: se conservó la colección compatible y el guardado original."
+end
 function Save.readOptions()
     local data=readFile(Save.optionsFile)
-    if not data then return options() end
-    local parsed=Json.decode(data)
-    return options(parsed)
+    if not data then return Options.normalize() end
+    return Options.normalize(Json.decode(data))
 end
 function Save.writeOptions(value)
-    local data,err=Json.encode(options(value))
+    local data,err=Json.encode(Options.normalize(value))
     if not data then return false,err end
     return writeFile(Save.optionsFile,data)
 end
-
 return Save

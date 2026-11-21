@@ -1,75 +1,49 @@
-# Sistemas de juego de la Fase 1
+# Sistemas de la maldición de Rudy
 
-Los módulos usan Lua compatible con LÖVE 11.5. Cartas y relaciones no dependen del renderizado. Los datos están separados de sus reglas; los textos y encuentros narrativos se definen en `src/data/story.lua`.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 3. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, centros de preparación y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
-## Datos de cartas y personajes
+## Maldición y comunicación
 
-`src/data/cards.lua` exporta `list` (16 definiciones ordenadas), `byId`, `categories` y `starterDeck` (10 identificadores distintos). Cada carta tiene `id`, `name`, `category`, `cost`, `description`, `icon`, `effects`, `contexts`, `affinities`, `conditions` y `unlockedAt`. Los efectos base se suman a los del contexto y a los de afinidad del personaje. `unlockedAt` documenta la intención de contenido; los desbloqueos reales se conceden mediante eventos de historia.
+`src/systems/curse.lua` crea `active`, `voiceSealed` y `manaBlocked` en verdadero. `discoveredVoice` y `discoveredMana` empiezan falsos: el estado físico existe antes de que Rudy lo descubra, pero la introducción revela ambos bloqueos después de la carta.
 
-Las categorías son `empathy`, `humor`, `sincerity` e `initiative`. Los contextos implementados son `conversation`, `investigation` y `magic`. `conditions.character` restringe las tres cartas exclusivas a su acompañante. `conditions.kind` permite restringir una futura carta a un contexto. El icono usa el identificador de la carta y `src/data/assets.lua` lo vincula a su PNG español. Los IDs existentes son `remember` y `self_joke`; `choose_together` conserva la categoría `sincerity`.
+Las líneas admiten `delivery`: `dream`, `thought`, `note`, `enchanted`, `silence` o diálogo directo. El sueño es un espacio mental; las notas no son voz. `Progression.scene` impide presentar voz directa de Rudy mientras está sellada, sustituyéndola por pensamiento antes del regalo y por comunicación encantada después. La pantalla muestra el modo de comunicación. Los intentos `silence` no reproducen el sonido de escritura del diálogo.
 
-El mazo inicial contiene Escuchar, Dar ánimo, Broma ligera, Cambiar de tema, Hablar con honestidad, Reconocer un error, Compartir un miedo, Proponer un plan, Analizar runas y Barrera de Tierra. La Fase 1 desbloquea Reírse de uno mismo y Recordar un detalle para la colección, pero no incorpora edición de mazo. Las cartas exclusivas y Elegir Juntos tienen definiciones y condiciones, y no se desbloquean durante estos dos días.
+`Curse.canReveal` rechaza revelar deliberadamente el secreto a una esposa durante la maldición. `Events.apply` comprueba efectos `revealSecret` y el motor social comprueba cartas `revealsSecret`. Las frases disponibles no revelan esa información. `Curse.canUseNaturalMagic` expresa el bloqueo de magia; el combate aplica además el coste de energía externa de los artefactos.
 
-`src/data/characters.lua` exporta `list`, `byId`, `romanceIds`, `spriteWidth`, `spriteHeight`, `expressionCount` y `expressions`. Las expresiones usan índices desde cero: `neutral=0`, `happy=1`, `worried=2` y `angry=3`, correspondientes a los cuatro fotogramas de izquierda a derecha. Cada fotograma mide **64 × 64** y la hoja completa mide **256 × 64**. El recorte comienza en `índice × 64, 0`; una expresión desconocida utiliza el cuadro neutral. `src/systems/resources.lua` aplica `image:setFilter("nearest", "nearest")` a los PNG válidos. Las hojas ausentes, ilegibles o con otras dimensiones utilizan el retrato provisional, incluidas las del formato anterior.
+## Documentos y eventos únicos
 
-## Recursos: manifiesto y cargador
+`src/data/documents.lua` contiene pistas narrativas, incluida `hitogami_letter`. `src/screens/document.lua` anima el sobre, muestra el texto paginado y destaca la firma. Su lectura concede `hitogami_letter_read` y la pista en `session.clues`. Reabrirla desde el diario usa un retorno de pantalla y no concede eventos. Estos documentos nunca entran en `deck` ni `combatDeck`.
 
-`src/data/assets.lua` centraliza las rutas, dimensiones, diez identificadores de escenario, dieciséis iconos de cartas y cuatro categorías visuales. `src/systems/resources.lua` carga los 42 PNG únicos, conserva el alfa y utiliza `nearest`. Los alias de escenario comparten la imagen cargada. Solo un recurso ausente, ilegible o de dimensiones incorrectas activa un provisional, con diagnóstico registrado en `sources` y `warnings`. La documentación de rutas, composición por capas y API está en [RECURSOS.md](RECURSOS.md).
+`Events.apply(session,id,effect)` valida el lote antes de mutarlo y rechaza un identificador ya registrado. Conserva `session.events`, decisiones y diario. Efectos principales:
 
-Los PNG siguen en `assets/`; los 42 ASE editables se conservan en `sprite_sources/` con el árbol equivalente. Las fuentes no son necesarias para ejecutar LÖVE y deben permanecer versionadas.
-
-## Encuentros: `src/systems/cards.lua`
-
-| API | Resultado |
+| Campo | Resultado |
 | --- | --- |
-| `Cards.validateDeck(deck, unlocked)` | `true` o `false, motivo`; comprueba 10 cartas conocidas, sin duplicados, y desbloqueadas si se proporciona el mapa. |
-| `Cards.new(deck, context, rng)` | Encuentro nuevo. `rng(n)` es opcional y devuelve un entero uniforme de 1 a n. |
-| `Cards.canPlay(encounter, index)` | Disponibilidad de una carta de la mano y motivo del rechazo. |
-| `Cards.preview(encounter, index)` | Efectos de la carta sin modificar el encuentro. |
-| `Cards.play(encounter, index)` | Resultado o `nil, motivo`; aplica una acción válida. |
-| `Cards.pass(encounter)` | Acción gratuita que consume un turno y no otorga puntos. |
-| `Cards.restore(snapshot, deck, context)` | Encuentro reconstruido y validado, o `nil`. |
+| `starter=true` | Entrega los cinco IDs sociales y los cinco físicos iniciales. |
+| `unlock`, `presenter` | Adquiere cartas nuevas y prepara su presentación. |
+| `clue` | Añade un documento al registro de pistas. |
+| `discoverVoice`, `discoverMana` | Revela los estados al jugador. |
+| `externalEnergy` | Aumenta la capacidad de energía externa hasta 30. |
+| `antidote` | Añade el antídoto al inventario. |
+| `cure` | Exige el antídoto, lo consume, registra `antidoteUsed` y libera voz y magia. |
+| `character`, `love`, `trust` | Aplica cambios limitados a una relación. |
+| `promise`, `conflict`, `reconcile`, `critical`, `sharedMoment` | Conserva consecuencias narrativas. |
+| `mission`, `enemyDefeated`, `familyEvent` | Registra acontecimientos de campaña. |
+| `batch` | Aplica varios efectos con la misma clave de acontecimiento. |
 
-Un encuentro comienza con 4 puntos de energía para los tres turnos completos, 3 cartas en mano, 7 en el mazo de robo y ninguna en el descarte. Cada carta jugada consume un turno, paga su coste, pasa al descarte y roba una carta si queda alguna. La energía no se recarga. Una carta inválida, impagable o que incumple condiciones no consume energía ni turno. Tomar un respiro siempre está disponible mientras no hayan terminado los tres turnos, incluso sin energía.
+La carta se adquiere antes de animarse. `rewardQueue` contiene únicamente cartas recién obtenidas; cerrar la presentación consume la cola. Guardar durante la entrega conserva su página, colección y evento, sin concederlos otra vez.
 
-El barajado Fisher-Yates intercambia cada posición `i`, de 10 a 2, con un índice aleatorio entre 1 e `i`. No modifica el mazo seleccionado. Cada encuentro crea sus propias pilas y energía. No se vuelve a mezclar el descarte durante un encuentro.
+## Relaciones y finales
 
-El resultado contiene `cardId`, `score`, `trust`, `chemistry` y `text`. El estado contiene `hand`, `drawPile`, `discard`, `energy`, `turn`, `maxTurns`, `score`, `finished`, `log` y `context`. Después de la tercera acción, `finished` es verdadero y `turn` vale 4. La interfaz muestra el encuentro como completado. Los cambios de confianza y química se suman del registro y se confirman una sola vez al ver el resultado, mediante el sistema de eventos.
+`Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 65/65. `love` y `trust` se limitan a 0–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
 
-La restauración comprueba que las diez cartas se conservan exactamente una vez entre las tres zonas, que hay tres cartas en mano, que el registro no supera tres acciones y que coincide con el descarte. Recalcula energía, avance y efectos desde las definiciones canónicas. Los encuentros con un registro inconsistente se reinician al continuar; los datos de relación ya confirmados permanecen guardados.
+Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión narrativa explícita. El diario registra los cambios efectivos después de aplicar los límites.
 
-## Relaciones: `src/systems/relationships.lua`
+Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolution`, compromiso explícito y ausencia de conflictos o incumplimientos sin reparar. La familia unida requiere además 75/75 en cada una. `Relationships.ending` devuelve `family_united`, `roxy`, `eris`, `sylphiette` o `solitary`. Si quedan varias relaciones viables sin cumplir la unión, devuelve `resolution_required`: el día siete abre la conversación correspondiente. No existe un sexto final ni selección automática por puntuación.
 
-`Relationships.new()` crea registros para Sylphiette, Roxy y Eris con `trust=0`, `chemistry=0`, `events={}`, `routeState="unmet"` y `decisions={}`. `Relationships.apply(all, id, delta)` aplica `trust` y `chemistry`, limitados al intervalo de 0 a 10. `Relationships.complete(all, id, event)` registra un evento y cambia el estado inicial a `friend`.
+## Cartas sociales y combate
 
-`Relationships.canRomance(all, id, decisions)` comprueba confianza ≥ 6, química ≥ 5, eventos `route_conflict` y `mirror_truth`, y la confesión explícita `decisions.confession == id`. Es un contrato para contenido futuro: la Fase 1 no concede esos eventos ni presenta confesiones.
+Las cartas sociales declaran ID, categoría, tono, coste, contextos, frases, efectos, modificadores y obtención. El encuentro conserva la mano y sus acciones; la vista previa no muta el estado. La resolución muestra frase encantada, reacción y cambios, y bloquea entradas repetidas durante la animación. Repetir el mismo acontecimiento no acumula amor.
 
-`Relationships.ending(all, route, decisions)` devuelve `independent` si no hay una ruta válida, `romance_sylphiette`, `romance_roxy` o `romance_eris` al cumplir todos los requisitos, y `friendship_sylphiette`, `friendship_roxy` o `friendship_eris` en los demás casos con ruta válida. Este soporte lógico está probado. Las escenas de las rutas y de los siete finales pertenecen a fases pendientes; el resumen del día 2 no es un final narrativo.
+Los dos mazos admiten 5–10 cartas distintas adquiridas. El social valida viabilidad por personaje; el de combate exige dos ataques ofensivos. Las habilidades exclusivas requieren su compañera. El combate mantiene maná natural, energía externa, escudo físico y mágico, acciones, PV, estados, intenciones y comandos reproducibles. Las tácticas no confirman consecuencias afectivas hasta resolver la victoria. [Combate](COMBATE.md), [persistencia](GUARDADO.md).
 
-## Guardado: `src/systems/save.lua`
-
-| API | Resultado |
-| --- | --- |
-| `Save.newSession()` | Partida inicial con esquema de versión 1. |
-| `Save.validate(data)` | Copia normalizada o `nil, motivo`. |
-| `Save.write(session)` | `true` o `false, motivo`. |
-| `Save.load()` | Partida validada, o `nil, motivo`; puede devolver aviso si recuperó la copia anterior. |
-| `Save.exists()` | Indica si existe una partida recuperable. |
-| `Save.readOptions()` | Opciones de audio validadas, con valores predeterminados si faltan. |
-| `Save.writeOptions(options)` | Guarda opciones independientemente de la partida. |
-
-Se utiliza `love.filesystem` y la identidad configurada en `conf.lua`. Los archivos son `save.json`, `save.backup.json` y `options.json`. El archivo temporal se escribe antes del principal; se conserva una copia anterior válida. No se promete una sustitución atómica: si una escritura se interrumpe, la carga intenta recuperar la copia anterior. Una primera escritura interrumpida puede no tener copia recuperable.
-
-Se guardan día, punto narrativo, índice del diálogo, relaciones, cartas desbloqueadas, mazo, ruta cuando exista, eventos, decisiones, opciones, último resultado y estado del encuentro activo. El día se deriva del punto narrativo válido. Se limitan estadísticas y volumen, se descartan identificadores desconocidos y se sustituye un mazo inválido por el inicial. La validación corrige decisiones mal tipadas. Una decisión de diálogo ya persistida conserva su identificador y el punto de lectura; el sistema narrativo oculta las opciones ya respondidas para permitir continuar. Un capítulo que requiere acompañante vuelve al mapa si falta esa elección.
-
-`src/systems/json.lua` ofrece `Json.encode(value)` y `Json.decode(text)`. El lector no ejecuta código Lua; rechaza sintaxis incompleta, claves duplicadas, números no finitos y estructuras excesivamente profundas. Admite texto UTF-8, escapes Unicode y pares sustitutos. Los archivos de carga se limitan a 512 KiB.
-
-## Verificación
-
-`tests/gameplay.lua` exporta `run()`. Comprueba reglas de cartas, energía cero, índices inválidos, acción gratuita, finalización, preferencias y exclusivas; los siete resultados lógicos de relación; guardados parciales y corruptos, copia de respaldo, opciones, errores de escritura y conservación exacta de encuentros. El sistema de archivos de estas pruebas es una tabla en memoria: no cambia las partidas del jugador.
-
-`tests/resources.lua` verifica el manifiesto contra los PNG existentes, expresiones, dimensiones, transparencia, filtrado y respaldos ante fallos. `tests/story.lua` comprueba decisiones, acompañantes y progresión de ambos días. `tests/ui.lua` comprueba composición, píxeles de texto, disponibilidad y controles de mouse/teclado. `tests/run.lua` integra las pantallas reales, guarda en una identidad de prueba separada, alterna resoluciones y pantalla completa, y produce capturas. Los resultados y límites de cada ejecución se documentan en [VERIFICACION.md](VERIFICACION.md).
-
-## Ampliación narrativa
-
-Las tablas actuales separan contenido de motor, pero `progression.lua` y `save.lua` todavía contienen transiciones y checkpoints específicos de la Fase 1. La ampliación requiere un registro compartido de capítulos y condiciones declarativas, no solo añadir diálogos. [FASE_2.md](FASE_2.md) detalla los módulos, migraciones y pruebas pendientes para los días tres a siete. El evaluador de finales y los fondos preparados no equivalen a capítulos implementados.
+La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERIFICACION.md).

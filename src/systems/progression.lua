@@ -1,184 +1,303 @@
-local Story = require("src.data.story")
-local Events = require("src.systems.events")
-local Progression = {}
-local characters = {"sylphiette", "roxy", "eris"}
+local Story=require("src.data.story")
+local Chapters=require("src.data.chapters")
+local Characters=require("src.data.characters")
+local Events=require("src.systems.events")
+local Conditions=require("src.systems.conditions")
+local Progression={}
 
-local function containsCharacter(id)
-    return Story.companionNames[id] ~= nil
+local function copy(value)
+    local out={}; for key,item in pairs(value or {}) do out[key]=item end; return out
 end
-
-local function savedChoice(session, sceneId)
-    local scene = Story.scenes[sceneId]
-    if not scene or not scene.choices then return nil end
-    local selected = session.decisions["choice_" .. sceneId]
-    for _, choice in ipairs(scene.choices) do
-        if choice.id == selected then return choice end
-    end
+local function chapterFor(checkpoint)
+    local node=Chapters.checkpoints[checkpoint]
+    return node and Chapters.byId[node.chapterId]
 end
-
-local function move(session, checkpoint)
-    session.checkpoint = checkpoint
-    session.dialogueIndex = 1
-    session.encounter = nil
+function Progression.companion(session,checkpoint)
+    local chapter=chapterFor(checkpoint or session.checkpoint)
+    local key=chapter and chapter.companion and chapter.companion.decisionKey
+    local id=key and (session.decisions or {})[key]
+    if id and Characters.byId[id] and Characters.byId[id].romance then return id end
+end
+local function context(session,checkpoint) return {companion=Progression.companion(session,checkpoint)} end
+local function meets(session,condition,checkpoint) return Conditions.evaluate(session,condition,context(session,checkpoint)) end
+local function resolveText(text,session,checkpoint)
+    if type(text)~="string" then return text end
+    local id=Progression.companion(session,checkpoint) or "sylphiette"
+    local replacements={companion=Story.companionNames[id] or "tu acompañante",
+        companionAdvice=Story.companionAdvice[id] or "Lo resolveremos juntos.",
+        companionMemory=Story.companionMemory[id] or "Compartimos un recuerdo verdadero."}
+    return (text:gsub("{(%w+)}",function(key) return replacements[key] or "{"..key.."}" end))
+end
+local function definition(session,checkpoint)
+    local node=Chapters.checkpoints[checkpoint]
+    if not node then return nil end
+    local raw=copy(node.definition)
+    local selected=Progression.companion(session,checkpoint) or "sylphiette"
+    for key,value in pairs((raw.variants or {})[selected] or {}) do raw[key]=value end
+    return raw
+end
+function Progression.choices(session,sceneId)
+    local scene=definition(session,sceneId)
+    return scene and scene.choices or {}
+end
+local function savedChoice(session,sceneId)
+    local selected=(session.decisions or {})["choice_"..sceneId]
+    for _,choice in ipairs(Progression.choices(session,sceneId)) do if choice.id==selected then return choice end end
+end
+local function move(session,checkpoint)
+    local node=Chapters.checkpoints[checkpoint]
+    if not node then return nil,"Destino narrativo desconocido: "..tostring(checkpoint) end
+    session.checkpoint,session.day=checkpoint,node.day
+    session.dialogueIndex,session.encounter=1,nil
+    session.encounterReview,session.tutorial=nil,nil
+    session.combat,session.combatPreparation,session.trainingReview=nil,nil,nil
     return checkpoint
 end
-
-local function allMeetings(session)
-    for _, id in ipairs(characters) do
-        if not session.events["meeting_" .. id] then return false end
-    end
-    return true
+local function applyEffect(session,effect,checkpoint)
+    if not meets(session,effect.requires,checkpoint) then return false end
+    local resolved=copy(effect)
+    if resolved.character=="companion" then resolved.character=Progression.companion(session,checkpoint) end
+    if resolved.presenter=="companion" then resolved.presenter=Progression.companion(session,checkpoint) end
+    return Events.apply(session,effect.id,resolved)
+end
+local function applyEffects(session,effects,checkpoint)
+    for _,effect in ipairs(effects or {}) do applyEffect(session,effect,checkpoint) end
 end
 
+function Progression.hub(session)
+    local node=Chapters.checkpoints[session.checkpoint]
+    if not node or node.kind~="hub" then return nil end
+    local hub=copy(node.definition)
+    hub.locations=hub.locations or chapterFor(session.checkpoint).locations or {}
+    return hub
+end
 function Progression.availableCompanions(session)
-    local available = {}
-    if allMeetings(session) then
-        for _, id in ipairs(characters) do available[#available+1] = id end
+    local hub=Progression.hub(session)
+    local selection=hub and hub.companion
+    local available={}
+    if selection and meets(session,selection.requires,session.checkpoint) then
+        for _,id in ipairs(selection.options or {}) do available[#available+1]=id end
     end
     return available
 end
-
-function Progression.visit(session, character)
-    if session.checkpoint ~= "hub" or session.day ~= 2 then return nil, "No estás en el mapa del día 2." end
-    if not containsCharacter(character) then return nil, "Acompañante desconocido." end
-    if session.events["meeting_" .. character] then return nil, "Este encuentro ya está completado." end
-    return move(session, "meet_" .. character)
-end
-
-function Progression.selectCompanion(session, character)
-    if session.checkpoint ~= "hub" or not allMeetings(session) then
-        return nil, "Visita a los tres personajes antes de salir hacia las ruinas."
+function Progression.visit(session,character)
+    local hub=Progression.hub(session)
+    if not hub then return nil,"No estás en un lugar de preparación." end
+    for _,location in ipairs(hub.locations) do
+        if location.character==character and location.scene then
+            if location.completedEvent and session.events[location.completedEvent] then return nil,"Este encuentro ya está completado." end
+            if not meets(session,location.requires,session.checkpoint) then return nil,"Esta visita todavía no está disponible." end
+            return move(session,location.scene)
+        end
     end
-    if not containsCharacter(character) then return nil, "Acompañante desconocido." end
-    Events.apply(session, "companion_selected", {decision="companion", value=character})
-    -- Un guardado parcial puede conservar el evento y perder su decisión.
-    -- Elegir desde el mapa siempre restablece el acompañante explícitamente.
-    session.decisions.companion = character
-    return move(session, "seal_intro")
+    return nil,"Visita desconocida."
 end
-
-function Progression.choose(session, sceneId, choiceId)
-    if session.checkpoint ~= sceneId then return false, "Esta escena ya no está activa." end
-    local scene = Story.scenes[sceneId]
-    if not scene or not scene.choices then return false, "La escena no contiene decisiones." end
-    local key = "choice_" .. sceneId
-    local previous = savedChoice(session, sceneId)
+function Progression.selectCompanion(session,character)
+    local hub=Progression.hub(session)
+    local selection=hub and hub.companion
+    if not selection then return nil,"No puedes elegir compañía en esta pantalla." end
+    local available=false
+    for _,id in ipairs(Progression.availableCompanions(session)) do if id==character then available=true end end
+    if not available then return nil,"Completa los requisitos y elige un acompañante disponible." end
+    if not Chapters.checkpoints[selection.to] then return nil,"El destino de la expedición no está disponible." end
+    Events.apply(session,selection.event,{decision=selection.decision,value=character})
+    -- Recupera una elección perdida de un guardado parcial sin volver a premiar.
+    session.decisions[selection.decision]=character
+    return move(session,selection.to)
+end
+function Progression.choose(session,sceneId,choiceId)
+    if session.checkpoint~=sceneId then return false,"Esta escena ya no está activa." end
+    local node=Chapters.checkpoints[sceneId]
+    if not node or node.kind~="scene" then return false,"La escena no contiene decisiones." end
+    local previous=savedChoice(session,sceneId)
     if previous then
-        if previous.id == choiceId then return true end
-        return false, "Esta decisión ya quedó guardada."
+        if previous.id==choiceId then return true end
+        return false,"Esta decisión ya quedó guardada."
     end
-    for _, choice in ipairs(scene.choices) do
-        if choice.id == choiceId then
-            Events.apply(session, key, choice.effects)
-            session.decisions[key] = choiceId
+    for _,choice in ipairs(Progression.choices(session,sceneId)) do
+        if choice.id==choiceId then
+            if not meets(session,choice.requires,sceneId) then return false,"Esta respuesta no está disponible." end
+            local key="choice_"..sceneId
+            local effect=copy(choice.effects)
+            effect.id=key
+            effect.text=choice.label
+            local _,err=applyEffect(session,effect,sceneId)
+            if err then return false,err end
+            session.decisions[key]=choiceId
             return true
         end
     end
-    return false, "Decisión desconocida."
+    return false,"Decisión desconocida."
 end
-
-local function resolveText(text, session)
-    local id = session.decisions.companion or "sylphiette"
-    local replacements = {
-        companion=Story.companionNames[id] or "tu acompañante",
-        companionAdvice=Story.companionAdvice[id] or "Lo resolveremos juntos.",
-        companionMemory=Story.companionMemory[id] or "Compartimos un recuerdo verdadero.",
-    }
-    return (text:gsub("{(%w+)}", function(key) return replacements[key] or "{" .. key .. "}" end))
-end
-
--- Copia resuelta: nunca se modifica el contenido estático compartido.
-function Progression.scene(session, id)
-    local original = Story.scenes[id]
-    if not original then return nil end
-    local scene = {title=original.title, background=original.background, lines={}}
-    if not savedChoice(session, id) then scene.choices = original.choices end
-    local function append(line)
-        scene.lines[#scene.lines+1] = {
-            speaker=line.speaker == "companion" and (session.decisions.companion or "sylphiette") or line.speaker,
-            expression=line.expression or "neutral", text=resolveText(line.text, session),
-        }
-    end
-    if original.resultLines then
-        local outcome = session.decisions["outcome_" .. original.resultKey] or "partial"
-        append(original.resultLines[outcome] or original.resultLines.partial)
-    end
-    for _, line in ipairs(original.lines) do append(line) end
-    return scene
-end
-
-function Progression.encounter(session, id)
-    local original = Story.encounters[id]
-    if not original then return nil end
-    local encounter = {}
-    for key, value in pairs(original) do encounter[key] = value end
-    if encounter.character == "companion" then encounter.character = session.decisions.companion end
-    return encounter
-end
-
-local function recordEncounter(session, checkpoint, result)
-    local definition = Progression.encounter(session, checkpoint)
-    local score = type(result) == "table" and tonumber(result.score) or 0
-    score = score or 0
-    local success = score >= definition.targetScore
-    local key = "resolved_" .. checkpoint
-    if not session.events[key] then
-        local trust = type(result) == "table" and tonumber(result.trust) or 0
-        local chemistry = type(result) == "table" and tonumber(result.chemistry) or 0
-        Events.apply(session, key, {
-            decision="outcome_" .. checkpoint, value=success and "success" or "partial",
-            character=definition.character, trust=trust or 0, chemistry=chemistry or 0,
-        })
-        session.lastResult = {
-            score=score, success=success, character=definition.character, title=definition.title,
-            trust=trust or 0, chemistry=chemistry or 0,
-        }
-    end
-end
-
-function Progression.next(session, checkpoint, result)
-    checkpoint = checkpoint or session.checkpoint
-    if session.checkpoint ~= checkpoint then return nil, "La pantalla de origen ya cambió." end
-    local scene = Story.scenes[checkpoint]
-    if scene and scene.choices and not savedChoice(session, checkpoint) then
-        return nil, "Elige una respuesta antes de continuar."
-    end
-    if Story.encounters[checkpoint] then recordEncounter(session, checkpoint, result) end
-    if checkpoint == "intro" then return move(session, "day1_tutorial") end
-    if checkpoint == "day1_tutorial" then return move(session, "day1_result") end
-    if checkpoint == "day1_result" then
-        Events.apply(session, "first_anomaly", {unlock={"self_joke"}})
-        return move(session, "day1_close")
-    end
-    if checkpoint == "day1_close" then
-        Events.apply(session, "day1_complete")
-        session.day = 2
-        return move(session, "hub")
-    end
-    for _, character in ipairs(characters) do
-        if checkpoint == "meet_" .. character then return move(session, "encounter_" .. character) end
-        if checkpoint == "encounter_" .. character then return move(session, "result_" .. character) end
-        if checkpoint == "result_" .. character then
-            Events.apply(session, "meeting_" .. character, {character=character, relationshipEvent="reunion"})
-            if allMeetings(session) then Events.apply(session, "all_reunions", {unlock={"remember"}}) end
-            return move(session, "hub")
+function Progression.scene(session,id)
+    local node=Chapters.checkpoints[id]
+    if not node or node.kind~="scene" then return nil end
+    local raw=definition(session,id)
+    local scene=copy(raw)
+    scene.title=resolveText(raw.title,session,id)
+    scene.lines={}
+    scene.choices=nil
+    if not savedChoice(session,id) and raw.choices then
+        scene.choices={}
+        for _,choice in ipairs(raw.choices) do
+            if meets(session,choice.requires,id) then scene.choices[#scene.choices+1]=choice end
         end
     end
-    if checkpoint == "seal_intro" then return move(session, "seal_encounter") end
-    if checkpoint == "seal_encounter" then return move(session, "seal_result") end
-    if checkpoint == "seal_result" then
-        Events.apply(session, "seal_memory", {
-            character=session.decisions.companion, relationshipEvent="memory_seal", trust=1,
-        })
-        return move(session, "day2_close")
+    local function append(line)
+        if not meets(session,line.requires,id) then return end
+        scene.lines[#scene.lines+1]={
+            speaker=line.speaker=="companion" and (Progression.companion(session,id) or "sylphiette") or line.speaker,
+            expression=line.expression or "neutral",animation=line.animation,text=resolveText(line.text,session,id),
+            delivery=line.delivery,effect=line.effect,stateEffect=line.stateEffect,
+            portrait=line.portrait,stage=line.stage}
+        local added=scene.lines[#scene.lines]
+        if added.speaker=="rudeus" and not require("src.systems.curse").canSpeak(session,added.delivery) then
+            added.delivery=session.events.starter_gift and "enchanted" or "thought"
+        end
     end
-    if checkpoint == "day2_close" then
-        Events.apply(session, "day2_complete")
-        Events.apply(session, "phase1_complete")
-        return move(session, "phase_complete")
+    if raw.resultLines then
+        local outcome=(session.decisions or {})["outcome_"..raw.resultKey] or "partial"
+        local selected=raw.resultLines[outcome] or raw.resultLines.partial
+        if selected.speaker then append(selected) else for _,line in ipairs(selected) do append(line) end end
     end
-    if checkpoint == "phase_complete" or checkpoint == "hub" then return checkpoint end
-    return nil, "Punto de historia desconocido: " .. tostring(checkpoint)
+    for _,line in ipairs(raw.lines or {}) do append(line) end
+    return scene
+end
+function Progression.encounter(session,id)
+    local node=Chapters.checkpoints[id]
+    if not node or node.kind~="encounter" then return nil end
+    local encounter=definition(session,id)
+    if encounter.character=="companion" then encounter.character=Progression.companion(session,id) end
+    for _,adjustment in ipairs(encounter.adjustments or {}) do
+        if meets(session,adjustment.requires,id) then
+            if adjustment.targetScore~=nil then encounter.targetScore=adjustment.targetScore end
+            if adjustment.intro~=nil then encounter.intro=adjustment.intro end
+        end
+    end
+    encounter.title=resolveText(encounter.title,session,id)
+    encounter.intro=resolveText(encounter.intro,session,id)
+    return encounter
+end
+function Progression.summary(session)
+    local node=Chapters.checkpoints[session.checkpoint]
+    if not node or node.kind~="summary" then return nil end
+    local summary=copy(node.definition)
+    if summary.ending then
+        local id,reason=require("src.systems.relationships").ending(session.relationships)
+        local ending=id and require("src.data.endings").byId[id]
+        if ending then
+            for key,value in pairs(ending) do summary[key]=value end
+            summary.endingId=id
+            summary.epilogue=ending.footer
+            summary.footer="Fin de la campaña · El diario conserva tus decisiones."
+        else
+            summary.body="Falta resolver los acuerdos matrimoniales: "..tostring(reason)
+        end
+    end
+    for key,value in pairs(summary) do if type(value)=="string" then summary[key]=resolveText(value,session,session.checkpoint) end end
+    return summary
+end
+local function transitions(checkpoint)
+    local chapter=chapterFor(checkpoint)
+    return chapter and chapter.transitions and chapter.transitions[checkpoint] or {}
+end
+function Progression.canContinue(session)
+    local node=Chapters.checkpoints[session.checkpoint]
+    if not node or node.kind~="summary" or node.definition.terminal then return false end
+    for _,transition in ipairs(transitions(session.checkpoint)) do
+        if Chapters.checkpoints[transition.to] and meets(session,transition.requires,session.checkpoint) then return true end
+    end
+    return false
+end
+local function finite(value)
+    value=tonumber(value)
+    return value and value==value and math.abs(value)<math.huge and value or 0
+end
+local function recordEncounter(session,checkpoint,result)
+    local encounter=Progression.encounter(session,checkpoint)
+    local score=finite(type(result)=="table" and result.score)
+    local success=score>=encounter.targetScore
+    local key="resolved_"..checkpoint
+    if not session.events[key] then
+        local trust=finite(type(result)=="table" and result.trust)
+        local chemistry=finite(type(result)=="table" and result.chemistry)
+        Events.apply(session,key,{decision="outcome_"..checkpoint,value=success and "success" or "partial",
+            character=encounter.character,trust=trust,chemistry=chemistry,
+            text=encounter.title..(success and ": objetivo alcanzado." or ": tarea pendiente; la historia continúa.")})
+        session.lastResult={score=score,success=success,character=encounter.character,title=encounter.title,
+            targetScore=encounter.targetScore,trust=trust,chemistry=chemistry}
+    end
+end
+function Progression.next(session,checkpoint,result)
+    checkpoint=checkpoint or session.checkpoint
+    if session.checkpoint~=checkpoint then return nil,"La pantalla de origen ya cambió." end
+    local node=Chapters.checkpoints[checkpoint]
+    if not node then return nil,"Punto de historia desconocido: "..tostring(checkpoint) end
+    if node.definition.document and not (session.clues and session.clues[node.definition.document]) then
+        return nil,"Examina y lee la carta antes de continuar."
+    end
+    if node.definition.requiresCompanion and not Progression.companion(session,checkpoint) then
+        return nil,"Elige un acompañante antes de continuar."
+    end
+    if node.kind=="scene" and #Progression.choices(session,checkpoint)>0 and not savedChoice(session,checkpoint) then
+        return nil,"Elige una respuesta antes de continuar."
+    end
+    if node.kind=="encounter" then
+        if node.definition.training and not session.events[require("src.systems.training_result").key(checkpoint)] then
+            return nil,"Lee la valoración de Eris antes de cerrar el entrenamiento."
+        end
+        recordEncounter(session,checkpoint,result)
+    end
+    for _,transition in ipairs(transitions(checkpoint)) do
+        if meets(session,transition.requires,checkpoint) then
+            if not Chapters.checkpoints[transition.to] then return nil,"Destino narrativo no disponible." end
+            applyEffects(session,transition.effects,checkpoint)
+            return move(session,transition.to)
+        end
+    end
+    if node.kind=="hub" or node.definition.terminal then return checkpoint end
+    return nil,"Completa los requisitos antes de continuar."
+end
+
+-- Solo una victoria real entrega el premio, con una clave por checkpoint.
+-- Los vínculos sociales jamás reciben deltas por infligir daño mágico.
+function Progression.finishCombat(session,enc)
+    local def=Progression.encounter(session,session.checkpoint)
+    if def and def.training then
+        local Result=require("src.systems.training_result")
+        if not Result.current(session,enc) then return nil,"El entrenamiento todavía no terminó." end
+        if not session.events[Result.key(session.checkpoint)] then return nil,"Falta leer la reacción de Eris." end
+        return Progression.next(session,session.checkpoint,{score=enc.outcome=="victory" and def.targetScore or 0,trust=0,chemistry=0})
+    end
+    if session.combat~=enc or not enc.finished or enc.outcome~="victory" then
+        return nil,"El enfrentamiento todavía no tiene una victoria confirmada."
+    end
+    local checkpoint=session.checkpoint
+    def=Progression.encounter(session,checkpoint)
+    if not def or def.kind~="magic" then return nil,"No hay una anomalía activa." end
+    local enemy=require("src.data.enemies").byId[enc.enemy.id]
+    local key="combat_reward_"..checkpoint
+    if not session.events[key] then
+        session.events[key]=true
+        session.events["mirror_defeated_"..checkpoint]=true
+        if enemy and enemy.narrativeEvent then session.events[enemy.narrativeEvent]=true end
+        if enemy and enemy.reward and enemy.reward.event then session.events[enemy.reward.event]=true end
+        session.decisions["combat_turns_"..checkpoint]=enc.turn
+        session.defeatedEnemies=session.defeatedEnemies or {}
+        session.defeatedEnemies[enc.enemy.id]=true
+        for _,effect in ipairs(enc.relationshipEvents or {}) do
+            local resolved=copy(effect); resolved.text=effect.reason or "Decisión compartida en combate."
+            Events.apply(session,"tactic_"..checkpoint.."_"..effect.id,resolved)
+        end
+        if checkpoint=="day1_tutorial" then
+            Events.apply(session,"first_anomaly",{unlock={"self_joke"}})
+            session.events.combat_tutorial_completed=true
+        end
+        -- Una recompensa narrativa persiste por encuentro, sin multiplicarse
+        -- al reabrir la pantalla de victoria o repetir el botón Continuar.
+        session.decisions["combat_reward_text_"..checkpoint]=enemy and enemy.reward and enemy.reward.text or "Anomalía disipada"
+    end
+    return Progression.next(session,checkpoint,{score=def.targetScore,trust=0,chemistry=0})
 end
 
 return Progression

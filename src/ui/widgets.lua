@@ -26,7 +26,8 @@ function W.bar(x,y,w,h,value,maximum,color)
     local ratio = math.max(0,math.min(1,(tonumber(value) or 0)/math.max(1,maximum or 10)))
     local available = w-2
     rect(color or P.teal,x+1,y+1,math.floor(available*ratio),h-2)
-    for i=1,(maximum or 10)-1 do rect(P.panel,x+math.floor(available*i/(maximum or 10)),y+1,1,h-2) end
+    local divisions=math.min(10,maximum or 10)
+    for i=1,divisions-1 do rect(P.panel,x+math.floor(available*i/divisions),y+1,1,h-2) end
 end
 function W.label(text,x,y,opts) return Font.draw(text,x,y,opts) end
 function W.divider(x,y,w,color) rect(color or P.border,x,y,w,1) end
