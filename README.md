@@ -14,6 +14,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+La **Fase 5** completa la investigación del emisario, la revelación del antídoto y el regreso a Nanahoshi. Entrenar con Eris en cada uno de los días 1–5 abre la demostración controlada de Orsted y dos mejoras gratuitas elegidas por el jugador. Los cinco finales tienen escenas propias y también son alcanzables sin su ayuda. [Eventos, reglas y persistencia](docs/FASE_5_CIERRE.md).
+
 La **Fase 4** añade enemigos por día, apoyos con afinidad persistente, costes y recargas, preparación de combate y Badigadi de **1000 PV en el Día 7**. Puede vencerse sin compañeras ni el evento opcional de Orsted. [Reglas y simulaciones](docs/FASE_4_COMBATE.md).
 
 Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
@@ -27,10 +29,10 @@ Cada día dispone de **tres interacciones libres**, repetibles con cualquier esp
 | 1 · El silencio de Rudy | Sueño con Hitogami; despertar; recoger y leer la carta —H; descubrir voz y maná sellados; notas a Nanahoshi; regalo de Orsted; tutoriales jugables. |
 | 2 · Palabras prestadas | Conversaciones con las tres esposas, necesidades distintas, nuevas cartas e investigación de la botica. |
 | 3 · El primer fragmento | Investigación con Nanahoshi, bosque, ruinas, compañera elegida, combates y magia alimentada por energía externa. |
-| 4 · El precio del silencio | Investigación del sello con Nanahoshi, conflictos familiares, emisario, recuerdo de la poción y pistas sobre Badigadi. |
+| 4 · El precio del silencio | Investigación del sello con Nanahoshi, conflictos familiares, emisario, recuerdo de la poción y ruta cifrada hacia su responsable. |
 | 5 · Lazos puestos a prueba | Duelo de entrenamiento con Eris; misiones personales, compromisos, reconciliaciones y cartas de compañeras. |
-| 6 · El último cerco | Revancha opcional con Eris, reflejo de Rudy, lacayo de Hitogami y prueba opcional no letal de Orsted si investigaste las runas. |
-| 7 · El desafío y la verdadera voz | Preparación del equipo; Badigadi de 1000 PV y cuatro fases; antídoto, conversación directa, resolución de relaciones y epílogo. |
+| 6 · El último cerco | Revancha opcional con Eris, reflejo de Rudy, combate contra el emisario y revelación del guardián del antídoto; Orsted aparece si entrenaste los cinco días. |
+| 7 · El desafío y la verdadera voz | Preparación del equipo; Badigadi de 1000 PV y cuatro fases; antídoto, recuperación de voz y magia, resolución matrimonial, devolución de cartas y cinco epílogos específicos. |
 
 Hitogami manipula la historia; no es un enemigo físico convencional. Orsted es aliado. Badigadi acepta la derrota y sobrevive. Hay exactamente **cinco finales**: las tres esposas, solamente Roxy, solamente Eris, solamente Sylphiette o ninguna. Las parejas viables pendientes se resuelven mediante decisiones narrativas, sin escoger automáticamente el mayor amor. [Capítulos y condiciones](docs/CAPITULOS.md).
 
@@ -75,7 +77,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 7**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v7.json`, con respaldo `campaign-v7.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v6/v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 8**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v8.json`, con respaldo `campaign-v8.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v7/v6/v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -83,6 +85,6 @@ La continuidad `rudy_curse` usa **versión 7**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v7_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v8_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.

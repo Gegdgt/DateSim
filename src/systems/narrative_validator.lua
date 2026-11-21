@@ -300,6 +300,10 @@ local function validate(catalog,options)
         days[chapter.day]=true
         if chapter.nextChapter and not catalog.byId[chapter.nextChapter] then fail(where,"siguiente capítulo desconocido") end
         if chapter.implemented~=false then
+            for _,runtime in ipairs(chapter.runtimeEvents or {}) do
+                if not identifier(runtime.id) or not nodes[runtime.checkpoint] then fail(where,"Productor de evento dinámico inválido")
+                else events[runtime.id]=true;produced(runtime.id,runtime.checkpoint,runtime.checkpoint) end
+            end
             if not nodes[chapter.initial] or nodes[chapter.initial].chapterId~=chapter.id then fail(where,"entrada de capítulo inexistente") end
             if chapter.companion then
                 local selection=nodes[chapter.companion.selectionCheckpoint]
@@ -450,7 +454,7 @@ local function validate(catalog,options)
         end
     end
     for id in pairs(nodes) do
-        if not reachable[id] and not nodes[id].definition.legacyEncounter then fail(id,"checkpoint inalcanzable desde el inicio") end
+        if not reachable[id] and not nodes[id].definition.legacyEncounter and not nodes[id].definition.historical then fail(id,"checkpoint inalcanzable desde el inicio") end
         if not exits[id] then fail(id,"ruta bloqueada o ciclo sin un resumen terminal") end
     end
     return #errors==0,errors

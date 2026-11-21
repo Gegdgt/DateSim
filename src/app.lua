@@ -137,6 +137,8 @@ function App:resume(transition)
     if transition.type=="new_day" then self.audio:effect("new_day") end
     if node.definition.agenda then
         self:switch(require("src.screens.agenda").new(self),transition)
+    elseif node.definition.orstedReward then
+        self:switch(require("src.screens.orsted_reward").new(self),transition)
     elseif node and node.kind=="hub" then
         self:switch(require("src.screens.hub").new(self),transition)
     elseif node and node.kind=="summary" then
@@ -225,7 +227,7 @@ function App:endPractice()
 end
 
 function App:finishCombat(enc)
-    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training and enc.enemy.id~="orsted_trial") then return false end
+    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training and enc.enemy.id~="orsted_trial" and not enc.narrativeDefeat) then return false end
     if self.practice then self:endPractice(); return true end
     local ok,err=Progression.finishCombat(self.session,enc)
     if not ok then self:notify(err); return false end

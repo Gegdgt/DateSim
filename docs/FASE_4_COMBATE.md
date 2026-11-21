@@ -21,12 +21,12 @@ Las cartas consultan `card_collection`: en nivel 1, bastón causa 2, espada 3 co
 | 3 | 36 | 4 | 3 | Preparación y golpe de daño normal +3 |
 | 4 | 55 | 5 | 5 | Debilita a Rudy un turno |
 | 5 | 180 | 6 | 7 | Interrumpe una acción; dos golpes de 3 |
-| 6 | 260 | 7 | 9 | Lacayo de Hitogami y prueba opcional de Orsted |
+| 6 | 260 | 7 | 9 | Emisario de Hitogami y demostración condicional de Orsted (Fase 5) |
 | 7 | 300 | 8 | 10 | Actividades ordinarias; el jefe tiene configuración propia |
 
 Guardián de las ruinas multiplica PV por 1,15; reflejo de Rudy por 1,10; reflejo distorsionado por 1,05, redondeando al entero más cercano. Los entrenamientos conservan reglas específicas. El salto de los días 5–6 acompaña el acceso a técnicas mejoradas y apoyos: se verifica con acciones legales, defensa, mejoras pagadas y recorridos de campaña. Hay además 36 simulaciones intermedias: seis semillas por día, sin compañeras, niveles 1, 1, 2, 3, 4 y 5.
 
-El Día 6 abre el camino tras el reflejo y el lacayo. Investigar las runas (`observatory_research="tested"`) habilita una prueba no letal de Orsted. Aceptarla es opcional y perder permite continuar; no concede antídoto. El Día 7 permite elegir una compañera, todas las disponibles o viajar solo. Una separación definitiva excluye apoyos y cartas exclusivas de esa esposa.
+La Fase 5 sustituye el acceso a Orsted por la condición de entrenar con Eris en cada día 1–5. El Día 6 abre el camino tras el reflejo y el emisario; la demostración de Orsted termina en derrota narrativa y concede patrones y dos mejoras elegidas. La antigua prueba por runas permanece sólo para partidas históricas. [Reglas actuales](FASE_5_CIERRE.md). El Día 7 permite elegir una compañera, todas las disponibles o viajar solo. Una separación definitiva excluye apoyos y cartas exclusivas de esa esposa.
 
 ## Afinidad y habilidades
 
@@ -102,7 +102,7 @@ Todas las combinaciones de nivel 5/10 ganan sus ocho semillas. Nivel 1 solo pier
 
 `companions.lua` calcula afinidad y equipo; `support_actions.lua` resuelve habilidades; `combat.lua`, turnos y comandos; `support_panel.lua`, preparación y confirmación. `war_chapters.lua` enlaza los encuentros antes de instalar la agenda. Nuevas habilidades y magnitudes se declaran en datos.
 
-Guardado **v7**, con archivo y respaldo propios: migra v6/v5/v4 sin modificarlos. Combates nuevos guardan `context.warVersion=1`, `balanceVersion=3`, relaciones iniciales, equipo, cargas, recargas y acciones. Restaurar reproduce los comandos, incluidos apoyos y confirmación de riesgo, y compara el resultado; no repone cargas ni concede premios. `combat_legacy.lua` y `enemies_legacy.lua` preservan las batallas anteriores. Si una partida obtuvo el antídoto en el antiguo Día 6, continúa su desenlace sin exigir otro jefe.
+Guardado **v8**, con archivo y respaldo propios: migra v7/v6/v5/v4 sin modificarlos. Combates nuevos guardan `context.warVersion=1`, `balanceVersion=3`, relaciones iniciales, equipo, cargas, recargas y acciones. Restaurar reproduce los comandos, incluidos apoyos y confirmación de riesgo, y compara el resultado; no repone cargas ni concede premios. `combat_legacy.lua` y `enemies_legacy.lua` preservan las batallas anteriores. Si una partida obtuvo el antídoto en el antiguo Día 6, continúa su desenlace sin exigir otro jefe.
 
 Las suites `war`, `war_balance` y `war_ui` cubren fórmulas, umbrales 24.99/25/49/50/79/80/89/90/100, valores negativos, recargas, pulsaciones repetidas, separación, fases, carga, barras y riesgo. `campaign` recorre siete días con compras legales; `restructure_integration` usa las pantallas reales. [Verificación ejecutada](VERIFICACION.md).
 

@@ -106,6 +106,7 @@ function Events.apply(session,id,effects)
         if effect.cure then
             session.inventory.antidote=false; session.inventory.antidoteUsed=true
             session.curse.active=false; session.curse.voiceSealed=false; session.curse.manaBlocked=false
+            session.curse.chantlessBlocked=false
         end
         if effect.route and session.day>=5 and session.relationships[effect.route] then session.route=effect.route end
         for _,cardId in ipairs(effect.unlock or {}) do unlock(cardId) end

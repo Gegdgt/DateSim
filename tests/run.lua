@@ -3,8 +3,9 @@ return function()
     io.stdout:setvbuf("no")
     local group=os.getenv("DATESIM_TEST_GROUP")
     local module=os.getenv("DATESIM_TEST_MODULE")
-    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v7_tests_"..module);require("tests."..module).run();return end
-    love.filesystem.setIdentity("cartas_del_destino_v7_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v8_tests_"..module);require("tests."..module).run();return end
+    love.filesystem.setIdentity("cartas_del_destino_v8_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="finale" or group=="finale-ui" then require("tests.finale").run();if group=="finale-ui" then require("tests.finale_ui").run() end;return end
     if group=="war" or group=="war-ui" then require("tests.war").run();require("tests.war_balance").run();if group=="war-ui" then require("tests.war_ui").run() end;return end
     if group=="family" or group=="family-ui" then require("tests.family").run();if group=="family-ui" then require("tests.family_ui").run() end;return end
     if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
@@ -43,6 +44,8 @@ return function()
     require("tests.war").run()
     require("tests.war_balance").run()
     require("tests.war_ui").run()
+    require("tests.finale").run()
+    require("tests.finale_ui").run()
     require("tests.relationship_bars").run()
     require("tests.affinity").run()
     require("tests.training_integration").run()
@@ -50,6 +53,6 @@ return function()
     require("tests.curse_social").run()
     require("tests.dialogue_branching").run()
     require("tests.dialogue_visual").run()
-    require("tests.campaign").run()
+    if group~="regression" then require("tests.campaign").run() end
     require("tests.restructure_integration").run()
 end

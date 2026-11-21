@@ -7,6 +7,8 @@ end
 local E={list=copy(Legacy.list),byId={},default=Legacy.default,difficulty=Balance.days}
 for _,e in ipairs(E.list)do E.byId[e.id]=e end
 for _,e in ipairs({
+ {id="hitogami_emissary",name="Emisario de Hitogami",portrait="emisario",maxHp=260,weakness="earth",shape="guardian",defeatText="El emisario pierde sus barreras y queda rodeado. Ahora deberá revelar quién guarda el antídoto."},
+ {id="orsted_demonstration",name="Orsted · Demostración no ganable",portrait="orsted",maxHp=120,shape="guardian",nonlethal=true,defeatText="Orsted termina la demostración sin heridas graves."},
  {id="hitogami_minion",name="Lacayo de Hitogami",portrait="guardian_ruinas",maxHp=120,weakness="earth",shape="guardian",defeatText="El lacayo huye. Hitogami pierde el acceso al camino, no su existencia."},
  {id="orsted_trial",name="Orsted: prueba de control",portrait="orsted",maxHp=120,weakness="water",shape="guardian",nonlethal=true,defeatText="Orsted baja la guardia. La prueba termina; sigue siendo un aliado."},
 })do e.narrativeEvent=e.id.."_defeated";e.defeatedEvent=e.narrativeEvent;e.reward={event=e.narrativeEvent};E.list[#E.list+1]=e;E.byId[e.id]=e end
@@ -17,6 +19,7 @@ function E.resolve(id,context)
  local day=context.tutorial and 1 or context.difficulty or context.day or 1
  local p=Balance.days[day] or Balance.days[1]
  e.difficulty={level=day,name=p.name}
+ if e.id=="orsted_demonstration" then e.maxHp=Balance.orsted.hp;e.actions=copy(Balance.orsted.actions);return e end
  if e.id=="eris_training" or e.id=="badigadi_training" then return Legacy.resolve(id,context) end
  if e.id=="badigadi_final" then e.maxHp=Balance.boss.hp;e.sealMax=Balance.boss.seal;e.actions=copy(Balance.boss.phases.endurance);return e end
  e.maxHp=math.floor(p.hp*(Balance.hpFactors[e.id] or 1)+.5)

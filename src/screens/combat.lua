@@ -224,7 +224,7 @@ function CombatScreen.new(app,definition)
             return
         end
         if self.enc.training and self.enc.finished then app:resume();return end
-        if self.enc.outcome~="victory" and self.enc.enemy.id~="orsted_trial" then return end
+        if self.enc.outcome~="victory" and self.enc.enemy.id~="orsted_trial" and not self.enc.narrativeDefeat then return end
         app:finishCombat(self.enc)
     end
     function s:update(dt)
@@ -271,7 +271,7 @@ function CombatScreen.new(app,definition)
         W.panel(242,8,390,78)
         self:text(self.enc.enemy.name,252,14,194,P.lavender)
         self:text(self.enc.enemy.phase and ({endurance="I · Resistencia",six_arms="II · Seis brazos",resolve="III · Resistencia",seal="IV · Sello "..(self.enc.enemy.seal or 0),victory="IV · Victoria"})[self.enc.enemy.phase] or stateText(self.enc.enemy),452,14,170,P.muted,1,"right")
-        self:text((self.enc.training and "Resistencia " or "Vida ")..self.enc.enemy.hp.." / "..self.enc.enemy.maxHp,252,29,178,P.ink)
+        self:text((self.enc.enemy.id=="orsted_demonstration" and "Guardia " or self.enc.training and "Resistencia " or "Vida ")..self.enc.enemy.hp.." / "..self.enc.enemy.maxHp,252,29,178,P.ink)
         self:text("Escudo "..self.enc.enemy.shield,438,29,180,P.teal)
         W.bar(252,43,370,8,self.displayHp.enemy,self.enc.enemy.maxHp,P.danger)
         local intent=self.enc.enemy.intent
@@ -480,9 +480,10 @@ function CombatScreen.new(app,definition)
         self:begin();rect(P.shadow,0,0,640,360,.85)
         local won=self.enc.outcome=="victory"
         W.panel(69,31,502,296,{border=won and P.gold or P.danger})
-        if self.enc.enemy.id=="orsted_trial" then
-            self:text("PRUEBA DE ORSTED COMPLETADA",90,52,460,P.gold)
-            self:text("Orsted detiene el ejercicio. Ambos siguen vivos. La prueba es opcional y no condiciona el antídoto.",94,110,452,P.ink)
+        if self.enc.enemy.id=="orsted_trial" or self.enc.narrativeDefeat then
+            self:text(self.enc.narrativeDefeat and "DERROTA NARRATIVA · ORSTED" or "PRUEBA DE ORSTED COMPLETADA",90,52,460,P.gold)
+            self:text("Orsted detiene el ejercicio. Ambos siguen vivos. Esta derrota no termina la partida ni penaliza las relaciones.",94,110,452,P.ink)
+            self:text("Turnos: "..self.enc.turn.." · Continúa para escuchar su evaluación.",94,172,452,P.teal)
             self:button("Continuar",138,253,364,28,function()self:continue()end)
             return
         end
@@ -586,7 +587,7 @@ function CombatScreen.new(app,definition)
         if self:navigate(key) then return end
         local advance=key=="return" or key=="space" or key=="kpenter"
         if self.enc.finished then
-            if advance then if self.enc.outcome=="victory" or self.enc.training or self.enc.enemy.id=="orsted_trial" then self:continue() else self:retry() end end
+            if advance then if self.enc.outcome=="victory" or self.enc.training or self.enc.enemy.id=="orsted_trial" or self.enc.narrativeDefeat then self:continue() else self:retry() end end
             return
         end
         if advance and self.tutorial and (self.tutorial.stage=="attack_result" or self.tutorial.stage=="enemy_result") then self:advanceGuide();return end

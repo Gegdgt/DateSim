@@ -52,10 +52,14 @@ Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolut
 
 ## Cartas sociales y combate
 
-`battle_balance.lua` declara enemigos por día y habilidades de apoyo. `companions.lua` toma las relaciones persistentes; `support_actions.lua` aplica afinidad, costes, acciones y recargas. `war_chapters.lua` coloca el jefe en el Día 7. El guardado v7 reproduce apoyos mediante comandos y conserva batallas anteriores con módulos `*_legacy`. [Arquitectura y balance](FASE_4_COMBATE.md).
+`battle_balance.lua` declara enemigos por día y habilidades de apoyo. `companions.lua` toma las relaciones persistentes; `support_actions.lua` aplica afinidad, costes, acciones y recargas. `war_chapters.lua` coloca el jefe en el Día 7. El guardado v8 reproduce apoyos mediante comandos y conserva batallas anteriores con módulos `*_legacy`. [Arquitectura y balance](FASE_4_COMBATE.md).
 
 Las cartas sociales declaran ID, categoría, tono, coste, contextos, frases, efectos, modificadores y obtención. El encuentro conserva la mano y sus acciones; la vista previa no muta el estado. La resolución muestra frase encantada, reacción y cambios, y bloquea entradas repetidas durante la animación. Repetir el mismo acontecimiento no acumula amor.
 
 Los dos mazos admiten 5–10 cartas distintas adquiridas. El social valida viabilidad por personaje; el de combate exige dos ataques ofensivos. Las habilidades exclusivas requieren su compañera. El combate mantiene maná natural, energía externa, escudo físico y mágico, acciones, PV, estados, intenciones y comandos reproducibles. Las tácticas no confirman consecuencias afectivas hasta resolver la victoria. [Combate](COMBATE.md), [persistencia](GUARDADO.md).
+
+## Cierre narrativo
+
+`final_chapters.lua` extiende las transiciones sin reemplazar la máquina de estados: registro diario de entrenamiento, emisario, demostración controlada de Orsted, premios elegidos, devolución y cinco epílogos. `finale.lua` centraliza condiciones y operaciones únicas; `family.lua` y `training_result.lua` le notifican actividades completadas. `eris_training_days` se reconstruye desde eventos estables; `orsted_reward.pending` guarda sólo la presentación de una elección ya aplicada. La recuperación de voz y magia nunca restaura un matrimonio. [Arquitectura de Fase 5](FASE_5_CIERRE.md).
 
 La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERIFICACION.md).

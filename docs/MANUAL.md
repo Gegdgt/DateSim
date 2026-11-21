@@ -82,8 +82,14 @@ Ganar concede +8 amor y +6 confianza. Una derrota después de una pelea exigente
 
 El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes disculparte y aceptar una revancha el día seis; ganar o ofrecer una pelea exigente después de la disculpa repara ese conflicto. No hay reintentos para acumular puntos de entrenamiento.
 
+## La visita de Orsted
+
+Completa al menos un entrenamiento con Eris en cada uno de los días 1–5. Repetir tres veces un solo día no sustituye las fechas que faltan. El diario muestra el calendario; cuentan el entrenamiento físico, el compartido, los duelos y la evaluación del duelo principal del Día 5.
+
+Orsted aparece el Día 6 si se cumple la condición. Su demostración anuncia una derrota narrativa: usa cartas y defensa durante cuatro turnos. No pierdes la campaña ni afinidad. Después entrega los patrones que falten y deja elegir dos cartas distintas para N10, una de combate y otra social. Es gratis y no recupera matrimonios separados. Puedes completar la campaña sin esta ayuda.
+
 ## Finales, guardado y opciones
 
-El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
+El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos. Después Rudy devuelve las cartas a Nanahoshi, conservando el catálogo y los niveles, y se muestra la escena del epílogo correspondiente.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v7.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v8.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).

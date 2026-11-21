@@ -67,6 +67,7 @@ function Family.attention(session,id,visited)
  end
 end
 function Family.activityFinished(session,def,instance)
+ require("src.systems.finale").recordTraining(session,def.id)
  local f=Family.ensure(session);local Events=require("src.systems.events")
  local visits=session.daily.visits[def.character]
  if visits==3 then

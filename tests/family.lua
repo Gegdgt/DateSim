@@ -124,11 +124,11 @@ function Suite.run()
  malformed=clone(s);malformed.family.queue={{id="bad",character="rudeus",kind="departure",phase=1}}
  check(not Save.validate(malformed),"Rechaza partida de quien no es esposa")
  local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_family_v5_migration_tests")
- for _,file in ipairs({Save.filename,Save.backup,"campaign-v7.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
+ for _,file in ipairs({Save.filename,Save.backup,"campaign-v8.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
  local old=fresh();old.version=5;old.family=nil;old.relationships.roxy.love=65
  local bytes=assert(Json.encode(old));assert(love.filesystem.write("campaign-v5.json",bytes))
- local migrated=assert(Save.load());check(migrated.version==7 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
- check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v7 conserva bytes originales v5")
+ local migrated=assert(Save.load());check(migrated.version==8 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v8 conserva bytes originales v5")
  love.filesystem.setIdentity(identity)
  local oldSocial,definition=require("tests.dialogue_branching").fixture("encounter_eris",{"listen","be_honest","encourage","subtle_flirt","light_joke"})
  oldSocial.relationships.eris.love=2;oldSocial.relationships.eris.trust=1

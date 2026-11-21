@@ -1,6 +1,6 @@
 # Código completo del proyecto
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, Badigadi de 1000 PV, apoyos por afinidad, guardado v7, animaciones y audio sintetizado.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, animaciones y audio sintetizado.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -377,10 +377,10 @@ Cada capítulo incluye además una agenda con tres actividades libres repetibles
 | 1 · El silencio de Rudy | Sueño con Hitogami; despertar en el hogar; interacción con el sobre; lectura de la carta firmada por —H; asociación de la firma; descubrimiento de voz sellada y maná bloqueado; visita privada a Nanahoshi mediante notas; cartas de Orsted; tutorial social y combate real contra la anomalía. | Pista `hitogami_letter`; descubrimientos; cinco cartas sociales y cinco físicas; tutorial completado. |
 | 2 · Palabras prestadas | Visitas a las tres esposas mediante respuestas encantadas. Reparto del hogar, investigación entre iguales y práctica de retirada. Elección de compañera; bestia del bosque o desvío seguro; etiqueta de botica. | Promesas y conflictos separados por esposa; pistas de la poción; Recordar un detalle, Respuesta feliz, Respuesta atrevida, Reconocer un error y Compartir un miedo al completar las visitas. |
 | 3 · El primer fragmento | Consulta privada; elección de compañera; exploración del bosque; alarma ilusoria y guardián de las ruinas; primer fragmento; discusión familiar sobre responsabilidades. | Fragmento: +12 de energía externa; Proyectil de Agua y Muro de Tierra; Proponer un plan, Analizar runas y Barrera de Tierra. Investigar con cuidado concede Barrera reforzada. El maná natural sigue bloqueado. |
-| 4 · El precio del silencio | Orsted y Cliff confirman en privado que escribir el secreto tampoco evita la maldición. Encuentro con el emisario; recuerdo de la entrega y consumo de la poción; consejo familiar sobre riesgos; protector del almacén; investigación del antídoto; promesa de Badigadi y práctica opcional. | Pista `potion_origin`; fragmento: +16 de energía externa; Bala de Agua, Proyectil de Piedra, Respuesta enojada, Disculpa sincera y Cambiar de tema. El análisis cuidadoso concede Pantano. |
+| 4 · El precio del silencio | Nanahoshi y Cliff confirman en privado que escribir el secreto tampoco evita la maldición. Encuentro con el emisario; recuerdo de la entrega y consumo de la poción; consejo familiar sobre riesgos; protector del almacén; investigación de una ruta cifrada; encuentro amistoso con Badigadi y práctica opcional, sin revelar quién custodia el antídoto. | Pista `potion_origin`; fragmento: +16 de energía externa; Bala de Agua, Proyectil de Piedra, Respuesta enojada, Disculpa sincera y Cambiar de tema. El análisis cuidadoso concede Pantano. |
 | 5 · Lazos puestos a prueba | Tareas individuales con las tres esposas, encuentro social y combate de apoyo para cada una; compromisos, límites y reparaciones. Se anticipan sus proyectos de vida para que las decisiones finales tengan antecedentes. | Refuerzo: +20 de energía externa (máximo 30); Cañón de Agua y su versión superior; técnicas exclusivas si la tarea social tuvo éxito, se asume el compromiso y hay confianza suficiente. |
-| 6 · El último cerco | Elección de compañera; reflejo de Rudy; lacayo de Hitogami; prueba opcional de Orsted habilitada por investigar las runas. La prueba permite continuar incluso perdiendo. | Camino abierto y preparación del contenedor. El antídoto sigue con Badigadi; voz y magia permanecen bloqueadas. |
-| 7 · El desafío y la verdadera voz | Elegir una compañera, todas las disponibles o viajar solo; Badigadi de 1000 PV, cuatro fases y ruptura del sello; beber el antídoto; conversaciones y epílogo. | `antidote_obtained`, consumo único y uno de cinco finales. Badigadi sigue vivo. La cura no suma afinidad ni restaura matrimonios separados. |
+| 6 · El último cerco | Elección de compañera; reflejo de Rudy; emisario de Hitogami; su derrota y confesión revelan al guardián del antídoto. Orsted aparece sólo si hubo entrenamiento con Eris en cada día del 1 al 5; demuestra su superioridad en un combate controlado. | Pista `antidote_location`. La ruta de Orsted desbloquea la colección faltante y permite elegir dos cartas distintas, una de combate y otra social, para N10 gratis. Voz y magia permanecen bloqueadas. |
+| 7 · El desafío y la verdadera voz | Elegir una compañera, todas las disponibles o viajar solo; Badigadi de 1000 PV, cuatro fases y ruptura del sello; beber el antídoto; conversaciones, devolución de las cartas a Nanahoshi y escena específica de epílogo. | `antidote_obtained`, consumo único, recuperación de magia sin conjuro, `enchanted_cards_returned` y uno de cinco finales. Badigadi sigue vivo. La cura no suma afinidad ni restaura matrimonios separados. |
 
 Los IDs históricos de algunos checkpoints (`seal_result`, `seal_truth`, `mirror_final_plan`) permanecen como claves internas para reutilizar las reglas y pruebas de relaciones. Ya no describen una campaña centrada en el Espejo. No se muestran como títulos narrativos.
 
@@ -410,11 +410,11 @@ Cuando dos relaciones siguen siendo viables, las conversaciones del día siete r
 
 ## Autoría y pruebas
 
-`src/data/chapters/day1.lua`–`day7.lua` contienen escenas, encuentros, decisiones y transiciones. `src/data/endings.lua` contiene los cinco epílogos. Los efectos persistentes pasan por eventos con IDs estables, de modo que guardar, cargar y volver a entrar no repite recompensas.
+`src/data/chapters/day1.lua`–`day7.lua` contienen la base de escenas, encuentros y decisiones. `war_chapters.lua` organiza el combate final y `final_chapters.lua` instala la investigación, Orsted, devolución y las cinco escenas de epílogo antes de aplicar la agenda. `src/data/endings.lua` contiene los cinco resúmenes finales. [Fase 5](FASE_5_CIERRE.md). Los efectos persistentes pasan por eventos con IDs estables, de modo que guardar, cargar y volver a entrar no repite recompensas.
 
-`tests/campaign.lua` recorre 35 campañas reales variando los ocho conjuntos posibles de matrimonios conservados, las tres compañeras y decisiones de reparación. El recorrido registra la carta como pista, equipa exclusivamente técnicas adquiridas, ejecuta combates legales, neutraliza el sello de Badigadi mediante acciones explícitas, comprueba el consumo del antídoto y guarda/carga entre checkpoints. También prueba que una equivocación temprana o del quinto día puede repararse con antecedentes concretos.
+`tests/campaign.lua` recorre 40 campañas reales variando los ocho conjuntos posibles de matrimonios conservados, las tres compañeras y decisiones de reparación. El recorrido registra la carta como pista, equipa exclusivamente técnicas adquiridas, ejecuta combates legales, neutraliza el sello de Badigadi mediante acciones explícitas, comprueba el consumo del antídoto y guarda/carga entre checkpoints. También prueba que una equivocación temprana o del quinto día puede repararse con antecedentes concretos.
 
-La suite recorre **31 campañas completas y los cinco finales**, incluyendo el duelo real antes de continuar las misiones. La integración adicional verifica los cuatro resultados y la revancha reconciliadora. Es una verificación automatizada del flujo y las reglas; no sustituye una sesión larga de prueba narrativa con jugadores. Las cifras de la ejecución actual se mantienen en [VERIFICACION.md](VERIFICACION.md).
+La suite recorre **40 campañas completas y los cinco finales**, incluyendo cinco recorridos explícitos sin la ayuda de Orsted y una especialización financiada con la economía ordinaria. Incluye el duelo real antes de continuar las misiones. La integración adicional verifica los cuatro resultados y la revancha reconciliadora. Es una verificación automatizada del flujo y las reglas; no sustituye una sesión larga de prueba narrativa con jugadores. Las cifras de la ejecución actual se mantienen en [VERIFICACION.md](VERIFICACION.md).
 ````
 
 ## docs/COBERTURA_DIALOGOS.md
@@ -514,7 +514,7 @@ Escudos absorben antes que la vida y caducan al volver a Rudy. Golpes múltiples
 
 ## Progresión y compañeras
 
-PV ordinarios de referencia: 10, 20, 36, 55, 180, 260 y 300 según día; guardianes y reflejos varían. Aparecen defensas, golpes preparados, debilitamientos e interrupciones. Día 6 incluye el lacayo de Hitogami y la prueba opcional no letal de Orsted. Día 7 presenta a Badigadi con **1000 PV**, independientemente del equipo.
+PV ordinarios de referencia: 10, 20, 36, 55, 180, 260 y 300 según día; guardianes y reflejos varían. Aparecen defensas, golpes preparados, debilitamientos e interrupciones. Día 6 incluye el emisario de Hitogami y, si se entrenó con Eris en cada día 1–5, la demostración no ganable y no letal de Orsted. Ésta usa 120 de guardia finita, tres turnos de ataques y una terminación controlada en el cuarto; la derrota narrativa permite continuar sin penalizar relaciones. [Secuencia y recompensas](FASE_5_CIERRE.md). Día 7 presenta a Badigadi con **1000 PV**, independientemente del equipo.
 
 El daño de apoyo escala con el promedio de amor y confianza, acotado a 0–100 y dividido entre 100. Especiales máximos: Sylphiette 90, Eris 150 y Roxy 110; tres usos, recarga de tres turnos y costes de 4, 4 y 5 de energía. Sus ataques normales son menores. Roxy analiza y reduce defensas; Eris protege e interrumpe; Sylphiette alterna ataque, barrera y curación. Las separadas no participan.
 
@@ -533,7 +533,7 @@ Badigadi acepta la derrota y sigue vivo. La victoria entrega el antídoto una ve
 
 El duelo con Eris conserva resistencia no letal, contraataque, métricas de esfuerzo y resultados narrativos. Perder permite continuar. [Afinidad, entrenamiento y revancha](AFINIDAD_Y_ENTRENAMIENTO.md).
 
-Los combates nuevos guardan `warVersion=1` y `balanceVersion=3` dentro del formato v7. Las batallas antiguas se reproducen con módulos históricos, incluidas sus cifras originales; los archivos anteriores no se sobrescriben. Cargar no duplica cargas, acciones ni premios. [Guardado](GUARDADO.md).
+Los combates nuevos guardan `warVersion=1` y `balanceVersion=3` dentro del formato v8. Las batallas antiguas se reproducen con módulos históricos, incluidas sus cifras originales; los archivos anteriores no se sobrescriben. Cargar no duplica cargas, acciones ni premios. [Guardado](GUARDADO.md).
 
 La verificación incluye 576 simulaciones del jefe, 36 encuentros intermedios, fórmulas de afinidad, controles reales, capturas y recorridos completos de campaña con compras legales. Los ensayos históricos están separados del balance actual. [Resultados medidos](VERIFICACION.md).
 ````
@@ -1215,12 +1215,12 @@ Las cartas consultan `card_collection`: en nivel 1, bastón causa 2, espada 3 co
 | 3 | 36 | 4 | 3 | Preparación y golpe de daño normal +3 |
 | 4 | 55 | 5 | 5 | Debilita a Rudy un turno |
 | 5 | 180 | 6 | 7 | Interrumpe una acción; dos golpes de 3 |
-| 6 | 260 | 7 | 9 | Lacayo de Hitogami y prueba opcional de Orsted |
+| 6 | 260 | 7 | 9 | Emisario de Hitogami y demostración condicional de Orsted (Fase 5) |
 | 7 | 300 | 8 | 10 | Actividades ordinarias; el jefe tiene configuración propia |
 
 Guardián de las ruinas multiplica PV por 1,15; reflejo de Rudy por 1,10; reflejo distorsionado por 1,05, redondeando al entero más cercano. Los entrenamientos conservan reglas específicas. El salto de los días 5–6 acompaña el acceso a técnicas mejoradas y apoyos: se verifica con acciones legales, defensa, mejoras pagadas y recorridos de campaña. Hay además 36 simulaciones intermedias: seis semillas por día, sin compañeras, niveles 1, 1, 2, 3, 4 y 5.
 
-El Día 6 abre el camino tras el reflejo y el lacayo. Investigar las runas (`observatory_research="tested"`) habilita una prueba no letal de Orsted. Aceptarla es opcional y perder permite continuar; no concede antídoto. El Día 7 permite elegir una compañera, todas las disponibles o viajar solo. Una separación definitiva excluye apoyos y cartas exclusivas de esa esposa.
+La Fase 5 sustituye el acceso a Orsted por la condición de entrenar con Eris en cada día 1–5. El Día 6 abre el camino tras el reflejo y el emisario; la demostración de Orsted termina en derrota narrativa y concede patrones y dos mejoras elegidas. La antigua prueba por runas permanece sólo para partidas históricas. [Reglas actuales](FASE_5_CIERRE.md). El Día 7 permite elegir una compañera, todas las disponibles o viajar solo. Una separación definitiva excluye apoyos y cartas exclusivas de esa esposa.
 
 ## Afinidad y habilidades
 
@@ -1296,7 +1296,7 @@ Todas las combinaciones de nivel 5/10 ganan sus ocho semillas. Nivel 1 solo pier
 
 `companions.lua` calcula afinidad y equipo; `support_actions.lua` resuelve habilidades; `combat.lua`, turnos y comandos; `support_panel.lua`, preparación y confirmación. `war_chapters.lua` enlaza los encuentros antes de instalar la agenda. Nuevas habilidades y magnitudes se declaran en datos.
 
-Guardado **v7**, con archivo y respaldo propios: migra v6/v5/v4 sin modificarlos. Combates nuevos guardan `context.warVersion=1`, `balanceVersion=3`, relaciones iniciales, equipo, cargas, recargas y acciones. Restaurar reproduce los comandos, incluidos apoyos y confirmación de riesgo, y compara el resultado; no repone cargas ni concede premios. `combat_legacy.lua` y `enemies_legacy.lua` preservan las batallas anteriores. Si una partida obtuvo el antídoto en el antiguo Día 6, continúa su desenlace sin exigir otro jefe.
+Guardado **v8**, con archivo y respaldo propios: migra v7/v6/v5/v4 sin modificarlos. Combates nuevos guardan `context.warVersion=1`, `balanceVersion=3`, relaciones iniciales, equipo, cargas, recargas y acciones. Restaurar reproduce los comandos, incluidos apoyos y confirmación de riesgo, y compara el resultado; no repone cargas ni concede premios. `combat_legacy.lua` y `enemies_legacy.lua` preservan las batallas anteriores. Si una partida obtuvo el antídoto en el antiguo Día 6, continúa su desenlace sin exigir otro jefe.
 
 Las suites `war`, `war_balance` y `war_ui` cubren fórmulas, umbrales 24.99/25/49/50/79/80/89/90/100, valores negativos, recargas, pulsaciones repetidas, separación, fases, carga, barras y riesgo. `campaign` recorre siete días con compras legales; `restructure_integration` usa las pantallas reales. [Verificación ejecutada](VERIFICACION.md).
 
@@ -1307,6 +1307,106 @@ $env:DATESIM_TEST_GROUP='war-ui'
 ```
 ````
 
+## docs/FASE_5_CIERRE.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_5_CIERRE.md`
+
+````markdown
+# Fase 5 — Orsted, el antídoto y los cinco finales
+
+La fase continúa los sistemas de agenda, colección, familia y combate. Conserva los 40 identificadores de cartas, los mazos, los PNG y los ASE. No añade niveles ni un sexto final.
+
+## Entrenamiento y aparición de Orsted
+
+`src/systems/finale.lua` registra `eris_training_days` y el evento estable `eris_training_day_<día>` al **completar** un entrenamiento. En memoria y JSON las claves son cadenas (`"1"`…`"7"`). Reservar una actividad, guardar durante ella o repetirla no completa otro día.
+
+Cuentan `time_eris` (entrenamiento compartido), `eris_physical` y `eris_duel`, además de los duelos narrativos `day5_eris_duel` y `day6_eris_rematch`. Cazar monstruos o reconciliarse no sustituye el entrenamiento. El resultado de un duelo puede ser victoria o derrota: cuenta haber terminado su evaluación. El duelo principal del Día 5 también puede completar esa fecha sin consumir una interacción libre.
+
+Cuando existen las cinco fechas 1–5, se registra `eris_five_training_days`. El diario muestra las fechas completadas. En el Día 6, después de la investigación y del enfrentamiento con el emisario, aparece Orsted sólo si existe esa secuencia. Sin ella se continúa directamente a los preparativos; no hay premio de consolación ni bloqueo del jefe.
+
+## Demostración controlada
+
+`day6_orsted_demonstration` utiliza el motor real: reparto, costes, cartas, defensa, esquiva y replay de comandos. La preparación anuncia que no se puede ganar y que no es letal. Orsted tiene **120 de guardia finita**, nunca menos de uno; incluso una carta N10 no permite convertir la escena en una victoria ordinaria.
+
+| Turno | Intención de Orsted |
+| --- | --- |
+| 1 | Ataque de 4 |
+| 2 | Ataque de 8 |
+| 3 | Dos ataques de 6 |
+| 4 | Termina la demostración |
+
+Si Rudy agota sus PV antes, el encuentro también termina como derrota narrativa. Defender permite sobrevivir los cuatro turnos. `narrativeDefeat="orsted_demonstration"` abre su evaluación, sin perder la partida, penalizar matrimonios ni conceder un premio ordinario de combate. Orsted reconoce sus artefactos, la intervención de Nanahoshi y la maldición de Hitogami después de verlos en uso.
+
+## Dos mejoras gratuitas y colección
+
+`orsted_collection_gift` desbloquea **sólo los patrones faltantes**. Las cartas ya adquiridas conservan niveles y duplicados; volver a cargar o ejecutar la transición no añade copias. Las técnicas matrimoniales permanecen sujetas a la presencia de su esposa.
+
+La pantalla `src/screens/orsted_reward.lua` presenta todas las opciones con sus imágenes existentes y compara el efecto actual con el de N10. El jugador elige una carta de combate y una social. Una híbrida puede ocupar cualquiera de los espacios, pero no ambos: se exigen dos IDs distintos.
+
+Cada elección cambia el nivel una vez y registra `orsted_max_combat` o `orsted_max_social`, la decisión con el ID y una revisión. No gasta oro, duplicados ni descuentos. `orsted_reward.pending` conserva carta, nivel previo y tiempo de presentación; la elevación, destello y sonido no vuelven a ejecutar la mejora. Pulsar rápidamente o cargar durante la animación no concede otra elección.
+
+Una carta ya N10 se rechaza mientras exista una alternativa mejorable en su categoría. Si toda la categoría ya está al máximo, se permite reconocer una carta distinta sin aumentar niveles ni entregar recursos adicionales, evitando bloquear una colección importada. El modo de movimiento reducido elimina elevación y destellos.
+
+## Misterio y antídoto
+
+El Día 4 presenta al emisario, el recuerdo de la poción y una ruta cifrada. La práctica amistosa con Badigadi conserva su identidad, pero no revela que tenga el antídoto. El manual y la pista temprana tampoco lo revelan.
+
+En el Día 6, `day6_hitogami` enfrenta al **emisario de la poción** (`hitogami_emissary`, perfil de combate del Día 6). No se puede saltar su victoria. Su confesión explica la manipulación familiar y revela a Badigadi; al terminarla se registra `antidote_holder_revealed`, se completa la investigación y se obtiene `antidote_location`. El diario refleja el cambio.
+
+Antes del jefe se pueden revisar mazos, mejorar, comprar materiales, elegir entre las compañeras disponibles y guardar. Badigadi mantiene **1000 PV y cuatro fases** con el balance de la Fase 4. Romper el sello completa la victoria: música, diálogo, `antidote_obtained` y consumo único. Badigadi sobrevive. La ayuda de Orsted y las compañeras son ventajas, no requisitos de acceso o victoria.
+
+## Regreso y desenlaces
+
+El antídoto restaura voz, maná natural y magia sin conjuro (`chantlessBlocked=false`). Las primeras palabras y una esfera de agua sin conjuro lo muestran. No modifica amor, confianza ni separaciones.
+
+Las conversaciones finales explican la amenaza, las cartas, la búsqueda y las decisiones de la semana. Sylphiette recuerda los cuidados y su hija; Roxy, la colaboración intelectual; Eris, el esfuerzo y las ausencias. Los diálogos existentes siguen consultando promesas, conflictos, compromisos y reconciliaciones. Las separadas no regresan ni participan en estas conversaciones.
+
+Después de resolver los acuerdos, `day7_return_cards` lleva a Rudy al laboratorio. Devuelve los artefactos a Nanahoshi; `enchanted_cards_returned` e `inventory.enchantedCardsReturned` registran el cierre. La colección, niveles, duplicados e historial se conservan como registro, sin implementar todavía Nueva Partida+.
+
+Cada desenlace tiene una escena `day7_epilogue_<id>` antes del resumen final:
+
+| ID | Escena |
+| --- | --- |
+| `family_united` | Hogar compartido, tareas y proyectos de las tres esposas |
+| `roxy` | Investigación y vida con Roxy |
+| `eris` | Escoltas, entrenamiento y aventuras con Eris |
+| `sylphiette` | Reconstrucción de la rutina familiar en Sharia |
+| `solitary` | Rudy reconoce sus decisiones y responsabilidades sin exigir el regreso de nadie |
+
+Se mantiene `Relationships.ending`: matrimonio vigente, amor y confianza ≥55, resolución personal, compromiso explícito y conflictos/promesas reparados. La familia unida requiere además ≥75/75 en las tres. Varias relaciones viables sin unión completa abren una decisión explícita de proyectos; la devolución no permite saltarla. Nunca se selecciona silenciosamente la estadística más alta.
+
+## Archivos y persistencia
+
+| Archivo | Responsabilidad |
+| --- | --- |
+| `src/data/final_chapters.lua` | Investigación, nuevas escenas, bifurcación, premios y epílogos; se instala después de `war_chapters` y antes de `day_cycle` |
+| `src/systems/finale.lua` | Fechas, condiciones, elección única, devolución y reconstrucción |
+| `src/systems/family.lua`, `training_result.lua` | Notificación al completar entrenamientos reales |
+| `src/data/battle_balance.lua`, `enemies.lua` | Secuencia de Orsted y emisario |
+| `src/systems/combat.lua`, `progression.lua` | Derrota narrativa, continuidad y requisitos de victoria |
+| `src/screens/orsted_reward.lua`, `combat.lua`, `history.lua` | Elecciones, presentación de derrota e información del diario |
+| `src/systems/save.lua` | Guardado v8, migración y replay |
+
+V8 usa archivos propios y migra v7/v6/v5/v4 sin modificarlos. Reconstruye las fechas de v7 desde actividades terminadas y evaluaciones, nunca desde visitas reservadas. Una batalla v7 ya iniciada contra el lacayo conserva su ID y comandos. La antigua prueba de Orsted por runas permanece únicamente para terminar checkpoints históricos; una campaña nueva sólo utiliza la condición de cinco días y no recibe premios retroactivos por la prueba antigua. Una partida ya completada no se reinicia ni pierde su colección. [Formato completo](GUARDADO.md).
+
+## Pruebas reproducibles
+
+```powershell
+# Reglas y capturas específicas
+$env:DATESIM_TEST_GROUP='finale-ui'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+# Sistemas anteriores, interfaces y recorrido gráfico completo
+$env:DATESIM_TEST_GROUP='regression'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+# Recorridos completos con guardado entre checkpoints
+$env:DATESIM_TEST_GROUP='campaign'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+Remove-Item Env:DATESIM_TEST_GROUP
+```
+
+`tests/finale.lua` cubre los 32 calendarios, repetición, combate controlado con niveles 1/5/10, premios, elecciones, persistencia, revelación y devolución. `tests/finale_ui.lua` usa las pantallas y el renderizador de LÖVE, incluida la carga durante una mejora y los cinco epílogos. `tests/campaign.lua` recorre todas las composiciones familiares y los cinco finales tanto con la ruta especial como sin ella; la especialización económica paga sus mejoras sin Orsted. Las cifras ejecutadas y sus límites se registran en [VERIFICACION.md](VERIFICACION.md).
+````
+
 ## docs/GUARDADO.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/GUARDADO.md`
@@ -1314,18 +1414,20 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 7**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 8**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v7.json` | Partida actual. |
-| `campaign-v7.backup.json` | Última partida anterior válida. |
-| `campaign-v7.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v8.json` | Partida actual. |
+| `campaign-v8.backup.json` | Última partida anterior válida. |
+| `campaign-v8.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
 ## Estado persistido
+
+La versión 8 añade `eris_training_days` (fechas con claves de cadena), los eventos de entrenamiento, `orsted_reward` (elecciones, revisión y presentación pendiente), la investigación del emisario, los eventos de las dos mejoras gratuitas y la devolución a Nanahoshi. `curse.chantlessBlocked` se restaura según el consumo del antídoto. Las elecciones y sus niveles se reconstruyen desde eventos y decisiones: cargar durante el destello no vuelve a premiar ni gastar. La devolución conserva la colección completa. [Reglas del cierre](FASE_5_CIERRE.md).
 
 La versión 7 añade el contexto de combate `warVersion=1`: equipo y relaciones iniciales, acción propia de cada compañera, usos, recargas y comandos de apoyo. `support_previous_<esposa>` conserva la potencia del especial en el último combate completado para compararla en preparación. La selección del Día 7 admite una esposa, `all` o `solo`; se filtran las separadas.
 
@@ -1345,7 +1447,7 @@ Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: 
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v7. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v8. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -1353,13 +1455,13 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-El motor social conserva su soporte de replay anterior, pero la campaña v7 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
+El motor social conserva su soporte de replay anterior, pero la campaña v8 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
 Antes de escribir se normalizan los datos. El guardado anterior válido se copia al respaldo; la carga intenta primero el principal y luego el respaldo. Esto es una escritura con respaldo, no una promesa de reemplazo atómico del sistema de archivos.
 
-El límite de lectura y escritura es 2 MiB (`Save.maxBytes`): permite combinar un historial extenso con los comandos de hasta 75 turnos del jefe. La prueba de persistencia guarda 582.563 bytes, 600 entradas de historial y 414 comandos; recupera el turno 70 y todos los apoyos. Si la representación supera el límite, se rechaza antes de escribir un archivo que después no pudiera cargarse.
+El límite de lectura y escritura es 2 MiB (`Save.maxBytes`): permite combinar un historial extenso con los comandos de hasta 75 turnos del jefe. La prueba de persistencia guarda 582.655 bytes, 600 entradas de historial y 414 comandos; recupera el turno 70 y todos los apoyos. Si la representación supera el límite, se rechaza antes de escribir un archivo que después no pudiera cargarse.
 
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
@@ -1367,11 +1469,11 @@ Los combates nuevos guardan `balanceVersion=3` y `context.warVersion=1`, perfil 
 
 ## Importación de partidas anteriores
 
-Si no hay v7 válido, **Continuar** busca v6, v5 y v4 con sus respaldos. V6 conserva familia, economía y progreso; v5 recibe los campos familiares; v4 recibe primero la migración económica (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v7 y **no modifica v6, v5 ni v4**. Migrar no reinicia estadísticas. Si el antídoto fue obtenido en el antiguo Día 6, el Día 7 continúa hacia su uso sin exigir repetir el jefe. Un combate histórico mantiene sus reglas y comandos, incluso el antiguo Badigadi de 72 PV.
+Si no hay v8 válido, **Continuar** busca v7, v6, v5 y v4 con sus respaldos. V7 conserva combate, familia y colección; las fechas de entrenamiento se reconstruyen únicamente desde actividades completadas y resultados de duelos. Un encuentro ya iniciado contra el lacayo conserva sus reglas e ID. Los checkpoints históricos de la prueba de Orsted por runas siguen pudiendo terminarse, sin conceder retroactivamente el premio nuevo. V6 conserva familia, economía y progreso; v5 recibe los campos familiares; v4 recibe primero la migración económica (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v8 y **no modifica v7, v6, v5 ni v4**. Migrar no reinicia estadísticas. Si el antídoto fue obtenido en el antiguo Día 6, el Día 7 continúa hacia su uso sin exigir repetir el jefe. Un combate histórico mantiene sus reglas y comandos, incluso el antiguo Badigadi de 72 PV.
 
 Los registros sociales anteriores conservan sus efectos históricos durante el replay; las nuevas acciones usan niveles y presupuesto diario. Los combates en curso conservan sus reglas anteriores hasta terminar. Los nuevos guardan `context.progressionVersion=1`, niveles por ID y preparación inicial, además de los comandos existentes. Cambiar el nivel durante un encuentro está prohibido.
 
-El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v7, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v8, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
@@ -1383,7 +1485,7 @@ El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pa
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v7_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
+La suite general usa `cartas_del_destino_v8_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
 ````
 
 ## docs/MALDICION_RUDY.md
@@ -1542,11 +1644,17 @@ Ganar concede +8 amor y +6 confianza. Una derrota después de una pelea exigente
 
 El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes disculparte y aceptar una revancha el día seis; ganar o ofrecer una pelea exigente después de la disculpa repara ese conflicto. No hay reintentos para acumular puntos de entrenamiento.
 
+## La visita de Orsted
+
+Completa al menos un entrenamiento con Eris en cada uno de los días 1–5. Repetir tres veces un solo día no sustituye las fechas que faltan. El diario muestra el calendario; cuentan el entrenamiento físico, el compartido, los duelos y la evaluación del duelo principal del Día 5.
+
+Orsted aparece el Día 6 si se cumple la condición. Su demostración anuncia una derrota narrativa: usa cartas y defensa durante cuatro turnos. No pierdes la campaña ni afinidad. Después entrega los patrones que falten y deja elegir dos cartas distintas para N10, una de combate y otra social. Es gratis y no recupera matrimonios separados. Puedes completar la campaña sin esta ayuda.
+
 ## Finales, guardado y opciones
 
-El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
+El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos. Después Rudy devuelve las cartas a Nanahoshi, conservando el catálogo y los niveles, y se muestra la escena del epílogo correspondiente.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v7.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v8.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
 ````
 
 ## docs/RECURSOS.md
@@ -1784,11 +1892,15 @@ Mantener un matrimonio requiere 55 de amor y confianza, evento `personal_resolut
 
 ## Cartas sociales y combate
 
-`battle_balance.lua` declara enemigos por día y habilidades de apoyo. `companions.lua` toma las relaciones persistentes; `support_actions.lua` aplica afinidad, costes, acciones y recargas. `war_chapters.lua` coloca el jefe en el Día 7. El guardado v7 reproduce apoyos mediante comandos y conserva batallas anteriores con módulos `*_legacy`. [Arquitectura y balance](FASE_4_COMBATE.md).
+`battle_balance.lua` declara enemigos por día y habilidades de apoyo. `companions.lua` toma las relaciones persistentes; `support_actions.lua` aplica afinidad, costes, acciones y recargas. `war_chapters.lua` coloca el jefe en el Día 7. El guardado v8 reproduce apoyos mediante comandos y conserva batallas anteriores con módulos `*_legacy`. [Arquitectura y balance](FASE_4_COMBATE.md).
 
 Las cartas sociales declaran ID, categoría, tono, coste, contextos, frases, efectos, modificadores y obtención. El encuentro conserva la mano y sus acciones; la vista previa no muta el estado. La resolución muestra frase encantada, reacción y cambios, y bloquea entradas repetidas durante la animación. Repetir el mismo acontecimiento no acumula amor.
 
 Los dos mazos admiten 5–10 cartas distintas adquiridas. El social valida viabilidad por personaje; el de combate exige dos ataques ofensivos. Las habilidades exclusivas requieren su compañera. El combate mantiene maná natural, energía externa, escudo físico y mágico, acciones, PV, estados, intenciones y comandos reproducibles. Las tácticas no confirman consecuencias afectivas hasta resolver la victoria. [Combate](COMBATE.md), [persistencia](GUARDADO.md).
+
+## Cierre narrativo
+
+`final_chapters.lua` extiende las transiciones sin reemplazar la máquina de estados: registro diario de entrenamiento, emisario, demostración controlada de Orsted, premios elegidos, devolución y cinco epílogos. `finale.lua` centraliza condiciones y operaciones únicas; `family.lua` y `training_result.lua` le notifican actividades completadas. `eris_training_days` se reconstruye desde eventos estables; `orsted_reward.pending` guarda sólo la presentación de una elección ya aplicada. La recuperación de voz y magia nunca restaura un matrimonio. [Arquitectura de Fase 5](FASE_5_CIERRE.md).
 
 La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERIFICACION.md).
 ````
@@ -1798,7 +1910,50 @@ La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERI
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación de combate y afinidad — Fase 4
+# Verificación del cierre narrativo — Fase 5
+
+Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados: **44 192 comprobaciones**, sumando una ejecución válida de cada módulo y sin contar repeticiones. Los grupos `regression` y `campaign` finalizaron con **`ALL TESTS PASSED`, salida 0**. La verificación se realizó en esos dos grupos; no se presenta como una sola ejecución monolítica.
+
+| Cobertura | Resultado |
+| --- | --- |
+| Campañas completas | 28 848 comprobaciones; 40 recorridos de siete días |
+| Regresión de sistemas e interfaces | 15 344 comprobaciones, incluyendo los módulos detallados abajo |
+| Reglas de Fase 5 | 384 comprobaciones; los 32 calendarios posibles y 24 demostraciones de Orsted con niveles 1/5/10 |
+| Interfaz de Fase 5 | 22 comprobaciones; 16 capturas, elección de ambas mejoras, recarga durante el destello, devolución y los cinco epílogos |
+| Campaña gráfica | 1 457 comprobaciones; 825 pasos de pantalla |
+| Combate gráfico e integración | 44 + 24 comprobaciones |
+| Balance del jefe y reglas de apoyo | 1 200 + 217 comprobaciones; 576 simulaciones del jefe, ocho composiciones familiares |
+| Interfaz de apoyo y fases | 10 comprobaciones; 12 capturas |
+| Compatibilidad de combate | 1 620 + 956 comprobaciones; 120 + 300 victorias con fixtures históricas |
+| Entrenamiento e integración | 84 + 444 comprobaciones |
+| Familia e interfaz | 228 + 2 400 comprobaciones |
+| Agenda e interfaz | 1 028 + 36 comprobaciones |
+| Niveles, economía e interfaz | 398 + 25 comprobaciones |
+| Diálogos e interfaz | 73 + 2 788 + 277 comprobaciones |
+| Barras, afinidad e introducción | 138 + 260 + 34 comprobaciones |
+| Recursos, movimiento, retratos, audio y matrimonios | 654 + 172 + 181 + 90 + 100 comprobaciones |
+
+Las primeras dos filas suman el total; las demás desglosan la regresión y no deben sumarse otra vez.
+
+## Rutas y recompensas
+
+Los 40 recorridos incluyen **32 con Orsted y ocho sin su ayuda**. Los cinco finales se alcanzaron en ambos casos. Cada recorrido usa actividades, cartas adquiridas, comandos legales de combate y guardado/carga entre checkpoints. Se comprueba la devolución a Nanahoshi y la visita al epílogo que corresponde al estado matrimonial.
+
+La especialización sin Orsted alcanza Bastón y Dar ánimo a N10 mediante compras y mejoras ordinarias: **1 839 oro de ingreso, 1 037 de saldo y 241 922 bytes** al terminar. Su resultado matrimonial es Roxy; el recorrido específico de familia unida sin Orsted también pasa. La ayuda extraordinaria no sustituye los compromisos familiares ni es necesaria para conseguir el mejor final.
+
+Los 32 calendarios prueban que sólo entrenar en cada día 1–5 abre la aparición. Reservar una actividad no cuenta; tres repeticiones no cubren las otras fechas. Las demostraciones contra Orsted terminan como derrota narrativa incluso con N10, conservan guardia finita y no castigan relaciones. Se prueba que el emisario debe ser vencido antes de su confesión y que la información sobre el antídoto permanece oculta antes de ese punto.
+
+Se verifican los patrones faltantes, dos IDs distintos, una elección por categoría, conservación de oro/copias/descuentos, bloqueo del doble clic y del tercer premio, persistencia de la presentación y restricciones de las esposas separadas. La cura restaura voz y magia sin conjuro sin modificar afinidad; devolver las cartas conserva la colección.
+
+## Persistencia y revisión visual
+
+La migración **v7→v8** usa cinco resúmenes diarios generados por actividades reales. Conserva las fechas y su índice de eventos después de una segunda carga, reanuda un combate v7 iniciado contra el lacayo y verifica que los bytes originales de v7 permanecen intactos. Durante la revisión se corrigió el orden de reconstrucción del índice diario; las pruebas específicas y la regresión final pasan con esa corrección. Las migraciones anteriores siguen cubiertas. El ensayo extenso de combate conserva 414 comandos y 600 entradas de historial, con 582 655 bytes dentro del límite de 2 MiB.
+
+Se inspeccionaron capturas reales de la [derrota narrativa](../tests/artifacts/finale-orsted-narrative-defeat.png), [mejora de combate](../tests/artifacts/finale-maximizing-combat.png), [selección social](../tests/artifacts/finale-choose-social.png), [manual sin revelación](../tests/artifacts/finale-manual-mystery.png) y los cinco epílogos: [familia](../tests/artifacts/finale-epilogue-family_united.png), [Roxy](../tests/artifacts/finale-epilogue-roxy.png), [Eris](../tests/artifacts/finale-epilogue-eris.png), [Sylphiette](../tests/artifacts/finale-epilogue-sylphiette.png) y [Rudy solo](../tests/artifacts/finale-epilogue-solitary.png). No se modificaron PNG ni ASE del juego.
+
+Registros locales finales: `tests/artifacts/finale-regression-final.log`, `finale-campaign.log` y `finale-migration-final.log`. Logs y capturas están excluidos de Git. Los avisos de imágenes y sonidos ausentes proceden de fixtures que prueban los recursos provisionales; no indican archivos originales eliminados. Las pruebas son automatizadas en LÖVE y la inspección es visual: no equivalen a una partida manual completa ni sustituyen sesiones de balance con jugadores. [Arquitectura y comandos](FASE_5_CIERRE.md).
+
+## Registro anterior — Fase 4
 
 Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real e identidades de prueba aisladas. **39 126 comprobaciones**, tomando una ejecución válida de cada módulo y sin sumar repeticiones. Los PNG y ASE originales no cambiaron.
 
@@ -2177,6 +2332,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+La **Fase 5** completa la investigación del emisario, la revelación del antídoto y el regreso a Nanahoshi. Entrenar con Eris en cada uno de los días 1–5 abre la demostración controlada de Orsted y dos mejoras gratuitas elegidas por el jugador. Los cinco finales tienen escenas propias y también son alcanzables sin su ayuda. [Eventos, reglas y persistencia](docs/FASE_5_CIERRE.md).
+
 La **Fase 4** añade enemigos por día, apoyos con afinidad persistente, costes y recargas, preparación de combate y Badigadi de **1000 PV en el Día 7**. Puede vencerse sin compañeras ni el evento opcional de Orsted. [Reglas y simulaciones](docs/FASE_4_COMBATE.md).
 
 Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
@@ -2190,10 +2347,10 @@ Cada día dispone de **tres interacciones libres**, repetibles con cualquier esp
 | 1 · El silencio de Rudy | Sueño con Hitogami; despertar; recoger y leer la carta —H; descubrir voz y maná sellados; notas a Nanahoshi; regalo de Orsted; tutoriales jugables. |
 | 2 · Palabras prestadas | Conversaciones con las tres esposas, necesidades distintas, nuevas cartas e investigación de la botica. |
 | 3 · El primer fragmento | Investigación con Nanahoshi, bosque, ruinas, compañera elegida, combates y magia alimentada por energía externa. |
-| 4 · El precio del silencio | Investigación del sello con Nanahoshi, conflictos familiares, emisario, recuerdo de la poción y pistas sobre Badigadi. |
+| 4 · El precio del silencio | Investigación del sello con Nanahoshi, conflictos familiares, emisario, recuerdo de la poción y ruta cifrada hacia su responsable. |
 | 5 · Lazos puestos a prueba | Duelo de entrenamiento con Eris; misiones personales, compromisos, reconciliaciones y cartas de compañeras. |
-| 6 · El último cerco | Revancha opcional con Eris, reflejo de Rudy, lacayo de Hitogami y prueba opcional no letal de Orsted si investigaste las runas. |
-| 7 · El desafío y la verdadera voz | Preparación del equipo; Badigadi de 1000 PV y cuatro fases; antídoto, conversación directa, resolución de relaciones y epílogo. |
+| 6 · El último cerco | Revancha opcional con Eris, reflejo de Rudy, combate contra el emisario y revelación del guardián del antídoto; Orsted aparece si entrenaste los cinco días. |
+| 7 · El desafío y la verdadera voz | Preparación del equipo; Badigadi de 1000 PV y cuatro fases; antídoto, recuperación de voz y magia, resolución matrimonial, devolución de cartas y cinco epílogos específicos. |
 
 Hitogami manipula la historia; no es un enemigo físico convencional. Orsted es aliado. Badigadi acepta la derrota y sobrevive. Hay exactamente **cinco finales**: las tres esposas, solamente Roxy, solamente Eris, solamente Sylphiette o ninguna. Las parejas viables pendientes se resuelven mediante decisiones narrativas, sin escoger automáticamente el mayor amor. [Capítulos y condiciones](docs/CAPITULOS.md).
 
@@ -2238,7 +2395,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 7**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v7.json`, con respaldo `campaign-v7.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v6/v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 8**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v8.json`, con respaldo `campaign-v8.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v7/v6/v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -2246,7 +2403,7 @@ La continuidad `rudy_curse` usa **versión 7**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v7_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v8_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.
 ````
@@ -2395,6 +2552,8 @@ function App:resume(transition)
     if transition.type=="new_day" then self.audio:effect("new_day") end
     if node.definition.agenda then
         self:switch(require("src.screens.agenda").new(self),transition)
+    elseif node.definition.orstedReward then
+        self:switch(require("src.screens.orsted_reward").new(self),transition)
     elseif node and node.kind=="hub" then
         self:switch(require("src.screens.hub").new(self),transition)
     elseif node and node.kind=="summary" then
@@ -2483,7 +2642,7 @@ function App:endPractice()
 end
 
 function App:finishCombat(enc)
-    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training and enc.enemy.id~="orsted_trial") then return false end
+    if enc~=self.session.combat or not enc.finished or (enc.outcome~="victory" and not enc.training and enc.enemy.id~="orsted_trial" and not enc.narrativeDefeat) then return false end
     if self.practice then self:endPractice(); return true end
     local ok,err=Progression.finishCombat(self.session,enc)
     if not ok then self:notify(err); return false end
@@ -2875,6 +3034,12 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````lua
 -- Todas las magnitudes nuevas viven aquí; el replay anterior usa enemies_legacy.
 return {
+ orsted={hp=120,turns=4,actions={
+  {id="measure_guard",name="Medir la guardia",kind="attack",damage=4},
+  {id="change_angle",name="Cambiar el ángulo",kind="attack",damage=8},
+  {id="close_distance",name="Cerrar la distancia",kind="attack",damage=6,hits=2},
+  {id="end_demonstration",name="Orsted detendrá la demostración",kind="demonstration_finish"},
+ }},
  hpFactors={ruins_guardian=1.15,rudy_reflection=1.1,distorted_reflection=1.05},
  days={
   {name="Aprendizaje",hp=10,damage=2,shield=0},
@@ -3883,6 +4048,7 @@ end
 local list={}
 for day=1,7 do list[#list+1]=require("src.data.chapters.day"..day) end
 require("src.data.war_chapters").install(list)
+require("src.data.final_chapters").install(list)
 require("src.data.day_cycle").install(list)
 local Chapters=Registry.build(list)
 Chapters.build=Registry.build
@@ -3903,7 +4069,7 @@ local list = {
     {id="hitogami",name="Hitogami",shortName="Hitogami",romance=false,color={.9,.9,.85},description="Dios Humano. Manipula a Rudy mediante una maldición y consejos ambiguos; no es un enemigo físico."},
     {id="orsted",name="Orsted",shortName="Orsted",romance=false,color={.7,.75,.8},description="Aliado de la investigación y creador del regalo de cartas que conserva Nanahoshi."},
     {id="emisario",name="Emisario",shortName="Emisario",romance=false,color={.6,.5,.65},description="Personaje original que entregó la poción siguiendo las indicaciones de Hitogami."},
-    {id="badigadi",name="Badigadi",shortName="Badigadi",romance=false,color={.6,.4,.75},description="Rey inmortal de seis brazos. Guarda el antídoto por una promesa y acepta un desafío honorable."},
+    {id="badigadi",name="Badigadi",shortName="Badigadi",romance=false,color={.6,.4,.75},description="Rey inmortal de seis brazos. Disfruta los desafíos y se toma en serio la palabra que ha dado."},
     {id="zanoba",name="Zanoba",shortName="Zanoba",romance=false,color={0.77,0.66,0.46},description="Busca pistas en el oficio de los antiguos artesanos."},
     {id="cliff",name="Cliff",shortName="Cliff",romance=false,color={0.58,0.69,0.56},description="Estudia cómo contener la anomalía mágica."},
 }
@@ -4727,7 +4893,8 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 return {
  apothecary_label={id="apothecary_label",title="Etiqueta de la botica",background="apothecary",signature="Registro de investigación",text="La etiqueta hallada coincide con el pequeño regalo que Rudy aceptó. El proveedor trabajaba con una botica oculta; hay que rastrear sus entregas."},
  mana_fragment={id="mana_fragment",title="El primer fragmento",background="ruins",signature="Notas de Nanahoshi",text="El fragmento almacena energía externa. Las cartas pueden canalizarla sin usar el maná de Rudy. No repara su voz, ni rompe la maldición."},
- potion_origin={id="potion_origin",title="El origen de la poción",background="apothecary",signature="Recuerdo recuperado",text="Un emisario presentó la poción como un tónico para el cansancio. Rudy la bebió sin conocer su contenido. El registro de entregas revela el compromiso de Badigadi con el antídoto. Hitogami organizó el engaño."},
+ potion_origin={id="potion_origin",title="El origen de la poción",background="apothecary",signature="Recuerdo recuperado",text="Un emisario presentó la poción como un tónico para el cansancio. Rudy la bebió sin conocer su contenido. El registro está cifrado; hay que seguir sus entregas hasta localizarlo. Todavía no se conoce al poseedor del antídoto."},
+ antidote_location={id="antidote_location",title="El poseedor del antídoto",background="arena",signature="Declaración del emisario derrotado",text="Badigadi custodia el antídoto en la arena por una promesa. Hay que vencer su resistencia y romper la protección del frasco. El emisario confirma que Hitogami organizó la poción y la amenaza para desestabilizar a la familia Greyrat."},
  hitogami_letter={id="hitogami_letter",title="La carta firmada por —H",background="home",signature="—H",
  text="Querido Rudy:\n\nEspero que hayas descansado bien.\n\nSeguramente recuerdas aquel pequeño regalo que aceptaste hace poco. A veces, las cosas más insignificantes producen las consecuencias más interesantes.\n\nTal vez hayas comenzado a comprenderlo.\n\nHay verdades que es mejor guardar, especialmente cuando se trata de las personas que más amas.\n\nSi intentas revelarles lo que te ha sucedido, podrías perder aquello que más deseas proteger.\n\nTe recomiendo que midas cuidadosamente tus próximas palabras.\n\nPor cierto, tienes siete días.\n\nCon mis mejores deseos,"},
 }
@@ -4789,6 +4956,8 @@ end
 local E={list=copy(Legacy.list),byId={},default=Legacy.default,difficulty=Balance.days}
 for _,e in ipairs(E.list)do E.byId[e.id]=e end
 for _,e in ipairs({
+ {id="hitogami_emissary",name="Emisario de Hitogami",portrait="emisario",maxHp=260,weakness="earth",shape="guardian",defeatText="El emisario pierde sus barreras y queda rodeado. Ahora deberá revelar quién guarda el antídoto."},
+ {id="orsted_demonstration",name="Orsted · Demostración no ganable",portrait="orsted",maxHp=120,shape="guardian",nonlethal=true,defeatText="Orsted termina la demostración sin heridas graves."},
  {id="hitogami_minion",name="Lacayo de Hitogami",portrait="guardian_ruinas",maxHp=120,weakness="earth",shape="guardian",defeatText="El lacayo huye. Hitogami pierde el acceso al camino, no su existencia."},
  {id="orsted_trial",name="Orsted: prueba de control",portrait="orsted",maxHp=120,weakness="water",shape="guardian",nonlethal=true,defeatText="Orsted baja la guardia. La prueba termina; sigue siendo un aliado."},
 })do e.narrativeEvent=e.id.."_defeated";e.defeatedEvent=e.narrativeEvent;e.reward={event=e.narrativeEvent};E.list[#E.list+1]=e;E.byId[e.id]=e end
@@ -4799,6 +4968,7 @@ function E.resolve(id,context)
  local day=context.tutorial and 1 or context.difficulty or context.day or 1
  local p=Balance.days[day] or Balance.days[1]
  e.difficulty={level=day,name=p.name}
+ if e.id=="orsted_demonstration" then e.maxHp=Balance.orsted.hp;e.actions=copy(Balance.orsted.actions);return e end
  if e.id=="eris_training" or e.id=="badigadi_training" then return Legacy.resolve(id,context) end
  if e.id=="badigadi_final" then e.maxHp=Balance.boss.hp;e.sealMax=Balance.boss.seal;e.actions=copy(Balance.boss.phases.endurance);return e end
  e.maxHp=math.floor(p.hp*(Balance.hpFactors[e.id] or 1)+.5)
@@ -5036,6 +5206,144 @@ end
 return routes
 ````
 
+## src/data/final_chapters.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/final_chapters.lua`
+
+````lua
+-- Cierre de la campaña. Se instala antes de las agendas y conserva IDs históricos.
+local Final={}
+function Final.install(list)
+ local four,five,six,seven=list[4],list[5],list[6],list[7]
+ four.scenes.day4_intro.lines[1].text="Rudy se reúne en privado con Nanahoshi y Cliff. La carta firmada por —H permanece sobre la mesa; aún falta localizar a quien preparó la poción."
+ four.scenes.day4_intro.lines[2]={speaker="nanahoshi",expression="worried",text="Las runas de la carta y de la poción comparten una firma. Las cartas parlantes contienen energía propia, pero no eliminan la amenaza de revelar el secreto."}
+ four.scenes.day4_emissary.lines[5].text="¿Crees que llevo la cura en el bolsillo? Primero tendrás que encontrarme otra vez. Mi protector se encargará de que no leas el registro completo."
+ four.scenes.day4_emissary.lines[6].text="El emisario huye. Rudy reconoce al responsable de la poción, pero no sabe dónde está el antídoto. El registro del almacén puede revelar su ruta."
+ four.transitions.day4_emissary[1].effects[#four.transitions.day4_emissary[1].effects+1]={id="emissary_investigation_started",text="Investigación: recuperar el registro, seguir la ruta del emisario y obligarlo a revelar dónde está la cura."}
+ four.scenes.day4_return.lines[2].text="El registro está cifrado, pero las entregas terminan cerca de la arena. Prepararé un contenedor estabilizador; así podremos usar la cura cuando la encontremos."
+ four.scenes.day4_badigadi.title="Día 4 · Un encuentro en el camino"
+ four.scenes.day4_badigadi.lines[1].text="¡Ja, ja, ja! ¡Greyrat! Caminas como si el mundo pesara sobre tus hombros. Un ejercicio corto te enseñaría más que apretar los dientes."
+ four.scenes.day4_badigadi.lines[2].text="Hoy sólo practicaremos el ritmo. Tengo seis brazos y suficiente paciencia para detenerme cuando alguien pida una pausa. ¿Vienes con tu compañera?"
+ four.scenes.day4_badigadi.lines[3].text="Acepto un ejercicio breve, con una señal de alto. Después debo continuar la investigación y volver a casa."
+ four.summaries.day4_complete.body="El emisario entregó la poción y huyó. Su registro apunta hacia la arena, pero todavía oculta al poseedor del antídoto. Los compromisos familiares siguen pendientes."
+ five.summaries.day5_complete.footer="Mañana: seguir el rastro del emisario y encontrar la cura."
+ six.scenes.day6_intro.title="Día 6 · Seguir el último rastro"
+ six.scenes.day6_intro.lines[1].text="Cliff descifró el registro: el emisario regresará hoy a la arena. Zanoba lleva el contenedor. Comparte la ruta con quienes sigan contigo y acuerda una señal de retirada."
+ six.scenes.day6_intro.lines[5].text="La ruta incluye barreras de ocultación. Si localizamos al emisario, podremos averiguar quién tiene la cura. Todavía no conocemos ese nombre."
+ six.scenes.day6_truth.title="Día 6 · La firma del emisario"
+ six.scenes.day6_truth.lines={
+  {speaker="nanahoshi",expression="neutral",text="El reflejo protegía la misma firma que encontramos en la botica. Detrás está el hombre que te entregó la poción. Tenemos que detener su huida."},
+  {speaker="emisario",expression="angry",text="Has seguido demasiadas pistas, Greyrat. Las instrucciones eran claras: hacerte dudar de tu familia hasta que decidieras apartarla tú mismo."},
+  {speaker="rudeus",delivery="thought",text="Esta vez no voy a perderlo. Primero neutralizaré sus barreras; después responderá por la botella que me entregó."},
+ }
+ six.encounters.day6_hitogami.title="Emisario de Hitogami · El responsable de la poción"
+ six.encounters.day6_hitogami.enemyId="hitogami_emissary"
+ six.encounters.day6_hitogami.requiresVictory=true
+ six.encounters.day6_hitogami.intro="La investigación llega al responsable. Vence sus barreras y ataques preparados para descubrir quién custodia el antídoto."
+ six.scenes.day6_emissary_confession={title="Día 6 · El nombre tras el sello",background="arena",music="mystery",lines={
+  {speaker="narrator",text="La última barrera se rompe. El emisario deja caer el registro completo. Rudy reconoce su letra y le muestra la botella vacía."},
+  {speaker="emisario",expression="worried",text="Badigadi posee el antídoto. Prometió custodiarlo hasta que alguien superara su desafío. El sello protege el frasco; vencer sus golpes no bastará."},
+  {speaker="emisario",expression="neutral",text="Hitogami quería poner a prueba la estabilidad de los Greyrat. La poción y la advertencia eran suyas. Pero las decisiones de esta semana las tomaste tú."},
+  {speaker="rudeus",delivery="thought",expression="angry",text="Badigadi. Estuvo frente a mí sin decirlo. Ya tengo un destino concreto; ahora debo decidir cómo llegar y quién todavía quiere acompañarme."},
+  {speaker="nanahoshi",expression="neutral",text="Conservaremos este registro. El contenedor estará listo mañana. Prepara cartas y materiales; la fuerza que necesites no depende de otra recompensa secreta."},
+ }}
+ six.transitions.day6_hitogami={{to="day6_emissary_confession",effects={{id="emissary_investigation_completed",mission="emissary_investigation",enemyDefeated="hitogami_emissary"}}}}
+ local reveal={id="antidote_holder_revealed",clue="antidote_location",text="El emisario derrotado confirma que Badigadi custodia el antídoto en la arena."}
+ six.transitions.day6_emissary_confession={
+  {to="day6_orsted_arrival",requires={event="eris_five_training_days"},effects={reveal}},
+  {to="day6_close",effects={reveal}},
+ }
+ -- Las partidas v7 que ya estaban en la prueba anterior pueden concluirla.
+ six.scenes.day6_orsted_offer.historical=true;six.encounters.day6_orsted.historical=true
+ six.runtimeEvents={{id="eris_five_training_days",checkpoint="day5_eris_duel"}}
+ six.scenes.day6_orsted_arrival={title="Día 6 · Cinco días de esfuerzo",background="training",music="training",lines={
+  {speaker="orsted",expression="neutral",animation="enter_right",text="He visto tus registros con Eris: no cinco ejercicios apresurados, sino práctica cada día desde que empezó esta semana. Tu postura ya no es la del primer día."},
+  {speaker="rudeus",delivery="enchanted",expression="neutral",text="Ella me enseñó a repetir lo que aún no controlo. Sigo dependiendo de estas cartas para dar instrucciones y atacar."},
+  {speaker="orsted",expression="neutral",text="Quiero comprobar lo que aprendiste. No podrás vencerme. Usa tus cartas y defiéndete; terminaré la demostración antes de hacerte una herida grave."},
+  {speaker="narrator",text="DEMOSTRACIÓN CONTROLADA: sobrevivir y responder importa. La derrota será narrativa; no acaba la partida ni perjudica tus relaciones."},
+ }}
+ six.encounters.day6_orsted_demonstration={title="Orsted · Demostración de superioridad",kind="magic",enemyId="orsted_demonstration",background="training",targetScore=1,scriptedDefeat="orsted_demonstration",
+  intro="Encuentro no ganable y no letal. Usa tus cartas, defiéndete y observa cuatro turnos; Orsted pondrá fin a la prueba."}
+ six.scenes.day6_orsted_discovery={title="Día 6 · El origen de los artefactos",background="training",music="mystery",finaleAction="orsted_grant",lines={
+  {speaker="orsted",expression="neutral",text="Basta. Conservaste la guardia cuando el segundo golpe cambió de ángulo. Ahora déjame ver esa carta: reconozco el sello de los artefactos que entregué a Nanahoshi."},
+  {speaker="rudeus",delivery="note",expression="worried",text="Ella adaptó sus patrones para prestarme una voz. Una poción selló la mía y mi maná. La carta de —H me amenazó con perder a mi familia si les explicaba lo ocurrido."},
+  {speaker="orsted",expression="angry",text="La interferencia sobre tu maná tiene la marca de Hitogami. Pretendía convertir cada silencio en una decisión contra ellas. No voy a dejarle todos los recursos de este juego."},
+  {speaker="orsted",expression="neutral",text="Te daré los patrones que faltan. Elige una carta de combate y otra social: llevaré ambas al nivel diez sin consumir tus copias ni tu oro. Serán dos cartas distintas."},
+  {speaker="orsted",expression="neutral",text="Puedo reforzar un artefacto. No puedo restaurar por ti un matrimonio que hayas perdido. Las técnicas compartidas seguirán necesitando a la persona que las hace posibles."},
+ }}
+ six.hubs.day6_orsted_gifts={title="LA AYUDA DE ORSTED",background="training",locations={},orstedReward=true,finaleAction="orsted_choices"}
+ six.transitions.day6_orsted_arrival={{to="day6_orsted_demonstration"}}
+ six.transitions.day6_orsted_demonstration={{to="day6_orsted_discovery",effects={{id="orsted_demonstration_completed",text="Orsted termina una demostración no letal. La derrota no modifica los matrimonios."}}}}
+ six.transitions.day6_orsted_discovery={{to="day6_orsted_gifts"}}
+ six.transitions.day6_orsted_gifts={{to="day6_close"}}
+ six.hubs.day6_companion.heading="SEGUIR AL EMISARIO"
+ six.hubs.day6_companion.description="Revisa el mazo y elige una compañera disponible o viaja solo. El registro conduce a la arena."
+ for _,location in ipairs(six.locations)do location.description="Revisa su afinidad y sus habilidades antes de elegir. Las esposas separadas no participarán." end
+ seven.scenes.day7_voice.lines[2].text="VOZ: RECUPERADA. Sin pronunciar un conjuro, Rudy forma una esfera de agua sobre la palma. MANÁ NATURAL Y MAGIA SIN CONJURO: RECUPERADOS. Sus manos tiemblan al deshacerla."
+ seven.encounters.day7_boss.requiresVictory=true
+ seven.scenes.day7_voice.lines[3].text="Es tu voz, Rudy. Habla con quienes siguen a tu lado. Después trae las cartas al laboratorio; ya no tendrás que pedirles que hablen por ti."
+ seven.scenes.day7_voice.lines[5].text="Rudy regresa a casa para explicar la verdad a quienes permanecen con él. Entender la amenaza explica su silencio, pero no obliga a perdonar sus promesas rotas."
+ local replies={
+  sylphiette="Escuchar tu voz me alivia. Pero nuestra hija también esperó tus regresos. La amenaza no decidió quién asumía las tareas de casa; necesito que recuerdes eso cuando hagamos planes.",
+  roxy="Ahora entiendo la interferencia que veía en las cartas. Me duele que tuvieras que ocultarla. Aun así, escuchar mis hipótesis o descartarlas fue una decisión tuya, no de ese sello.",
+  eris="¡Debiste de estar furioso! Yo también lo estoy. Me alegra oírte otra vez. Pero no usaré a Hitogami para olvidar cuándo luchaste conmigo en serio y cuándo me dejaste esperando.",
+ }
+ for _,id in ipairs({"sylphiette","roxy","eris"})do
+  local scene=seven.scenes["day7_"..id]
+  table.insert(scene.lines,1,{speaker="rudeus",expression="worried",text="La poción selló mi voz. Hitogami amenazó nuestro vínculo si revelaba la causa. Nanahoshi adaptó las cartas para hablar; seguí al emisario hasta el antídoto. Mis decisiones siguen siendo mías."})
+  table.insert(scene.lines,2,{speaker=id,expression=id=="eris" and "angry" or "worried",text=replies[id]})
+  for _,transition in ipairs(seven.transitions["day7_"..id])do
+   transition.effects=transition.effects or {};transition.effects[#transition.effects+1]={id="final_explanation_"..id,character=id,sharedMoment="truth_after_curse",text="Rudy explica la maldición, las cartas y sus decisiones; escucha la respuesta de "..id.."."}
+  end
+ end
+ seven.scenes.day7_return_cards={title="Día 7 · Las palabras ya son mías",background="laboratory",music="romantic",finaleAction="return_cards",lines={
+  {speaker="narrator",text="Después de las conversaciones, Rudy vuelve al laboratorio. Coloca ante Nanahoshi las cartas que prestaron sonido a sus decisiones durante siete días."},
+  {speaker="rudeus",expression="neutral",text="Vengo a devolvértelas. Me ayudaron a hablar cuando no podía hacerlo. También me mostraron cuánto podía esconder detrás de una respuesta bien escogida."},
+  {speaker="nanahoshi",expression="happy",text="Ahora puedes decirlo tú. No porque todas tus decisiones fueran buenas, sino porque has dejado de confundir recuperar la voz con evitar sus consecuencias."},
+  {speaker="nanahoshi",expression="neutral",text="Guardaré los artefactos y una copia de tus registros. Tus patrones, niveles y estudios seguirán en el catálogo; devolver las cartas no borra lo que aprendiste."},
+  {speaker="rudeus",expression="happy",text="Gracias. Esta vez no hay una carta entre nosotros. Lo que haga mañana también tendrá que salir de mí."},
+ }}
+ seven.transitions.day7_family={{to="day7_return_cards"}}
+ seven.transitions.day7_departures={{to="day7_return_cards"}}
+ seven.transitions.day7_return_cards={
+  {to="day7_epilogue_family_united",requires={familyReady=true}},
+  {to="day7_epilogue_roxy",requires={marriage="roxy",viable=true}},
+  {to="day7_epilogue_eris",requires={marriage="eris",viable=true}},
+  {to="day7_epilogue_sylphiette",requires={marriage="sylphiette",viable=true}},
+  {to="day7_epilogue_solitary"},
+ }
+ local epilogues={
+  family_united={background="home",lines={
+   {speaker="sylphiette",expression="happy",text="Mañana me toca descansar. Está escrito y lo hemos hablado. Me gusta que este calendario tenga cuatro letras diferentes."},
+   {speaker="roxy",expression="happy",text="Mi investigación puede esperar hasta después de la cena. Quiero escuchar cómo os fue, sin convertirlo en otro informe."},
+   {speaker="eris",expression="happy",text="¡Y después practicamos! Un rato. También sé cuándo hay que guardar la espada y sentarse con todos."},
+   {speaker="rudeus",expression="happy",text="La casa no se salvó con una sola victoria. Seguimos aquí porque aprendimos a responder por lo que prometimos."}}},
+  roxy={background="library",lines={
+   {speaker="roxy",expression="happy",text="He dejado dos sillas. Una para discutir mis cálculos y otra para que me digas que necesitas descansar. Puedes usar la misma, si lo dices a tiempo."},
+   {speaker="rudeus",expression="neutral",text="Las despedidas siguen doliendo. No voy a ocultarlas detrás de nuestro trabajo. Quiero construir esta vida contigo sin fingir que no hubo consecuencias."},
+   {speaker="roxy",expression="neutral",text="Entonces empezaremos por un experimento pequeño y una conversación honesta. Lo demás se sostiene un día a la vez."}}},
+  eris={background="forest",lines={
+   {speaker="eris",expression="happy",text="¡Ya basta de revisar el mismo nudo! La escolta sale al amanecer. Esta noche cenamos y descansamos; mañana podrás demostrar lo que entrenaste."},
+   {speaker="rudeus",expression="neutral",text="Prepararé la barrera. También cumpliré mis responsabilidades con quienes tomaron otro camino. Viajar contigo no borra esas despedidas."},
+   {speaker="eris",expression="neutral",text="Eso quería oír. No necesito que finjas ser invencible. Necesito saber que vas a decirme la verdad y cubrir mi espalda."}}},
+  sylphiette={background="home",lines={
+   {speaker="sylphiette",expression="happy",text="Nuestra hija eligió el cuento de esta noche. Ya terminé la barrera; tú puedes ordenar la mesa. Hoy no tenemos que salvar el mundo para hacer algo importante."},
+   {speaker="rudeus",expression="neutral",text="Quiero reconstruir nuestra rutina contigo. Conozco lo que perdí y no voy a pedirte que llenes todos esos espacios por mí."},
+   {speaker="sylphiette",expression="neutral",text="Podemos hablar de ello sin dejar de cuidar lo que tenemos. Empieza por sentarte. Esta vez tenemos tiempo."}}},
+  solitary={background="courtyard",lines={
+   {speaker="narrator",text="La casa está silenciosa por una razón que ningún antídoto puede cambiar. Rudy conserva su voz, su magia y los acuerdos de cuidado que debe seguir cumpliendo."},
+   {speaker="rudeus",expression="worried",text="Quise llamar maldición a todo lo que dolía. Ellas se marcharon por decisiones que también fueron mías. No puedo exigir que regresen para demostrar que aprendí."},
+   {speaker="rudeus",expression="neutral",text="Mañana cumpliré el primer acuerdo pendiente. Sin esperar que me devuelvan amor por hacerlo. Será un comienzo pequeño, pero esta vez será mío."}}},
+ }
+ for id,epilogue in pairs(epilogues)do
+  epilogue.title="Epílogo · "..require("src.data.endings").byId[id].title;epilogue.music="romantic"
+  seven.scenes["day7_epilogue_"..id]=epilogue
+  seven.transitions["day7_epilogue_"..id]={{to="campaign_complete",effects={{id="campaign_complete",decision="ending",value=id}}}}
+ end
+end
+return Final
+````
+
 ## src/data/manual.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/manual.lua`
@@ -5053,7 +5361,7 @@ return {
         hitogami={personality="Burlón y manipulador; disfraza las amenazas de consejos.",role="Responsable de la maldición. Aparece en sueños, no como enemigo físico."},
         orsted={personality="Reservado y preciso; conoce los engaños de Hitogami.",role="Aliado. Entregó originalmente las cartas encantadas a Nanahoshi."},
         emisario={personality="Evasivo; intenta justificar el engaño de un regalo.",role="Personaje original que hizo beber la poción a Rudy. Se descubre durante la investigación."},
-        badigadi={personality="Extrovertido, orgulloso y combativo. Inmortal y extraordinariamente resistente.",role="Rey de seis brazos, guardián del antídoto por una promesa. Acepta la derrota sin morir."},
+        badigadi={personality="Extrovertido, orgulloso y combativo. Inmortal y extraordinariamente resistente.",role="Rey de seis brazos que disfruta medir fuerzas y cumple sus promesas. Sus motivos se descubren durante la investigación."},
         zanoba={personality="Entusiasta, detallista y apasionado por la artesanía.",role="Estudia los artefactos y sigue las huellas de la poción."},
         cliff={personality="Estudioso y perseverante; se concentra en comprender la magia.",role="Analiza la maldición y contiene las anomalías de maná."},
     },
@@ -5067,7 +5375,7 @@ return {
         {id="dream",name="Sueño de Hitogami",description="Rudy puede hablar en este espacio mental; la advertencia sólo cobra sentido después de leer la carta."},
         {id="home",name="Hogar Greyrat",description="Aquí aparece la carta firmada —H. Tras leerla, Rudy descubre que perdió voz y magia."},
         {id="apothecary",name="Botica oculta",description="Una pista sobre la poción y el emisario que se la entregó a Rudy."},
-        {id="arena",name="Arena de Badigadi",description="El rey inmortal guarda el antídoto. Hay que resistir sus brazos y neutralizar el sello."},
+        {id="arena",name="Arena de Badigadi",description="Lugar de encuentros y desafíos. El registro del emisario conduce hacia sus instalaciones."},
         {id="laboratory",name="Laboratorio de Nanahoshi",description="Nanahoshi adapta la voz almacenada y enseña los dos mazos iniciales."},
         {id="courtyard",name="Patio de la universidad",description="Un lugar para reencontrarse y preparar las expediciones desde Ranoa."},
         {id="library",name="Biblioteca",description="Libros, runas y conversaciones tranquilas permiten comprender lo que ocurre."},
@@ -5077,8 +5385,9 @@ return {
         {id="mirror_dimension",name="Dimensión del Espejo",description="Un espacio de ecos distorsionados, conservado entre los recursos de la aventura."},
         {id="festival",name="Festival de las Seis Caras",description="Día siete: regreso a Sharia, acuerdos matrimoniales y epílogo."},
     },
-    history={title="La maldición de Rudy",text="Rudy, Sylphiette, Roxy y Eris son adultos y ya están casados. Un sueño ambiguo de Hitogami precede a una carta firmada —H. Al leerla, Rudy descubre que la poción que aceptó le ha sellado la voz y el maná. Revelar deliberadamente el secreto a una esposa amenaza su amor.\n\nTiene siete días. Nanahoshi adapta unas cartas que recibió de Orsted: utilizan magia almacenada para reproducir la voz de Rudy. La investigación conduce a Badigadi y al antídoto. Recuperar la voz no repara automáticamente los matrimonios. Esta es una continuidad alternativa original del juego."},
+    history={title="La maldición de Rudy",text="Rudy, Sylphiette, Roxy y Eris son adultos y ya están casados. Un sueño ambiguo de Hitogami precede a una carta firmada —H. Al leerla, Rudy descubre que la poción que aceptó le ha sellado la voz y el maná. Revelar deliberadamente el secreto a una esposa amenaza su amor.\n\nTiene siete días. Nanahoshi adapta unas cartas que recibió de Orsted: utilizan magia almacenada para reproducir la voz de Rudy. La investigación debe revelar quién custodia el antídoto. Recuperar la voz no repara automáticamente los matrimonios. Esta es una continuidad alternativa original del juego."},
     rules={
+        {title="Cinco días de entrenamiento",text="Entrena con Eris al menos una vez en cada día del 1 al 5. Cuentan el entrenamiento compartido, físico y los duelos completados; repetir un día no sustituye otro. El diario conserva cada fecha. Cazar monstruos o reservar una actividad sin terminarla no cuenta.\n\nOrsted puede aparecer el Día 6. Su demostración no puede ganarse y no penaliza relaciones. Después entrega los patrones que faltan y permite elegir dos cartas distintas a nivel 10: una de combate y otra social, sin oro ni copias."},
         {title="Mejorar cartas hasta nivel 10",text="Abre M, pulsa Mejorar y selecciona una carta. La primera copia desbloquea el nivel 1. Subir desde nivel L consume 2 por L copias y oro: necesitas 91 copias totales para llegar al nivel 10. Las copias repetidas se guardan; tu carta equipada permanece en el mazo.\n\nLa pantalla compara efectos, costes y copias antes de confirmar. El nivel máximo no pide más copias. Espera a terminar el destello y pulsa Continuar antes de otra mejora."},
         {title="Efectos y límite diario",text="Una bonificación social de +1 sube a +2 en nivel 3, +3 en nivel 5, +4 en nivel 7 y +5 en nivel 9. Escuchar solo aumenta confianza; Coqueteo sutil solo amor. Las respuestas inapropiadas conservan las penalizaciones de su situación.\n\nCada esposa puede ganar hasta +10 amor y +10 confianza al día entre cartas, actividades, combates y eventos. Ves el valor realmente disponible. Perder puntos no devuelve capacidad para ganar más ese día."},
         {title="Oro, copias y suministros",text="Actividades, encargos, misiones, entrenamientos y victorias entregan oro. Mejorar abre la Tienda: vende copias de cartas adquiridas, con existencias diarias. Puedes especializar algunas cartas durante los siete días.\n\nLos libros entregan tres copias de una carta social; los materiales aumentan la energía externa hasta 30; preparar un combate concede cuatro de escudo inicial una sola vez. Revisa precios y oro antes de comprar."},
@@ -5103,10 +5412,10 @@ return {
         {title="El duelo del día cinco",text="Eris te reta a entrenar sin heridas letales. Tiene 42 de resistencia y desvía dos puntos de daño con espada. Aprovecha la tierra, la defensa y la esquiva. Tras bloquear o esquivar un golpe efectivo, C permite contraatacar con bastón: una acción y cinco puntos de daño.\n\nGanar concede +8 amor y +6 confianza; una derrota exigente, +4/+3; una derrota honesta, +1/+1. Los puntos se aplican al leer su valoración. No puedes reintentar para acumular recompensas."},
         {title="Esfuerzo y revancha con Eris",text="Perder rápido mientras atacas o te defiendes no significa dejarse ganar. Eris evalúa impactos, daño, bloqueos, esquivas y participación. Solo varios turnos vacíos, oportunidades claras desperdiciadas y muy pocos intentos justifican su sospecha: -10 amor y -8 confianza.\n\nEris recuerda el resultado. Si sospecha que no te esforzaste, puedes disculparte y aceptar una revancha el día seis. Ganar o darle una pelea exigente después de la disculpa repara ese conflicto. Ambos resultados quedan en el diario."},
         {title="Curación con costes y límites",text="Curación básica recupera 5 PV en nivel 1 y 10 en nivel 10: una acción, tres de energía y tres usos. Sylphiette cuesta dos de energía, recarga en dos turnos y tiene tres usos. Nunca superas tus PV máximos.\n\nSegún su afinidad media: 90 o más cura 40%; 80–89 cura 30%; 50–79 cura 20%; 25–49 cura 10%. Por debajo de 25, la maldición interfiere y causa 40% de daño a Rudy. Debes confirmar el riesgo: puede derrotarlo. No disminuye la capacidad profesional de Sylphiette."},
-        {title="Dificultad a lo largo de los días",text="PV de referencia por día: 10, 20, 36, 55, 180 y 260. Los guardianes y reflejos tienen variaciones. Día 2 introduce defensa; día 3 golpes preparados; día 4 debilitamiento; días 5 y 6 ataques múltiples y mayor necesidad de apoyo.\n\nDía 6: lacayo de Hitogami y prueba opcional de Orsted si investigaste las runas. Día 7: Badigadi, 1000 PV incluso si viajas solo. Prepara el mazo, consulta las habilidades y observa las intenciones antes de comenzar."},
+        {title="Dificultad a lo largo de los días",text="PV de referencia por día: 10, 20, 36, 55, 180 y 260. Los guardianes y reflejos tienen variaciones. Día 2 introduce defensa; día 3 golpes preparados; día 4 debilitamiento; días 5 y 6 ataques múltiples y mayor necesidad de apoyo.\n\nDía 6: investigación del emisario y evento de Orsted si entrenaste con Eris cada día del 1 al 5. Día 7: desafío final; puedes vencer incluso viajando solo. Prepara el mazo, consulta las habilidades y observa las intenciones antes de comenzar."},
         {title="Mano, daño y estados",text="Selecciona con clic, 1–3 o flechas; confirma con Jugar o Enter. Inspeccionar no gasta recursos. E termina el turno: descarta la mano, ejecuta la intención visible del enemigo y roba tres cartas. El descarte se baraja si se agota el mazo.\n\nDebilitamiento reduce daño y vulnerabilidad aumenta daño recibido. El historial H explica costes, bloqueo y efectos. La energía externa es independiente de la maldición. Siempre hay defensa y esquiva disponibles."},
         {title="Turnos y compañeras",text="Rudy tiene tres acciones. Cada compañera presente tiene una acción propia por turno; puedes intercalarlas. Al terminar, actúa el enemigo y se renuevan las acciones. Escudos y esquiva duran hasta ese ataque.\n\nLa afinidad es el promedio de amor y confianza, acotado a 0–100 para calcular daño. Especiales máximos: Sylphiette 90, Eris 150, Roxy 110; tres usos y recarga de tres turnos. Sus ataques normales son menores. Las separadas no participan. T abre habilidades, costes y resultados."},
-        {title="Badigadi y el antídoto",text="Fase 1: resiste y ataca. Al bajar a 750 PV usa tres golpes de dos puntos; al llegar a 350, tres de tres y resistencia de seis. El agua, el análisis de Roxy y los ataques combinados permiten aprovechar sus debilidades.\n\nA cero PV empieza la cuarta fase: rompe dos anclajes con B, una acción cada uno. Badigadi acepta la derrota, sigue vivo y entrega el antídoto. Usarlo restaura voz y magia; no repara matrimonios. Puedes ganar sin la prueba de Orsted ni compañeras."},
+        {title="Badigadi y el antídoto",requiresReveal=true,text="Fase 1: resiste y ataca. Al bajar a 750 PV usa tres golpes de dos puntos; al llegar a 350, tres de tres y resistencia de seis. El agua, el análisis de Roxy y los ataques combinados permiten aprovechar sus debilidades.\n\nA cero PV empieza la cuarta fase: rompe dos anclajes con B, una acción cada uno. Badigadi acepta la derrota, sigue vivo y entrega el antídoto. Usarlo restaura voz y magia; no repara matrimonios. Puedes ganar sin la prueba de Orsted ni compañeras."},
         {title="Victoria, derrota y guardado",text="La victoria neutraliza la amenaza y entrega su recompensa una sola vez. Derrota permite Reintentar o volver al punto seguro para editar el mazo; no borra las decisiones. La práctica del menú es descartable.\n\nF5 guarda; la campaña también guarda al decidir y cambiar de escena. La campaña usa un guardado con copia de respaldo y conserva sus pistas narrativas. Las campañas de otra continuidad se conservan; empieza una partida nueva para seguir la maldición."},
         {title="Conversaciones y controles",text="Las cartas sociales reproducen la voz encantada de Rudy. Leer en silencio no la utiliza. Los encuentros sociales miden avance, amor y confianza; no infligen daño. P toma un respiro. En una selección social, Esc cancela la carta; sin selección abre la pausa.\n\nJ: diario. M: mazos. H: historial de combate. F11: pantalla completa. Tab y Enter: botones. Opciones permite texto instantáneo, movimiento reducido y volúmenes separados. La música y los efectos son originales sintetizados; no incluyen doblaje grabado."},
     },
@@ -6046,7 +6355,7 @@ function CombatScreen.new(app,definition)
             return
         end
         if self.enc.training and self.enc.finished then app:resume();return end
-        if self.enc.outcome~="victory" and self.enc.enemy.id~="orsted_trial" then return end
+        if self.enc.outcome~="victory" and self.enc.enemy.id~="orsted_trial" and not self.enc.narrativeDefeat then return end
         app:finishCombat(self.enc)
     end
     function s:update(dt)
@@ -6093,7 +6402,7 @@ function CombatScreen.new(app,definition)
         W.panel(242,8,390,78)
         self:text(self.enc.enemy.name,252,14,194,P.lavender)
         self:text(self.enc.enemy.phase and ({endurance="I · Resistencia",six_arms="II · Seis brazos",resolve="III · Resistencia",seal="IV · Sello "..(self.enc.enemy.seal or 0),victory="IV · Victoria"})[self.enc.enemy.phase] or stateText(self.enc.enemy),452,14,170,P.muted,1,"right")
-        self:text((self.enc.training and "Resistencia " or "Vida ")..self.enc.enemy.hp.." / "..self.enc.enemy.maxHp,252,29,178,P.ink)
+        self:text((self.enc.enemy.id=="orsted_demonstration" and "Guardia " or self.enc.training and "Resistencia " or "Vida ")..self.enc.enemy.hp.." / "..self.enc.enemy.maxHp,252,29,178,P.ink)
         self:text("Escudo "..self.enc.enemy.shield,438,29,180,P.teal)
         W.bar(252,43,370,8,self.displayHp.enemy,self.enc.enemy.maxHp,P.danger)
         local intent=self.enc.enemy.intent
@@ -6302,9 +6611,10 @@ function CombatScreen.new(app,definition)
         self:begin();rect(P.shadow,0,0,640,360,.85)
         local won=self.enc.outcome=="victory"
         W.panel(69,31,502,296,{border=won and P.gold or P.danger})
-        if self.enc.enemy.id=="orsted_trial" then
-            self:text("PRUEBA DE ORSTED COMPLETADA",90,52,460,P.gold)
-            self:text("Orsted detiene el ejercicio. Ambos siguen vivos. La prueba es opcional y no condiciona el antídoto.",94,110,452,P.ink)
+        if self.enc.enemy.id=="orsted_trial" or self.enc.narrativeDefeat then
+            self:text(self.enc.narrativeDefeat and "DERROTA NARRATIVA · ORSTED" or "PRUEBA DE ORSTED COMPLETADA",90,52,460,P.gold)
+            self:text("Orsted detiene el ejercicio. Ambos siguen vivos. Esta derrota no termina la partida ni penaliza las relaciones.",94,110,452,P.ink)
+            self:text("Turnos: "..self.enc.turn.." · Continúa para escuchar su evaluación.",94,172,452,P.teal)
             self:button("Continuar",138,253,364,28,function()self:continue()end)
             return
         end
@@ -6408,7 +6718,7 @@ function CombatScreen.new(app,definition)
         if self:navigate(key) then return end
         local advance=key=="return" or key=="space" or key=="kpenter"
         if self.enc.finished then
-            if advance then if self.enc.outcome=="victory" or self.enc.training or self.enc.enemy.id=="orsted_trial" then self:continue() else self:retry() end end
+            if advance then if self.enc.outcome=="victory" or self.enc.training or self.enc.enemy.id=="orsted_trial" or self.enc.narrativeDefeat then self:continue() else self:retry() end end
             return
         end
         if advance and self.tutorial and (self.tutorial.stage=="attack_result" or self.tutorial.stage=="enemy_result") then self:advanceGuide();return end
@@ -7556,6 +7866,12 @@ local labels={daily_commitment="compromiso diario",broken_trust="confianza daña
 local function label(id) return labels[id] or tostring(id):gsub("_"," ") end
 function History.lines(session)
     local lines={}
+    local days={};for day=1,5 do days[#days+1]=tostring(day)..((session.eris_training_days or {})[tostring(day)] and ": sí" or ": pendiente")end
+    lines[#lines+1]="Entrenamiento con Eris · "..table.concat(days," / ")
+    if session.events.emissary_investigation_started then
+        lines[#lines+1]=session.events.antidote_holder_revealed and "Investigación resuelta: el emisario confirmó que Badigadi custodia el antídoto."
+            or "Investigación pendiente: sigue el registro del emisario. El poseedor del antídoto todavía es desconocido."
+    end
     for _,e in ipairs(session.history or session.journal or {}) do
         local char=Characters.byId[e.character]
         local delta=e.changes or e.delta or e
@@ -7762,8 +8078,9 @@ function Manual.new(app,returnTo)
             self:text("Escenario "..self.page.." / "..#Guide.scenarios.."\nPNG original · 320 x 180",360,248,246,P.muted)
         elseif self.section==5 then
             local rule=Guide.rules[self.page]
-            self:text(rule.title,30,92,578,P.gold)
-            self:text(rule.text,30,121,578,P.ink)
+            local hidden=rule.requiresReveal and not self.session.events.antidote_holder_revealed
+            self:text(hidden and "Un destino todavía desconocido" or rule.title,30,92,578,P.gold)
+            self:text(hidden and "Sigue la investigación del emisario. Las reglas del desafío final aparecerán cuando descubras quién custodia el antídoto." or rule.text,30,121,578,P.ink)
         elseif self.section==6 then
             self:text(Guide.history.title,30,92,578,P.gold)
             self:text(Guide.history.text,30,121,578,P.ink)
@@ -7925,6 +8242,100 @@ function OptionsScreen.new(app)
 end
 
 return OptionsScreen
+````
+
+## src/screens/orsted_reward.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/orsted_reward.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local CardView=require("src.ui.card")
+local Collection=require("src.systems.card_collection")
+local Finale=require("src.systems.finale")
+local Effects=require("src.screens.upgrades").effects
+local Reward={}
+function Reward.new(app)
+ local s=Screen.new(app);s.kind="orsted_reward";s.reward=Finale.ensure(app.session)
+ s.category=s.reward.pending and s.reward.pending.kind or (s.reward.choices.combat and "social" or "combat")
+ s.page=1;s.selected=nil
+ function s:refresh()
+  self.ids=Finale.options(app.session,self.category)
+  self.page=math.max(1,math.min(self.page,math.max(1,math.ceil(#self.ids/7))))
+  self.selected=self.ids[(self.page-1)*7+1]
+ end
+ function s:choose()
+  if self.reward.pending then return end
+  local result,err=Finale.choose(app.session,self.category,self.selected,self.reward.revision)
+  self.message=err
+  if result then self.keyboardFocus=nil;app:save() end
+ end
+ function s:acknowledge()
+  local pending=self.reward.pending
+  if not pending or pending.elapsed<(app.options.reducedMotion and .2 or 1.2) then return end
+  Finale.acknowledge(app.session);app:save()
+  self.category=self.reward.choices.combat and "social" or "combat";self.page=1;self:refresh();self.keyboardFocus=nil
+ end
+ function s:update(dt)
+  local pending=self.reward.pending
+  if not pending then return end
+  local before=pending.elapsed;pending.elapsed=math.min(2,before+dt)
+  if before<.45 and pending.elapsed>=.45 then app.audio:effect("upgrade") end
+ end
+ function s:draw()
+  self:begin();app.resources:background("training");W.panel(8,7,624,338)
+  self:text("LA AYUDA DE ORSTED",24,20,550,P.gold,2)
+  self:text("Dos cartas distintas a nivel 10. Sin oro, copias ni recetas.",24,48,590,P.teal)
+  local pending=self.reward.pending
+  self:button("Combate"..(self.reward.choices.combat and " [LISTO]" or ""),24,69,190,27,function()self.category="combat";self.page=1;self:refresh()end,pending~=nil,self.category=="combat")
+  self:button("Social"..(self.reward.choices.social and " [LISTO]" or ""),224,69,190,27,function()self.category="social";self.page=1;self:refresh()end,pending~=nil,self.category=="social")
+  app.resources:portraitSmall("orsted","neutral",558,20)
+  for row=1,7 do
+   local id=self.ids[(self.page-1)*7+row]
+   if id then
+    local card=Collection.byId[id]
+    self:button("N"..Collection.level(app.session,id).." "..(card.shortName or card.name),24,107+(row-1)*25,190,24,function()self.selected=id;self.message=nil end,pending~=nil,id==self.selected)
+   end
+  end
+  local pages=math.max(1,math.ceil(#self.ids/7))
+  self:button("<",24,290,44,24,function()self.page=self.page-1;self:refresh()end,pending~=nil or self.page==1)
+  self:text(self.page.." / "..pages,81,298,65,P.ink)
+  self:button(">",170,290,44,24,function()self.page=self.page+1;self:refresh()end,pending~=nil or self.page==pages)
+  local id=pending and pending.id or self.selected
+  if id then
+   local card=Collection.byId[id];local age=pending and pending.elapsed or 0
+   local from=Collection.view(app.session,id,pending and pending.before or Collection.level(app.session,id))
+   local to=Collection.view(app.session,id,10)
+   local elevation=pending and (app.options.reducedMotion and 0 or math.floor(12*math.min(1,age/.3))) or 0
+   CardView.draw(app.resources,card,232,116-elevation)
+   if pending and age>.2 and age<.9 and not app.options.reducedMotion then
+    love.graphics.setColor(1,.86,.48,.9)
+    for i=0,11 do local x=226+(i%4)*26;local y=104+math.floor(i/4)*56;love.graphics.rectangle("fill",x,y,4,4)end
+   end
+   self:text(card.name,326,110,281,P.gold)
+   self:text("ANTES / NIVEL "..from.level.."\n"..Effects(from),326,137,281,P.ink)
+   self:text((pending and age>=.45 and "¡NIVEL 10!" or "DESPUÉS / NIVEL 10").."\n"..Effects(to),326,183,281,P.teal)
+   self:text("Copias conservadas: "..to.copies.." · Oro: "..app.session.gold,232,239,376,P.ink)
+   local owner=card.conditions and card.conditions.character
+   self:text(owner and ("Conserva su requisito: "..owner.." debe estar disponible.") or "Tu carta equipada y el resto de la colección se conservan.",232,260,376,P.muted)
+   if pending then
+    self:button("Continuar presentación",232,290,376,26,function()self:acknowledge()end,age<(app.options.reducedMotion and .2 or 1.2))
+   elseif Finale.rewardComplete(app.session) then
+    self:button("Continuar historia",232,290,376,26,function()app:next()end)
+   else
+    local ok,why=Finale.canChoose(app.session,self.category,id)
+    self:button("Elegir y maximizar",232,290,376,26,function()self:choose()end,not ok)
+    self:text(self.message or why or "Elige con calma: cada categoría tiene una sola mejora.",24,326,584,P.muted)
+   end
+  end
+ end
+ function s:keypressed(key)self:navigate(key)end
+ s:refresh()
+ return s
+end
+return Reward
 ````
 
 ## src/screens/overlays.lua
@@ -8252,7 +8663,11 @@ function Panel.briefing(s,app)
   local change=previous and (" · Especial "..string.format("%+d",C.damage(Data.support[id].special,a)-previous).." desde el último combate") or ""
   s:text(id=="sylphiette" and C.affinity(a)<25 and "RIESGO: interferencia de la maldición, -40% PV máximos." or Data.support[id].role..change,70,y+17,535,id=="sylphiette" and C.affinity(a)<25 and P.danger or P.muted)
  end end
- if row==0 then s:text("Rudy viaja solo. Usa cartas mejoradas, debilidades y defensa. Badigadi conserva sus 1000 PV; Orsted no es obligatorio.",28,140,584,P.ink)end
+ if row==0 then
+  local description=s.enc.enemy.id=="orsted_demonstration" and "DEMOSTRACIÓN NO GANABLE. Usa tus cartas y defiéndete. Orsted detendrá el ejercicio en cuatro turnos o al agotarse tu resistencia. La derrota no penaliza relaciones ni termina la partida."
+   or "Rudy viaja solo. Usa cartas mejoradas, debilidades y defensa. No necesitas un evento especial para completar la campaña."
+  s:text(description,28,140,584,P.ink)
+ end
  s:text("Los especiales tienen recarga y usos limitados. T permite revisar todos los costes antes de actuar.",28,267,584,P.muted)
  s:button("Comenzar [Enter]",28,307,200,27,function()s.briefingOpen=false end)
  s:button("Habilidades [T]",238,307,180,27,function()s.tacticsOpen=true end,not s.enc.companion)
@@ -9343,7 +9758,7 @@ local function same(a,b)
 end
 local function contextFor(context)
     context=context or {}
-    return {kind="combat",warVersion=1,allies=context.enemyId=="eris_training" and {} or Companions.roster(context),character=context.character,tutorial=context.tutorial==true,
+    return {kind="combat",warVersion=1,allies=(context.enemyId=="eris_training" or context.enemyId=="orsted_demonstration") and {} or Companions.roster(context),character=context.character,tutorial=context.tutorial==true,
         progressionVersion=1,cardLevels=Collection.levels(context),preparationShield=context.preparationShield==4 and 4 or 0,
         day=integer(context.day,1,7) and context.day or nil,
         difficulty=integer(context.difficulty,1,7) and context.difficulty or nil,
@@ -9467,7 +9882,8 @@ local function damage(enc,target,base,result,source)
     local attacker=source or (target=="enemy" and enc.player or enc.enemy)
     local attempted=damageAmount(attacker,defender,base)
     local blocked=math.min(defender.shield,attempted)
-    local lost=math.min(defender.hp,attempted-blocked)
+    local floorHp=target=="enemy" and enc.enemy.id=="orsted_demonstration" and 1 or 0
+    local lost=math.min(math.max(0,defender.hp-floorHp),attempted-blocked)
     local dodged=target=="player" and Training.dodgeAbsorbed(enc,blocked,defender.shield) or nil
     defender.shield=defender.shield-blocked
     if target=="player" then
@@ -9476,6 +9892,7 @@ local function damage(enc,target,base,result,source)
         defender.magicShield=math.max(0,(defender.magicShield or 0)-(blocked-physical))
     end
     defender.hp=math.max(0,defender.hp-lost)
+    if floorHp==1 and defender.hp==1 then event(result,"parry","enemy","Orsted cambia de guardia y desvía el remate. La demostración no puede ganarse; terminará con su señal.") end
     event(result,"damage",target,label(target)..": "..attempted.." daño, "..blocked.." bloqueado, "..lost..(enc.training and " resistencia perdida." or " vida perdida."),
         {rawDamage=base,damage=attempted,blocked=blocked,hpLost=lost,amount=lost,dodgeBlocked=dodged})
 end
@@ -9522,6 +9939,7 @@ local function intent(enc)
     elseif action.kind=="prepare" then action.text=action.name..": prepara "..action.nextDamage.." daño para su siguiente acción."
     elseif action.kind=="interrupt" then action.text=action.name..": -"..action.actionLoss.." acción en el próximo turno de Rudy."
     elseif action.kind=="recover" then action.text=action.name..": no recuperará más escudo."
+    elseif action.kind=="demonstration_finish" then action.text="Orsted desarmará a Rudy y dará por terminada la prueba. La historia continuará."
     else action.text=action.name..": Rudy causará 2 menos de daño durante su próximo turno." end
     action.description=action.text
     enc.enemy.intent=action
@@ -9534,6 +9952,10 @@ local function updateIntent(enc,result)
     end
 end
 local function finish(enc,outcome,result,cause)
+    if enc.enemy.id=="orsted_demonstration" then
+        outcome="defeat";enc.narrativeDefeat="orsted_demonstration"
+        cause="Orsted detiene el ejercicio y aparta el arma de Rudy. Derrota narrativa sin heridas graves: la historia continúa y los matrimonios no pierden puntos."
+    end
     if Training.config(enc) and outcome=="defeat" then
         cause="Eris detiene la espada de práctica al agotarse la resistencia de Rudy. El ejercicio termina sin heridas."
     end
@@ -9543,6 +9965,11 @@ local function finish(enc,outcome,result,cause)
     else event(result,"defeat","player",cause or "La vida de Rudy llegó a cero.") end
 end
 local function checkOutcome(enc,result)
+    if enc.enemy.id=="orsted_demonstration" then
+        if enc.finished then return true end
+        if enc.player.hp<=0 then finish(enc,"defeat",result);return true end
+        return false
+    end
     if enc.enemy.id=="badigadi_final" and not enc.enemy.sealBroken then
         if enc.enemy.hp<=0 and enc.enemy.phase~="seal" then
             enc.enemy.phase="seal";enc.enemy.shield=0
@@ -9594,6 +10021,7 @@ local function start(deck,context,initial,legacyBalance)
     enc.allies=enc.training and {} or copy(context.allies)
     enc.supportUsed={}
     if enemy.id=="badigadi_final" then enc.maxTurns=Balance.boss.maxTurns end
+    if enemy.id=="orsted_demonstration" then enc.maxTurns=Balance.orsted.turns end
     enc.player.shield=context.preparationShield or 0
     enc.player.physicalShield=context.preparationShield or 0
     if enc.training then enc.maxTurns=Training.config(enc).maxTurns end
@@ -9673,7 +10101,7 @@ function Combat.preview(enc,index)
         if reduction>0 then preview.trainingSwordReduction=reduction end
         preview.damage=damageAmount(enc.player,enc.enemy,base)
         preview.blocked=math.min(enc.enemy.shield,preview.damage)
-        preview.hpLost=math.min(enc.enemy.hp,preview.damage-preview.blocked)
+        preview.hpLost=math.min(math.max(0,enc.enemy.hp-(enc.enemy.id=="orsted_demonstration" and 1 or 0)),preview.damage-preview.blocked)
         preview.text=preview.text.." Ahora: "..preview.damage.." daño / "..preview.blocked.." bloqueo / "..preview.hpLost.." vida."
     end
     return preview
@@ -9781,6 +10209,8 @@ function Combat.endTurn(enc,expectedRevision)
         event(result,"interrupt","player","Rudy pierde "..action.actionLoss.." acción en su próximo turno. Puede seguir usando defensa o cartas.",{amount=action.actionLoss})
     elseif action.kind=="recover" then
         event(result,"recovery_exhausted","enemy","El enemigo agotó sus recuperaciones de escudo.")
+    elseif action.kind=="demonstration_finish" then
+        finish(enc,"defeat",result)
     end
     enc.enemy.weak=math.max(0,enc.enemy.weak-1)
     if not checkOutcome(enc,result) then
@@ -9899,7 +10329,7 @@ function Combat.restore(snapshot,deck,context)
         else return nil end
     end
     for _,key in ipairs({"player","enemy","hand","drawPile","discard","energy","turn","maxTurns","revision",
-        "finished","outcome","cause","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","allies","supportUsed","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
+        "finished","outcome","cause","narrativeDefeat","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","allies","supportUsed","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
         local expected=restored[key]
         if oldSnapshot and key=="enemy" then expected=copy(expected);expected.actionUses=nil end
         if not (oldSnapshot and (key=="perBattle" or key=="companionHeals")) and not same(expected,snapshot[key]) then return nil end
@@ -10870,7 +11300,7 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````lua
 local Curse={}
 function Curse.new()
- return {active=true,voiceSealed=true,manaBlocked=true,discoveredVoice=false,discoveredMana=false}
+ return {active=true,voiceSealed=true,manaBlocked=true,chantlessBlocked=true,discoveredVoice=false,discoveredMana=false}
 end
 function Curse.canSpeak(session,delivery)
  return not (session.curse and session.curse.voiceSealed) or delivery=="dream" or delivery=="thought" or delivery=="note" or delivery=="enchanted" or delivery=="silence"
@@ -10880,6 +11310,7 @@ function Curse.canReveal(session,recipient)
  return not (session.curse and session.curse.active and wife and wife.romance)
 end
 function Curse.canUseNaturalMagic(session) return not (session.curse and session.curse.manaBlocked) end
+function Curse.canUseChantlessMagic(session) return Curse.canUseNaturalMagic(session) and not (session.curse and session.curse.chantlessBlocked) end
 return Curse
 ````
 
@@ -12032,6 +12463,7 @@ function Events.apply(session,id,effects)
         if effect.cure then
             session.inventory.antidote=false; session.inventory.antidoteUsed=true
             session.curse.active=false; session.curse.voiceSealed=false; session.curse.manaBlocked=false
+            session.curse.chantlessBlocked=false
         end
         if effect.route and session.day>=5 and session.relationships[effect.route] then session.route=effect.route end
         for _,cardId in ipairs(effect.unlock or {}) do unlock(cardId) end
@@ -12158,6 +12590,7 @@ function Family.attention(session,id,visited)
  end
 end
 function Family.activityFinished(session,def,instance)
+ require("src.systems.finale").recordTraining(session,def.id)
  local f=Family.ensure(session);local Events=require("src.systems.events")
  local visits=session.daily.visits[def.character]
  if visits==3 then
@@ -12185,6 +12618,141 @@ function Family.activityFinished(session,def,instance)
  end
 end
 return Family
+````
+
+## src/systems/finale.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/finale.lua`
+
+````lua
+local Collection=require("src.systems.card_collection")
+local Social=require("src.data.cards")
+local Techniques=require("src.data.combat_cards")
+local Finale={trainingIds={time_eris=true,eris_physical=true,eris_duel=true}}
+
+function Finale.ensure(s)
+ s.eris_training_days=s.eris_training_days or {}
+ s.orsted_reward=s.orsted_reward or {choices={},revision=0}
+ return s.orsted_reward
+end
+local function markAt(s,id,day)
+ s.events[id]=true;s.events_by_day=s.events_by_day or {}
+ local key=tostring(day);s.events_by_day[key]=s.events_by_day[key] or {};s.events_by_day[key][id]=true
+ if s.daily and s.daily.day==day then s.daily.events[id]=true end
+end
+function Finale.trainedEveryDay(s)
+ Finale.ensure(s)
+ for day=1,5 do if not s.eris_training_days[tostring(day)] then return false end end
+ return true
+end
+function Finale.recordTraining(s,source)
+ if not Finale.trainingIds[source] and source~="day5_eris_duel" and source~="day6_eris_rematch" then return false end
+ Finale.ensure(s)
+ local day=s.day;local key=tostring(day)
+ if s.eris_training_days[key] then return false end
+ s.eris_training_days[key]=true
+ require("src.systems.events").apply(s,"eris_training_day_"..day,{context="training",text="Entrenamiento con Eris completado en el Día "..day..". Fuente: "..source.."."})
+ if Finale.trainedEveryDay(s) then markAt(s,"eris_five_training_days",5) end
+ return true
+end
+function Finale.kindMatches(id,kind)
+ local card=Collection.byId[id]
+ return card and ((kind=="social" and Social.byId[id]~=nil) or (kind=="combat" and (Techniques.byId[id]~=nil or card.combat~=nil))) or false
+end
+function Finale.options(s,kind)
+ local reward=Finale.ensure(s);local out={}
+ for _,card in ipairs(Collection.list) do
+  if Finale.kindMatches(card.id,kind) and card.id~=reward.choices.combat and card.id~=reward.choices.social then out[#out+1]=card.id end
+ end
+ return out
+end
+function Finale.canChoose(s,kind,id)
+ local reward=Finale.ensure(s)
+ if s.checkpoint~="day6_orsted_gifts" or not s.events.orsted_collection_gift then return false,"La ayuda de Orsted todavía no está disponible." end
+ if reward.pending then return false,"Termina la presentación de la mejora anterior." end
+ if reward.choices[kind] or s.events["orsted_max_"..kind] then return false,"Ya elegiste la carta de este tipo." end
+ if not Finale.kindMatches(id,kind) or id==reward.choices.combat or id==reward.choices.social then return false,"Elige dos cartas distintas, una de cada tipo." end
+ if Collection.level(s,id)==10 then
+  for _,other in ipairs(Finale.options(s,kind)) do
+   if Collection.level(s,other)<10 then return false,"Esta carta ya está al máximo. Puedes mejorar otra." end
+  end
+ end
+ return true
+end
+function Finale.choose(s,kind,id,revision)
+ local reward=Finale.ensure(s)
+ if revision~=nil and revision~=reward.revision then return nil,"Esta elección ya fue procesada." end
+ local ok,err=Finale.canChoose(s,kind,id);if not ok then return nil,err end
+ local before=Collection.level(s,id)
+ -- Una transacción lógica: el nivel cambia aquí; la animación sólo lo presenta.
+ Collection.ensure(s)[id].level=10
+ reward.choices[kind]=id;reward.revision=reward.revision+1
+ reward.pending={kind=kind,id=id,before=before,elapsed=0}
+ require("src.systems.events").apply(s,"orsted_max_"..kind,{decision="orsted_max_"..kind,value=id,context="orsted",text="Orsted lleva "..Collection.byId[id].name.." al nivel 10. Sin gastar oro, copias ni recetas."})
+ return reward.pending
+end
+function Finale.acknowledge(s)
+ local reward=Finale.ensure(s)
+ if not reward.pending then return false end
+ reward.pending=nil;return true
+end
+function Finale.rewardComplete(s)
+ local reward=Finale.ensure(s)
+ return reward.choices.combat~=nil and reward.choices.social~=nil and not reward.pending
+end
+function Finale.advance(s,action)
+ if action=="orsted_grant" then
+  if not s.events.orsted_demonstration_completed then return nil,"Completa la demostración de Orsted." end
+  local missing={}
+  for _,card in ipairs(Collection.list)do if not s.unlocked[card.id] then missing[#missing+1]=card.id end end
+  require("src.systems.events").apply(s,"orsted_collection_gift",{unlock=missing,presenter="orsted",context="orsted",text="Orsted entrega todos los patrones que faltaban. Las restricciones matrimoniales siguen vigentes."})
+ elseif action=="orsted_choices" and not Finale.rewardComplete(s) then
+  return nil,"Elige una carta de combate y una social y termina sus presentaciones."
+ elseif action=="return_cards" then
+  if not s.inventory.antidoteUsed then return nil,"Todavía necesitas las cartas para comunicarte." end
+  if not require("src.systems.relationships").ending(s.relationships) then return nil,"Resuelve primero los compromisos matrimoniales pendientes." end
+  require("src.systems.events").apply(s,"enchanted_cards_returned",{context="closure",text="Rudy devuelve a Nanahoshi las cartas encantadas. El registro de colección, niveles y duplicados permanece en la galería."})
+  s.inventory.enchantedCardsReturned=true
+ end
+ return true
+end
+function Finale.restore(s,input)
+ Finale.ensure(s)
+ s.eris_training_days={}
+ for day=1,math.min(7,s.day)do
+  if s.events["eris_training_day_"..day] then s.eris_training_days[tostring(day)]=true end
+ end
+ -- Migración con pruebas concretas: actividades terminadas, nunca visitas reservadas.
+ if input.versionBeforeFinale then
+  local function recover(day,report)
+   if type(day)~="number" or day%1~=0 or day<1 or day>s.day then return end
+   local activities=type(report)=="table" and (report.activities_completed or report.activities)
+   for _,a in ipairs(type(activities)=="table" and activities or {})do
+    if type(a)=="table" and Finale.trainingIds[a.id] then s.eris_training_days[tostring(day)]=true;markAt(s,"eris_training_day_"..day,day) end
+   end
+  end
+  for day=1,7 do recover(day,(s.daily_history or {})[tostring(day)])end
+  if s.daily then recover(s.daily.day,s.daily)end
+  if s.events.training_result_day5_eris_duel then s.eris_training_days["5"]=true;markAt(s,"eris_training_day_5",5)end
+ end
+ s.events.eris_five_training_days=nil
+ if Finale.trainedEveryDay(s)then markAt(s,"eris_five_training_days",5)end
+ local reward={choices={},revision=0}
+ for _,kind in ipairs({"combat","social"})do
+  local id=s.decisions["orsted_max_"..kind]
+  if s.events.orsted_collection_gift and s.events["orsted_max_"..kind] and Finale.kindMatches(id,kind) and id~=reward.choices.combat then
+   reward.choices[kind]=id;reward.revision=reward.revision+1;s.collection[id].level=10
+  end
+ end
+ local pending=type(input.orsted_reward)=="table" and input.orsted_reward.pending
+ if type(pending)=="table" and reward.choices[pending.kind]==pending.id then
+  local before=tonumber(pending.before) or 1;local elapsed=tonumber(pending.elapsed) or 0
+  reward.pending={kind=pending.kind,id=pending.id,before=math.max(1,math.min(10,math.floor(before==before and before or 1))),elapsed=math.max(0,math.min(2,elapsed==elapsed and elapsed or 0))}
+ end
+ s.orsted_reward=reward
+ if s.events.enchanted_cards_returned then s.inventory.enchantedCardsReturned=true end
+end
+return Finale
 ````
 
 ## src/systems/json.lua
@@ -12647,6 +13215,10 @@ local function validate(catalog,options)
         days[chapter.day]=true
         if chapter.nextChapter and not catalog.byId[chapter.nextChapter] then fail(where,"siguiente capítulo desconocido") end
         if chapter.implemented~=false then
+            for _,runtime in ipairs(chapter.runtimeEvents or {}) do
+                if not identifier(runtime.id) or not nodes[runtime.checkpoint] then fail(where,"Productor de evento dinámico inválido")
+                else events[runtime.id]=true;produced(runtime.id,runtime.checkpoint,runtime.checkpoint) end
+            end
             if not nodes[chapter.initial] or nodes[chapter.initial].chapterId~=chapter.id then fail(where,"entrada de capítulo inexistente") end
             if chapter.companion then
                 local selection=nodes[chapter.companion.selectionCheckpoint]
@@ -12797,7 +13369,7 @@ local function validate(catalog,options)
         end
     end
     for id in pairs(nodes) do
-        if not reachable[id] and not nodes[id].definition.legacyEncounter then fail(id,"checkpoint inalcanzable desde el inicio") end
+        if not reachable[id] and not nodes[id].definition.legacyEncounter and not nodes[id].definition.historical then fail(id,"checkpoint inalcanzable desde el inicio") end
         if not exits[id] then fail(id,"ruta bloqueada o ciclo sin un resumen terminal") end
     end
     return #errors==0,errors
@@ -13138,6 +13710,7 @@ function Progression.encounter(session,id)
     local node=Chapters.checkpoints[id]
     if not node or node.kind~="encounter" then return nil end
     local encounter=definition(session,id)
+    if id=="day6_hitogami" and session.decisions.legacy_emissary_encounter then encounter.enemyId="hitogami_minion" end
     if encounter.character=="companion" then encounter.character=Progression.companion(session,id) end
     for _,adjustment in ipairs(encounter.adjustments or {}) do
         if meets(session,adjustment.requires,id) then
@@ -13208,6 +13781,10 @@ function Progression.next(session,checkpoint,result)
         if Daily.storyComplete(session) then return Progression.endDay(session) end
         return Progression.continueStory(session)
     end
+    if node.definition.finaleAction then
+        local ok,err=require("src.systems.finale").advance(session,node.definition.finaleAction)
+        if not ok then return nil,err end
+    end
     if checkpoint==Daily.config(session).summary and not Daily.ensure(session).ending_processed then
         return nil,"Falta procesar el cierre de esta jornada."
     end
@@ -13221,6 +13798,8 @@ function Progression.next(session,checkpoint,result)
         return nil,"Elige una respuesta antes de continuar."
     end
     if node.kind=="encounter" then
+        if node.definition.requiresVictory and not (session.combat and session.combat.finished and session.combat.outcome=="victory") then return nil,"Completa primero el enfrentamiento." end
+        if node.definition.scriptedDefeat and not (session.combat and session.combat.finished and session.combat.narrativeDefeat==node.definition.scriptedDefeat) then return nil,"Espera la señal que termina la demostración." end
         if node.definition.training and not session.events[require("src.systems.training_result").key(checkpoint)] then
             return nil,"Lee la valoración de Eris antes de cerrar el entrenamiento."
         end
@@ -13241,6 +13820,10 @@ end
 -- Los vínculos sociales jamás reciben deltas por infligir daño mágico.
 function Progression.finishCombat(session,enc)
     local def=Progression.encounter(session,session.checkpoint)
+    if def and def.enemyId=="orsted_demonstration" then
+        if session.combat~=enc or not enc.finished or enc.narrativeDefeat~="orsted_demonstration" then return nil,"Orsted todavía no ha terminado la demostración." end
+        return Progression.next(session,session.checkpoint,{score=def.targetScore,trust=0,chemistry=0})
+    end
     if def and def.enemyId=="orsted_trial" and session.combat==enc and enc.finished and enc.outcome=="defeat" then
         Events.apply(session,"orsted_trial_completed",{text="Orsted detiene la prueba. Rudy conserva lo aprendido y sigue hacia el desafío final."})
         return Progression.next(session,session.checkpoint,{score=0,trust=0,chemistry=0})
@@ -13971,7 +14554,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=7,maxBytes=2097152,filename="campaign-v7.json",backup="campaign-v7.backup.json",optionsFile="options.json",
+local Save={version=8,maxBytes=2097152,filename="campaign-v8.json",backup="campaign-v8.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -14015,6 +14598,7 @@ function Save.newSession(config)
     Daily.ensure(s)
     Collection.ensure(s);Economy.ensure(s)
     require("src.systems.family").ensure(s)
+    require("src.systems.finale").ensure(s)
     return s
 end
 
@@ -14063,6 +14647,12 @@ function Save.validate(input)
         input=Json.decode(assert(Json.encode(input)));input.version=7
         input.migration=type(input.migration)=="table" and input.migration or {};input.migration.warSource="campaign-v6.json"
     end
+    if input.version==7 then
+        input=Json.decode(assert(Json.encode(input)));input.version=8;input.versionBeforeFinale=7
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.finaleSource="campaign-v7.json"
+        input.decisions=type(input.decisions)=="table" and input.decisions or {}
+        if input.checkpoint=="day6_hitogami" and type(input.combat)=="table" and type(input.combat.enemy)=="table" and input.combat.enemy.id=="hitogami_minion" then input.decisions.legacy_emissary_encounter=true end
+    end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
     s.checkpoint=Chapters.get(input.checkpoint) and input.checkpoint or Chapters.first.initial
@@ -14084,6 +14674,7 @@ function Save.validate(input)
     end
     if s.inventory.antidoteUsed then
         s.curse.active=false; s.curse.voiceSealed=false; s.curse.manaBlocked=false
+        s.curse.chantlessBlocked=false
     end
     if type(input.documentState)=="table" and require("src.data.documents")[input.documentState.id] then
         local phases={resting=true,lifting=true,opening=true,reading=true,signature=true}
@@ -14258,6 +14849,11 @@ function Save.validate(input)
             if type(value)~="number" or value~=value or value<0 or value>10 then return nil,"Límite diario de relaciones inválido." end
         end
     end
+    -- Los eventos recuperados por la migración se añaden al índice diario ya normalizado.
+    for day=1,7 do
+        s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
+    end
+    require("src.systems.finale").restore(s,input)
     local definition=Daily.battleDefinition(s) or Progression.encounter(s,s.checkpoint)
     if definition then
         local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
@@ -14298,9 +14894,6 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
-    for day=1,7 do
-        s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
-    end
     return s
 end
 
@@ -14334,7 +14927,7 @@ function Save.write(session)
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
     if #data>Save.maxBytes then return false,"El progreso supera el tamaño máximo de guardado." end
-    local ok; ok,err=writeFile("campaign-v7.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v8.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -14342,7 +14935,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v7.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v8.tmp.json")
     return true
 end
 
@@ -14357,12 +14950,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v7.json","campaign-v7.backup.json","campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6) then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6 or decoded.version==7) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v7." end
+            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v8." end
         end
     end
     return nil,err or "No hay guardado válido disponible."
@@ -14658,6 +15251,7 @@ function Result.commit(session,enc)
   effect.reconcile="training_effort"
  end
  if not Events.apply(session,key,effect) then return session.trainingResults[cp],false end
+ require("src.systems.finale").recordTraining(session,cp)
  -- Ambos resultados quedan en el historial; una revancha no borra el primero.
  Events.mark(session,result.eventId)
  session.decisions.eris_training_last_result=result.id
@@ -15604,7 +16198,7 @@ function Suite.run()
  local Events=require("src.systems.events")
  local Collection=require("src.systems.card_collection")
  local Economy=require("src.systems.economy")
- local count=0
+ local count,routesRun=0,0
  local function check(ok,message) assert(ok,message);count=count+1 end
  local function copy(value) return assert(Json.decode(assert(Json.encode(value)))) end
  local function round(s)
@@ -15677,7 +16271,7 @@ function Suite.run()
   local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
   s.combat=enc
   require("tests.war_balance").solve(enc)
-  check(enc.outcome=="victory","Victoria alcanzable: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
+  check(enc.outcome=="victory" or enc.narrativeDefeat=="orsted_demonstration","Resultado previsto: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
   check(#enc.relationshipEvents<=3,"Como máximo una interpretación romántica por combate")
   local snapshot=round(s)
   check(snapshot.combat and snapshot.combat.outcome==enc.outcome,"Replay conserva victoria antes de recompensa")
@@ -15755,15 +16349,24 @@ function Suite.run()
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      if not id or s.relationships[id].marriageState=="separated" then break end
      if config.favors and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
-     check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
+     local recovery=config.skipErisTraining and id=="eris"
+     check(Daily.startActivity(s,recovery and "reconcile_eris" or "time_"..id)~=nil,"Actividad libre con "..id)
      s=round(s)
-     check(Daily.resolveActivity(s,"together")~=nil,"Decisión de actividad guardada")
+     check(Daily.resolveActivity(s,recovery and "repair" or "together")~=nil,"Decisión de actividad guardada")
     end
     if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
      check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
     if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
     else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
+   elseif node.definition.orstedReward then
+    local Finale=require("src.systems.finale")
+    for _,kind in ipairs({"combat","social"})do
+     for _,id in ipairs(Finale.options(s,kind))do if Finale.canChoose(s,kind,id) then
+      assert(Finale.choose(s,kind,id,s.orsted_reward.revision));s=round(s);Finale.acknowledge(s);break
+     end end
+    end
+    check(Progression.next(s)~=nil,"Dos mejoras gratuitas concluyen la ayuda de Orsted")
    elseif node.kind=="hub" then
     local available=Progression.availableCompanions(s)
     if #available>0 then
@@ -15785,6 +16388,8 @@ function Suite.run()
   check(ending~=nil,"No quedan matrimonios ambiguos en el epílogo: "..tostring(err))
   check(Endings.byId[ending]~=nil,"El epílogo pertenece a los cinco desenlaces")
   check(s.events.antidote_obtained and not s.curse.active and s.events.campaign_complete,"Antídoto utilizado y campaña completada")
+  check(s.inventory.enchantedCardsReturned and visited.day7_return_cards and visited["day7_epilogue_"..ending],"Devolución y epílogo específico antes del final")
+  if config.skipErisTraining then check(not visited.day6_orsted_arrival and not s.events.orsted_collection_gift,"Campaña completa sin recompensa de Orsted") end
   check(Relationships.ending(round(s).relationships)==ending,"Final persiste al guardar/cargar")
   Suite.completed[ending]=copy(s)
   if config.specialize then
@@ -15794,10 +16399,11 @@ function Suite.run()
    local maxBytes=#assert(Json.encode(s));check(maxBytes<524288,"Campaña con tienda cabe en el límite de guardado")
    print("Specialization: staff_strike N10, encourage N10; income "..income..", remaining "..s.gold..", save "..maxBytes.." bytes.")
   end
+  routesRun=routesRun+1;print("Campaign route "..routesRun..": "..ending.."; Orsted="..tostring(visited.day6_orsted_arrival==true))
   return s,ending,visited
  end
  local function specialize()
-  return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true})
+  return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true,skipErisTraining=true})
  end
  if os.getenv("DATESIM_TEST_GROUP")=="economy-campaign" then specialize();print("Economy campaign: "..count.." checks passed.");return count end
  local reached={}
@@ -15851,7 +16457,12 @@ function Suite.run()
   for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
  end
  specialize()
- print("Campaign: "..count.." checks passed (35 complete routes, five endings, specialization, free daily distributions, favors and save/load).")
+ for _,ending in ipairs(Endings.list)do
+  local keep={};for _,id in ipairs(wives)do keep[id]=ending.id=="family_united" or ending.id==id end
+  local _,actual=run({keep=keep,preferred=ending.id,companion="roxy",skipErisTraining=true})
+  check(actual==ending.id,"Cada final se alcanza sin el regalo de Orsted")
+ end
+ print("Campaign: "..count.." checks passed ("..routesRun.." complete routes, five endings with ordinary progression, Orsted, specialization and save/load).")
  return count
 end
 return Suite
@@ -18061,7 +18672,7 @@ function Suite.run()
     check(not Economy.grant(s,0/0,"invalid"),"Rechaza oro no finito sin mutar el saldo")
     local v4=clone(shop);v4.version=4;v4.collection=nil;v4.economy=nil;v4.gold=nil
     local migrated=assert(Save.validate(v4))
-    check(migrated.version==7 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
+    check(migrated.version==8 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
     bad=clone(v4);bad.daily="invalid";check(not Save.validate(bad),"Rechaza estado diario v4 inválido durante migración")
     local c=Save.newSession({love=65,trust=65});Events.apply(c,"starter_gift",{starter=true})
     c.checkpoint="day1_tutorial";c.events.tutorial_completed=true
@@ -18117,7 +18728,7 @@ function Suite.run()
     love.filesystem.setIdentity("cartas_del_destino_v5_migration_tests")
     love.filesystem.remove(Save.filename);love.filesystem.remove(Save.backup)
     assert(love.filesystem.write("campaign-v4.json",original))
-    local disk=assert(Save.load());check(disk.version==7 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
+    local disk=assert(Save.load());check(disk.version==8 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
     check(Save.write(disk) and love.filesystem.read("campaign-v4.json")==original,"Escribir v5 conserva exactamente el archivo v4")
     love.filesystem.setIdentity(identity)
     local costs=Collection.view(s,"water_cannon",10)
@@ -18801,11 +19412,11 @@ function Suite.run()
  malformed=clone(s);malformed.family.queue={{id="bad",character="rudeus",kind="departure",phase=1}}
  check(not Save.validate(malformed),"Rechaza partida de quien no es esposa")
  local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_family_v5_migration_tests")
- for _,file in ipairs({Save.filename,Save.backup,"campaign-v7.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
+ for _,file in ipairs({Save.filename,Save.backup,"campaign-v8.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
  local old=fresh();old.version=5;old.family=nil;old.relationships.roxy.love=65
  local bytes=assert(Json.encode(old));assert(love.filesystem.write("campaign-v5.json",bytes))
- local migrated=assert(Save.load());check(migrated.version==7 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
- check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v7 conserva bytes originales v5")
+ local migrated=assert(Save.load());check(migrated.version==8 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v8 conserva bytes originales v5")
  love.filesystem.setIdentity(identity)
  local oldSocial,definition=require("tests.dialogue_branching").fixture("encounter_eris",{"listen","be_honest","encourage","subtle_flirt","light_joke"})
  oldSocial.relationships.eris.love=2;oldSocial.relationships.eris.trust=1
@@ -18918,6 +19529,251 @@ function Suite.run()
  for key,value in pairs(old)do Save[key]=value end
  assert(ok,err)
  print("Family UI: "..count.." checks passed; "..captures.." real-renderer captures.")
+end
+return Suite
+````
+
+## tests/finale.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/finale.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Save=require("src.systems.save");local F=require("src.systems.finale");local Daily=require("src.systems.daily")
+ local Events=require("src.systems.events");local Collection=require("src.systems.card_collection");local Combat=require("src.systems.combat")
+ local Progression=require("src.systems.progression");local Chapters=require("src.data.chapters");local Sim=require("tests.war_balance")
+ local Json=require("src.systems.json");local checks=0
+ local function check(ok,msg)assert(ok,msg);checks=checks+1 end
+ local function encode(v)return assert(Json.encode(v))end
+ local function round(s)return assert(Save.validate(assert(Json.decode(encode(s)))))end
+ local function fresh(day,cp)
+  local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
+  s.day=day or 1;s.checkpoint=cp or ("day"..s.day.."_agenda");Daily.ensure(s);return s
+ end
+ local function train(s,day)
+  s.day=day;s.checkpoint="day"..day.."_agenda";Daily.ensure(s)
+  assert(Daily.startActivity(s,"time_eris"));assert(Daily.resolveActivity(s,"together"));s.rewardQueue={};s.family.queue={}
+ end
+ for mask=0,31 do
+  local s=fresh()
+  for day=1,5 do if math.floor(mask/2^(day-1))%2==1 then train(s,day)end end
+  s.day=6;s.checkpoint="day6_emissary_confession";Daily.ensure(s)
+  check(F.trainedEveryDay(s)==(mask==31),"Cinco fechas distintas, máscara "..mask)
+  local nextId=assert(Progression.next(s))
+  check(nextId==(mask==31 and "day6_orsted_arrival" or "day6_close"),"Orsted sólo aparece con cinco días")
+ end
+ local s=fresh();assert(Daily.startActivity(s,"time_eris"))
+ check(not F.trainedEveryDay(s) and not s.eris_training_days["1"],"Reservar no registra entrenamiento")
+ assert(Daily.resolveActivity(s,"together"));train(s,1);train(s,1)
+ check(s.daily.visits.eris==3 and s.eris_training_days["1"] and not s.events.eris_five_training_days,"Tres repeticiones no sustituyen cinco días")
+ check(not Daily.startActivity(s,"time_eris"),"Se conserva el límite diario")
+ check(round(s).eris_training_days["1"],"Fecha persiste al cargar")
+ for day=2,5 do train(s,day)end
+ check(F.trainedEveryDay(round(s)),"Cinco días persisten")
+ local valid,errors=require("src.systems.narrative_validator").validate(Chapters,{checkFiles=false})
+ check(valid,table.concat(errors,"; "))
+ for day=1,5 do
+  local chapter=Chapters.byId["day"..day]
+  for id,scene in pairs(chapter.scenes)do
+   for _,line in ipairs(scene.lines or {})do
+    local text=line.text
+    check(not (text:find("Badigadi") and (text:find("antídoto") or text:find("frasco"))),"Misterio previo: "..id)
+   end
+  end
+ end
+ check(not require("src.data.documents").potion_origin.text:find("Badigadi"),"La pista temprana no revela al guardián")
+ local function battle(s,id)
+  for _,card in ipairs(Collection.list)do s.unlocked[card.id]=true;s.collection[card.id].unlocked=true;s.collection[card.id].level=5 end
+  s.combatDeck=Sim.deck;s.externalEnergy=30
+  local def=Progression.encounter(s,s.checkpoint);local support=require("src.systems.companions").context(s,def)
+  s.combat=Combat.new(s.deck,{enemyId=id or def.enemyId,day=s.day,character=def.character,relationships=support.relationships,team=support.team,
+   combatDeck=s.combatDeck,unlocked=s.unlocked,cardLevels=Collection.levels(s),curse=s.curse,externalEnergy=s.externalEnergy},function()return 17 end)
+  return s.combat
+ end
+ local mystery=fresh(6,"day6_hitogami")
+ check(not Progression.next(mystery) and not mystery.events.antidote_holder_revealed,"No omitir al emisario para revelar al jefe")
+ Sim.solve(battle(mystery));assert(Progression.finishCombat(mystery,mystery.combat))
+ check(mystery.checkpoint=="day6_emissary_confession" and not mystery.events.antidote_holder_revealed,"La derrota abre la confesión")
+ assert(Progression.next(mystery))
+ check(mystery.events.antidote_holder_revealed and mystery.clues.antidote_location and mystery.missions.emissary_investigation,"Revelación y misión tras leer la confesión")
+ check(mystery.checkpoint=="day6_close","La historia sigue sin Orsted")
+ for _,level in ipairs({1,5,10})do for seed=1,8 do
+  local e=Sim.make(level,3,100,seed*17,"orsted_demonstration",6)
+  check(next(e.allies)==nil,"Rudy afronta solo la demostración")
+  Sim.solve(e)
+  check(e.outcome=="defeat" and e.narrativeDefeat=="orsted_demonstration" and e.turn<=4,"Derrota narrativa, incluso con cartas N10")
+  check(e.enemy.hp>=1 and e.enemy.maxHp==120,"Guardia finita, Orsted no muere")
+ end end
+ local orsted=fresh(6,"day6_orsted_demonstration")
+ local e=battle(orsted);local relations=encode(orsted.relationships);local gold=orsted.gold
+ check(not Progression.next(orsted),"No omitir la demostración")
+ for turn=1,4 do
+  if not e.finished then assert(Combat.basic(e,"defend"));assert(Combat.basic(e,"dodge"));assert(Combat.endTurn(e))end
+ end
+ check(e.turn==4 and e.narrativeDefeat and e.player.hp>0,"Defender permite sobrevivir cuatro turnos; Orsted termina")
+ orsted=round(orsted);e=orsted.combat
+ check(e and e.narrativeDefeat and e.turn==4,"Derrota narrativa se restaura por comandos")
+ assert(Progression.finishCombat(orsted,e))
+ check(encode(orsted.relationships)==relations and orsted.gold==gold,"Derrota de Orsted sin penalizaciones ni premio ordinario")
+ check(orsted.checkpoint=="day6_orsted_discovery","Evaluación y reconocimiento después del duelo")
+ -- Regalo real: dos cartas faltantes y el resto de niveles/cantidades intactos.
+ orsted.unlocked.listen=nil;orsted.collection.listen.unlocked=false;orsted.unlocked.heal=nil;orsted.collection.heal.unlocked=false
+ orsted.collection.staff_strike.copies=23;orsted.family.discounts=2
+ assert(Progression.next(orsted));check(orsted.checkpoint=="day6_orsted_gifts","La ayuda abre la selección")
+ for _,card in ipairs(Collection.list)do check(orsted.unlocked[card.id],"Desbloquea "..card.id)end
+ local collection=encode(orsted.collection);local rewards=#orsted.rewardQueue
+ assert(F.advance(orsted,"orsted_grant"))
+ check(encode(orsted.collection)==collection and #orsted.rewardQueue==rewards,"Regalo no duplica copias ni presentaciones")
+ check(not Progression.next(orsted),"No avanzar sin las dos elecciones")
+ check(not F.choose(orsted,"social","staff_strike",0),"Valida el tipo social")
+ local selected=assert(F.choose(orsted,"combat","staff_strike",0))
+ check(orsted.collection.staff_strike.level==10 and orsted.collection.staff_strike.copies==23 and orsted.gold==gold and orsted.family.discounts==2,"Mejora gratuita conserva copias, oro y recetas")
+ check(not F.choose(orsted,"combat","water_cannon",0) and not F.choose(orsted,"social","listen",1),"Revisión y presentación impiden dobles elecciones")
+ selected.elapsed=.6;orsted=round(orsted)
+ check(orsted.orsted_reward.pending.elapsed==.6 and orsted.collection.staff_strike.level==10,"Guardar durante animación no repite la mejora")
+ F.acknowledge(orsted);assert(F.choose(orsted,"social","listen",1));F.acknowledge(orsted)
+ check(F.rewardComplete(orsted) and orsted.orsted_reward.revision==2,"Exactamente una elección por categoría")
+ local maxed=0;for _,entry in pairs(orsted.collection)do if entry.level==10 then maxed=maxed+1 end end
+ check(maxed==2,"Exactamente dos cartas maximizadas")
+ local before=encode(orsted);check(not F.choose(orsted,"social","encourage",2) and encode(orsted)==before,"No hay tercera mejora")
+ assert(Progression.next(orsted));check(orsted.checkpoint=="day6_close","Continúa tras las dos mejoras")
+ -- Híbridas cuentan para ambos tipos, pero no pueden reclamar ambos premios.
+ local hybrid=fresh(6,"day6_orsted_gifts");hybrid.events.orsted_demonstration_completed=true;F.advance(hybrid,"orsted_grant")
+ assert(F.choose(hybrid,"combat","shared_magic",0));F.acknowledge(hybrid)
+ check(not F.choose(hybrid,"social","shared_magic",1),"Dos elecciones deben ser distintas")
+ hybrid.relationships.sylphiette.marriageState="separated"
+ local support=require("src.systems.companions").roster({team={sylphiette=true},relationships=hybrid.relationships})
+ check(not support.sylphiette and hybrid.unlocked.shared_magic,"Colección completa no restaura matrimonio ni apoyo")
+ local finish=fresh(7,"day7_intro");local beforeRelations=encode(finish.relationships)
+ Events.apply(finish,"antidote_obtained",{antidote=true});assert(Progression.choose(finish,finish.checkpoint,"use_antidote"))
+ check(require("src.systems.curse").canSpeak(finish) and require("src.systems.curse").canUseChantlessMagic(finish),"Antídoto restaura voz, maná y magia sin conjuro")
+ check(encode(finish.relationships)==beforeRelations,"La cura no cambia amor ni confianza")
+ for _,r in pairs(finish.relationships)do r.marriageState="separated"end
+ finish.checkpoint="day7_return_cards";local archive=encode(finish.collection)
+ assert(Progression.next(finish));check(finish.checkpoint=="day7_epilogue_solitary" and finish.inventory.enchantedCardsReturned,"Devuelve cartas antes del epílogo")
+ check(encode(finish.collection)==archive and #require("src.data.endings").list==5,"Conserva colección y exactamente cinco finales")
+ check(round(finish).inventory.enchantedCardsReturned,"La devolución persiste")
+ -- Importación v7: fechas demostradas por actividades; original conservado.
+ local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_finale_v7_migration")
+ for _,path in ipairs({Save.filename,Save.backup})do love.filesystem.remove(path)end
+ local old=fresh()
+ for day=1,5 do
+  train(old,day);Events.apply(old,Daily.config(old).completionEvent,{});assert(Daily.finish(old))
+ end
+ -- El archivo v7 contiene resúmenes reales, pero todavía no los eventos de Fase 5.
+ old.version=7;old.eris_training_days=nil;old.events.eris_five_training_days=nil
+ for day=1,5 do
+  old.events["eris_training_day_"..day]=nil
+  old.events_by_day[tostring(day)]["eris_training_day_"..day]=nil
+ end
+ old.events_by_day["5"].eris_five_training_days=nil
+ old.day=6;old.checkpoint="day6_hitogami";Daily.ensure(old);old.rewardQueue={};old.family.queue={}
+ old.combat=Combat.new(old.deck,{enemyId="hitogami_minion",day=6,combatDeck=old.combatDeck,unlocked=old.unlocked,cardLevels=Collection.levels(old),curse=old.curse,externalEnergy=0},function()return 17 end)
+ Combat.basic(old.combat,"defend")
+ local bytes=encode(old);assert(love.filesystem.write("campaign-v7.json",bytes))
+ local migrated=assert(Save.load())
+ check(migrated.version==8 and F.trainedEveryDay(migrated),"Migra cinco fechas verificables de v7")
+ for day=1,5 do check(migrated.events_by_day[tostring(day)]["eris_training_day_"..day],"La migración conserva el índice diario: "..day)end
+ check(migrated.events_by_day["5"].eris_five_training_days,"La condición migrada tiene fecha estable")
+ local migratedAgain=round(migrated)
+ check(migratedAgain.events_by_day["5"].eris_five_training_days and F.trainedEveryDay(migratedAgain),"La segunda carga conserva el calendario reconstruido")
+ check(migrated.combat and migrated.combat.revision==1 and migrated.combat.enemy.id=="hitogami_minion","Conserva batalla v7 iniciada antes del emisario nuevo")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v7.json")==bytes,"v8 no sobrescribe v7")
+ love.filesystem.setIdentity(identity)
+ print("Finale phase 5: "..checks.." checks; 32 calendars, 24 controlled Orsted battles, choices, mystery, cure, return and migration.")
+ return checks
+end
+return Suite
+````
+
+## tests/finale_ui.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/finale_ui.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Save=require("src.systems.save");local Events=require("src.systems.events");local F=require("src.systems.finale")
+ local Collection=require("src.systems.card_collection");local Json=require("src.systems.json")
+ local previous=Save.readOptions;Save.readOptions=function()return {muted=true,textAnimation=false,reducedMotion=false}end
+ local app=require("src.app").new();app.mouse=function()return nil,nil end
+ local checks,captures=0,0;local function check(ok,msg)assert(ok,msg);checks=checks+1 end
+ local function settle()app:update(2);if app.manager.transition>0 then app:update(2)end;app:draw()end
+ local function capture(name)
+  app.toastTime=0;app:draw();local pixels=app.canvas:newImageData();local bytes=pixels:encode("png")
+  local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/finale-"..name..".png","wb"));file:write(bytes:getString());file:close();pixels:release();bytes:release();captures=captures+1
+ end
+ local function click(label)
+  app:draw();for _,b in ipairs(app.manager.current.buttons)do if b.label==label and not b.disabled then
+   app:mousepressed(app.offsetX+(b.x+b.w/2)*app.scale,app.offsetY+(b.y+b.h/2)*app.scale,1);return
+  end end;error("Botón no disponible: "..label)
+ end
+ local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
+ s.day=6;s.checkpoint="day6_orsted_demonstration";require("src.systems.daily").ensure(s)
+ app.session=s;app:resume();settle();capture("orsted-preparation")
+ local combat=app.manager.current
+ check(combat.briefingOpen and combat.enc.enemy.maxHp==120,"La demostración muestra reglas y guardia finita")
+ local before=assert(Json.encode(s.relationships))
+ click("Comenzar [Enter]")
+ while not combat.enc.finished do require("tests.combat_visual").drive(combat);settle()end
+ capture("orsted-narrative-defeat")
+ check(combat.enc.narrativeDefeat and combat.enc.turn==4,"Orsted termina la secuencia en cuatro turnos")
+ check(not combat.enc.outcome or combat.enc.outcome~="victory","La interfaz no anuncia victoria imposible")
+ click("Continuar");settle();capture("orsted-discovery")
+ check(assert(Json.encode(s.relationships))==before,"La derrota no penaliza matrimonios")
+ local guard=0
+ while app.manager.current.kind~="orsted_reward" do
+  guard=guard+1;assert(guard<140,"Entrega de patrones bloqueada")
+  local screen=app.manager.current
+  if screen.kind=="reward" then screen:continue()else screen:advance()end
+  settle()
+ end
+ check(s.events.orsted_collection_gift and s.unlocked.water_cannon,"Se presentan los patrones que faltaban")
+ local reward=app.manager.current;reward.selected="staff_strike";capture("choose-combat")
+ local gold=s.gold;local copies=s.collection.staff_strike.copies
+ click("Elegir y maximizar");app:update(.3);capture("maximizing-combat")
+ reward:choose();check(s.orsted_reward.revision==1,"Doble clic sólo reclama una mejora")
+ app:save();app:continueGame();app:update(.1);app:draw();reward=app.manager.current;s=app.session
+ check(reward.kind=="orsted_reward" and s.orsted_reward.pending and s.orsted_reward.pending.id=="staff_strike","Carga durante el destello conserva su presentación")
+ settle();capture("combat-maximized");click("Continuar presentación");settle()
+ reward=app.manager.current;reward.selected="listen";capture("choose-social")
+ click("Elegir y maximizar");settle();capture("social-maximized");click("Continuar presentación");settle()
+ check(s.collection.staff_strike.level==10 and s.collection.listen.level==10 and s.gold==gold and s.collection.staff_strike.copies==copies,"Dos mejoras gratuitas, sin gasto")
+ check(F.rewardComplete(s),"Ambas presentaciones terminadas")
+ click("Continuar historia");settle();check(s.checkpoint=="day6_close","Vuelve a la historia")
+ -- Regreso y archivo con una separación permanente y otros matrimonios pendientes.
+ for _,r in pairs(s.relationships)do r.marriageState="separated"end
+ s.day=7;s.checkpoint="day7_return_cards";Events.apply(s,"antidote_obtained",{antidote=true});Events.apply(s,"test_cure",{cure=true})
+ require("src.systems.daily").ensure(s);s.rewardQueue={};app:resume();settle();capture("return-cards")
+ local archive=assert(Json.encode(s.collection));guard=0
+ while s.checkpoint=="day7_return_cards" do guard=guard+1;assert(guard<20);app.manager.current:advance();settle()end
+ check(s.inventory.enchantedCardsReturned and assert(Json.encode(s.collection))==archive,"Devolución conserva registro y niveles")
+ capture("epilogue-solitary")
+ app:save();local restored=assert(Save.load());check(restored.inventory.enchantedCardsReturned and restored.relationships.eris.marriageState=="separated","Cierre y separaciones sobreviven a la carga")
+ -- Cada epílogo usa la escena y los retratos reales, con su estado matrimonial.
+ for _,ending in ipairs(require("src.data.endings").list)do
+  local route=Save.newSession();Events.apply(route,"starter_gift",{starter=true});route.rewardQueue={}
+  route.day=7;route.checkpoint="day7_return_cards";require("src.systems.daily").ensure(route)
+  Events.apply(route,"antidote_obtained",{antidote=true});Events.apply(route,"test_cure",{cure=true})
+  for id,r in pairs(route.relationships)do
+   if ending.id=="family_united" or ending.id==id then
+    r.love=80;r.trust=80;r.events.personal_resolution=true;r.criticalDecisions.commitment=true
+   else r.marriageState="separated"end
+  end
+  app.session=route;app:resume();settle();guard=0
+  while route.checkpoint=="day7_return_cards" do guard=guard+1;assert(guard<20);app.manager.current:advance();settle()end
+  check(route.checkpoint=="day7_epilogue_"..ending.id and route.inventory.enchantedCardsReturned,"Escena específica después de devolver: "..ending.id)
+  check(app.manager.current.scene.title=="Epílogo · "..ending.title,"El render muestra el epílogo actual: "..ending.id)
+  capture("epilogue-"..ending.id)
+ end
+ -- El manual mantiene el misterio antes de la revelación.
+ app.session=Save.newSession();app:manual();settle();local manual=app.manager.current;manual:changeSection(5)
+ for i,rule in ipairs(require("src.data.manual").rules)do if rule.requiresReveal then manual.page=i;break end end
+ capture("manual-mystery")
+ Save.readOptions=previous
+ print("Finale UI: "..checks.." checks; "..captures.." real-renderer captures, narrative defeat, free choices, reload and return.")
+ return checks
 end
 return Suite
 ````
@@ -19586,7 +20442,7 @@ function Suite.run()
         check(Events.apply(s,"promise_"..id,{character=id,love=3,trust=3,promise={id="return",status="kept"}}),"Promesa cumplida "..id)
     end
     local s=Save.newSession({love=65,trust=65})
-    check(s.version==7 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
+    check(s.version==8 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
     check(#s.deck==0 and #s.combatDeck==0 and next(s.unlocked)==nil,"Sin cartas antes de Nanahoshi")
     for _,id in ipairs(names) do
         check(s.relationships[id].love==65 and s.relationships[id].trust==65,"Matrimonio comienza positivamente")
@@ -19712,7 +20568,7 @@ function Suite.run()
     end)
     love=oldLove
     assert(tested,err)
-    print("Marriages/save v7: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
+    print("Marriages/save v8: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
     return checked
 end
 return Suite
@@ -20146,7 +21002,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==7,"Sin apariencia global persistida en el formato de progresión")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==8,"Sin apariencia global persistida en el formato de progresión")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2
@@ -20763,7 +21619,14 @@ function Suite.run()
         local cp=app.session.checkpoint
         local node=Chapters.get(cp)
         if cp=="campaign_complete" then break end
-        if s.kind=="family_scene" then
+        if s.kind=="orsted_reward" then
+            capture("orsted-gift-"..s.category)
+            if s.reward.pending then s:acknowledge()
+            elseif require("src.systems.finale").rewardComplete(app.session)then click("Continuar historia")
+            else
+                for _,id in ipairs(s.ids)do if require("src.systems.finale").canChoose(app.session,s.category,id)then s.selected=id;s:choose();break end end
+            end
+        elseif s.kind=="family_scene" then
             s:advance()
         elseif s.kind=="reward" then
             capture("reward"); s:continue()
@@ -20799,7 +21662,7 @@ function Suite.run()
         elseif node.kind=="encounter" then
             if s.enc.type=="combat" then
                 capture("combat-"..s.enc.enemy.id)
-                check(not s.enc.finished or s.enc.outcome=="victory" or s.enc.training,"Política de prueba no debe perder: "..cp)
+                check(not s.enc.finished or s.enc.outcome=="victory" or s.enc.training or s.enc.narrativeDefeat,"Política de prueba respeta resultados narrativos: "..cp)
                 if not s:busy() and not s.enc.finished and s.enc.training and Combat.canBasic(s.enc,"counter") then
                     s:basic("counter")
                 elseif not s:busy() and not s.enc.finished and s.enc.training and s.enc.enemy.intent.kind=="attack"
@@ -20898,8 +21761,9 @@ return function()
     io.stdout:setvbuf("no")
     local group=os.getenv("DATESIM_TEST_GROUP")
     local module=os.getenv("DATESIM_TEST_MODULE")
-    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v7_tests_"..module);require("tests."..module).run();return end
-    love.filesystem.setIdentity("cartas_del_destino_v7_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v8_tests_"..module);require("tests."..module).run();return end
+    love.filesystem.setIdentity("cartas_del_destino_v8_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="finale" or group=="finale-ui" then require("tests.finale").run();if group=="finale-ui" then require("tests.finale_ui").run() end;return end
     if group=="war" or group=="war-ui" then require("tests.war").run();require("tests.war_balance").run();if group=="war-ui" then require("tests.war_ui").run() end;return end
     if group=="family" or group=="family-ui" then require("tests.family").run();if group=="family-ui" then require("tests.family_ui").run() end;return end
     if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
@@ -20938,6 +21802,8 @@ return function()
     require("tests.war").run()
     require("tests.war_balance").run()
     require("tests.war_ui").run()
+    require("tests.finale").run()
+    require("tests.finale_ui").run()
     require("tests.relationship_bars").run()
     require("tests.affinity").run()
     require("tests.training_integration").run()
@@ -20945,7 +21811,7 @@ return function()
     require("tests.curse_social").run()
     require("tests.dialogue_branching").run()
     require("tests.dialogue_visual").run()
-    require("tests.campaign").run()
+    if group~="regression" then require("tests.campaign").run() end
     require("tests.restructure_integration").run()
 end
 ````
@@ -21825,7 +22691,7 @@ function Suite.run()
  Combat.endTurn(legacy.combat)
  local bytes=assert(Json.encode(legacy));assert(love.filesystem.write("campaign-v6.json",bytes))
  local migrated=assert(Save.load())
- check(migrated.version==7 and migrated.combat and migrated.combat.enemy.maxHp==72 and migrated.combat.turn==2,"Combate v6 continúa con sus reglas originales")
+ check(migrated.version==8 and migrated.combat and migrated.combat.enemy.maxHp==72 and migrated.combat.turn==2,"Combate v6 continúa con sus reglas originales")
  check(Save.write(migrated) and love.filesystem.read("campaign-v6.json")==bytes,"v7 conserva los bytes de v6")
  love.filesystem.setIdentity(identity)
  print("War rules: "..checks.." checks passed.")
@@ -22011,7 +22877,7 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "Badigadi de 1000 PV, apoyos por afinidad, guardado v7, animaciones y audio sintetizado.\n\n"
+          "Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

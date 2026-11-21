@@ -88,8 +88,9 @@ function Manual.new(app,returnTo)
             self:text("Escenario "..self.page.." / "..#Guide.scenarios.."\nPNG original · 320 x 180",360,248,246,P.muted)
         elseif self.section==5 then
             local rule=Guide.rules[self.page]
-            self:text(rule.title,30,92,578,P.gold)
-            self:text(rule.text,30,121,578,P.ink)
+            local hidden=rule.requiresReveal and not self.session.events.antidote_holder_revealed
+            self:text(hidden and "Un destino todavía desconocido" or rule.title,30,92,578,P.gold)
+            self:text(hidden and "Sigue la investigación del emisario. Las reglas del desafío final aparecerán cuando descubras quién custodia el antídoto." or rule.text,30,121,578,P.ink)
         elseif self.section==6 then
             self:text(Guide.history.title,30,92,578,P.gold)
             self:text(Guide.history.text,30,121,578,P.ink)

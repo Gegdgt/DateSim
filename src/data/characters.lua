@@ -7,7 +7,7 @@ local list = {
     {id="hitogami",name="Hitogami",shortName="Hitogami",romance=false,color={.9,.9,.85},description="Dios Humano. Manipula a Rudy mediante una maldición y consejos ambiguos; no es un enemigo físico."},
     {id="orsted",name="Orsted",shortName="Orsted",romance=false,color={.7,.75,.8},description="Aliado de la investigación y creador del regalo de cartas que conserva Nanahoshi."},
     {id="emisario",name="Emisario",shortName="Emisario",romance=false,color={.6,.5,.65},description="Personaje original que entregó la poción siguiendo las indicaciones de Hitogami."},
-    {id="badigadi",name="Badigadi",shortName="Badigadi",romance=false,color={.6,.4,.75},description="Rey inmortal de seis brazos. Guarda el antídoto por una promesa y acepta un desafío honorable."},
+    {id="badigadi",name="Badigadi",shortName="Badigadi",romance=false,color={.6,.4,.75},description="Rey inmortal de seis brazos. Disfruta los desafíos y se toma en serio la palabra que ha dado."},
     {id="zanoba",name="Zanoba",shortName="Zanoba",romance=false,color={0.77,0.66,0.46},description="Busca pistas en el oficio de los antiguos artesanos."},
     {id="cliff",name="Cliff",shortName="Cliff",romance=false,color={0.58,0.69,0.56},description="Estudia cómo contener la anomalía mágica."},
 }

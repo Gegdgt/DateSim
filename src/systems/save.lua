@@ -10,7 +10,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=7,maxBytes=2097152,filename="campaign-v7.json",backup="campaign-v7.backup.json",optionsFile="options.json",
+local Save={version=8,maxBytes=2097152,filename="campaign-v8.json",backup="campaign-v8.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -54,6 +54,7 @@ function Save.newSession(config)
     Daily.ensure(s)
     Collection.ensure(s);Economy.ensure(s)
     require("src.systems.family").ensure(s)
+    require("src.systems.finale").ensure(s)
     return s
 end
 
@@ -102,6 +103,12 @@ function Save.validate(input)
         input=Json.decode(assert(Json.encode(input)));input.version=7
         input.migration=type(input.migration)=="table" and input.migration or {};input.migration.warSource="campaign-v6.json"
     end
+    if input.version==7 then
+        input=Json.decode(assert(Json.encode(input)));input.version=8;input.versionBeforeFinale=7
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.finaleSource="campaign-v7.json"
+        input.decisions=type(input.decisions)=="table" and input.decisions or {}
+        if input.checkpoint=="day6_hitogami" and type(input.combat)=="table" and type(input.combat.enemy)=="table" and input.combat.enemy.id=="hitogami_minion" then input.decisions.legacy_emissary_encounter=true end
+    end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
     local s=Save.newSession()
     s.checkpoint=Chapters.get(input.checkpoint) and input.checkpoint or Chapters.first.initial
@@ -123,6 +130,7 @@ function Save.validate(input)
     end
     if s.inventory.antidoteUsed then
         s.curse.active=false; s.curse.voiceSealed=false; s.curse.manaBlocked=false
+        s.curse.chantlessBlocked=false
     end
     if type(input.documentState)=="table" and require("src.data.documents")[input.documentState.id] then
         local phases={resting=true,lifting=true,opening=true,reading=true,signature=true}
@@ -297,6 +305,11 @@ function Save.validate(input)
             if type(value)~="number" or value~=value or value<0 or value>10 then return nil,"Límite diario de relaciones inválido." end
         end
     end
+    -- Los eventos recuperados por la migración se añaden al índice diario ya normalizado.
+    for day=1,7 do
+        s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
+    end
+    require("src.systems.finale").restore(s,input)
     local definition=Daily.battleDefinition(s) or Progression.encounter(s,s.checkpoint)
     if definition then
         local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
@@ -337,9 +350,6 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
-    for day=1,7 do
-        s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
-    end
     return s
 end
 
@@ -373,7 +383,7 @@ function Save.write(session)
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
     if #data>Save.maxBytes then return false,"El progreso supera el tamaño máximo de guardado." end
-    local ok; ok,err=writeFile("campaign-v7.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v8.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -381,7 +391,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v7.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v8.tmp.json")
     return true
 end
 
@@ -396,12 +406,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v7.json","campaign-v7.backup.json","campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6) then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6 or decoded.version==7) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v7." end
+            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v8." end
         end
     end
     return nil,err or "No hay guardado válido disponible."

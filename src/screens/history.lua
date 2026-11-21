@@ -10,6 +10,12 @@ local labels={daily_commitment="compromiso diario",broken_trust="confianza daña
 local function label(id) return labels[id] or tostring(id):gsub("_"," ") end
 function History.lines(session)
     local lines={}
+    local days={};for day=1,5 do days[#days+1]=tostring(day)..((session.eris_training_days or {})[tostring(day)] and ": sí" or ": pendiente")end
+    lines[#lines+1]="Entrenamiento con Eris · "..table.concat(days," / ")
+    if session.events.emissary_investigation_started then
+        lines[#lines+1]=session.events.antidote_holder_revealed and "Investigación resuelta: el emisario confirmó que Badigadi custodia el antídoto."
+            or "Investigación pendiente: sigue el registro del emisario. El poseedor del antídoto todavía es desconocido."
+    end
     for _,e in ipairs(session.history or session.journal or {}) do
         local char=Characters.byId[e.character]
         local delta=e.changes or e.delta or e

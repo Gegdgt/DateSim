@@ -46,7 +46,11 @@ function Panel.briefing(s,app)
   local change=previous and (" · Especial "..string.format("%+d",C.damage(Data.support[id].special,a)-previous).." desde el último combate") or ""
   s:text(id=="sylphiette" and C.affinity(a)<25 and "RIESGO: interferencia de la maldición, -40% PV máximos." or Data.support[id].role..change,70,y+17,535,id=="sylphiette" and C.affinity(a)<25 and P.danger or P.muted)
  end end
- if row==0 then s:text("Rudy viaja solo. Usa cartas mejoradas, debilidades y defensa. Badigadi conserva sus 1000 PV; Orsted no es obligatorio.",28,140,584,P.ink)end
+ if row==0 then
+  local description=s.enc.enemy.id=="orsted_demonstration" and "DEMOSTRACIÓN NO GANABLE. Usa tus cartas y defiéndete. Orsted detendrá el ejercicio en cuatro turnos o al agotarse tu resistencia. La derrota no penaliza relaciones ni termina la partida."
+   or "Rudy viaja solo. Usa cartas mejoradas, debilidades y defensa. No necesitas un evento especial para completar la campaña."
+  s:text(description,28,140,584,P.ink)
+ end
  s:text("Los especiales tienen recarga y usos limitados. T permite revisar todos los costes antes de actuar.",28,267,584,P.muted)
  s:button("Comenzar [Enter]",28,307,200,27,function()s.briefingOpen=false end)
  s:button("Habilidades [T]",238,307,180,27,function()s.tacticsOpen=true end,not s.enc.companion)

@@ -1,5 +1,11 @@
 -- Todas las magnitudes nuevas viven aquí; el replay anterior usa enemies_legacy.
 return {
+ orsted={hp=120,turns=4,actions={
+  {id="measure_guard",name="Medir la guardia",kind="attack",damage=4},
+  {id="change_angle",name="Cambiar el ángulo",kind="attack",damage=8},
+  {id="close_distance",name="Cerrar la distancia",kind="attack",damage=6,hits=2},
+  {id="end_demonstration",name="Orsted detendrá la demostración",kind="demonstration_finish"},
+ }},
  hpFactors={ruins_guardian=1.15,rudy_reflection=1.1,distorted_reflection=1.05},
  days={
   {name="Aprendizaje",hp=10,damage=2,shield=0},

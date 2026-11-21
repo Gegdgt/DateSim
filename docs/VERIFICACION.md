@@ -1,4 +1,47 @@
-# Verificación de combate y afinidad — Fase 4
+# Verificación del cierre narrativo — Fase 5
+
+Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados: **44 192 comprobaciones**, sumando una ejecución válida de cada módulo y sin contar repeticiones. Los grupos `regression` y `campaign` finalizaron con **`ALL TESTS PASSED`, salida 0**. La verificación se realizó en esos dos grupos; no se presenta como una sola ejecución monolítica.
+
+| Cobertura | Resultado |
+| --- | --- |
+| Campañas completas | 28 848 comprobaciones; 40 recorridos de siete días |
+| Regresión de sistemas e interfaces | 15 344 comprobaciones, incluyendo los módulos detallados abajo |
+| Reglas de Fase 5 | 384 comprobaciones; los 32 calendarios posibles y 24 demostraciones de Orsted con niveles 1/5/10 |
+| Interfaz de Fase 5 | 22 comprobaciones; 16 capturas, elección de ambas mejoras, recarga durante el destello, devolución y los cinco epílogos |
+| Campaña gráfica | 1 457 comprobaciones; 825 pasos de pantalla |
+| Combate gráfico e integración | 44 + 24 comprobaciones |
+| Balance del jefe y reglas de apoyo | 1 200 + 217 comprobaciones; 576 simulaciones del jefe, ocho composiciones familiares |
+| Interfaz de apoyo y fases | 10 comprobaciones; 12 capturas |
+| Compatibilidad de combate | 1 620 + 956 comprobaciones; 120 + 300 victorias con fixtures históricas |
+| Entrenamiento e integración | 84 + 444 comprobaciones |
+| Familia e interfaz | 228 + 2 400 comprobaciones |
+| Agenda e interfaz | 1 028 + 36 comprobaciones |
+| Niveles, economía e interfaz | 398 + 25 comprobaciones |
+| Diálogos e interfaz | 73 + 2 788 + 277 comprobaciones |
+| Barras, afinidad e introducción | 138 + 260 + 34 comprobaciones |
+| Recursos, movimiento, retratos, audio y matrimonios | 654 + 172 + 181 + 90 + 100 comprobaciones |
+
+Las primeras dos filas suman el total; las demás desglosan la regresión y no deben sumarse otra vez.
+
+## Rutas y recompensas
+
+Los 40 recorridos incluyen **32 con Orsted y ocho sin su ayuda**. Los cinco finales se alcanzaron en ambos casos. Cada recorrido usa actividades, cartas adquiridas, comandos legales de combate y guardado/carga entre checkpoints. Se comprueba la devolución a Nanahoshi y la visita al epílogo que corresponde al estado matrimonial.
+
+La especialización sin Orsted alcanza Bastón y Dar ánimo a N10 mediante compras y mejoras ordinarias: **1 839 oro de ingreso, 1 037 de saldo y 241 922 bytes** al terminar. Su resultado matrimonial es Roxy; el recorrido específico de familia unida sin Orsted también pasa. La ayuda extraordinaria no sustituye los compromisos familiares ni es necesaria para conseguir el mejor final.
+
+Los 32 calendarios prueban que sólo entrenar en cada día 1–5 abre la aparición. Reservar una actividad no cuenta; tres repeticiones no cubren las otras fechas. Las demostraciones contra Orsted terminan como derrota narrativa incluso con N10, conservan guardia finita y no castigan relaciones. Se prueba que el emisario debe ser vencido antes de su confesión y que la información sobre el antídoto permanece oculta antes de ese punto.
+
+Se verifican los patrones faltantes, dos IDs distintos, una elección por categoría, conservación de oro/copias/descuentos, bloqueo del doble clic y del tercer premio, persistencia de la presentación y restricciones de las esposas separadas. La cura restaura voz y magia sin conjuro sin modificar afinidad; devolver las cartas conserva la colección.
+
+## Persistencia y revisión visual
+
+La migración **v7→v8** usa cinco resúmenes diarios generados por actividades reales. Conserva las fechas y su índice de eventos después de una segunda carga, reanuda un combate v7 iniciado contra el lacayo y verifica que los bytes originales de v7 permanecen intactos. Durante la revisión se corrigió el orden de reconstrucción del índice diario; las pruebas específicas y la regresión final pasan con esa corrección. Las migraciones anteriores siguen cubiertas. El ensayo extenso de combate conserva 414 comandos y 600 entradas de historial, con 582 655 bytes dentro del límite de 2 MiB.
+
+Se inspeccionaron capturas reales de la [derrota narrativa](../tests/artifacts/finale-orsted-narrative-defeat.png), [mejora de combate](../tests/artifacts/finale-maximizing-combat.png), [selección social](../tests/artifacts/finale-choose-social.png), [manual sin revelación](../tests/artifacts/finale-manual-mystery.png) y los cinco epílogos: [familia](../tests/artifacts/finale-epilogue-family_united.png), [Roxy](../tests/artifacts/finale-epilogue-roxy.png), [Eris](../tests/artifacts/finale-epilogue-eris.png), [Sylphiette](../tests/artifacts/finale-epilogue-sylphiette.png) y [Rudy solo](../tests/artifacts/finale-epilogue-solitary.png). No se modificaron PNG ni ASE del juego.
+
+Registros locales finales: `tests/artifacts/finale-regression-final.log`, `finale-campaign.log` y `finale-migration-final.log`. Logs y capturas están excluidos de Git. Los avisos de imágenes y sonidos ausentes proceden de fixtures que prueban los recursos provisionales; no indican archivos originales eliminados. Las pruebas son automatizadas en LÖVE y la inspección es visual: no equivalen a una partida manual completa ni sustituyen sesiones de balance con jugadores. [Arquitectura y comandos](FASE_5_CIERRE.md).
+
+## Registro anterior — Fase 4
 
 Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT**, renderizador real e identidades de prueba aisladas. **39 126 comprobaciones**, tomando una ejecución válida de cada módulo y sin sumar repeticiones. Los PNG y ASE originales no cambiaron.
 

@@ -16,7 +16,7 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "Badigadi de 1000 PV, apoyos por afinidad, guardado v7, animaciones y audio sintetizado.\n\n"
+          "Badigadi de 1000 PV, apoyos por afinidad, Orsted condicional, dos mejoras elegidas, devolución de cartas, guardado v8, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

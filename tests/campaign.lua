@@ -15,7 +15,7 @@ function Suite.run()
  local Events=require("src.systems.events")
  local Collection=require("src.systems.card_collection")
  local Economy=require("src.systems.economy")
- local count=0
+ local count,routesRun=0,0
  local function check(ok,message) assert(ok,message);count=count+1 end
  local function copy(value) return assert(Json.decode(assert(Json.encode(value)))) end
  local function round(s)
@@ -88,7 +88,7 @@ function Suite.run()
   local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(37))
   s.combat=enc
   require("tests.war_balance").solve(enc)
-  check(enc.outcome=="victory","Victoria alcanzable: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
+  check(enc.outcome=="victory" or enc.narrativeDefeat=="orsted_demonstration","Resultado previsto: "..def.enemyId.." / "..tostring(def.character).." / "..tostring(enc.cause))
   check(#enc.relationshipEvents<=3,"Como máximo una interpretación romántica por combate")
   local snapshot=round(s)
   check(snapshot.combat and snapshot.combat.outcome==enc.outcome,"Replay conserva victoria antes de recompensa")
@@ -166,15 +166,24 @@ function Suite.run()
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      if not id or s.relationships[id].marriageState=="separated" then break end
      if config.favors and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
-     check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
+     local recovery=config.skipErisTraining and id=="eris"
+     check(Daily.startActivity(s,recovery and "reconcile_eris" or "time_"..id)~=nil,"Actividad libre con "..id)
      s=round(s)
-     check(Daily.resolveActivity(s,"together")~=nil,"Decisión de actividad guardada")
+     check(Daily.resolveActivity(s,recovery and "repair" or "together")~=nil,"Decisión de actividad guardada")
     end
     if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
      check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
     if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
     else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
+   elseif node.definition.orstedReward then
+    local Finale=require("src.systems.finale")
+    for _,kind in ipairs({"combat","social"})do
+     for _,id in ipairs(Finale.options(s,kind))do if Finale.canChoose(s,kind,id) then
+      assert(Finale.choose(s,kind,id,s.orsted_reward.revision));s=round(s);Finale.acknowledge(s);break
+     end end
+    end
+    check(Progression.next(s)~=nil,"Dos mejoras gratuitas concluyen la ayuda de Orsted")
    elseif node.kind=="hub" then
     local available=Progression.availableCompanions(s)
     if #available>0 then
@@ -196,6 +205,8 @@ function Suite.run()
   check(ending~=nil,"No quedan matrimonios ambiguos en el epílogo: "..tostring(err))
   check(Endings.byId[ending]~=nil,"El epílogo pertenece a los cinco desenlaces")
   check(s.events.antidote_obtained and not s.curse.active and s.events.campaign_complete,"Antídoto utilizado y campaña completada")
+  check(s.inventory.enchantedCardsReturned and visited.day7_return_cards and visited["day7_epilogue_"..ending],"Devolución y epílogo específico antes del final")
+  if config.skipErisTraining then check(not visited.day6_orsted_arrival and not s.events.orsted_collection_gift,"Campaña completa sin recompensa de Orsted") end
   check(Relationships.ending(round(s).relationships)==ending,"Final persiste al guardar/cargar")
   Suite.completed[ending]=copy(s)
   if config.specialize then
@@ -205,10 +216,11 @@ function Suite.run()
    local maxBytes=#assert(Json.encode(s));check(maxBytes<524288,"Campaña con tienda cabe en el límite de guardado")
    print("Specialization: staff_strike N10, encourage N10; income "..income..", remaining "..s.gold..", save "..maxBytes.." bytes.")
   end
+  routesRun=routesRun+1;print("Campaign route "..routesRun..": "..ending.."; Orsted="..tostring(visited.day6_orsted_arrival==true))
   return s,ending,visited
  end
  local function specialize()
-  return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true})
+  return run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",favors=true,specialize=true,skipErisTraining=true})
  end
  if os.getenv("DATESIM_TEST_GROUP")=="economy-campaign" then specialize();print("Economy campaign: "..count.." checks passed.");return count end
  local reached={}
@@ -262,7 +274,12 @@ function Suite.run()
   for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
  end
  specialize()
- print("Campaign: "..count.." checks passed (35 complete routes, five endings, specialization, free daily distributions, favors and save/load).")
+ for _,ending in ipairs(Endings.list)do
+  local keep={};for _,id in ipairs(wives)do keep[id]=ending.id=="family_united" or ending.id==id end
+  local _,actual=run({keep=keep,preferred=ending.id,companion="roxy",skipErisTraining=true})
+  check(actual==ending.id,"Cada final se alcanza sin el regalo de Orsted")
+ end
+ print("Campaign: "..count.." checks passed ("..routesRun.." complete routes, five endings with ordinary progression, Orsted, specialization and save/load).")
  return count
 end
 return Suite

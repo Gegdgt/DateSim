@@ -26,7 +26,7 @@ local function same(a,b)
 end
 local function contextFor(context)
     context=context or {}
-    return {kind="combat",warVersion=1,allies=context.enemyId=="eris_training" and {} or Companions.roster(context),character=context.character,tutorial=context.tutorial==true,
+    return {kind="combat",warVersion=1,allies=(context.enemyId=="eris_training" or context.enemyId=="orsted_demonstration") and {} or Companions.roster(context),character=context.character,tutorial=context.tutorial==true,
         progressionVersion=1,cardLevels=Collection.levels(context),preparationShield=context.preparationShield==4 and 4 or 0,
         day=integer(context.day,1,7) and context.day or nil,
         difficulty=integer(context.difficulty,1,7) and context.difficulty or nil,
@@ -150,7 +150,8 @@ local function damage(enc,target,base,result,source)
     local attacker=source or (target=="enemy" and enc.player or enc.enemy)
     local attempted=damageAmount(attacker,defender,base)
     local blocked=math.min(defender.shield,attempted)
-    local lost=math.min(defender.hp,attempted-blocked)
+    local floorHp=target=="enemy" and enc.enemy.id=="orsted_demonstration" and 1 or 0
+    local lost=math.min(math.max(0,defender.hp-floorHp),attempted-blocked)
     local dodged=target=="player" and Training.dodgeAbsorbed(enc,blocked,defender.shield) or nil
     defender.shield=defender.shield-blocked
     if target=="player" then
@@ -159,6 +160,7 @@ local function damage(enc,target,base,result,source)
         defender.magicShield=math.max(0,(defender.magicShield or 0)-(blocked-physical))
     end
     defender.hp=math.max(0,defender.hp-lost)
+    if floorHp==1 and defender.hp==1 then event(result,"parry","enemy","Orsted cambia de guardia y desvía el remate. La demostración no puede ganarse; terminará con su señal.") end
     event(result,"damage",target,label(target)..": "..attempted.." daño, "..blocked.." bloqueado, "..lost..(enc.training and " resistencia perdida." or " vida perdida."),
         {rawDamage=base,damage=attempted,blocked=blocked,hpLost=lost,amount=lost,dodgeBlocked=dodged})
 end
@@ -205,6 +207,7 @@ local function intent(enc)
     elseif action.kind=="prepare" then action.text=action.name..": prepara "..action.nextDamage.." daño para su siguiente acción."
     elseif action.kind=="interrupt" then action.text=action.name..": -"..action.actionLoss.." acción en el próximo turno de Rudy."
     elseif action.kind=="recover" then action.text=action.name..": no recuperará más escudo."
+    elseif action.kind=="demonstration_finish" then action.text="Orsted desarmará a Rudy y dará por terminada la prueba. La historia continuará."
     else action.text=action.name..": Rudy causará 2 menos de daño durante su próximo turno." end
     action.description=action.text
     enc.enemy.intent=action
@@ -217,6 +220,10 @@ local function updateIntent(enc,result)
     end
 end
 local function finish(enc,outcome,result,cause)
+    if enc.enemy.id=="orsted_demonstration" then
+        outcome="defeat";enc.narrativeDefeat="orsted_demonstration"
+        cause="Orsted detiene el ejercicio y aparta el arma de Rudy. Derrota narrativa sin heridas graves: la historia continúa y los matrimonios no pierden puntos."
+    end
     if Training.config(enc) and outcome=="defeat" then
         cause="Eris detiene la espada de práctica al agotarse la resistencia de Rudy. El ejercicio termina sin heridas."
     end
@@ -226,6 +233,11 @@ local function finish(enc,outcome,result,cause)
     else event(result,"defeat","player",cause or "La vida de Rudy llegó a cero.") end
 end
 local function checkOutcome(enc,result)
+    if enc.enemy.id=="orsted_demonstration" then
+        if enc.finished then return true end
+        if enc.player.hp<=0 then finish(enc,"defeat",result);return true end
+        return false
+    end
     if enc.enemy.id=="badigadi_final" and not enc.enemy.sealBroken then
         if enc.enemy.hp<=0 and enc.enemy.phase~="seal" then
             enc.enemy.phase="seal";enc.enemy.shield=0
@@ -277,6 +289,7 @@ local function start(deck,context,initial,legacyBalance)
     enc.allies=enc.training and {} or copy(context.allies)
     enc.supportUsed={}
     if enemy.id=="badigadi_final" then enc.maxTurns=Balance.boss.maxTurns end
+    if enemy.id=="orsted_demonstration" then enc.maxTurns=Balance.orsted.turns end
     enc.player.shield=context.preparationShield or 0
     enc.player.physicalShield=context.preparationShield or 0
     if enc.training then enc.maxTurns=Training.config(enc).maxTurns end
@@ -356,7 +369,7 @@ function Combat.preview(enc,index)
         if reduction>0 then preview.trainingSwordReduction=reduction end
         preview.damage=damageAmount(enc.player,enc.enemy,base)
         preview.blocked=math.min(enc.enemy.shield,preview.damage)
-        preview.hpLost=math.min(enc.enemy.hp,preview.damage-preview.blocked)
+        preview.hpLost=math.min(math.max(0,enc.enemy.hp-(enc.enemy.id=="orsted_demonstration" and 1 or 0)),preview.damage-preview.blocked)
         preview.text=preview.text.." Ahora: "..preview.damage.." daño / "..preview.blocked.." bloqueo / "..preview.hpLost.." vida."
     end
     return preview
@@ -464,6 +477,8 @@ function Combat.endTurn(enc,expectedRevision)
         event(result,"interrupt","player","Rudy pierde "..action.actionLoss.." acción en su próximo turno. Puede seguir usando defensa o cartas.",{amount=action.actionLoss})
     elseif action.kind=="recover" then
         event(result,"recovery_exhausted","enemy","El enemigo agotó sus recuperaciones de escudo.")
+    elseif action.kind=="demonstration_finish" then
+        finish(enc,"defeat",result)
     end
     enc.enemy.weak=math.max(0,enc.enemy.weak-1)
     if not checkOutcome(enc,result) then
@@ -582,7 +597,7 @@ function Combat.restore(snapshot,deck,context)
         else return nil end
     end
     for _,key in ipairs({"player","enemy","hand","drawPile","discard","energy","turn","maxTurns","revision",
-        "finished","outcome","cause","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","allies","supportUsed","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
+        "finished","outcome","cause","narrativeDefeat","perTurn","perBattle","companionHeals","randomState","commands","log","resultEvents","companion","allies","supportUsed","relationshipEvents","tacticalDecisions","training","trainingResult"}) do
         local expected=restored[key]
         if oldSnapshot and key=="enemy" then expected=copy(expected);expected.actionUses=nil end
         if not (oldSnapshot and (key=="perBattle" or key=="companionHeals")) and not same(expected,snapshot[key]) then return nil end

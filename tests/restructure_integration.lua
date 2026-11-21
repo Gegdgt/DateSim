@@ -56,7 +56,14 @@ function Suite.run()
         local cp=app.session.checkpoint
         local node=Chapters.get(cp)
         if cp=="campaign_complete" then break end
-        if s.kind=="family_scene" then
+        if s.kind=="orsted_reward" then
+            capture("orsted-gift-"..s.category)
+            if s.reward.pending then s:acknowledge()
+            elseif require("src.systems.finale").rewardComplete(app.session)then click("Continuar historia")
+            else
+                for _,id in ipairs(s.ids)do if require("src.systems.finale").canChoose(app.session,s.category,id)then s.selected=id;s:choose();break end end
+            end
+        elseif s.kind=="family_scene" then
             s:advance()
         elseif s.kind=="reward" then
             capture("reward"); s:continue()
@@ -92,7 +99,7 @@ function Suite.run()
         elseif node.kind=="encounter" then
             if s.enc.type=="combat" then
                 capture("combat-"..s.enc.enemy.id)
-                check(not s.enc.finished or s.enc.outcome=="victory" or s.enc.training,"Política de prueba no debe perder: "..cp)
+                check(not s.enc.finished or s.enc.outcome=="victory" or s.enc.training or s.enc.narrativeDefeat,"Política de prueba respeta resultados narrativos: "..cp)
                 if not s:busy() and not s.enc.finished and s.enc.training and Combat.canBasic(s.enc,"counter") then
                     s:basic("counter")
                 elseif not s:busy() and not s.enc.finished and s.enc.training and s.enc.enemy.intent.kind=="attack"

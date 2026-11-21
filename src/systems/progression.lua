@@ -213,6 +213,7 @@ function Progression.encounter(session,id)
     local node=Chapters.checkpoints[id]
     if not node or node.kind~="encounter" then return nil end
     local encounter=definition(session,id)
+    if id=="day6_hitogami" and session.decisions.legacy_emissary_encounter then encounter.enemyId="hitogami_minion" end
     if encounter.character=="companion" then encounter.character=Progression.companion(session,id) end
     for _,adjustment in ipairs(encounter.adjustments or {}) do
         if meets(session,adjustment.requires,id) then
@@ -283,6 +284,10 @@ function Progression.next(session,checkpoint,result)
         if Daily.storyComplete(session) then return Progression.endDay(session) end
         return Progression.continueStory(session)
     end
+    if node.definition.finaleAction then
+        local ok,err=require("src.systems.finale").advance(session,node.definition.finaleAction)
+        if not ok then return nil,err end
+    end
     if checkpoint==Daily.config(session).summary and not Daily.ensure(session).ending_processed then
         return nil,"Falta procesar el cierre de esta jornada."
     end
@@ -296,6 +301,8 @@ function Progression.next(session,checkpoint,result)
         return nil,"Elige una respuesta antes de continuar."
     end
     if node.kind=="encounter" then
+        if node.definition.requiresVictory and not (session.combat and session.combat.finished and session.combat.outcome=="victory") then return nil,"Completa primero el enfrentamiento." end
+        if node.definition.scriptedDefeat and not (session.combat and session.combat.finished and session.combat.narrativeDefeat==node.definition.scriptedDefeat) then return nil,"Espera la señal que termina la demostración." end
         if node.definition.training and not session.events[require("src.systems.training_result").key(checkpoint)] then
             return nil,"Lee la valoración de Eris antes de cerrar el entrenamiento."
         end
@@ -316,6 +323,10 @@ end
 -- Los vínculos sociales jamás reciben deltas por infligir daño mágico.
 function Progression.finishCombat(session,enc)
     local def=Progression.encounter(session,session.checkpoint)
+    if def and def.enemyId=="orsted_demonstration" then
+        if session.combat~=enc or not enc.finished or enc.narrativeDefeat~="orsted_demonstration" then return nil,"Orsted todavía no ha terminado la demostración." end
+        return Progression.next(session,session.checkpoint,{score=def.targetScore,trust=0,chemistry=0})
+    end
     if def and def.enemyId=="orsted_trial" and session.combat==enc and enc.finished and enc.outcome=="defeat" then
         Events.apply(session,"orsted_trial_completed",{text="Orsted detiene la prueba. Rudy conserva lo aprendido y sigue hacia el desafío final."})
         return Progression.next(session,session.checkpoint,{score=0,trust=0,chemistry=0})

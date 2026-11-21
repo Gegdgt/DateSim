@@ -35,6 +35,7 @@ function Result.commit(session,enc)
   effect.reconcile="training_effort"
  end
  if not Events.apply(session,key,effect) then return session.trainingResults[cp],false end
+ require("src.systems.finale").recordTraining(session,cp)
  -- Ambos resultados quedan en el historial; una revancha no borra el primero.
  Events.mark(session,result.eventId)
  session.decisions.eris_training_last_result=result.id

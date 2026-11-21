@@ -22,7 +22,7 @@ Escudos absorben antes que la vida y caducan al volver a Rudy. Golpes múltiples
 
 ## Progresión y compañeras
 
-PV ordinarios de referencia: 10, 20, 36, 55, 180, 260 y 300 según día; guardianes y reflejos varían. Aparecen defensas, golpes preparados, debilitamientos e interrupciones. Día 6 incluye el lacayo de Hitogami y la prueba opcional no letal de Orsted. Día 7 presenta a Badigadi con **1000 PV**, independientemente del equipo.
+PV ordinarios de referencia: 10, 20, 36, 55, 180, 260 y 300 según día; guardianes y reflejos varían. Aparecen defensas, golpes preparados, debilitamientos e interrupciones. Día 6 incluye el emisario de Hitogami y, si se entrenó con Eris en cada día 1–5, la demostración no ganable y no letal de Orsted. Ésta usa 120 de guardia finita, tres turnos de ataques y una terminación controlada en el cuarto; la derrota narrativa permite continuar sin penalizar relaciones. [Secuencia y recompensas](FASE_5_CIERRE.md). Día 7 presenta a Badigadi con **1000 PV**, independientemente del equipo.
 
 El daño de apoyo escala con el promedio de amor y confianza, acotado a 0–100 y dividido entre 100. Especiales máximos: Sylphiette 90, Eris 150 y Roxy 110; tres usos, recarga de tres turnos y costes de 4, 4 y 5 de energía. Sus ataques normales son menores. Roxy analiza y reduce defensas; Eris protege e interrumpe; Sylphiette alterna ataque, barrera y curación. Las separadas no participan.
 
@@ -41,6 +41,6 @@ Badigadi acepta la derrota y sigue vivo. La victoria entrega el antídoto una ve
 
 El duelo con Eris conserva resistencia no letal, contraataque, métricas de esfuerzo y resultados narrativos. Perder permite continuar. [Afinidad, entrenamiento y revancha](AFINIDAD_Y_ENTRENAMIENTO.md).
 
-Los combates nuevos guardan `warVersion=1` y `balanceVersion=3` dentro del formato v7. Las batallas antiguas se reproducen con módulos históricos, incluidas sus cifras originales; los archivos anteriores no se sobrescriben. Cargar no duplica cargas, acciones ni premios. [Guardado](GUARDADO.md).
+Los combates nuevos guardan `warVersion=1` y `balanceVersion=3` dentro del formato v8. Las batallas antiguas se reproducen con módulos históricos, incluidas sus cifras originales; los archivos anteriores no se sobrescriben. Cargar no duplica cargas, acciones ni premios. [Guardado](GUARDADO.md).
 
 La verificación incluye 576 simulaciones del jefe, 36 encuentros intermedios, fórmulas de afinidad, controles reales, capturas y recorridos completos de campaña con compras legales. Los ensayos históricos están separados del balance actual. [Resultados medidos](VERIFICACION.md).
