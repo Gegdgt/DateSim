@@ -59,7 +59,7 @@ function Memory.commit(session,result,scene,turn)
         result.actualInterest=delta.interest or 0
         result.affinityBefore,result.affinityAfter=delta.before,delta.after
     end
-    for _,flag in ipairs(result.flags or {}) do session.events[flag]=true end
+    for _,flag in ipairs(result.flags or {}) do Events.mark(session,flag) end
     session.decisions[key]=result.cardId
     session.dialogueMemory=session.dialogueMemory or {used={}}
     local used=session.dialogueMemory.used

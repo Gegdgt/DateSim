@@ -70,6 +70,18 @@ function Suite.run()
                 for _,b in ipairs(s.buttons) do if b.y>=126 and b.y<227 then check(b.y+b.h<=227,"Las opciones no se solapan con el diálogo") end end
                 click(s.scene.choices[1].label)
             else s:advance() end
+        elseif node.definition.agenda then
+            local Daily=require("src.systems.daily")
+            capture("agenda-day"..app.session.day)
+            if app.session.daily.active_activity then
+                capture("daily-activity")
+                click(require("src.data.activities").byId[app.session.daily.active_activity.id].choices[1].label.." (+2 amor / +1 conf.)")
+            elseif Daily.remaining(app.session)>0 and not app.session.daily.activities_locked then
+                local id=({"sylphiette","roxy","eris"})[app.session.daily.interactions_used+1]
+                check(Daily.startActivity(app.session,"time_"..id)~=nil,"Agenda permite repetir actividades")
+                app:save();app:resume()
+            elseif Daily.storyComplete(app.session) then click("Finalizar día")
+            else click(app.session.day==7 and "Cerrar tiempo libre e ir a la historia" or "Continuar historia") end
         elseif node.kind=="hub" then
             local companions=Progression.availableCompanions(app.session)
             if #companions>0 then click("Elegir compañía") else click("Visitar") end
@@ -100,7 +112,7 @@ function Suite.run()
                     if index then s:keypressed(tostring(index)); s:keypressed("return") else s:keypressed("p") end
                 end
             end
-        elseif node.kind=="summary" then check(Progression.canContinue(app.session),"Resumen intermedio continúa"); app:next()
+        elseif node.kind=="summary" then capture("daily-summary");check(Progression.canContinue(app.session),"Resumen intermedio continúa"); app:next()
         else error("Pantalla sin manejador "..cp) end
     end
     settle(); capture("ending-family")

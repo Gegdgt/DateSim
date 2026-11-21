@@ -3,6 +3,7 @@ local Chapters=require("src.data.chapters")
 local Characters=require("src.data.characters")
 local Events=require("src.systems.events")
 local Conditions=require("src.systems.conditions")
+local Daily=require("src.systems.daily")
 local Progression={}
 
 local function copy(value)
@@ -48,6 +49,7 @@ local function move(session,checkpoint)
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Destino narrativo desconocido: "..tostring(checkpoint) end
     session.checkpoint,session.day=checkpoint,node.day
+    Daily.ensure(session)
     session.dialogueIndex,session.encounter=1,nil
     session.encounterReview,session.tutorial=nil,nil
     session.combat,session.combatPreparation,session.trainingReview=nil,nil,nil
@@ -70,6 +72,22 @@ function Progression.hub(session)
     local hub=copy(node.definition)
     hub.locations=hub.locations or chapterFor(session.checkpoint).locations or {}
     return hub
+end
+function Progression.continueStory(session)
+    if not Daily.atAgenda(session) or Daily.storyComplete(session) then return nil,"No hay historia pendiente en esta agenda." end
+    local d=Daily.ensure(session)
+    if d.active_activity or d.ending_processed then return nil,"Termina la actividad pendiente antes de continuar." end
+    local config=Daily.config(session)
+    if config.lockBeforeStory then
+        local ok,err=Daily.lockActivities(session); if not ok then return nil,err end
+    end
+    return move(session,config.story)
+end
+function Progression.endDay(session)
+    if not Daily.atAgenda(session) then return nil,"Vuelve a la agenda para finalizar el día." end
+    local report,err=Daily.finish(session)
+    if not report then return nil,err end
+    return move(session,Daily.config(session).summary)
 end
 function Progression.availableCompanions(session)
     local hub=Progression.hub(session)
@@ -233,6 +251,13 @@ function Progression.next(session,checkpoint,result)
     if session.checkpoint~=checkpoint then return nil,"La pantalla de origen ya cambió." end
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Punto de historia desconocido: "..tostring(checkpoint) end
+    if node.definition.agenda then
+        if Daily.storyComplete(session) then return Progression.endDay(session) end
+        return Progression.continueStory(session)
+    end
+    if checkpoint==Daily.config(session).summary and not Daily.ensure(session).ending_processed then
+        return nil,"Falta procesar el cierre de esta jornada."
+    end
     if node.definition.document and not (session.clues and session.clues[node.definition.document]) then
         return nil,"Examina y lee la carta antes de continuar."
     end
@@ -278,10 +303,10 @@ function Progression.finishCombat(session,enc)
     local enemy=require("src.data.enemies").byId[enc.enemy.id]
     local key="combat_reward_"..checkpoint
     if not session.events[key] then
-        session.events[key]=true
-        session.events["mirror_defeated_"..checkpoint]=true
-        if enemy and enemy.narrativeEvent then session.events[enemy.narrativeEvent]=true end
-        if enemy and enemy.reward and enemy.reward.event then session.events[enemy.reward.event]=true end
+        Events.mark(session,key)
+        Events.mark(session,"mirror_defeated_"..checkpoint)
+        if enemy and enemy.narrativeEvent then Events.mark(session,enemy.narrativeEvent) end
+        if enemy and enemy.reward and enemy.reward.event then Events.mark(session,enemy.reward.event) end
         session.decisions["combat_turns_"..checkpoint]=enc.turn
         session.defeatedEnemies=session.defeatedEnemies or {}
         session.defeatedEnemies[enc.enemy.id]=true
@@ -291,7 +316,7 @@ function Progression.finishCombat(session,enc)
         end
         if checkpoint=="day1_tutorial" then
             Events.apply(session,"first_anomaly",{unlock={"self_joke"}})
-            session.events.combat_tutorial_completed=true
+            Events.mark(session,"combat_tutorial_completed")
         end
         -- Una recompensa narrativa persiste por encuentro, sin multiplicarse
         -- al reabrir la pantalla de victoria o repetir el botón Continuar.

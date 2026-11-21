@@ -1,4 +1,35 @@
-# Verificación de afinidad, entrenamiento y memoria narrativa
+# Verificación de la progresión diaria — Fase 1
+
+Fecha: **21 de noviembre de 2026**. Suite completa ejecutada con **LÖVE 11.5 / LuaJIT**, gráficos y audio reales. Resultado: **40 123 comprobaciones en 21 módulos, `ALL TESTS PASSED`, salida 0**, en una única ejecución final.
+
+| Cobertura | Comprobaciones |
+| --- | ---: |
+| Ciclo diario: 27 distribuciones, reservas, visitas, encargos, cierres y guardado | 1 010 |
+| Interfaz de agenda: clics, teclado, carga pendiente y fallo de escritura | 33 |
+| 34 campañas completas, cinco finales, combates y carga entre checkpoints | 30 087 |
+| Recorrido de interfaz de campaña: 593 pasos | 1 080 |
+| Recursos, audio, retratos, combate, diálogos, afinidad, entrenamiento y demás módulos | 7 913 |
+| **Total de la ejecución final** | **40 123** |
+
+La campaña incluye recorridos de siete jornadas sin actividades ordinarias, repitiendo únicamente a Roxy y repitiendo únicamente a Eris, con encargos diarios. Todos llegan al epílogo y resuelven sus encargos. Las pruebas de distribución cubren también tres visitas a Sylphiette y las 27 combinaciones de tres espacios. La cuarta actividad y el segundo encargo del día se rechazan. Las escenas narrativas tienen coste explícito cero.
+
+El guardado real conserva reservas de actividades, decisiones, visitas, encargos pendientes, resúmenes y matrimonios. Repetir el cierre o cargar una recompensa entregada no vuelve a sumar cartas, energía ni confianza. Un fallo de escritura mantiene el resumen sin presentar hasta reintentar; el reintento no reaplica efectos. Se verificó la conservación de archivos v3 y el rechazo de un destino que contiene otra versión.
+
+Se inspeccionaron las capturas del renderizador real: [agenda](../tests/artifacts/daily-agenda-start.png), [decisión pendiente](../tests/artifacts/daily-activity.png), [encargos](../tests/artifacts/daily-favors.png), [resumen](../tests/artifacts/daily-summary.png) y [Día 7](../tests/artifacts/daily-final-day.png). Hay siete capturas específicas de agenda, además de las de la campaña. Los PNG y los registros de ejecución son artefactos locales excluidos de Git.
+
+Evidencia completa: [daily-phase-full.log](../tests/artifacts/daily-phase-full.log). Comando final desde la raíz, sin `DATESIM_TEST_GROUP` definido:
+
+```powershell
+& 'C:\Program Files\LOVE\lovec.exe' . --test 2>&1 | Tee-Object -FilePath tests/artifacts/daily-phase-full.log
+```
+
+La suite usa `cartas_del_destino_v4_tests` y las identidades aisladas de los módulos existentes. No se utilizaron las partidas del jugador. `git diff --check` terminó con salida 0. Los avisos de archivos PNG/audio inválidos o ausentes son fallos inyectados por las pruebas de recursos. No se realizaron pruebas de cortes físicos de energía ni sesiones prolongadas de balance con jugadores.
+
+[Arquitectura y reglas implementadas](FASE_1_ACTIVIDADES.md). El registro que sigue corresponde a la entrega anterior de afinidad y entrenamiento; sus cifras y referencias a v3 son históricas.
+
+---
+
+# Registro anterior: afinidad, entrenamiento y memoria narrativa
 
 Fecha: **21 de noviembre de 2026**. Motor: LÖVE para Windows, con gráficos, audio y LuaJIT reales. Se ejecutó el proyecto existente; no una traducción del juego a otro lenguaje.
 

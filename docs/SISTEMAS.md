@@ -1,6 +1,12 @@
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 3. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, centros de preparación y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 4. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+
+## Actividades y cierre diario
+
+`Daily` centraliza los tres espacios, visitas repetibles, reservas pendientes, encargo independiente y cierre único. `src/data/activities.lua` declara actividades y encargos; `src/data/day_cycle.lua` conecta las siete agendas sin reemplazar las escenas existentes. Las escenas tienen `interactionRule="narrative"`, coste cero e IDs distintos de las actividades.
+
+La jornada puede terminar con espacios libres una vez resuelta su historia. Registra atención, entrega encargos vencidos, actualiza misiones y matrimonios, guarda y presenta el resumen antes de avanzar. El Día 7 fija la atención antes de las conversaciones finales. `daily_history` permite consultar ayer; `events_by_day` conserva los identificadores de cada jornada. [Esquema, reglas y extensión](FASE_1_ACTIVIDADES.md).
 
 ## Maldición y comunicación
 

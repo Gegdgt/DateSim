@@ -148,6 +148,19 @@ function Suite.run()
     end
     local nextId,err=Progression.next(s)
     check(nextId~=nil,"Salida de "..checkpoint..": "..tostring(err))
+   elseif node.definition.agenda then
+    local Daily=require("src.systems.daily")
+    while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
+     local id=config.dailyWife or wives[s.daily.interactions_used+1]
+     check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
+     s=round(s)
+     check(Daily.resolveActivity(s,"together")~=nil,"Decisión de actividad guardada")
+    end
+    if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
+     check(Daily.requestFavor(s,"cliff_notes")~=nil,"Encargo en cada jornada")
+    end
+    if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
+    else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.kind=="hub" then
     local available=Progression.availableCompanions(s)
     if #available>0 then check(Progression.selectCompanion(s,config.companion or config.preferred or "roxy")~=nil,"Compañía elegida")
@@ -210,7 +223,16 @@ function Suite.run()
  check(Progression.choose(boundary,"day7_sylphiette","reconcile"),"La reparación con antecedentes es elegible en45")
  check(boundary.relationships.sylphiette.love==55 and Relationships.canMaintain(boundary.relationships,"sylphiette"),"La reparación elegible alcanza el umbral real55")
  check(Progression.next(boundary)=="day7_roxy","La reparación no conduce a una separación contradictoria")
- print("Campaign: "..count.." checks passed (31 complete routes, five endings, legal battles, save/load and reconciliations).")
+ for _,mode in ipairs({"none","roxy","eris"}) do
+  local dailyRun=run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",skipActivities=mode=="none",dailyWife=mode~="none" and mode or nil,favors=true})
+  for day=1,7 do
+   local report=dailyRun.daily_history[tostring(day)]
+   check(report and report.interactions_used==(mode=="none" and 0 or 3),"Siete cierres con distribución "..mode)
+   if mode~="none" then check(report.visits[mode]==3,"Repetición libre durante toda la campaña") end
+  end
+  for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
+ end
+ print("Campaign: "..count.." checks passed (34 complete routes, five endings, free daily distributions, favors and save/load).")
  return count
 end
 return Suite

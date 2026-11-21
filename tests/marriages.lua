@@ -16,7 +16,7 @@ function Suite.run()
         check(Events.apply(s,"promise_"..id,{character=id,love=3,trust=3,promise={id="return",status="kept"}}),"Promesa cumplida "..id)
     end
     local s=Save.newSession()
-    check(s.version==3 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
+    check(s.version==4 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
     check(#s.deck==0 and #s.combatDeck==0 and next(s.unlocked)==nil,"Sin cartas antes de Nanahoshi")
     for _,id in ipairs(names) do
         check(s.relationships[id].love==65 and s.relationships[id].trust==65,"Matrimonio comienza positivamente")
@@ -142,7 +142,7 @@ function Suite.run()
     end)
     love=oldLove
     assert(tested,err)
-    print("Marriages/save v3: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
+    print("Marriages/save v4: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
     return checked
 end
 return Suite

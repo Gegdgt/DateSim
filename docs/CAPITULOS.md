@@ -6,6 +6,8 @@ Hitogami es el manipulador principal. Badigadi custodia el antídoto por una pro
 
 ## Orden y contenido jugable
 
+Cada capítulo incluye además una agenda con tres actividades libres repetibles y un encargo independiente. El Día 1 la abre después del tutorial; los siguientes empiezan en ella. La historia de la tabla conserva sus encuentros obligatorios con coste cero. El jugador cierra la jornada desde la agenda, revisa el resumen y confirma el avance. El Día 7 fija el tiempo libre antes de sus acuerdos finales. [Ciclo diario](FASE_1_ACTIVIDADES.md).
+
 | Día | Historia y actividades | Progreso permanente |
 | --- | --- | --- |
 | 1 · El silencio de Rudy | Sueño con Hitogami; despertar en el hogar; interacción con el sobre; lectura de la carta firmada por —H; asociación de la firma; descubrimiento de voz sellada y maná bloqueado; visita privada a Nanahoshi mediante notas; cartas de Orsted; tutorial social y combate real contra la anomalía. | Pista `hitogami_letter`; descubrimientos; cinco cartas sociales y cinco físicas; tutorial completado. |

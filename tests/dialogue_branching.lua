@@ -299,7 +299,7 @@ function Suite.run()
     for _,outcome in ipairs({"kept","broken"}) do
         local branch=clone(sylph); branch.checkpoint="day3_family_time"; branch.day=3
         check(Progression.choose(branch,branch.checkpoint,outcome=="kept" and "keep" or "break"),"La promesa tiene una decisión real de cumplimiento")
-        check(Progression.next(branch)=="day3_complete" and branch.events["sylphiette_family_time_"..outcome],"La transición registra el desenlace de la promesa")
+        check(Progression.next(branch)=="day3_agenda" and branch.events["sylphiette_family_time_"..outcome],"La transición registra el desenlace de la promesa y vuelve a la agenda")
         branch=round(branch)
         recalls[outcome]=encode(Progression.scene(branch,"day4_council").lines)
         branch.checkpoint="day5_mission_sylphiette"; branch.day=5

@@ -6,7 +6,17 @@ Rudy y sus tres esposas son adultos. Una poción le ha quitado la voz y la magia
 
 Ejecuta `./ejecutar.ps1` con LÖVE 11.5 instalado y elige Nueva partida. El juego comienza en el sueño de Hitogami. Enter, Espacio o clic completan el texto y permiten avanzar. Al despertar, pulsa **Examinar carta**, haz clic en el sobre o usa E/Enter/Espacio. Lee todas las páginas y cierra la carta: después Rudy descubre que no puede hablar ni canalizar magia.
 
-En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibió de Orsted: su magia almacenada permite emitir respuestas sin utilizar el maná de Rudy. El regalo contiene cinco cartas sociales y cinco físicas, presentadas en dos grupos. Completa la prueba social con Nanahoshi y el combate de la anomalía para empezar el segundo día.
+En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibió de Orsted: su magia almacenada permite emitir respuestas sin utilizar el maná de Rudy. El regalo contiene cinco cartas sociales y cinco físicas, presentadas en dos grupos. Completa la prueba social y el combate de la anomalía para abrir la agenda del primer día.
+
+## Organizar la jornada
+
+Dispones de tres actividades libres al día. **Pasar tiempo** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
+
+En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida no vuelve a duplicarse.
+
+**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 1. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Cambios de ayer** permite volver a consultarlo.
+
+El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
 
 ## Conversar mediante cartas
 
@@ -60,4 +70,4 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v3.json`; la importación de v1/v2 conserva el archivo original y comienza esta historia. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v4.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).

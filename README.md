@@ -14,6 +14,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+Cada día dispone de **tres interacciones libres**, repetibles con cualquier esposa, y **un encargo independiente a Cliff o Zanoba**. La agenda muestra visitas, recompensas posibles y encargos pendientes. Permite dormir con espacios sin usar después de completar la historia obligatoria y consultar los cambios de ayer. Las escenas principales no gastan espacios. El Día 1 habilita actividades después del tutorial; el Día 7 cierra el tiempo libre antes de resolver los matrimonios. [Arquitectura y reglas de la agenda](docs/FASE_1_ACTIVIDADES.md).
+
 | Día | Contenido |
 | --- | --- |
 | 1 · El silencio de Rudy | Sueño con Hitogami; despertar; recoger y leer la carta —H; descubrir voz y maná sellados; notas a Nanahoshi; regalo de Orsted; tutoriales jugables. |
@@ -67,7 +69,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 3**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v3.json`, con respaldo `campaign-v3.backup.json`. Incluye maldición, pistas, inventario, diálogos, relaciones, colección, mazos y combates. El menú puede importar la colección social compatible de una campaña v1/v2 con aceptación explícita; empieza la nueva historia y conserva los archivos originales. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 4**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v4.json`, con respaldo `campaign-v4.backup.json`. Incluye agenda, reservas, visitas, encargos, resúmenes, eventos por día y los sistemas narrativos existentes. El menú puede importar la colección compatible de una campaña v1/v2/v3 con aceptación explícita; empieza la nueva progresión y conserva los archivos originales. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -75,6 +77,6 @@ La continuidad `rudy_curse` usa **versión 3**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v3_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v4_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.

@@ -7,7 +7,8 @@ local Story=require("src.data.story")
 local Chapters=require("src.data.chapters")
 local Progression=require("src.systems.progression")
 local Options=require("src.systems.options")
-local Save={version=3,filename="campaign-v3.json",backup="campaign-v3.backup.json",optionsFile="options.json",
+local Daily=require("src.systems.daily")
+local Save={version=4,filename="campaign-v4.json",backup="campaign-v4.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -44,10 +45,12 @@ local function copyList(source)
 end
 
 function Save.newSession(config)
-    return {version=Save.version,continuity="rudy_curse",day=Chapters.first.day,checkpoint=Chapters.first.initial,
+    local s={version=Save.version,continuity="rudy_curse",day=Chapters.first.day,checkpoint=Chapters.first.initial,
         dialogueIndex=1,relationships=Relationships.new(config),affinities=require("src.systems.affinity").new(),unlocked={},deck={},combatDeck={},events={},decisions={},
         curse=require("src.systems.curse").new(),clues={},inventory={},externalEnergy=0,
-        journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},options=Options.normalize()}
+        journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},events_by_day={},options=Options.normalize()}
+    Daily.ensure(s)
+    return s
 end
 
 function Save.validate(input)
@@ -202,6 +205,11 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
+    local dailyOk,dailyError=Daily.restore(s,input)
+    if not dailyOk then return nil,dailyError end
+    for day=1,7 do
+        s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
+    end
     return s
 end
 
@@ -227,18 +235,22 @@ end
 function Save.write(session)
     local clean,err=Save.validate(session)
     if not clean then return false,err end
+    local old=readFile(Save.filename)
+    local existing=old and Json.decode(old)
+    if type(existing)=="table" and existing.version~=Save.version then
+        return false,"El archivo de destino contiene una versión incompatible; se conserva sin sobrescribir."
+    end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v3.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v4.tmp.json",data)
     if not ok then return false,err end
-    local old=readFile(Save.filename)
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
         if not ok then return false,err end
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v3.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v4.tmp.json")
     return true
 end
 
@@ -259,10 +271,10 @@ function Save.exists() return Save.load()~=nil end
 
 -- The UI explicitly offers a new continuity. Original files stay untouched.
 function Save.legacyInfo()
-    for _,path in ipairs({"campaign-v2.json","campaign-v2.backup.json",Save.legacyFilename,Save.legacyBackup}) do
+    for _,path in ipairs({"campaign-v3.json","campaign-v3.backup.json","campaign-v2.json","campaign-v2.backup.json",Save.legacyFilename,Save.legacyBackup}) do
         local raw=readFile(path)
         local input=raw and Json.decode(raw)
-        if type(input)=="table" and input~=Json.null and (input.version==2 or input.version==1 or input.version==nil) and next(input) then
+        if type(input)=="table" and input~=Json.null and (input.version==3 or input.version==2 or input.version==1 or input.version==nil) and next(input) then
             return {source=path,day=number(input.day,1,1,7),checkpoint=type(input.checkpoint)=="string" and input.checkpoint or "intro",
                 unlocked=map(input.unlocked,true),options=Options.normalize(input.options)}
         end
@@ -275,7 +287,7 @@ function Save.migrateLegacy(accepted)
     local s=Save.newSession()
     s.options=legacy.options
     local count=0
-    for id in pairs(legacy.unlocked) do if CardData.byId[id] then s.unlocked[id]=true; count=count+1 end end
+    for id in pairs(legacy.unlocked) do if CardData.byId[id] or require("src.data.combat_cards").byId[id] then s.unlocked[id]=true; count=count+1 end end
     s.migration={source=legacy.source,previousDay=legacy.day,previousCheckpoint=legacy.checkpoint,acceptedContinuity=true,importedCards=count}
     return s,"Nueva campaña matrimonial: se conservó la colección compatible y el guardado original."
 end

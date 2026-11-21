@@ -72,8 +72,8 @@ return {
    {speaker="rudeus",delivery="note",expression="neutral",text="Gracias. Tenemos que encontrar un antídoto antes de que pasen siete días."},
   }},
   day1_close={title="Día 1 · Regresar con palabras prestadas",background="home",music="home",lines={
-   {speaker="rudeus",delivery="thought",expression="worried",text="Sigo sin voz y sin magia. Las cartas no eliminan el peligro, pero me permiten volver a casa. Mañana tendré que escuchar a las tres de verdad."},
-   {speaker="narrator",text="La carta firmada por —H permanece en el diario. La familia aún desconoce el secreto. El primer día termina; quedan seis para encontrar la cura."},
+   {speaker="rudeus",delivery="thought",expression="worried",text="Sigo sin voz y sin magia. Las cartas no eliminan el peligro, pero me permiten volver a casa. Todavía puedo reservar tiempo para mi familia."},
+   {speaker="narrator",text="La carta firmada por —H permanece en el diario. La familia aún desconoce el secreto. Rudy decidirá en su agenda cuándo dar por terminada la jornada."},
   }},
  },
  encounters={day1_tutorial={title="Anomalía de maná",kind="magic",enemyId="mana_anomaly",background="laboratory",targetScore=5,tutorial=true,music="combat",intro="Una chispa de Rudy se apaga: su magia sigue bloqueada. Nanahoshi le pide recurrir a ataques físicos."}},

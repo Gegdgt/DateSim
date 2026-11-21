@@ -35,9 +35,9 @@ function Result.commit(session,enc)
  end
  if not Events.apply(session,key,effect) then return session.trainingResults[cp],false end
  -- Ambos resultados quedan en el historial; una revancha no borra el primero.
- session.events[result.eventId]=true
+ Events.mark(session,result.eventId)
  session.decisions.eris_training_last_result=result.id
- if effect.reconcile then session.events.eris_training_reconciled=true end
+ if effect.reconcile then Events.mark(session,"eris_training_reconciled") end
  session.trainingResults[cp]=record
  return record,true
 end

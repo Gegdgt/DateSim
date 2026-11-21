@@ -1,6 +1,6 @@
 # Código completo del proyecto
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, guardado v3, animaciones y audio sintetizado.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, guardado v4, animaciones y audio sintetizado.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -368,6 +368,8 @@ Continuidad alternativa posterior a los matrimonios de Rudy con Sylphiette, Roxy
 Hitogami es el manipulador principal. Badigadi custodia el antídoto por una promesa y ofrece el desafío final; su derrota no pone fin a su inmortalidad. Orsted es un aliado y fue quien entregó originalmente las cartas a Nanahoshi.
 
 ## Orden y contenido jugable
+
+Cada capítulo incluye además una agenda con tres actividades libres repetibles y un encargo independiente. El Día 1 la abre después del tutorial; los siguientes empiezan en ella. La historia de la tabla conserva sus encuentros obligatorios con coste cero. El jugador cierra la jornada desde la agenda, revisa el resumen y confirma el avance. El Día 7 fija el tiempo libre antes de sus acuerdos finales. [Ciclo diario](FASE_1_ACTIVIDADES.md).
 
 | Día | Historia y actividades | Progreso permanente |
 | --- | --- | --- |
@@ -814,6 +816,85 @@ Opciones permite cambiar volumen maestro, música, efectos, silencio, velocidad 
 El editor de mazo, las pistas definitivas grabadas, los capítulos cuatro a siete y la distribución autónoma siguen pendientes. Las mejoras de presentación no equivalen a esos contenidos.
 ````
 
+## docs/FASE_1_ACTIVIDADES.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_1_ACTIVIDADES.md`
+
+````markdown
+# Fase 1: agenda y progresión diaria
+
+Los siete capítulos conservan sus escenas, elecciones, cartas y combates. Cada jornada tiene **tres actividades ordinarias y un encargo independiente**, elegido entre Cliff y Zanoba. Se puede repetir la misma esposa tres veces o combinar visitas. Dormir no exige gastar todos los espacios; exige terminar la historia obligatoria y cualquier decisión de actividad abierta.
+
+## Recorrido jugable
+
+1. El Día 1 conserva el sueño de Hitogami, la carta —H, la maldición, la entrega de Nanahoshi y ambos tutoriales. Después de la primera anomalía abre su agenda con tres espacios.
+2. Los días 2–7 comienzan en su agenda. **Continuar historia** abre las escenas y encuentros existentes; al completarlos se regresa a la agenda. Sus costes son explícitamente cero.
+3. **Actividades** muestra visitas, espacios y posibles cambios de amor/confianza. Reservar consume un espacio; decidir completa la actividad. Guardar durante la decisión conserva esa reserva.
+4. **Encargos** muestra recompensas, plazos y trabajos pendientes. Pedir uno bloquea ambas opciones hasta mañana, sin consumir una actividad.
+5. **Finalizar día** aplica el cierre, guarda, presenta las entregas de cartas pendientes y muestra el resumen. Confirmarlo abre el siguiente capítulo. **Cambios de ayer** permite consultar el informe anterior.
+
+El Día 7 anuncia **Cerrar tiempo libre e ir a la historia**: fija primero las consecuencias de atención y bloquea actividades/encargos antes de las decisiones matrimoniales. Así, una actividad posterior no contradice un desenlace ya resuelto. El cierre posterior no vuelve a aplicar esas consecuencias. Después del resumen del Día 7 se presenta el epílogo existente.
+
+## Estado y responsabilidades
+
+`src/systems/daily.lua` mantiene las reglas. `session.day` sigue siendo la referencia compatible con los sistemas antiguos; `Progression.move` sincroniza `daily.day` al entrar al capítulo siguiente.
+
+```lua
+daily = {
+    day = 1,
+    interactions_total = 3,
+    interactions_used = 0,
+    visits = {sylphiette = 0, roxy = 0, eris = 0},
+    favor_used = false,
+    favor_requested = nil,
+    active_activity = nil,
+    activities_completed = {},
+    activities_locked = false,
+    events = {},
+    rewards_granted = {},
+    baseline = {}, -- amor, confianza y matrimonio al empezar
+    ending_processed = false
+}
+```
+
+`pending_favors` conserva solicitudes con `requested_day`, `due_day`, `status` e `instance_id`; las entregadas conservan su registro. `daily_history["1"]` a `["7"]` contiene visitas, actividades, espacios perdidos, encargo, recompensas, cambios y valores de relaciones antes/después. `events_by_day["1"][id]` indexa eventos sin quitar las claves globales que ya consultan los capítulos.
+
+Las escenas declaran `interactionRule="narrative"` e `interactionCost=0`. Las actividades tienen IDs propios (`time_roxy`, etc.) y `cost=1`. Las tres acciones internas de una conversación con cartas son independientes de los tres espacios de la agenda.
+
+## Cierre e idempotencia
+
+El cierre registra interacciones, aplica atención, entrega encargos vencidos, actualiza misiones, consolida separaciones explícitas y crea el informe. La aplicación guarda antes de mostrarlo. Si falla la escritura, informa el error y permite reintentar el mismo cierre sin repetir efectos.
+
+- Cada reserva tiene una clave como `day3_activity_2`. Las visitas cuentan al reservar y el efecto se aplica al decidir. No hay cancelación que devuelva un espacio consumido.
+- Cada esposa visitada recibe +1 confianza al cierre; no visitarla cuesta 1 confianza. Las actividades conceden +2 amor/+1 confianza o +1 amor/+2 confianza, respetando 0–100. Ninguna cifra separa automáticamente un matrimonio: siguen vigentes las decisiones narrativas existentes.
+- Cada efecto de atención usa `day3_attention_roxy`; cada cierre, `day3_ending_processed`.
+- Cliff entrega Curación básica y +2 energía externa al cierre siguiente; el encargo del Día 7 vence ese mismo día. Zanoba entrega Defensa física y +2 energía externa al cierre actual. La energía respeta el límite de 30.
+- `day3_favor_cliff_notes_delivered` protege tanto cartas como energía. Otro día permite un nuevo trabajo; una carta ya adquirida no vuelve a añadirse ni a presentar su entrega.
+- Las actividades reservadas deben terminar antes del cierre. Los encargos que aún no vencen continúan pendientes al día siguiente.
+
+## Agregar contenido
+
+Agregar una actividad a `src/data/activities.lua` con ID estable, esposa, título, descripción, `cost=1` y decisiones con ID, etiqueta, resultado y efectos compatibles con `Events.apply`. `requires` admite el lenguaje de condiciones existente. `Daily.startActivity` controla disponibilidad, matrimonio y presupuesto; `resolveActivity` aplica el efecto con una clave por ejecución. La máquina principal no necesita una rama por actividad.
+
+El catálogo de encargos usa `delay` y `effects`. La interfaz pagina el catálogo de actividades en grupos de tres. Las siguientes fases pueden agregar escenas o un presentador específico conservando la reserva persistente y su identificador.
+
+`src/data/day_cycle.lua` conecta agendas y resúmenes con los capítulos declarativos. Las escenas originales permanecen en `src/data/chapters/dayN.lua`. `agenda.lua` y `day_report.lua` presentan la jornada y el informe, con teclado y ratón.
+
+## Guardado y pruebas
+
+El formato **v4** usa `campaign-v4.json` y su respaldo. No intenta continuar una campaña v3 como si ya tuviera reservas diarias: ofrece importar su colección compatible e iniciar la nueva progresión, conservando los archivos originales. [Formato](GUARDADO.md).
+
+`tests/daily.lua` recorre las 27 distribuciones, decisiones pendientes, carga en disco, cierre voluntario, encargos diferidos, duplicados, datos inconsistentes y conservación de v3. `tests/campaign.lua` recorre la historia con agendas y carga entre checkpoints. `tests/restructure_integration.lua` conduce y renderiza las pantallas reales. [Resultados ejecutados](VERIFICACION.md).
+
+```powershell
+$env:DATESIM_TEST_GROUP='daily'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+# Suite completa:
+Remove-Item Env:DATESIM_TEST_GROUP
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+```
+````
+
 ## docs/FASE_2.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_2.md`
@@ -915,13 +996,13 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 3**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 4**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v3.json` | Partida actual. |
-| `campaign-v3.backup.json` | Última partida anterior válida. |
-| `campaign-v3.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v4.json` | Partida actual. |
+| `campaign-v4.backup.json` | Última partida anterior válida. |
+| `campaign-v4.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
@@ -930,15 +1011,17 @@ F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones,
 
 Incluye checkpoint, día y posición de diálogo; maldición y descubrimientos; pistas; inventario del antídoto; capacidad externa; relaciones y sus historiales; decisiones, misiones y enemigos vencidos; cartas adquiridas; ambos mazos; entregas pendientes y su página; estado del documento abierto; encuentros y combate.
 
+La versión 4 añade `daily` (espacios, reservas, visitas, actividades, encargo solicitado, eventos, recompensas y cierre), `pending_favors`, `daily_history` y `events_by_day`. Una actividad pendiente ya reservó su espacio: cargar no lo devuelve. El cierre registra el resumen antes de avanzar; las entregas y la atención usan claves por día y ejecución. [Esquema y reglas](FASE_1_ACTIVIDADES.md).
+
 La restauración mantiene el bloqueo de voz y magia hasta que el inventario registre `antidoteUsed`. `documentState` conserva fase, tiempo transcurrido y página: una animación interrumpida continúa desde ese punto sin volver a premiar una lectura registrada. La pista `hitogami_letter` permanece disponible para releer desde el diario.
 
 Los eventos y recompensas usan claves estables. Cargar después de jugar una carta, entregar el primer mazo o vencer un enemigo no aplica de nuevo sus efectos. Los resultados visuales se reconstruyen a partir del estado lógico; no se guardan objetos gráficos ni fuentes de audio.
 
-Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: el sueño recupera fondo `dream`, Rudy japonés y las expresiones de ambos personajes; `day1_wake` recupera hogar y Rudy rubio. Se conservan las 11 posiciones de diálogo iniciales. No se añade una identidad ni un campo de apariencia persistente, no cambia la versión y no hay migración de partidas. Al cargar se repite la entrada visual, sin repetir efectos narrativos. [Autoría y funcionamiento](RETRATOS.md).
+Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: el sueño recupera fondo `dream`, Rudy japonés y las expresiones de ambos personajes; `day1_wake` recupera hogar y Rudy rubio. Se conservan las 11 posiciones de diálogo iniciales. La apariencia no necesita campos nuevos; la agenda sí requiere el formato v4. Al cargar se repite la entrada visual, sin repetir efectos narrativos. [Autoría y funcionamiento](RETRATOS.md).
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones nuevas incluyen `encounter.narrativeVersion=1`, dentro del formato general de campaña v3. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v4. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -946,7 +1029,7 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-Un encuentro social v3 iniciado antes de este rediseño, sin `narrativeVersion`, conserva su replay y sus efectos originales. Las conversaciones nuevas usan el catálogo contextual. No se inventan decisiones, promesas ni premios para acciones históricas. Los campos de memoria ausentes se normalizan a mapas vacíos, sin convertir automáticamente partidas v1/v2 a la campaña actual.
+El motor social conserva su soporte de replay anterior, pero la campaña v4 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
@@ -954,23 +1037,23 @@ Antes de escribir se normalizan los datos. El guardado anterior válido se copia
 
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
-Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. Una batalla anterior reconocida mantiene `balanceVersion=1` y sus reglas durante el replay y el reintento: no recibe más daño ni nuevos límites de curación a mitad de una partida. La versión de campaña sigue siendo 3. [Dificultad y límites](COMBATE.md).
+Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v4. [Dificultad y límites](COMBATE.md).
 
 ## Importación de partidas anteriores
 
-El menú detecta `campaign-v2.json`, su respaldo, `save.json` y `save.backup.json`. Cuando no hay una partida v3 disponible, ofrece **Importar campaña anterior** y explica el cambio. La aceptación explícita inicia la nueva introducción e importa las cartas sociales cuyos IDs siguen siendo compatibles, además de las opciones. No continúa escenas de la historia anterior ni importa su combate. Los archivos originales permanecen intactos.
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v4, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
 ## Afinidad y entrenamiento
 
-La ampliación de afinidad conserva v3 y añade `affinities.nanahoshi` (confianza, interés, claves ya premiadas y aplicadas e historial), `trainingResults` (resultado y métricas por checkpoint) y `trainingReview.line` mientras se lee la valoración de Eris. Los guardados anteriores reciben los valores iniciales de Nanahoshi sin añadirla a los matrimonios ni otorgar premios retroactivos. Las barras guardan únicamente su estado lógico definitivo; su interpolación no se serializa.
+Se conservan `affinities.nanahoshi` (confianza, interés, claves premiadas e historial), `trainingResults` (resultado y métricas por checkpoint) y `trainingReview.line` mientras se lee la valoración de Eris. Los campos de afinidad ausentes reciben valores iniciales sin añadir a Nanahoshi a los matrimonios ni otorgar premios retroactivos. Las barras guardan únicamente su estado lógico definitivo; su interpolación no se serializa.
 
 El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pantalla de resultados puede guardarse antes o después de la reacción que aplica puntos. `training_result_<checkpoint>` impide premiar otra vez al cargar o continuar. Una derrota de entrenamiento continúa la historia; no utiliza el flujo letal de derrota de los combates normales. [Campos, umbrales y eventos](AFINIDAD_Y_ENTRENAMIENTO.md).
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v3_tests`, separada de los archivos del jugador. En la ejecución aislada de combate se superaron 24 comprobaciones de integración de persistencia, premios únicos, compañeras y reintentos; el entrenamiento usa además `cartas_del_destino_training_tests`. Los resultados completos de esta entrega están en [VERIFICACION.md](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía del equipo.
+La suite general usa `cartas_del_destino_v4_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
 ````
 
 ## docs/MALDICION_RUDY.md
@@ -1053,7 +1136,17 @@ Rudy y sus tres esposas son adultos. Una poción le ha quitado la voz y la magia
 
 Ejecuta `./ejecutar.ps1` con LÖVE 11.5 instalado y elige Nueva partida. El juego comienza en el sueño de Hitogami. Enter, Espacio o clic completan el texto y permiten avanzar. Al despertar, pulsa **Examinar carta**, haz clic en el sobre o usa E/Enter/Espacio. Lee todas las páginas y cierra la carta: después Rudy descubre que no puede hablar ni canalizar magia.
 
-En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibió de Orsted: su magia almacenada permite emitir respuestas sin utilizar el maná de Rudy. El regalo contiene cinco cartas sociales y cinco físicas, presentadas en dos grupos. Completa la prueba social con Nanahoshi y el combate de la anomalía para empezar el segundo día.
+En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibió de Orsted: su magia almacenada permite emitir respuestas sin utilizar el maná de Rudy. El regalo contiene cinco cartas sociales y cinco físicas, presentadas en dos grupos. Completa la prueba social y el combate de la anomalía para abrir la agenda del primer día.
+
+## Organizar la jornada
+
+Dispones de tres actividades libres al día. **Pasar tiempo** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
+
+En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida no vuelve a duplicarse.
+
+**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 1. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Cambios de ayer** permite volver a consultarlo.
+
+El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
 
 ## Conversar mediante cartas
 
@@ -1107,7 +1200,7 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v3.json`; la importación de v1/v2 conserva el archivo original y comienza esta historia. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v4.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
 ````
 
 ## docs/RECURSOS.md
@@ -1293,7 +1386,13 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 3. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, centros de preparación y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 4. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+
+## Actividades y cierre diario
+
+`Daily` centraliza los tres espacios, visitas repetibles, reservas pendientes, encargo independiente y cierre único. `src/data/activities.lua` declara actividades y encargos; `src/data/day_cycle.lua` conecta las siete agendas sin reemplazar las escenas existentes. Las escenas tienen `interactionRule="narrative"`, coste cero e IDs distintos de las actividades.
+
+La jornada puede terminar con espacios libres una vez resuelta su historia. Registra atención, entrega encargos vencidos, actualiza misiones y matrimonios, guarda y presenta el resumen antes de avanzar. El Día 7 fija la atención antes de las conversaciones finales. `daily_history` permite consultar ayer; `events_by_day` conserva los identificadores de cada jornada. [Esquema, reglas y extensión](FASE_1_ACTIVIDADES.md).
 
 ## Maldición y comunicación
 
@@ -1347,7 +1446,38 @@ La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERI
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación de afinidad, entrenamiento y memoria narrativa
+# Verificación de la progresión diaria — Fase 1
+
+Fecha: **21 de noviembre de 2026**. Suite completa ejecutada con **LÖVE 11.5 / LuaJIT**, gráficos y audio reales. Resultado: **40 123 comprobaciones en 21 módulos, `ALL TESTS PASSED`, salida 0**, en una única ejecución final.
+
+| Cobertura | Comprobaciones |
+| --- | ---: |
+| Ciclo diario: 27 distribuciones, reservas, visitas, encargos, cierres y guardado | 1 010 |
+| Interfaz de agenda: clics, teclado, carga pendiente y fallo de escritura | 33 |
+| 34 campañas completas, cinco finales, combates y carga entre checkpoints | 30 087 |
+| Recorrido de interfaz de campaña: 593 pasos | 1 080 |
+| Recursos, audio, retratos, combate, diálogos, afinidad, entrenamiento y demás módulos | 7 913 |
+| **Total de la ejecución final** | **40 123** |
+
+La campaña incluye recorridos de siete jornadas sin actividades ordinarias, repitiendo únicamente a Roxy y repitiendo únicamente a Eris, con encargos diarios. Todos llegan al epílogo y resuelven sus encargos. Las pruebas de distribución cubren también tres visitas a Sylphiette y las 27 combinaciones de tres espacios. La cuarta actividad y el segundo encargo del día se rechazan. Las escenas narrativas tienen coste explícito cero.
+
+El guardado real conserva reservas de actividades, decisiones, visitas, encargos pendientes, resúmenes y matrimonios. Repetir el cierre o cargar una recompensa entregada no vuelve a sumar cartas, energía ni confianza. Un fallo de escritura mantiene el resumen sin presentar hasta reintentar; el reintento no reaplica efectos. Se verificó la conservación de archivos v3 y el rechazo de un destino que contiene otra versión.
+
+Se inspeccionaron las capturas del renderizador real: [agenda](../tests/artifacts/daily-agenda-start.png), [decisión pendiente](../tests/artifacts/daily-activity.png), [encargos](../tests/artifacts/daily-favors.png), [resumen](../tests/artifacts/daily-summary.png) y [Día 7](../tests/artifacts/daily-final-day.png). Hay siete capturas específicas de agenda, además de las de la campaña. Los PNG y los registros de ejecución son artefactos locales excluidos de Git.
+
+Evidencia completa: [daily-phase-full.log](../tests/artifacts/daily-phase-full.log). Comando final desde la raíz, sin `DATESIM_TEST_GROUP` definido:
+
+```powershell
+& 'C:\Program Files\LOVE\lovec.exe' . --test 2>&1 | Tee-Object -FilePath tests/artifacts/daily-phase-full.log
+```
+
+La suite usa `cartas_del_destino_v4_tests` y las identidades aisladas de los módulos existentes. No se utilizaron las partidas del jugador. `git diff --check` terminó con salida 0. Los avisos de archivos PNG/audio inválidos o ausentes son fallos inyectados por las pruebas de recursos. No se realizaron pruebas de cortes físicos de energía ni sesiones prolongadas de balance con jugadores.
+
+[Arquitectura y reglas implementadas](FASE_1_ACTIVIDADES.md). El registro que sigue corresponde a la entrega anterior de afinidad y entrenamiento; sus cifras y referencias a v3 son históricas.
+
+---
+
+# Registro anterior: afinidad, entrenamiento y memoria narrativa
 
 Fecha: **21 de noviembre de 2026**. Motor: LÖVE para Windows, con gráficos, audio y LuaJIT reales. Se ejecutó el proyecto existente; no una traducción del juego a otro lenguaje.
 
@@ -1607,6 +1737,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 ## Campaña completa
 
+Cada día dispone de **tres interacciones libres**, repetibles con cualquier esposa, y **un encargo independiente a Cliff o Zanoba**. La agenda muestra visitas, recompensas posibles y encargos pendientes. Permite dormir con espacios sin usar después de completar la historia obligatoria y consultar los cambios de ayer. Las escenas principales no gastan espacios. El Día 1 habilita actividades después del tutorial; el Día 7 cierra el tiempo libre antes de resolver los matrimonios. [Arquitectura y reglas de la agenda](docs/FASE_1_ACTIVIDADES.md).
+
 | Día | Contenido |
 | --- | --- |
 | 1 · El silencio de Rudy | Sueño con Hitogami; despertar; recoger y leer la carta —H; descubrir voz y maná sellados; notas a Nanahoshi; regalo de Orsted; tutoriales jugables. |
@@ -1660,7 +1792,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 3**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v3.json`, con respaldo `campaign-v3.backup.json`. Incluye maldición, pistas, inventario, diálogos, relaciones, colección, mazos y combates. El menú puede importar la colección social compatible de una campaña v1/v2 con aceptación explícita; empieza la nueva historia y conserva los archivos originales. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 4**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v4.json`, con respaldo `campaign-v4.backup.json`. Incluye agenda, reservas, visitas, encargos, resúmenes, eventos por día y los sistemas narrativos existentes. El menú puede importar la colección compatible de una campaña v1/v2/v3 con aceptación explícita; empieza la nueva progresión y conserva los archivos originales. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -1668,7 +1800,7 @@ La continuidad `rudy_curse` usa **versión 3**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v3_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v4_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.
 ````
@@ -1807,10 +1939,15 @@ function App:resume(transition)
     local music=require("src.data.presentation").music(node,resolved)
     self.audio:setContext(music)
     if transition.type=="new_day" then self.audio:effect("new_day") end
-    if node and node.kind=="hub" then
+    if node.definition.agenda then
+        self:switch(require("src.screens.agenda").new(self),transition)
+    elseif node and node.kind=="hub" then
         self:switch(require("src.screens.hub").new(self),transition)
     elseif node and node.kind=="summary" then
-        self:switch(require("src.screens.summary").new(self),transition)
+        local config=require("src.systems.daily").config(self.session)
+        if checkpoint==config.summary then
+            self:switch(require("src.screens.day_report").new(self,self.session.daily_history[tostring(self.session.day)]),transition)
+        else self:switch(require("src.screens.summary").new(self),transition) end
     elseif node and node.kind=="encounter" then
         local socialTutorial=resolved.tutorial and not self.session.events.tutorial_completed
         if resolved.training and self.session.combat and self.session.combat.finished then
@@ -1828,6 +1965,18 @@ function App:resume(transition)
     else
         self:switch(require("src.screens.dialogue").new(self),transition)
     end
+end
+
+function App:endDay()
+    local Daily=require("src.systems.daily")
+    if self.session.checkpoint~=Daily.config(self.session).summary then
+        local nextId,err=Progression.endDay(self.session)
+        if not nextId then self:notify(err); return false end
+    end
+    -- No se presenta el resumen ni se avanza si el guardado falló.
+    if not self:save() then return false end
+    self:resume()
+    return true
 end
 
 function App:next(result)
@@ -2064,6 +2213,47 @@ function Manager:keypressed(key)
     if self.current and self.current.keypressed then self.current:keypressed(key) end
 end
 return Manager
+````
+
+## src/data/activities.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/activities.lua`
+
+````lua
+-- Actividades ordinarias: cada ejecución cuesta un espacio, aunque se repita.
+-- Las escenas de chapters tienen su propia regla narrativa y nunca usan este coste.
+local list={
+    {id="time_sylphiette",character="sylphiette",title="Tiempo con Sylphiette",background="home",cost=1,
+        description="Compartir las tareas de casa o reservar un momento para escucharla.",
+        choices={
+            {id="together",label="Preparar juntos la casa",result="Repartís las tareas y dejáis tiempo para descansar juntos.",effects={love=2,trust=1}},
+            {id="listen",label="Escuchar cómo estuvo su día",result="Sylphiette puede terminar de contar lo que le preocupaba. Te quedas a escuchar.",effects={love=1,trust=2}},
+        }},
+    {id="time_roxy",character="roxy",title="Tiempo con Roxy",background="library",cost=1,
+        description="Una pausa entre libros para conversar o contrastar sus anotaciones.",
+        choices={
+            {id="together",label="Compartir una lectura",result="Elegís un relato y comparáis las partes que más os gustaron.",effects={love=2,trust=1}},
+            {id="listen",label="Revisar juntos sus notas",result="Roxy explica una duda. Revisáis las anotaciones como iguales.",effects={love=1,trust=2}},
+        }},
+    {id="time_eris",character="eris",title="Tiempo con Eris",background="training",cost=1,
+        description="Acompañarla durante una pausa o practicar coordinación sin un duelo.",
+        choices={
+            {id="together",label="Pasear después de la práctica",result="Eris baja la espada y camináis juntos antes de volver a casa.",effects={love=2,trust=1}},
+            {id="listen",label="Practicar señales de apoyo",result="Acordáis cuándo avanzar y cuándo cubrir la retirada del otro.",effects={love=1,trust=2}},
+        }},
+}
+local favors={
+    {id="cliff_notes",character="cliff",title="Cliff: estudiar una técnica",delay=1,
+        description="Entrega al cierre de mañana (hoy en el Día 7).",reward="Curación básica y +2 energía externa",
+        effects={unlock={"heal"},externalEnergy=2}},
+    {id="zanoba_artifact",character="zanoba",title="Zanoba: ajustar un artefacto",delay=0,
+        description="Entrega al cerrar esta jornada.",reward="Defensa física y +2 energía externa",
+        effects={unlock={"wind_guard"},externalEnergy=2}},
+}
+local catalog={list=list,byId={},favors=favors,favorsById={}}
+for _,activity in ipairs(list) do catalog.byId[activity.id]=activity end
+for _,favor in ipairs(favors) do catalog.favorsById[favor.id]=favor end
+return catalog
 ````
 
 ## src/data/appearances.lua
@@ -2535,8 +2725,8 @@ return {
    {speaker="rudeus",delivery="note",expression="neutral",text="Gracias. Tenemos que encontrar un antídoto antes de que pasen siete días."},
   }},
   day1_close={title="Día 1 · Regresar con palabras prestadas",background="home",music="home",lines={
-   {speaker="rudeus",delivery="thought",expression="worried",text="Sigo sin voz y sin magia. Las cartas no eliminan el peligro, pero me permiten volver a casa. Mañana tendré que escuchar a las tres de verdad."},
-   {speaker="narrator",text="La carta firmada por —H permanece en el diario. La familia aún desconoce el secreto. El primer día termina; quedan seis para encontrar la cura."},
+   {speaker="rudeus",delivery="thought",expression="worried",text="Sigo sin voz y sin magia. Las cartas no eliminan el peligro, pero me permiten volver a casa. Todavía puedo reservar tiempo para mi familia."},
+   {speaker="narrator",text="La carta firmada por —H permanece en el diario. La familia aún desconoce el secreto. Rudy decidirá en su agenda cuándo dar por terminada la jornada."},
   }},
  },
  encounters={day1_tutorial={title="Anomalía de maná",kind="magic",enemyId="mana_anomaly",background="laboratory",targetScore=5,tutorial=true,music="combat",intro="Una chispa de Rudy se apaga: su magia sigue bloqueada. Nanahoshi le pide recurrir a ataques físicos."}},
@@ -3148,6 +3338,7 @@ end
 
 local list={}
 for day=1,7 do list[#list+1]=require("src.data.chapters.day"..day) end
+require("src.data.day_cycle").install(list)
 local Chapters=Registry.build(list)
 Chapters.build=Registry.build
 return Chapters
@@ -3228,6 +3419,62 @@ end
 local starter={"staff_strike","simple_cut","stone_throw","push","coordinated_attack"}
 return {list=list,byId=byId,starterDeck=starter,core=starter,reserve={},
     rules={playerHp=30,playerMana=12,manaRegen=4,energy=3,handSize=3,maxTurns=30,weakReduction=2,vulnerableBonus=2,healUses=3,companionHealUses=3}}
+````
+
+## src/data/day_cycle.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/day_cycle.lua`
+
+````lua
+-- Inserta las agendas sin duplicar ni reescribir las escenas de los capítulos.
+local Cycle={}
+function Cycle.install(list)
+    for _,chapter in ipairs(list) do
+        local day=chapter.day
+        local agenda="day"..day.."_agenda"
+        local summary=day==1 and "day1_summary" or day==2 and "phase_complete" or day==7 and "day7_summary" or "day"..day.."_complete"
+        local story=day==1 and "day1_close" or chapter.initial
+        chapter.daily={agenda=agenda,summary=summary,story=story,completionEvent=chapter.completionEvent,
+            lockBeforeStory=day==7}
+        if day==1 then
+            chapter.summaries[summary]={title="EL PRIMER DÍA",subtitle="DÍA 1 COMPLETADO",background="home",body="Las cartas permiten seguir adelante. La agenda conserva cómo empleaste el tiempo de hoy."}
+            chapter.transitions[summary]={{to="day2_agenda"}}
+            chapter.transitions.day1_result[1].to=agenda
+            chapter.transitions.day1_close[1].to=agenda
+        elseif day==7 then
+            chapter.summaries[summary]={title="LA ÚLTIMA JORNADA",subtitle="DÍA 7 COMPLETADO",background="home",body="La voz ha regresado. Las decisiones y los acuerdos de la familia quedan registrados.",continueLabel="Ver epílogo"}
+            chapter.transitions[summary]={{to="campaign_complete"}}
+            chapter.initial=agenda
+        else
+            chapter.initial=agenda
+        end
+        -- Las salidas narrativas regresan a la agenda. Dormir abre el resumen.
+        for from,transitions in pairs(chapter.transitions) do
+            if from~=summary then
+                for _,transition in ipairs(transitions) do
+                    if transition.to==summary or (day==7 and transition.to=="campaign_complete") then transition.to=agenda end
+                end
+            end
+        end
+        chapter.hubs[agenda]={title="DÍA "..day.." / AGENDA",background="home",agenda=true,locations={}}
+        chapter.transitions[agenda]={{to=summary,requires={event=chapter.completionEvent}},{to=story}}
+    end
+    -- Las entradas entre capítulos apuntan a sus agendas, excepto el prólogo.
+    for _,chapter in ipairs(list) do
+        if chapter.day<7 then
+            for _,transition in ipairs(chapter.transitions[chapter.daily.summary]) do
+                transition.to=list[chapter.day+1].daily.agenda
+            end
+        end
+        for _,group in ipairs({"scenes","encounters","hubs","summaries"}) do
+            for _,definition in pairs(chapter[group] or {}) do
+                definition.interactionRule="narrative"
+                definition.interactionCost=0
+            end
+        end
+    end
+end
+return Cycle
 ````
 
 ## src/data/dialogue/eris.lua
@@ -4126,6 +4373,8 @@ return {
     },
     history={title="La maldición de Rudy",text="Rudy, Sylphiette, Roxy y Eris son adultos y ya están casados. Un sueño ambiguo de Hitogami precede a una carta firmada —H. Al leerla, Rudy descubre que la poción que aceptó le ha sellado la voz y el maná. Revelar deliberadamente el secreto a una esposa amenaza su amor.\n\nTiene siete días. Nanahoshi adapta unas cartas que recibió de Orsted: utilizan magia almacenada para reproducir la voz de Rudy. La investigación conduce a Badigadi y al antídoto. Recuperar la voz no repara automáticamente los matrimonios. Esta es una continuidad alternativa original del juego."},
     rules={
+        {title="Agenda: tres actividades y un encargo",text="Cada día tienes tres espacios libres. Puedes repartirlos entre Sylphiette, Roxy y Eris o repetir la misma esposa. Cada actividad reserva un espacio y luego ofrece una decisión. Cliff y Zanoba comparten un encargo independiente por día; la agenda muestra sus premios y plazos.\n\nLa historia obligatoria no consume espacios. Después del tutorial también hay actividades del Día 1. Finalizar día permite dormir con espacios libres: se pierden, no se acumulan. Cambios de ayer conserva visitas, recompensas y relaciones."},
+        {title="Atención y cierre de la jornada",text="Una esposa visitada recibe +1 confianza al cerrar el día; sin visita, -1. Las decisiones de actividad aumentan amor y confianza con sus propios efectos. Repetir no consume un espacio extra al guardar o cargar. Las separaciones siguen los acuerdos narrativos, no una cifra aislada.\n\nEl Día 7 anuncia el cierre del tiempo libre antes de resolver los matrimonios. Los encargos vencidos se entregan una sola vez. El resumen queda guardado antes de comenzar el capítulo siguiente. La campaña v4 conserva los archivos de versiones anteriores."},
         {title="Amor y confianza persistentes",text="Cada matrimonio comienza con 65 de amor y 65 de confianza (0–100). Los valores nunca se reinician por cambiar de día. Cumplir promesas, compartir responsabilidades y escuchar ayudan; ocultar riesgos y negar autonomía dañan los vínculos.\n\nLas decisiones, conflictos y reconciliaciones quedan en el diario. Una equivocación puede repararse con hechos. No basta con ganar combates ni con obtener una puntuación alta."},
         {title="Barras y cambios visibles",text="Sobre el retrato, cada esposa muestra Amor y Confianza con valores de 0 a 100. La reacción aplica el cambio una sola vez; sus números indican cuánto ganaste o perdiste realmente. Las barras se animan durante 0,6 segundos y puedes seguir leyendo.\n\nLos cambios positivos muestran un signo + y los negativos un signo menos. Movimiento reducido conserva números y efectos estáticos. Guardar conserva el valor definitivo: cargar o avanzar no repite puntos ni sonidos."},
         {title="La curiosidad de Nanahoshi",text="Nanahoshi muestra Confianza e Interés en el tutorial y las investigaciones de los días tres y cuatro. Solo Escuchar, Hablar con honestidad, Dar ánimo, Broma ligera y Coqueteo sutil pueden aumentar su interés según el contexto. Las demás pueden afectar su confianza.\n\nRepetir una carta en la misma conversación no repite la recompensa. Un halago puede sorprenderla o provocar sarcasmo: no la convierte en esposa ni abre otro final. Su afinidad se guarda aparte de los matrimonios."},
@@ -4288,6 +4537,106 @@ return {
   {speaker="eris",expression="happy",text="Mi espada fue más rápida. Prueba a cubrirte antes de responder. ¡Para aprender estamos entrenando!",apply=true},
  }},
 }
+````
+
+## src/screens/agenda.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/agenda.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local Daily=require("src.systems.daily")
+local Catalog=require("src.data.activities")
+local Progression=require("src.systems.progression")
+local Controls=require("src.config.controls")
+local Agenda={}
+function Agenda.new(app)
+    local s=Screen.new(app)
+    s.kind="agenda"; s.tab="activities"; s.page=1
+    local function commit(ok,err)
+        if not ok then app:notify(err); return end
+        if app:save() then app:resume() end
+    end
+    function s:draw()
+        self:begin()
+        local session=app.session
+        local d=Daily.ensure(session)
+        app.resources:background("home")
+        self:header("DÍA "..session.day.." / AGENDA")
+        local active=d.active_activity
+        if active then
+            local def=Catalog.byId[active.id]
+            W.panel(18,48,604,278)
+            app.resources:portrait(def.character,"happy",42,82,2)
+            self:text(def.title,190,71,400,P.gold,2)
+            self:text(def.description,190,115,400,P.ink)
+            self:text("Espacio reservado · quedan "..Daily.remaining(session).." de 3",190,164,400,P.teal)
+            for i,choice in ipairs(def.choices) do
+                self:button(choice.label.." (+"..choice.effects.love.." amor / +"..choice.effects.trust.." conf.)",190,197+(i-1)*43,410,34,function()
+                    local result,err=Daily.resolveActivity(session,choice.id)
+                    commit(result,err)
+                    if result then app:notify(result) end
+                end)
+            end
+            self:text("Esta actividad ya reservó un espacio. Guardar conserva la decisión pendiente.",30,335,580,P.ink)
+            return
+        end
+        self:button("Actividades",18,47,190,27,function() self.tab="activities"; self.keyboardFocus=nil end,false,self.tab=="activities")
+        self:button("Encargos",218,47,190,27,function() self.tab="favors"; self.keyboardFocus=nil end,false,self.tab=="favors")
+        self:button("Cambios de ayer",418,47,204,27,function()
+            local report=session.daily_history[tostring(session.day-1)]
+            app:switch(require("src.screens.day_report").new(app,report,function() app:resume() end))
+        end,not session.daily_history[tostring(session.day-1)])
+        W.panel(18,80,604,26)
+        self:text("Libres: "..Daily.remaining(session).."/3   ·   Encargo: "..(d.favor_used and "solicitado" or "1 disponible").."   ·   Historia: "..(Daily.storyComplete(session) and "completa" or "pendiente"),28,89,584,P.gold)
+        if self.tab=="activities" then
+            local pages=math.max(1,math.ceil(#Catalog.list/3))
+            if pages>1 then
+                self:button("<",548,80,30,26,function() self.page=self.page-1 end,self.page==1)
+                self:button(">",586,80,30,26,function() self.page=self.page+1 end,self.page==pages)
+            end
+            for i=1,math.min(3,#Catalog.list-(self.page-1)*3) do
+                local def=Catalog.list[(self.page-1)*3+i]
+                local x=18+(i-1)*204
+                W.panel(x,113,196,153)
+                app.resources:portrait(def.character,"neutral",x+10,122,1)
+                self:text(def.title,x+80,126,106,P.gold)
+                self:text("Visitas: "..d.visits[def.character],x+80,160,106,P.teal)
+                self:text("1 espacio · se puede repetir\n+2 amor/+1 conf. o +1/+2",x+10,195,176,P.ink)
+                local disabled=Daily.remaining(session)==0 or d.activities_locked or d.ending_processed or session.relationships[def.character].marriageState=="separated"
+                self:button("Pasar tiempo",x+10,232,176,24,function() commit(Daily.startActivity(session,def.id)) end,disabled)
+            end
+        else
+            for i,def in ipairs(Catalog.favors) do
+                local y=113+(i-1)*59
+                W.panel(18,y,604,54)
+                self:text(def.title,28,y+8,410,P.gold)
+                self:text(def.reward..". "..def.description,28,y+24,406,P.ink)
+                self:button("Solicitar",460,y+12,150,29,function() commit(Daily.requestFavor(session,def.id)) end,d.favor_used or d.activities_locked)
+            end
+            local pending={}
+            for _,favor in ipairs(session.pending_favors) do
+                if favor.status=="pending" then pending[#pending+1]=Catalog.favorsById[favor.id].character.." (cierre D"..favor.due_day..")" end
+            end
+            self:text("Pendientes: "..(#pending>0 and table.concat(pending,", ") or "ninguno")..". Las cartas ya adquiridas no se duplican.",28,237,584,P.ink)
+        end
+        local finalLock=session.day==7 and not d.activities_locked
+        self:text(finalLock and "Resolver la historia cierra el tiempo libre antes de los acuerdos finales." or "Al dormir: +1 confianza si hubo visita; -1 si no. Los espacios libres se pierden.",24,274,592,P.ink)
+        self:button(finalLock and "Cerrar tiempo libre e ir a la historia" or "Continuar historia",18,301,330,29,function() commit(Progression.continueStory(session)) end,Daily.storyComplete(session))
+        self:button("Finalizar día",358,301,264,29,function() app:endDay() end,not Daily.storyComplete(session))
+        self:text("La historia obligatoria no consume espacios. Puedes dormir sin usar los tres.",24,341,592,P.muted)
+    end
+    function s:keypressed(key)
+        if self:navigate(key) then return end
+        if Controls.matches(Controls.back,key) then app:overlay("pause")
+        elseif Controls.matches(Controls.journal,key) then app:overlay("journal")
+        elseif Controls.matches(Controls.deck,key) then app:overlay("deck") end
+    end
+    return s
+end
+return Agenda
 ````
 
 ## src/screens/collection.lua
@@ -5294,6 +5643,64 @@ function Safe.new(app)
     return s
 end
 return Safe
+````
+
+## src/screens/day_report.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/day_report.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local Characters=require("src.data.characters")
+local Catalog=require("src.data.activities")
+local Font=require("src.ui.font")
+local Report={}
+function Report.new(app,report,back)
+    local s=Screen.new(app)
+    s.kind="day_report"; s.page=1
+    report=report or {day=app.session.day,changes={},visits={},before={},after={},interactions_used=0,unused=3}
+    local pages={{}}
+    local used=0
+    local function entry(text)
+        local height=Font.height(text,576)+8
+        if used+height>128 and #pages[#pages]>0 then pages[#pages+1]={}; used=0 end
+        pages[#pages][#pages[#pages]+1]={text=text,y=160+used}
+        used=used+height
+    end
+    if #(report.rewards or {})>0 then
+        local names={}
+        for _,id in ipairs(report.rewards) do
+            local card=require("src.data.cards").byId[id] or require("src.data.combat_cards").byId[id]
+            names[#names+1]=card and card.name or id
+        end
+        entry("Cartas recibidas: "..table.concat(names,", ")..".")
+    end
+    for _,change in ipairs(report.changes or {}) do entry(change.text) end
+    function s:draw()
+        self:begin()
+        app.resources:background("home")
+        W.panel(18,12,604,336)
+        self:text("RESUMEN / DÍA "..report.day,32,25,576,P.gold,2)
+        self:text("Interacciones: "..report.interactions_used.."/3 · Sin usar: "..report.unused.." · Encargo: "..(report.favor and Catalog.favorsById[report.favor.id].character or "ninguno"),32,55,576,P.teal)
+        for i,id in ipairs(Characters.romanceIds) do
+            local before=(report.before or {})[id] or app.session.relationships[id]
+            local after=(report.after or {})[id] or app.session.relationships[id]
+            local state=({married="casados",strained="en tensión",separated="separados"})[after.marriageState] or after.marriageState
+            self:text(Characters.byId[id].shortName.." · visitas "..(report.visits[id] or 0).." · Amor "..string.format("%+d",after.love-before.love).." / Conf. "..string.format("%+d",after.trust-before.trust).." · "..state,32,78+(i-1)*18,576,P.ink)
+        end
+        self:text("DECISIONES Y RECOMPENSAS · "..self.page.."/"..#pages,32,140,576,P.gold)
+        for _,item in ipairs(pages[self.page]) do self:text(item.text,32,item.y,576,P.ink) end
+        self:button("Anterior",32,298,120,29,function() self.page=self.page-1 end,self.page==1)
+        self:button("Siguiente",160,298,120,29,function() self.page=self.page+1 end,self.page==#pages)
+        self:button(back and "Volver a la agenda" or (report.day==7 and "Ver epílogo" or "Comenzar día "..(report.day+1)),300,298,308,29,function()
+            if back then back() else app:next() end
+        end)
+    end
+    return s
+end
+return Report
 ````
 
 ## src/screens/dialogue.lua
@@ -6441,7 +6848,7 @@ function Menu.new(app)
         self:text("LAS CARTAS\nDEL DESTINO",44,94,330,P.ink,2)
         self:text("Siete días. Una voz sellada.\nUna familia que necesita escucharte.",44,146,310,P.muted)
         if self.legacyConfirm then
-            self:text("Nueva historia: la maldición de Rudy.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v3.json.",44,186,310,P.gold)
+            self:text("Nueva campaña con agenda diaria.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v4.json.",44,186,310,P.gold)
             self:button("Aceptar e importar",44,250,310,25,function() app:newGame(true) end)
             self:button("Cancelar",44,282,310,25,function() self.legacyConfirm=false end)
         elseif self.confirm then
@@ -8461,6 +8868,264 @@ function Curse.canUseNaturalMagic(session) return not (session.curse and session
 return Curse
 ````
 
+## src/systems/daily.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/daily.lua`
+
+````lua
+local Catalog=require("src.data.activities")
+local Characters=require("src.data.characters")
+local Relationships=require("src.systems.relationships")
+local Events=require("src.systems.events")
+local Daily={}
+local function copy(value)
+    if type(value)~="table" then return value end
+    local out={}; for k,v in pairs(value) do out[k]=copy(v) end; return out
+end
+local function snapshot(session)
+    local out={}
+    for _,id in ipairs(Characters.romanceIds) do
+        local r=session.relationships[id]
+        out[id]={love=r.love,trust=r.trust,marriageState=r.marriageState}
+    end
+    return out
+end
+function Daily.new(day,session)
+    return {day=day,interactions_total=3,interactions_used=0,visits={sylphiette=0,roxy=0,eris=0},
+        favor_used=false,activities_completed={},events={},rewards_granted={},ending_processed=false,baseline=snapshot(session)}
+end
+function Daily.ensure(session)
+    if not session.daily or session.daily.day~=session.day then session.daily=Daily.new(session.day,session) end
+    session.daily_history=session.daily_history or {}
+    session.pending_favors=session.pending_favors or {}
+    return session.daily
+end
+function Daily.key(session,id) return "day"..session.day.."_"..id end
+function Daily.remaining(session)
+    local d=Daily.ensure(session); return d.interactions_total-d.interactions_used
+end
+function Daily.config(session) return require("src.data.chapters").byId["day"..session.day].daily end
+function Daily.atAgenda(session) return session.checkpoint==Daily.config(session).agenda end
+function Daily.storyComplete(session) return session.events[Daily.config(session).completionEvent]==true end
+local function available(session)
+    local d=Daily.ensure(session)
+    if not Daily.atAgenda(session) then return false,"Vuelve a la agenda para elegir una actividad." end
+    if d.ending_processed or d.activities_locked then return false,"El tiempo libre de hoy ya terminó." end
+    if d.active_activity then return false,"Termina la actividad pendiente." end
+    return true
+end
+function Daily.startActivity(session,id)
+    local ok,err=available(session); if not ok then return nil,err end
+    local def=Catalog.byId[id]
+    if not def or def.cost~=1 then return nil,"Actividad desconocida o coste inválido." end
+    if session.relationships[def.character].marriageState=="separated" then return nil,"Este matrimonio ya está separado." end
+    if Daily.remaining(session)<1 then return nil,"No quedan interacciones libres hoy." end
+    if def.requires and not require("src.systems.conditions").evaluate(session,def.requires) then return nil,"Actividad todavía no disponible." end
+    local d=session.daily
+    d.interactions_used=d.interactions_used+1
+    d.visits[def.character]=d.visits[def.character]+1
+    d.active_activity={id=id,instance_id=Daily.key(session,"activity_"..d.interactions_used)}
+    d.events[d.active_activity.instance_id.."_started"]=true
+    return d.active_activity
+end
+function Daily.resolveActivity(session,choiceId)
+    local d=Daily.ensure(session)
+    local active=d.active_activity
+    if not active or d.ending_processed or not Daily.atAgenda(session) then return nil,"No hay una actividad pendiente." end
+    local def=Catalog.byId[active.id]
+    for _,choice in ipairs(def.choices) do
+        if choice.id==choiceId then
+            local effect=copy(choice.effects)
+            effect.character=def.character; effect.context="activity"; effect.text=choice.result
+            effect.sharedMoment=active.instance_id
+            local applied,err=Events.apply(session,active.instance_id,effect)
+            if not applied and err then return nil,err end
+            d.activities_completed[#d.activities_completed+1]={id=active.id,instance_id=active.instance_id,choice=choiceId,character=def.character}
+            d.active_activity=nil
+            return choice.result
+        end
+    end
+    return nil,"Elige una de las opciones de la actividad."
+end
+function Daily.requestFavor(session,id)
+    local ok,err=available(session); if not ok then return nil,err end
+    local d=session.daily
+    if d.favor_used then return nil,"Ya solicitaste el encargo de hoy." end
+    local def=Catalog.favorsById[id]
+    if not def then return nil,"Encargo desconocido." end
+    local key=Daily.key(session,"favor_"..id)
+    Events.apply(session,key,{context="favor",text="Encargo solicitado: "..def.title})
+    local favor={id=id,instance_id=key,requested_day=session.day,due_day=math.min(7,session.day+def.delay),status="pending"}
+    session.pending_favors[#session.pending_favors+1]=favor
+    d.favor_used=true; d.favor_requested=copy(favor)
+    return favor
+end
+-- Efectos acotados por día/persona; el abandono nunca separa por una cifra sola.
+function Daily.applyAttention(session)
+    local d=Daily.ensure(session)
+    for _,id in ipairs(Characters.romanceIds) do
+        local visited=d.visits[id]>0
+        if session.relationships[id].marriageState~="separated" then
+            Events.apply(session,Daily.key(session,"attention_"..id),{character=id,context="daily",
+                trust=visited and 1 or -1,text=visited and "Tiempo compartido durante la jornada." or "Hoy no reservaste tiempo libre para este vínculo."})
+        end
+    end
+end
+function Daily.lockActivities(session)
+    local d=Daily.ensure(session)
+    if d.active_activity then return nil,"Termina la actividad pendiente." end
+    Daily.applyAttention(session)
+    d.activities_locked=true
+    return true
+end
+function Daily.finish(session)
+    local d=Daily.ensure(session)
+    if d.ending_processed then return session.daily_history[tostring(session.day)] end
+    if not Daily.atAgenda(session) then return nil,"El día se cierra desde la agenda." end
+    if not Daily.storyComplete(session) then return nil,"Completa primero la historia obligatoria de hoy." end
+    if d.active_activity then return nil,"Termina la actividad pendiente antes de dormir." end
+    Events.apply(session,Daily.key(session,"interactions_recorded"),{context="daily",text="Interacciones utilizadas: "..d.interactions_used.." de 3."})
+    Daily.applyAttention(session)
+    -- Los encargos futuros permanecen pendientes al avanzar de día.
+    for _,favor in ipairs(session.pending_favors) do
+        if favor.status=="pending" and favor.due_day<=session.day then
+            local def=Catalog.favorsById[favor.id]
+            local effect=copy(def.effects)
+            effect.presenter=def.character; effect.context="favor"; effect.text="Entrega de "..def.title..": "..def.reward
+            local key=favor.instance_id.."_delivered"
+            local applied,err=Events.apply(session,key,effect)
+            if not applied and err then return nil,err end
+            session.rewards[key]=true
+            favor.status="delivered"; favor.delivered_day=session.day
+            if d.favor_requested and d.favor_requested.instance_id==favor.instance_id then d.favor_requested=copy(favor) end
+        end
+    end
+    for _,activity in ipairs(d.activities_completed) do
+        Events.apply(session,activity.instance_id.."_mission",{mission=activity.instance_id,hidden=true,context="daily"})
+    end
+    for _,favor in ipairs(session.pending_favors) do
+        if favor.status=="delivered" then
+            Events.apply(session,favor.instance_id.."_mission",{mission=favor.instance_id,hidden=true,context="daily"})
+        end
+    end
+    -- Las separaciones siguen las decisiones explícitas de las escenas existentes.
+    for _,id in ipairs(Characters.romanceIds) do
+        if session.decisions["separated_"..id]==true then session.relationships[id].marriageState="separated" end
+        Relationships.refresh(session.relationships[id])
+    end
+    Events.apply(session,Daily.key(session,"ending_processed"),{context="daily",text="Jornada cerrada. Los espacios sin usar no se acumulan."})
+    d.ending_processed=true; d.activities_locked=true
+    local report={day=session.day,interactions_used=d.interactions_used,unused=3-d.interactions_used,
+        visits=copy(d.visits),activities=copy(d.activities_completed),favor=copy(d.favor_requested),
+        before=copy(d.baseline),after=snapshot(session),changes={},rewards=copy(d.rewards_granted or {})}
+    for _,entry in ipairs(session.journal) do
+        if entry.day==session.day and not entry.hidden then report.changes[#report.changes+1]=copy(entry) end
+    end
+    session.daily_history[tostring(session.day)]=report
+    return report
+end
+
+-- Valida el registro de reservas: un guardado roto no puede regalar espacios.
+function Daily.restore(session,input)
+    local d=input.daily
+    if type(d)~="table" then return nil,"Falta el estado diario de la partida v4." end
+    if type(input.daily_history)~="table" or type(input.pending_favors)~="table" then return nil,"Falta el historial diario o de encargos." end
+    if d.day~=session.day then
+        -- Solo una jornada vacía permite recuperar un checkpoint antiguo de las
+        -- herramientas de diagnóstico; una reserva nunca se borra al cargar.
+        if d.interactions_used~=0 or d.favor_used or d.active_activity or d.ending_processed
+            or next(input.daily_history or {}) or next(input.pending_favors or {}) then return nil,"Día y agenda inconsistentes." end
+        session.daily=Daily.new(session.day,session)
+        return true
+    end
+    if d.interactions_total~=3 or type(d.interactions_used)~="number" or d.interactions_used%1~=0
+        or d.interactions_used<0 or d.interactions_used>3 then return nil,"Contador diario inválido." end
+    if type(d.visits)~="table" or type(d.activities_completed)~="table" then return nil,"Registro diario inválido." end
+    if type(d.events)~="table" or type(d.ending_processed)~="boolean" or type(d.favor_used)~="boolean" then return nil,"Estado diario inválido." end
+    if d.active_activity and (not Daily.atAgenda(session) or d.activities_locked) then return nil,"Actividad pendiente fuera de la agenda." end
+    local visits={sylphiette=0,roxy=0,eris=0}
+    local seen={}
+    local function reserve(record,completed)
+        if type(record)~="table" or not Catalog.byId[record.id] then return false end
+        local index=type(record.instance_id)=="string" and tonumber(record.instance_id:match("^day"..session.day.."_activity_(%d)$"))
+        if not index or index<1 or index>d.interactions_used or seen[index] then return false end
+        if completed then
+            local valid=false
+            for _,choice in ipairs(Catalog.byId[record.id].choices) do if record.choice==choice.id then valid=true end end
+            if not valid or not session.events[record.instance_id] then return false end
+        end
+        seen[index]=true
+        local id=Catalog.byId[record.id].character; visits[id]=visits[id]+1
+        return true
+    end
+    for _,record in ipairs(d.activities_completed) do if not reserve(record,true) then return nil,"Actividad guardada inválida." end end
+    if d.active_activity and not reserve(d.active_activity,false) then return nil,"Actividad pendiente inválida." end
+    for i=1,d.interactions_used do if not seen[i] then return nil,"Falta una reserva de interacción." end end
+    for id,n in pairs(visits) do if d.visits[id]~=n then return nil,"Visitas diarias inconsistentes." end end
+    if d.ending_processed and (d.active_activity or not Daily.storyComplete(session) or not session.events[Daily.key(session,"ending_processed")]) then return nil,"Cierre diario incompleto." end
+    -- JSON contiene solo datos. Copia acotada para historiales y snapshots.
+    local function clean(value,depth)
+        if type(value)=="string" then return #value<=2000 and value or nil end
+        if type(value)=="boolean" then return value end
+        if type(value)=="number" then return value==value and math.abs(value)<=100000 and value or nil end
+        if type(value)~="table" or depth>7 then return nil end
+        local out,count={},0
+        for k,v in pairs(value) do
+            if (type(k)=="string" and #k<=150) or (type(k)=="number" and k>=1 and k<=1024 and k%1==0) then
+                out[k]=clean(v,depth+1); count=count+1; if count>=1024 then break end
+            end
+        end
+        return out
+    end
+    session.daily=clean(d,0); session.daily.events=session.daily.events or {}
+    local function validSnapshot(value)
+        if type(value)~="table" then return false end
+        for _,id in ipairs(Characters.romanceIds) do
+            local r=value[id]
+            if type(r)~="table" then return false end
+            for _,field in ipairs({"love","trust"}) do
+                if type(r[field])~="number" or r[field]~=r[field] or r[field]<0 or r[field]>100 then return false end
+            end
+            if not ({married=true,strained=true,separated=true})[r.marriageState] then return false end
+        end
+        return true
+    end
+    if not validSnapshot(session.daily.baseline) then return nil,"Valores iniciales de jornada inválidos." end
+    session.daily_history={}
+    for day=1,7 do
+        local report=type(input.daily_history)=="table" and input.daily_history[tostring(day)]
+        if type(report)=="table" and report.day==day then
+            if not validSnapshot(report.before) or not validSnapshot(report.after) or type(report.visits)~="table"
+                or type(report.interactions_used)~="number" or report.interactions_used<0 or report.interactions_used>3
+                or report.unused~=3-report.interactions_used or type(report.changes)~="table" then return nil,"Resumen diario inválido." end
+            for _,entry in ipairs(report.changes) do
+                if type(entry)~="table" or type(entry.text)~="string" then return nil,"Cambio diario inválido." end
+            end
+            session.daily_history[tostring(day)]=clean(report,0)
+        end
+    end
+    session.pending_favors={}
+    local favors={}
+    for _,favor in ipairs(type(input.pending_favors)=="table" and input.pending_favors or {}) do
+        local def=type(favor)=="table" and Catalog.favorsById[favor.id]
+        local day=def and favor.requested_day
+        if type(day)~="number" or day%1~=0 or day<1 or day>session.day or favors[day]
+            or favor.instance_id~="day"..day.."_favor_"..favor.id
+            or favor.due_day~=math.min(7,day+def.delay)
+            or (favor.status~="pending" and favor.status~="delivered")
+            or not session.events[favor.instance_id]
+            or (favor.status=="delivered" and not session.events[favor.instance_id.."_delivered"]) then return nil,"Encargo guardado inválido." end
+        favors[day]=true; session.pending_favors[#session.pending_favors+1]=clean(favor,0)
+        if day==session.day then session.daily.favor_requested=clean(favor,0) end
+    end
+    if (d.favor_used==true)~=(favors[session.day]==true) then return nil,"Reserva de encargo inconsistente." end
+    if not d.favor_used then session.daily.favor_requested=nil end
+    if d.ending_processed and not session.daily_history[tostring(session.day)] then return nil,"Falta el resumen diario." end
+    return true
+end
+return Daily
+````
+
 ## src/systems/dialogue.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/dialogue.lua`
@@ -8565,7 +9230,7 @@ function Memory.commit(session,result,scene,turn)
         result.actualInterest=delta.interest or 0
         result.affinityBefore,result.affinityAfter=delta.before,delta.after
     end
-    for _,flag in ipairs(result.flags or {}) do session.events[flag]=true end
+    for _,flag in ipairs(result.flags or {}) do Events.mark(session,flag) end
     session.decisions[key]=result.cardId
     session.dialogueMemory=session.dialogueMemory or {used={}}
     local used=session.dialogueMemory.used
@@ -9027,6 +9692,15 @@ local Relationships=require("src.systems.relationships")
 local Characters=require("src.data.characters")
 local CardData=require("src.data.cards")
 local Events={}
+function Events.mark(session,id)
+    session.events=session.events or {}
+    session.events[id]=true
+    session.events_by_day=session.events_by_day or {}
+    local dayKey=tostring(session.day)
+    session.events_by_day[dayKey]=session.events_by_day[dayKey] or {}
+    session.events_by_day[dayKey][id]=true
+    if session.daily and session.daily.day==session.day then session.daily.events[id]=true end
+end
 local states={pending=true,kept=true,broken=true}
 local function knownCard(id)
     return CardData.byId[id] or require("src.data.combat_cards").byId[id]
@@ -9121,8 +9795,12 @@ function Events.apply(session,id,effects)
         for i,child in ipairs(effect.batch or {}) do apply(child,path..":"..i,text,hidden) end
     end
     apply(effects,id)
-    session.events[id]=true
+    Events.mark(session,id)
     if #newlyUnlocked>0 then
+        if session.daily and session.daily.day==session.day then
+            session.daily.rewards_granted=session.daily.rewards_granted or {}
+            for _,cardId in ipairs(newlyUnlocked) do session.daily.rewards_granted[#session.daily.rewards_granted+1]=cardId end
+        end
         local presenter=effects.presenter or effects.character or "nanahoshi"
         if not Characters.byId[presenter] then presenter="nanahoshi" end
         session.rewardQueue[#session.rewardQueue+1]={id="reward_"..id,eventId=id,cards=newlyUnlocked,presenter=presenter}
@@ -9875,6 +10553,7 @@ local Chapters=require("src.data.chapters")
 local Characters=require("src.data.characters")
 local Events=require("src.systems.events")
 local Conditions=require("src.systems.conditions")
+local Daily=require("src.systems.daily")
 local Progression={}
 
 local function copy(value)
@@ -9920,6 +10599,7 @@ local function move(session,checkpoint)
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Destino narrativo desconocido: "..tostring(checkpoint) end
     session.checkpoint,session.day=checkpoint,node.day
+    Daily.ensure(session)
     session.dialogueIndex,session.encounter=1,nil
     session.encounterReview,session.tutorial=nil,nil
     session.combat,session.combatPreparation,session.trainingReview=nil,nil,nil
@@ -9942,6 +10622,22 @@ function Progression.hub(session)
     local hub=copy(node.definition)
     hub.locations=hub.locations or chapterFor(session.checkpoint).locations or {}
     return hub
+end
+function Progression.continueStory(session)
+    if not Daily.atAgenda(session) or Daily.storyComplete(session) then return nil,"No hay historia pendiente en esta agenda." end
+    local d=Daily.ensure(session)
+    if d.active_activity or d.ending_processed then return nil,"Termina la actividad pendiente antes de continuar." end
+    local config=Daily.config(session)
+    if config.lockBeforeStory then
+        local ok,err=Daily.lockActivities(session); if not ok then return nil,err end
+    end
+    return move(session,config.story)
+end
+function Progression.endDay(session)
+    if not Daily.atAgenda(session) then return nil,"Vuelve a la agenda para finalizar el día." end
+    local report,err=Daily.finish(session)
+    if not report then return nil,err end
+    return move(session,Daily.config(session).summary)
 end
 function Progression.availableCompanions(session)
     local hub=Progression.hub(session)
@@ -10105,6 +10801,13 @@ function Progression.next(session,checkpoint,result)
     if session.checkpoint~=checkpoint then return nil,"La pantalla de origen ya cambió." end
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Punto de historia desconocido: "..tostring(checkpoint) end
+    if node.definition.agenda then
+        if Daily.storyComplete(session) then return Progression.endDay(session) end
+        return Progression.continueStory(session)
+    end
+    if checkpoint==Daily.config(session).summary and not Daily.ensure(session).ending_processed then
+        return nil,"Falta procesar el cierre de esta jornada."
+    end
     if node.definition.document and not (session.clues and session.clues[node.definition.document]) then
         return nil,"Examina y lee la carta antes de continuar."
     end
@@ -10150,10 +10853,10 @@ function Progression.finishCombat(session,enc)
     local enemy=require("src.data.enemies").byId[enc.enemy.id]
     local key="combat_reward_"..checkpoint
     if not session.events[key] then
-        session.events[key]=true
-        session.events["mirror_defeated_"..checkpoint]=true
-        if enemy and enemy.narrativeEvent then session.events[enemy.narrativeEvent]=true end
-        if enemy and enemy.reward and enemy.reward.event then session.events[enemy.reward.event]=true end
+        Events.mark(session,key)
+        Events.mark(session,"mirror_defeated_"..checkpoint)
+        if enemy and enemy.narrativeEvent then Events.mark(session,enemy.narrativeEvent) end
+        if enemy and enemy.reward and enemy.reward.event then Events.mark(session,enemy.reward.event) end
         session.decisions["combat_turns_"..checkpoint]=enc.turn
         session.defeatedEnemies=session.defeatedEnemies or {}
         session.defeatedEnemies[enc.enemy.id]=true
@@ -10163,7 +10866,7 @@ function Progression.finishCombat(session,enc)
         end
         if checkpoint=="day1_tutorial" then
             Events.apply(session,"first_anomaly",{unlock={"self_joke"}})
-            session.events.combat_tutorial_completed=true
+            Events.mark(session,"combat_tutorial_completed")
         end
         -- Una recompensa narrativa persiste por encuentro, sin multiplicarse
         -- al reabrir la pantalla de victoria o repetir el botón Continuar.
@@ -10793,7 +11496,8 @@ local Story=require("src.data.story")
 local Chapters=require("src.data.chapters")
 local Progression=require("src.systems.progression")
 local Options=require("src.systems.options")
-local Save={version=3,filename="campaign-v3.json",backup="campaign-v3.backup.json",optionsFile="options.json",
+local Daily=require("src.systems.daily")
+local Save={version=4,filename="campaign-v4.json",backup="campaign-v4.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -10830,10 +11534,12 @@ local function copyList(source)
 end
 
 function Save.newSession(config)
-    return {version=Save.version,continuity="rudy_curse",day=Chapters.first.day,checkpoint=Chapters.first.initial,
+    local s={version=Save.version,continuity="rudy_curse",day=Chapters.first.day,checkpoint=Chapters.first.initial,
         dialogueIndex=1,relationships=Relationships.new(config),affinities=require("src.systems.affinity").new(),unlocked={},deck={},combatDeck={},events={},decisions={},
         curse=require("src.systems.curse").new(),clues={},inventory={},externalEnergy=0,
-        journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},options=Options.normalize()}
+        journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},events_by_day={},options=Options.normalize()}
+    Daily.ensure(s)
+    return s
 end
 
 function Save.validate(input)
@@ -10988,6 +11694,11 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
+    local dailyOk,dailyError=Daily.restore(s,input)
+    if not dailyOk then return nil,dailyError end
+    for day=1,7 do
+        s.events_by_day[tostring(day)]=map(type(input.events_by_day)=="table" and input.events_by_day[tostring(day)],true)
+    end
     return s
 end
 
@@ -11013,18 +11724,22 @@ end
 function Save.write(session)
     local clean,err=Save.validate(session)
     if not clean then return false,err end
+    local old=readFile(Save.filename)
+    local existing=old and Json.decode(old)
+    if type(existing)=="table" and existing.version~=Save.version then
+        return false,"El archivo de destino contiene una versión incompatible; se conserva sin sobrescribir."
+    end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v3.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v4.tmp.json",data)
     if not ok then return false,err end
-    local old=readFile(Save.filename)
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
         if not ok then return false,err end
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v3.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v4.tmp.json")
     return true
 end
 
@@ -11045,10 +11760,10 @@ function Save.exists() return Save.load()~=nil end
 
 -- The UI explicitly offers a new continuity. Original files stay untouched.
 function Save.legacyInfo()
-    for _,path in ipairs({"campaign-v2.json","campaign-v2.backup.json",Save.legacyFilename,Save.legacyBackup}) do
+    for _,path in ipairs({"campaign-v3.json","campaign-v3.backup.json","campaign-v2.json","campaign-v2.backup.json",Save.legacyFilename,Save.legacyBackup}) do
         local raw=readFile(path)
         local input=raw and Json.decode(raw)
-        if type(input)=="table" and input~=Json.null and (input.version==2 or input.version==1 or input.version==nil) and next(input) then
+        if type(input)=="table" and input~=Json.null and (input.version==3 or input.version==2 or input.version==1 or input.version==nil) and next(input) then
             return {source=path,day=number(input.day,1,1,7),checkpoint=type(input.checkpoint)=="string" and input.checkpoint or "intro",
                 unlocked=map(input.unlocked,true),options=Options.normalize(input.options)}
         end
@@ -11061,7 +11776,7 @@ function Save.migrateLegacy(accepted)
     local s=Save.newSession()
     s.options=legacy.options
     local count=0
-    for id in pairs(legacy.unlocked) do if CardData.byId[id] then s.unlocked[id]=true; count=count+1 end end
+    for id in pairs(legacy.unlocked) do if CardData.byId[id] or require("src.data.combat_cards").byId[id] then s.unlocked[id]=true; count=count+1 end end
     s.migration={source=legacy.source,previousDay=legacy.day,previousCheckpoint=legacy.checkpoint,acceptedContinuity=true,importedCards=count}
     return s,"Nueva campaña matrimonial: se conservó la colección compatible y el guardado original."
 end
@@ -11249,9 +11964,9 @@ function Result.commit(session,enc)
  end
  if not Events.apply(session,key,effect) then return session.trainingResults[cp],false end
  -- Ambos resultados quedan en el historial; una revancha no borra el primero.
- session.events[result.eventId]=true
+ Events.mark(session,result.eventId)
  session.decisions.eris_training_last_result=result.id
- if effect.reconcile then session.events.eris_training_reconciled=true end
+ if effect.reconcile then Events.mark(session,"eris_training_reconciled") end
  session.trainingResults[cp]=record
  return record,true
 end
@@ -11333,14 +12048,14 @@ end
 function Tutorial.complete(session,options)
     if not session.tutorial or session.tutorial.stage~="summary" or not session.encounter or not session.encounter.finished then return false end
     session.tutorial.stage="complete"
-    session.events.tutorial_completed=true
+    require("src.systems.events").mark(session,"tutorial_completed")
     options.tutorialCompleted=true
     return true
 end
 function Tutorial.skip(session,options)
     if not options.tutorialCompleted and not session.events.tutorial_completed then return false end
     session.tutorial=nil
-    session.events.tutorial_completed=true
+    require("src.systems.events").mark(session,"tutorial_completed")
     return true
 end
 return Tutorial
@@ -12326,6 +13041,19 @@ function Suite.run()
     end
     local nextId,err=Progression.next(s)
     check(nextId~=nil,"Salida de "..checkpoint..": "..tostring(err))
+   elseif node.definition.agenda then
+    local Daily=require("src.systems.daily")
+    while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
+     local id=config.dailyWife or wives[s.daily.interactions_used+1]
+     check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
+     s=round(s)
+     check(Daily.resolveActivity(s,"together")~=nil,"Decisión de actividad guardada")
+    end
+    if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
+     check(Daily.requestFavor(s,"cliff_notes")~=nil,"Encargo en cada jornada")
+    end
+    if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
+    else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.kind=="hub" then
     local available=Progression.availableCompanions(s)
     if #available>0 then check(Progression.selectCompanion(s,config.companion or config.preferred or "roxy")~=nil,"Compañía elegida")
@@ -12388,7 +13116,16 @@ function Suite.run()
  check(Progression.choose(boundary,"day7_sylphiette","reconcile"),"La reparación con antecedentes es elegible en45")
  check(boundary.relationships.sylphiette.love==55 and Relationships.canMaintain(boundary.relationships,"sylphiette"),"La reparación elegible alcanza el umbral real55")
  check(Progression.next(boundary)=="day7_roxy","La reparación no conduce a una separación contradictoria")
- print("Campaign: "..count.." checks passed (31 complete routes, five endings, legal battles, save/load and reconciliations).")
+ for _,mode in ipairs({"none","roxy","eris"}) do
+  local dailyRun=run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",skipActivities=mode=="none",dailyWife=mode~="none" and mode or nil,favors=true})
+  for day=1,7 do
+   local report=dailyRun.daily_history[tostring(day)]
+   check(report and report.interactions_used==(mode=="none" and 0 or 3),"Siete cierres con distribución "..mode)
+   if mode~="none" then check(report.visits[mode]==3,"Repetición libre durante toda la campaña") end
+  end
+  for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
+ end
+ print("Campaign: "..count.." checks passed (34 complete routes, five endings, free daily distributions, favors and save/load).")
  return count
 end
 return Suite
@@ -13719,6 +14456,232 @@ end
 return Suite
 ````
 
+## tests/daily.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/daily.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+    local Save=require("src.systems.save")
+    local Daily=require("src.systems.daily")
+    local Progression=require("src.systems.progression")
+    local Chapters=require("src.data.chapters")
+    local Events=require("src.systems.events")
+    local Json=require("src.systems.json")
+    local count=0
+    local function check(ok,message) assert(ok,message); count=count+1 end
+    local function copy(s) return assert(Json.decode(assert(Json.encode(s)))) end
+    local function reload(s) return assert(Save.validate(copy(s))) end
+    local function agenda(day)
+        local s=Save.newSession()
+        Events.apply(s,"starter_gift",{starter=true})
+        s.rewardQueue={}
+        s.day=day or 1; s.checkpoint="day"..s.day.."_agenda"; Daily.ensure(s)
+        return s
+    end
+    local function complete(s)
+        Events.apply(s,Daily.config(s).completionEvent,{})
+    end
+    local wives={"sylphiette","roxy","eris"}
+    for a=1,3 do for b=1,3 do for c=1,3 do
+        local s=agenda();local visits={sylphiette=0,roxy=0,eris=0}
+        check(Daily.remaining(s)==3,"Exactamente tres espacios al comenzar")
+        for _,index in ipairs({a,b,c}) do
+            local id=wives[index]
+            check(Daily.startActivity(s,"time_"..id),"Cualquier distribución es válida")
+            check(not Daily.startActivity(s,"time_roxy"),"Una actividad pendiente no reserva otra")
+            s=reload(s)
+            check(s.daily.active_activity and Daily.resolveActivity(s,"together"),"Reserva y decisión persisten")
+            local before=Json.encode(s.relationships)
+            check(not Daily.resolveActivity(s,"together") and Json.encode(s.relationships)==before,"Resolver dos veces no repite consecuencias")
+            visits[id]=visits[id]+1
+        end
+        check(Daily.remaining(s)==0 and not Daily.startActivity(s,"time_eris"),"Cuarta actividad bloqueada")
+        for id,n in pairs(visits) do check(s.daily.visits[id]==n,"Visitas exactas: "..id) end
+        check(Daily.requestFavor(s,"cliff_notes"),"El encargo no depende de las interacciones restantes")
+        check(not Daily.requestFavor(s,"zanoba_artifact"),"Solo un encargo combinado para Cliff/Zanoba")
+        check(s.daily.interactions_used==3,"Encargo no consume interacción")
+        check(not Progression.endDay(s),"Dormir no omite eventos obligatorios")
+        complete(s)
+        check(Progression.endDay(s)=="day1_summary","Resumen antes de avanzar")
+        s=reload(s)
+        local exact=Json.encode(s)
+        check(Daily.finish(s) and Json.encode(s)==exact,"Cierre idempotente después de cargar")
+        check(Progression.next(s)=="day2_agenda","Siguiente capítulo comienza en agenda")
+        check(s.day==2 and s.daily.day==2 and Daily.remaining(s)==3,"Renueva exactamente tres espacios")
+        check(s.daily_history["1"].visits[wives[a]]>=1,"Historial de ayer disponible")
+        check(s.pending_favors[1].status=="pending","Encargo futuro persiste")
+        complete(s);check(Progression.endDay(s),"Dormir voluntariamente con cero actividades")
+        check(s.daily_history["2"].unused==3,"Espacios sin usar registrados")
+        check(s.pending_favors[1].status=="delivered" and s.unlocked.heal,"Encargo entregado al cierre debido")
+        check(s.missions.day1_favor_cliff_notes,"Entrega actualiza misión")
+        s=reload(s); local energy=s.externalEnergy;local rewards=#s.rewardQueue
+        Daily.finish(s)
+        check(s.externalEnergy==energy and #s.rewardQueue==rewards,"Premios sin duplicar al reabrir resumen")
+    end end end
+    for used=0,2 do
+        local s=agenda()
+        for _=1,used do Daily.startActivity(s,"time_roxy"); Daily.resolveActivity(s,"listen") end
+        complete(s);check(Progression.endDay(s),"Cierre voluntario con "..used.." actividades")
+        check(s.daily_history["1"].unused==3-used,"Registra espacios perdidos")
+        Progression.next(s);check(Daily.remaining(s)==3,"No acumula sobrantes")
+    end
+    local s=agenda()
+    check(Daily.requestFavor(s,"zanoba_artifact") and Daily.remaining(s)==3,"Encargo antes de actividades tampoco consume")
+    Daily.startActivity(s,"time_roxy");complete(s)
+    check(not Progression.endDay(s),"No cierra una decisión incompleta")
+    s=reload(s);Daily.resolveActivity(s,"listen")
+    check(Save.write(s),"Guardado real con actividad y encargo")
+    s=assert(Save.load());check(s.daily.visits.roxy==1 and s.daily.favor_used,"Carga de disco conserva jornada")
+    Progression.endDay(s)
+    check(s.unlocked.wind_guard and s.pending_favors[1].status=="delivered","Zanoba entrega el mismo día")
+    check(s.events_by_day["1"].day1_activity_1,"Eventos indexados por día e identificador")
+    check(Save.write(s),"Cierre guardado en disco")
+    local loaded=assert(Save.load())
+    check(loaded.daily.ending_processed and loaded.daily_history["1"].after.roxy.trust==s.relationships.roxy.trust,"Resumen y matrimonios persisten")
+    local broken=copy(loaded);broken.daily.interactions_used=4
+    check(not Save.validate(broken),"Rechaza cuarta reserva guardada")
+    broken=copy(loaded);broken.daily.visits.roxy=3
+    check(not Save.validate(broken),"Rechaza visitas inconsistentes")
+    broken=copy(loaded);broken.pending_favors[2]=copy(broken.pending_favors[1])
+    check(not Save.validate(broken),"Rechaza doble encargo para el mismo día")
+    broken=copy(loaded);broken.daily=nil
+    check(not Save.validate(broken),"No regala una agenda vacía al perder el estado diario")
+    broken=copy(loaded);broken.daily.day=2
+    check(not Save.validate(broken),"No repone espacios por día inconsistente")
+    local future=copy(loaded);future.version=999
+    local futureRaw=assert(Json.encode(future))
+    love.filesystem.write(Save.filename,futureRaw)
+    check(not Save.write(loaded) and love.filesystem.read(Save.filename)==futureRaw,"Conserva un destino de versión incompatible")
+    love.filesystem.remove(Save.filename)
+    local legacy=copy(loaded);legacy.version=3
+    local raw=assert(Json.encode(legacy))
+    love.filesystem.write("campaign-v3.json",raw)
+    check(not Save.validate(legacy),"V3 no se interpreta como una jornada v4")
+    check(Save.legacyInfo().source=="campaign-v3.json","Detecta campaña anterior")
+    check(Save.migrateLegacy(true),"Importa colección a nueva jornada")
+    check(Save.write(loaded) and love.filesystem.read("campaign-v3.json")==raw,"Nunca sobrescribe v3")
+    love.filesystem.remove("campaign-v3.json")
+    local final=agenda(7);final.inventory.antidote=true
+    Daily.requestFavor(final,"cliff_notes")
+    check(final.pending_favors[1].due_day==7,"Encargo final se resuelve antes del epílogo")
+    check(Progression.continueStory(final)=="day7_intro","Historia final sigue accesible con cero actividades")
+    check(final.daily.activities_locked and not Daily.startActivity(final,"time_roxy"),"Día siete fija atención antes de resolver matrimonios")
+    local trust=final.relationships.roxy.trust
+    Daily.applyAttention(final);check(final.relationships.roxy.trust==trust,"Atención final se aplica una sola vez")
+    for day=1,7 do
+        local c=Chapters.byId["day"..day]
+        check(Chapters.get(c.daily.agenda) and Chapters.get(c.daily.summary),"Agenda y resumen en día "..day)
+    end
+    for _,node in pairs(Chapters.checkpoints) do check(node.definition.interactionRule=="narrative" and node.definition.interactionCost==0,"Escena con coste narrativo explícito") end
+    require("src.systems.narrative_validator").assertValid(nil,{checkFiles=false})
+    print("Daily cycle: "..count.." checks passed (27 distributions, reservations, favors, summaries, replay, disk persistence and v3 preservation).")
+end
+return Suite
+````
+
+## tests/daily_ui.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/daily_ui.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+    local Save=require("src.systems.save")
+    local Json=require("src.systems.json")
+    local Events=require("src.systems.events")
+    local Daily=require("src.systems.daily")
+    local original={write=Save.write,load=Save.load,exists=Save.exists,readOptions=Save.readOptions,legacyInfo=Save.legacyInfo}
+    local stored,failWrite
+    Save.write=function(s)
+        if failWrite then return false,"fallo simulado" end
+        stored=assert(Json.encode(assert(Save.validate(s)))); return true
+    end
+    Save.load=function() return stored and Save.validate(assert(Json.decode(stored))) end
+    Save.exists=function() return stored~=nil end
+    Save.legacyInfo=function() return nil end
+    Save.readOptions=function() return {muted=true,textAnimation=false,reducedMotion=true} end
+    local count=0
+    local function check(ok,message) assert(ok,message); count=count+1 end
+    local ok,err=xpcall(function()
+        local app=require("src.app").new()
+        app.session=Save.newSession()
+        Events.apply(app.session,"starter_gift",{starter=true})
+        app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
+        local function settle() app:update(2);app:draw() end
+        local function click(label,which)
+            settle();local n=0
+            for _,button in ipairs(app.manager.current.buttons) do
+                if button.label==label then
+                    n=n+1
+                    if n==(which or 1) then
+                        check(not button.disabled,"Botón habilitado: "..label)
+                        app:mousepressed(app.offsetX+(button.x+button.w/2)*app.scale,app.offsetY+(button.y+button.h/2)*app.scale,1)
+                        return
+                    end
+                end
+            end
+            error("Botón ausente: "..label)
+        end
+        local function capture(name)
+            settle();app.toastTime=0;app:draw()
+            local bytes=app.canvas:newImageData():encode("png")
+            local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/"..name..".png","wb"))
+            file:write(bytes:getString());file:close()
+        end
+        app:resume();capture("daily-agenda-start")
+        for i=1,3 do
+            click("Pasar tiempo",2)
+            check(app.session.daily.interactions_used==i,"Un clic reserva exactamente un espacio")
+            app:continueGame();settle()
+            check(app.session.daily.active_activity~=nil,"Continúa la decisión pendiente")
+            capture("daily-activity")
+            click("Compartir una lectura (+2 amor / +1 conf.)")
+        end
+        check(app.session.daily.visits.roxy==3 and Daily.remaining(app.session)==0,"Tres visitas a Roxy desde la interfaz")
+        capture("daily-agenda-spent")
+        for _,button in ipairs(app.manager.current.buttons) do
+            if button.label=="Pasar tiempo" then check(button.disabled,"Cuarta visita deshabilitada") end
+        end
+        click("Encargos");capture("daily-favors")
+        click("Solicitar",2)
+        check(app.session.daily.favor_used and app.session.daily.interactions_used==3,"Encargo desde interfaz independiente")
+        Events.apply(app.session,"day1_complete",{})
+        app:resume();settle()
+        failWrite=true
+        click("Finalizar día")
+        check(app.manager.current.kind=="agenda" and app.session.daily.ending_processed,"No muestra resumen si falla el guardado")
+        local relationships=Json.encode(app.session.relationships);local energy=app.session.externalEnergy
+        failWrite=false;check(app:endDay(),"Reintentar guardado de cierre")
+        check(Json.encode(app.session.relationships)==relationships and app.session.externalEnergy==energy,"Reintento no repite efectos")
+        settle()
+        while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
+        check(app.manager.current.kind=="day_report","Muestra resumen persistido")
+        capture("daily-summary")
+        click("Comenzar día 2")
+        check(app.session.day==2 and Daily.remaining(app.session)==3,"Resumen abre siguiente agenda")
+        click("Cambios de ayer");capture("daily-previous")
+        check(app.manager.current.kind=="day_report","Consulta de ayer accesible")
+        click("Volver a la agenda")
+        check(app.session.day==2 and Daily.remaining(app.session)==3,"Consultar no avanza ni consume")
+        Events.apply(app.session,"day2_complete",{})
+        app:resume();settle();click("Finalizar día")
+        check(app.session.daily_history["2"].unused==3,"Dormir con tres espacios desde interfaz")
+        -- La navegación estándar debe poder activar botones de la agenda.
+        app.session=Save.newSession();app.session.checkpoint="day1_agenda";app:resume();settle()
+        app:keypressed("tab");check(app.manager.current.keyboardFocus~=nil,"Navegación por teclado")
+        app.session.day=7;app.session.checkpoint="day7_agenda";Daily.ensure(app.session)
+        app:resume();capture("daily-final-day")
+        app.audio:stop()
+    end,debug.traceback)
+    for key,value in pairs(original) do Save[key]=value end
+    assert(ok,err)
+    print("Daily UI: "..count.." checks passed; seven real-renderer captures, pending choice reload and failed-save retry.")
+end
+return Suite
+````
+
 ## tests/dialogue_branching.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/dialogue_branching.lua`
@@ -14025,7 +14988,7 @@ function Suite.run()
     for _,outcome in ipairs({"kept","broken"}) do
         local branch=clone(sylph); branch.checkpoint="day3_family_time"; branch.day=3
         check(Progression.choose(branch,branch.checkpoint,outcome=="kept" and "keep" or "break"),"La promesa tiene una decisión real de cumplimiento")
-        check(Progression.next(branch)=="day3_complete" and branch.events["sylphiette_family_time_"..outcome],"La transición registra el desenlace de la promesa")
+        check(Progression.next(branch)=="day3_agenda" and branch.events["sylphiette_family_time_"..outcome],"La transición registra el desenlace de la promesa y vuelve a la agenda")
         branch=round(branch)
         recalls[outcome]=encode(Progression.scene(branch,"day4_council").lines)
         branch.checkpoint="day5_mission_sylphiette"; branch.day=5
@@ -15384,7 +16347,7 @@ function Suite.run()
         check(Events.apply(s,"promise_"..id,{character=id,love=3,trust=3,promise={id="return",status="kept"}}),"Promesa cumplida "..id)
     end
     local s=Save.newSession()
-    check(s.version==3 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
+    check(s.version==4 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
     check(#s.deck==0 and #s.combatDeck==0 and next(s.unlocked)==nil,"Sin cartas antes de Nanahoshi")
     for _,id in ipairs(names) do
         check(s.relationships[id].love==65 and s.relationships[id].trust==65,"Matrimonio comienza positivamente")
@@ -15510,7 +16473,7 @@ function Suite.run()
     end)
     love=oldLove
     assert(tested,err)
-    print("Marriages/save v3: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
+    print("Marriages/save v4: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
     return checked
 end
 return Suite
@@ -15944,7 +16907,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==3,"Sin apariencia global persistida ni migración de formato")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==4,"Sin apariencia global persistida en el formato diario")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2
@@ -16575,6 +17538,18 @@ function Suite.run()
                 for _,b in ipairs(s.buttons) do if b.y>=126 and b.y<227 then check(b.y+b.h<=227,"Las opciones no se solapan con el diálogo") end end
                 click(s.scene.choices[1].label)
             else s:advance() end
+        elseif node.definition.agenda then
+            local Daily=require("src.systems.daily")
+            capture("agenda-day"..app.session.day)
+            if app.session.daily.active_activity then
+                capture("daily-activity")
+                click(require("src.data.activities").byId[app.session.daily.active_activity.id].choices[1].label.." (+2 amor / +1 conf.)")
+            elseif Daily.remaining(app.session)>0 and not app.session.daily.activities_locked then
+                local id=({"sylphiette","roxy","eris"})[app.session.daily.interactions_used+1]
+                check(Daily.startActivity(app.session,"time_"..id)~=nil,"Agenda permite repetir actividades")
+                app:save();app:resume()
+            elseif Daily.storyComplete(app.session) then click("Finalizar día")
+            else click(app.session.day==7 and "Cerrar tiempo libre e ir a la historia" or "Continuar historia") end
         elseif node.kind=="hub" then
             local companions=Progression.availableCompanions(app.session)
             if #companions>0 then click("Elegir compañía") else click("Visitar") end
@@ -16605,7 +17580,7 @@ function Suite.run()
                     if index then s:keypressed(tostring(index)); s:keypressed("return") else s:keypressed("p") end
                 end
             end
-        elseif node.kind=="summary" then check(Progression.canContinue(app.session),"Resumen intermedio continúa"); app:next()
+        elseif node.kind=="summary" then capture("daily-summary");check(Progression.canContinue(app.session),"Resumen intermedio continúa"); app:next()
         else error("Pantalla sin manejador "..cp) end
     end
     settle(); capture("ending-family")
@@ -16677,9 +17652,17 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````lua
 -- Active marriage-continuity suite; previous fixtures remain in legacy_run_v1.lua.
 return function()
-    love.filesystem.setIdentity("cartas_del_destino_v3_tests")
+    io.stdout:setvbuf("no")
+    love.filesystem.setIdentity("cartas_del_destino_v4_tests")
     local group=os.getenv("DATESIM_TEST_GROUP")
-    if group=="training" or group=="training-ui" then
+    if group=="daily" or group=="daily-ui" then
+        require("tests.daily").run()
+        if group=="daily-ui" then require("tests.daily_ui").run() end
+        return
+    elseif group=="campaign" then
+        require("tests.campaign").run()
+        return
+    elseif group=="training" or group=="training-ui" then
         require("tests.training").run()
         require("tests.training_integration").run()
         if group=="training-ui" then require("tests.restructure_integration").run() end
@@ -16693,6 +17676,8 @@ return function()
     require("tests.portraits").run()
     require("tests.audio_options").run()
     require("tests.marriages").run()
+    require("tests.daily").run()
+    require("tests.daily_ui").run()
     require("tests.combat").run()
     require("tests.combat_balance").run()
     require("tests.training").run()
@@ -17480,7 +18465,8 @@ chunks = ["# Código completo del proyecto\n\n"
           "Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, "
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
-          "dificultad por día, energía externa, compañeras, guardado v3, animaciones y audio sintetizado.\n\n"
+          "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
+          "guardado v4, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

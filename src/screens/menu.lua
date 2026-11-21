@@ -20,7 +20,7 @@ function Menu.new(app)
         self:text("LAS CARTAS\nDEL DESTINO",44,94,330,P.ink,2)
         self:text("Siete días. Una voz sellada.\nUna familia que necesita escucharte.",44,146,310,P.muted)
         if self.legacyConfirm then
-            self:text("Nueva historia: la maldición de Rudy.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v3.json.",44,186,310,P.gold)
+            self:text("Nueva campaña con agenda diaria.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v4.json.",44,186,310,P.gold)
             self:button("Aceptar e importar",44,250,310,25,function() app:newGame(true) end)
             self:button("Cancelar",44,282,310,25,function() self.legacyConfirm=false end)
         elseif self.confirm then

@@ -127,10 +127,15 @@ function App:resume(transition)
     local music=require("src.data.presentation").music(node,resolved)
     self.audio:setContext(music)
     if transition.type=="new_day" then self.audio:effect("new_day") end
-    if node and node.kind=="hub" then
+    if node.definition.agenda then
+        self:switch(require("src.screens.agenda").new(self),transition)
+    elseif node and node.kind=="hub" then
         self:switch(require("src.screens.hub").new(self),transition)
     elseif node and node.kind=="summary" then
-        self:switch(require("src.screens.summary").new(self),transition)
+        local config=require("src.systems.daily").config(self.session)
+        if checkpoint==config.summary then
+            self:switch(require("src.screens.day_report").new(self,self.session.daily_history[tostring(self.session.day)]),transition)
+        else self:switch(require("src.screens.summary").new(self),transition) end
     elseif node and node.kind=="encounter" then
         local socialTutorial=resolved.tutorial and not self.session.events.tutorial_completed
         if resolved.training and self.session.combat and self.session.combat.finished then
@@ -148,6 +153,18 @@ function App:resume(transition)
     else
         self:switch(require("src.screens.dialogue").new(self),transition)
     end
+end
+
+function App:endDay()
+    local Daily=require("src.systems.daily")
+    if self.session.checkpoint~=Daily.config(self.session).summary then
+        local nextId,err=Progression.endDay(self.session)
+        if not nextId then self:notify(err); return false end
+    end
+    -- No se presenta el resumen ni se avanza si el guardado falló.
+    if not self:save() then return false end
+    self:resume()
+    return true
 end
 
 function App:next(result)

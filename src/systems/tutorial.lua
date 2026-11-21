@@ -48,14 +48,14 @@ end
 function Tutorial.complete(session,options)
     if not session.tutorial or session.tutorial.stage~="summary" or not session.encounter or not session.encounter.finished then return false end
     session.tutorial.stage="complete"
-    session.events.tutorial_completed=true
+    require("src.systems.events").mark(session,"tutorial_completed")
     options.tutorialCompleted=true
     return true
 end
 function Tutorial.skip(session,options)
     if not options.tutorialCompleted and not session.events.tutorial_completed then return false end
     session.tutorial=nil
-    session.events.tutorial_completed=true
+    require("src.systems.events").mark(session,"tutorial_completed")
     return true
 end
 return Tutorial

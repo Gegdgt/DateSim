@@ -2,6 +2,15 @@ local Relationships=require("src.systems.relationships")
 local Characters=require("src.data.characters")
 local CardData=require("src.data.cards")
 local Events={}
+function Events.mark(session,id)
+    session.events=session.events or {}
+    session.events[id]=true
+    session.events_by_day=session.events_by_day or {}
+    local dayKey=tostring(session.day)
+    session.events_by_day[dayKey]=session.events_by_day[dayKey] or {}
+    session.events_by_day[dayKey][id]=true
+    if session.daily and session.daily.day==session.day then session.daily.events[id]=true end
+end
 local states={pending=true,kept=true,broken=true}
 local function knownCard(id)
     return CardData.byId[id] or require("src.data.combat_cards").byId[id]
@@ -96,8 +105,12 @@ function Events.apply(session,id,effects)
         for i,child in ipairs(effect.batch or {}) do apply(child,path..":"..i,text,hidden) end
     end
     apply(effects,id)
-    session.events[id]=true
+    Events.mark(session,id)
     if #newlyUnlocked>0 then
+        if session.daily and session.daily.day==session.day then
+            session.daily.rewards_granted=session.daily.rewards_granted or {}
+            for _,cardId in ipairs(newlyUnlocked) do session.daily.rewards_granted[#session.daily.rewards_granted+1]=cardId end
+        end
         local presenter=effects.presenter or effects.character or "nanahoshi"
         if not Characters.byId[presenter] then presenter="nanahoshi" end
         session.rewardQueue[#session.rewardQueue+1]={id="reward_"..id,eventId=id,cards=newlyUnlocked,presenter=presenter}
