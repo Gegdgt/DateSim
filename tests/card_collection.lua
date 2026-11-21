@@ -9,7 +9,7 @@ function Suite.run()
     local Json=require("src.systems.json")
     local checks=0
     local function check(value,message) assert(value,message); checks=checks+1 end
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.unlocked.self_joke,session.unlocked.remember=true,true
     local before=assert(Json.encode(session))
     local groups=Collection.groups(session)

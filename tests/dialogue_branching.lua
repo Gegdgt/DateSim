@@ -5,7 +5,7 @@ function Suite.fixture(checkpoint,deck)
     local Events=require("src.systems.events")
     local Data=require("src.data.cards")
     local Progression=require("src.systems.progression")
-    local s=Save.newSession()
+    local s=Save.newSession({love=65,trust=65})
     Events.apply(s,"starter_gift",{starter=true})
     s.rewardQueue={}; s.events.tutorial_completed=true
     s.checkpoint=checkpoint
@@ -61,7 +61,7 @@ function Suite.run()
         conversations=conversations+1
         check(node.id==id and Characters.byId[node.character]~=nil,"Conversación con identidad estable: "..id)
         check(type(node.day)=="number" and type(node.background)=="string" and type(node.emotion)=="string","Contexto narrativo completo: "..id)
-        local s=Save.newSession(); s.day=node.day
+        local s=Save.newSession({love=65,trust=65}); s.day=node.day
         for _,card in ipairs(Data.list) do s.unlocked[card.id]=true end
         local context=Resolver.context(s,{kind="conversation",character=node.character},checkpoint)
         local phrases={}
@@ -180,7 +180,7 @@ function Suite.run()
     check(Resolver.resolve(Resolver.context(low,futureDef),"be_honest").responseId~=Resolver.resolve(Resolver.context(high,futureDef),"be_honest").responseId,
         "Confianza baja y alta seleccionan variantes emocionales distintas")
 
-    for _,case in ipairs({{card="subtle_flirt",love=99,trust=100,actualLove=1,actualTrust=0},{card="light_joke",love=2,trust=1,actualLove=-2,actualTrust=-1}}) do
+    for _,case in ipairs({{card="subtle_flirt",love=99,trust=100,actualLove=1,actualTrust=0},{card="light_joke",love=-98,trust=-99,actualLove=-2,actualTrust=-1}}) do
         local clamped,clampedDef=Suite.fixture("encounter_eris")
         clamped.relationships.eris.love=case.love; clamped.relationships.eris.trust=case.trust
         local enc=Cards.new(clamped.deck,Resolver.context(clamped,clampedDef),Suite.rng(71))
@@ -192,7 +192,7 @@ function Suite.run()
             enc=Cards.new(clamped.deck,Resolver.context(clamped,clampedDef),function(n) return n end); index=1
         end
         local preview=Cards.preview(enc,index)
-        check(preview.projectedLove==case.actualLove and preview.projectedTrust==case.actualTrust,"Vista previa respeta topes 0/100")
+        check(preview.projectedLove==case.actualLove and preview.projectedTrust==case.actualTrust,"Vista previa respeta topes -100/100")
         local result=assert(Cards.play(enc,index,enc.turn))
         check(Memory.commit(clamped,result,clamped.checkpoint,1),"Aplicar efecto limitado por el vínculo")
         check(result.actualLove==case.actualLove and result.actualTrust==case.actualTrust,"La UI recibe el cambio real limitado")

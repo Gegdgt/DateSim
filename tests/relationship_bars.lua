@@ -15,7 +15,7 @@ function Suite.run()
     local function near(a,b) return math.abs(a-b)<.001 end
     local sounds={}
     local audio={effect=function(_,name) sounds[#sounds+1]=name end}
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.relationships.eris.love,session.relationships.eris.trust=98,1
     local bars=Bars.new(session,"eris",{audio=audio})
     check(bars and bars.value.love==98 and bars.value.trust==1,"Valores iniciales matrimoniales definitivos")
@@ -23,12 +23,12 @@ function Suite.run()
     Events.apply(session,"bars_bounds",{character="eris",love=5,trust=-5})
     local committed=encode(session)
     check(bars:apply("bars_bounds",session,{love=5,trust=-5},"Una respuesta sincera, pero brusca."),"Un evento confirmado inicia el feedback")
-    check(bars.target.love==100 and bars.target.trust==0 and bars.value.love==98,"El destino lógico queda aplicado antes de animar")
-    check(bars:feedback().deltas.love==2 and bars:feedback().deltas.trust==-1,"El feedback usa los deltas reales recortados")
+    check(bars.target.love==100 and bars.target.trust==-4 and bars.value.love==98,"El destino lógico queda aplicado antes de animar")
+    check(bars:feedback().deltas.love==2 and bars:feedback().deltas.trust==-5,"El feedback usa los deltas reales recortados")
     bars:update(.3)
-    check(near(bars.value.love,99) and near(bars.value.trust,.5),"La interpolación alcanza el punto medio a 0.3 segundos")
+    check(near(bars.value.love,99) and near(bars.value.trust,-1.5),"La interpolación alcanza el punto medio a 0.3 segundos")
     bars:update(.3)
-    check(bars.value.love==100 and bars.value.trust==0 and bars.tween==nil,"La interpolación termina exactamente a 0.6 segundos")
+    check(bars.value.love==100 and bars.value.trust==-4 and bars.tween==nil,"La interpolación termina exactamente a 0.6 segundos")
     check(encode(session)==committed,"La presentación nunca escribe en el estado lógico")
     check(not bars:apply("bars_bounds",session) and #sounds==1 and sounds[1]=="negative","Un evento repetido no repite ni feedback ni sonido")
     local loaded=Bars.new(session,"eris",{audio=audio})
@@ -44,7 +44,7 @@ function Suite.run()
     session.affinities.nanahoshi.interest=oldNana+3
     nana:apply("nana_bars",session,{interest=3},"La propuesta ayuda a investigar.")
     check(nana.value.interest==oldNana+3 and nana:feedback().deltas.interest==3,"Movimiento reducido muestra el valor definitivo sin desplazamiento")
-    local invalid=Save.newSession(); invalid.relationships.eris.love=0/0; invalid.relationships.eris.trust=math.huge
+    local invalid=Save.newSession({love=65,trust=65}); invalid.relationships.eris.love=0/0; invalid.relationships.eris.trust=math.huge
     local sanitized=Bars.new(invalid,"eris")
     check(sanitized.value.love==0 and sanitized.value.trust==0,"Números no finitos nunca deforman las barras")
     for id,node in pairs(require("src.data.dialogue").nodes) do
@@ -83,7 +83,7 @@ function Suite.run()
         love.graphics.setCanvas(app.canvas); rendered={}
         bars:draw({x=40,y=94,w=64,h=64,width=116})
         local signed=table.concat(rendered,"\n")
-        check(signed:find("+2",1,true) and signed:find("-1",1,true),"El renderer conserva los signos del incremento y descenso reales")
+        check(signed:find("+2",1,true) and signed:find("-5",1,true),"El renderer conserva los signos del incremento y descenso reales")
         rendered={}; nana:draw({x=180,y=94,w=64,h=64,width=116})
         local affinityText=table.concat(rendered,"\n")
         check(affinityText:find("Confianza",1,true) and affinityText:find("Interés",1,true) and not affinityText:find("Amor",1,true),"El renderer de Nanahoshi no muestra amor")
@@ -153,7 +153,7 @@ function Suite.run()
             {speaker="roxy",expression="happy",text="Podemos revisar juntas las notas."},
             {speaker="rudeus",expression="neutral",delivery="enchanted",text="Empecemos por el primer símbolo."},
         }}
-        app.session=Save.newSession(); app.session.checkpoint="day1_warning"
+        app.session=Save.newSession({love=65,trust=65}); app.session.checkpoint="day1_warning"
         Progression.scene=function() return synthetic end
         local screen=require("src.screens.dialogue").new(app)
         app.manager.current=screen; app.manager.transition=0; screen:update(2); draw()
@@ -171,7 +171,7 @@ function Suite.run()
         check(screen.relationshipBars.roxy.lastBounds.x==39 and screen.relationshipBars.eris.lastBounds.x==473,"Reparto explícito ancla cada barra a su propio retrato")
         capture("dialogue-cast")
         Progression.scene=originalScene
-        app.session=Save.newSession(); app:resume(); settle(); draw()
+        app.session=Save.newSession({love=65,trust=65}); app:resume(); settle(); draw()
         local dream=app.manager.current
         check(not dream.relationshipBars.roxy.lastBounds and not dream.relationshipBars.eris.lastBounds and not dream.relationshipBars.nanahoshi.lastBounds,"El sueño de Hitogami no muestra barras ajenas")
         capture("dream-no-bars")

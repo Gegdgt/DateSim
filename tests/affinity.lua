@@ -18,7 +18,7 @@ function Suite.run()
  local function clone(value) return assert(Json.decode(encoded(value))) end
  local function round(value) return assert(Save.validate(clone(value))) end
  local function fixture(scene)
-  local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
+  local s=Save.newSession({love=65,trust=65});Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
   scene=scene or "nanahoshi_test"
   s.checkpoint=scene=="nanahoshi_test" and "day1_tutorial" or scene
   s.day=require("src.data.chapters").get(s.checkpoint).day
@@ -73,7 +73,7 @@ function Suite.run()
  local repeatAfterLoad=Resolver.resolve(context,"subtle_flirt")
  check(Memory.commit(loaded,repeatAfterLoad,"nanahoshi_test",3) and repeatAfterLoad.actualInterest==0,"El registro anti repetición sobrevive al guardado")
  check(loaded.events.nano_compliment_noticed and loaded.decisions[Memory.key("nanahoshi_test",1)]=="subtle_flirt","Se conservan la decisión y el reconocimiento de Nanahoshi")
- local old=Save.newSession();old.affinities=nil;local restoredOld=round(old)
+ local old=Save.newSession({love=65,trust=65});old.affinities=nil;local restoredOld=round(old)
  check(restoredOld.affinities.nanahoshi.trust==35 and restoredOld.affinities.nanahoshi.interest==0,"Guardado v3 sin afinidad recibe valores predeterminados")
  check(encoded(restoredOld.relationships)==encoded(old.relationships),"Migrar afinidad no cambia relaciones antiguas")
  local unknown=Affinity.sanitize("nanahoshi",{cardId="remember",trust=2,interest=100})

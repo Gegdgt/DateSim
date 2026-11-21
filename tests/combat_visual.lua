@@ -52,7 +52,7 @@ function Suite.run(app)
         for i,value in ipairs(enc.hand) do if value==id then return i end end
     end
     local function open(tutorial)
-        app.session=Save.newSession();app.session.checkpoint="day1_tutorial";app.practice=true
+        app.session=Save.newSession({love=65,trust=65});app.session.checkpoint="day1_tutorial";app.practice=true
         app.session.combatDeck={};for i,id in ipairs(require("src.data.combat_cards").starterDeck) do app.session.combatDeck[i]=id end
         app.options=require("src.systems.options").normalize({muted=true})
         app:applyOptions()

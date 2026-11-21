@@ -10,7 +10,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=5,filename="campaign-v5.json",backup="campaign-v5.backup.json",optionsFile="options.json",
+local Save={version=6,filename="campaign-v6.json",backup="campaign-v6.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -53,6 +53,7 @@ function Save.newSession(config)
         journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},events_by_day={},options=Options.normalize()}
     Daily.ensure(s)
     Collection.ensure(s);Economy.ensure(s)
+    require("src.systems.family").ensure(s)
     return s
 end
 
@@ -87,6 +88,14 @@ function Save.validate(input)
                     for _,field in ipairs({"love","trust"}) do gains[field]=math.min(10,gains[field]+math.max(0,tonumber(entry[field]) or 0)) end
                 end
             end
+        end
+    end
+    if input.version==5 then
+        local encoded,err=Json.encode(input);if not encoded then return nil,err end
+        input=Json.decode(encoded);input.version=6;input.family=nil
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.familySource="campaign-v5.json"
+        for _,favor in ipairs(type(input.pending_favors)=="table" and input.pending_favors or {}) do
+            if type(favor)=="table" then favor.legacyDelivery=true end
         end
     end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
@@ -124,7 +133,9 @@ function Save.validate(input)
             local data=input.relationships[id]
             if type(data)=="table" then
                 local r=s.relationships[id]
-                r.trust=number(data.trust,65,0,100); r.love=number(data.love,65,0,100)
+                local familyConfig=require("src.data.family")
+                r.trust=number(data.trust,familyConfig.initial,familyConfig.minimum,familyConfig.maximum)
+                r.love=number(data.love,familyConfig.initial,familyConfig.minimum,familyConfig.maximum)
                 r.events=map(data.events,true); r.personalEvents=r.events
                 r.decisions=map(data.decisions,false); r.criticalDecisions=map(data.criticalDecisions,false)
                 for _,field in ipairs({"brokenPromises","sharedMoments","pendingConflicts","reconciliations"}) do r[field]=map(data[field],true) end
@@ -135,6 +146,47 @@ function Save.validate(input)
                 if data.marriageState=="separated" then r.marriageState="separated" end
                 Relationships.refresh(r)
             end
+        end
+    end
+    local family=s.family
+    if type(input.family)=="table" then
+        local saved=input.family
+        for _,key in ipairs({"progress","books","seen","departures","warnings","neglect"}) do
+            if type(saved[key])~="table" then return nil,"Registro familiar inválido." end
+        end
+        for _,key in ipairs({"progress","neglect"}) do
+            for id,value in pairs(saved[key]) do
+                if type(id)~="string" or #id>100 or type(value)~="number" or value%1~=0 or value<0 or value>100000 then return nil,"Contador familiar inválido." end
+                family[key][id]=value
+            end
+        end
+        family.books=map(saved.books,true);family.seen=map(saved.seen,true)
+        family.discounts=math.floor(number(saved.discounts,0,0,21))
+        if saved.commitmentDue~=nil then family.commitmentDue=math.floor(number(saved.commitmentDue,7,1,7)) end
+        for _,id in ipairs(Characters.romanceIds) do
+            local warning=saved.warnings[id];if type(warning)=="table" then family.warnings[id]={day=math.floor(number(warning.day,1,1,7))} end
+            local departure=saved.departures[id]
+            if type(departure)=="table" then
+                family.departures[id]={day=math.floor(number(departure.day,1,1,7)),reason=type(departure.reason)=="string" and departure.reason or "critical_decision",permanent=true}
+                s.relationships[id].marriageState="separated";s.relationships[id].routeState="separated";s.decisions["separated_"..id]=true
+            end
+        end
+        for _,entry in ipairs(type(saved.queue)=="table" and saved.queue or {}) do
+            if type(entry)=="table" and s.relationships[entry.character] and type(entry.id)=="string" and (entry.kind=="notice" or entry.kind=="departure") then
+                local lines=copyList(type(entry.lines)=="table" and entry.lines or {})
+                if entry.kind=="notice" then
+                    if #lines<1 or #lines>5 then return nil,"Diálogo familiar inválido." end
+                    for _,line in ipairs(lines) do if type(line)~="string" or #line>2000 then return nil,"Línea familiar inválida." end end
+                end
+                family.queue[#family.queue+1]={id=entry.id,character=entry.character,kind=entry.kind,
+                    phase=math.floor(number(entry.phase,1,1,entry.kind=="departure" and 5 or #lines)),elapsed=number(entry.elapsed,0,0,20),expression=type(entry.expression)=="string" and entry.expression or "worried",lines=lines}
+            else return nil,"Escena familiar guardada inválida." end
+        end
+    end
+    for _,id in ipairs(Characters.romanceIds) do
+        if s.decisions["separated_"..id] or s.relationships[id].marriageState=="separated" then
+            s.relationships[id].marriageState="separated";s.relationships[id].routeState="separated"
+            family.departures[id]=family.departures[id] or {day=s.day,reason="previous_save",permanent=true}
         end
     end
     local CombatData=require("src.data.combat_cards")
@@ -241,7 +293,7 @@ function Save.validate(input)
             if type(value)~="number" or value~=value or value<0 or value>10 then return nil,"Límite diario de relaciones inválido." end
         end
     end
-    local definition=Progression.encounter(s,s.checkpoint)
+    local definition=Daily.battleDefinition(s) or Progression.encounter(s,s.checkpoint)
     if definition then
         local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
         if definition.tutorial and type(input.encounter)=="table" and type(input.encounter.context)=="table"
@@ -271,7 +323,7 @@ function Save.validate(input)
         if type(result.title)=="string" and #result.title<=200 then s.lastResult.title=result.title end
         if Characters.byId[result.character] then s.lastResult.character=result.character end
     end
-    if definition and definition.training and s.combat and s.combat.finished then
+    if definition and definition.training and not definition.activity and s.combat and s.combat.finished then
         local result=require("src.systems.training").evaluate(s.combat)
         local data=result and require("src.data.training_dialogue")[result.id]
         if data then
@@ -314,7 +366,7 @@ function Save.write(session)
     end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v5.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v6.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -322,7 +374,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v5.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v6.tmp.json")
     return true
 end
 
@@ -337,12 +389,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and decoded.version==4 then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña v4 recuperada con cartas de nivel 1. El archivo original se conserva; se guardará en v5." end
+            if session then return session,"Campaña recuperada con progreso familiar. El archivo original se conserva; se guardará en v6." end
         end
     end
     return nil,err or "No hay guardado válido disponible."

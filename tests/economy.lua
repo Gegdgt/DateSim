@@ -11,7 +11,7 @@ function Suite.run()
     local count=0
     local function check(ok,msg) assert(ok,msg);count=count+1 end
     local function clone(s) return assert(Json.decode(assert(Json.encode(s)))) end
-    local s=Save.newSession()
+    local s=Save.newSession({love=65,trust=65})
     Events.apply(s,"starter_gift",{starter=true})
     check(#Collection.list==40,"Se conservan las cuarenta cartas")
     check(s.collection.listen.level==1 and s.collection.listen.copies==0,"Primera copia desbloquea nivel 1")
@@ -59,9 +59,9 @@ function Suite.run()
     check(Collection.view(s,"staff_strike",10).combatEffect.damage<30,"Básica tiene otra curva")
     check(Collection.view(s,"heal",10).combatEffect.heal==10 and Collection.view(s,"earth_wall",10).combatEffect.shield==18,"Curación y defensa acotadas")
     check(Collection.view(s,"focus",10).combatEffect.mana==Collection.view(s,"focus",1).combatEffect.mana,"Recuperación de recursos no escala")
-    local noFunds=Save.newSession();Collection.grant(noFunds,"listen",3);noFunds.gold=0
+    local noFunds=Save.newSession({love=65,trust=65});Collection.grant(noFunds,"listen",3);noFunds.gold=0
     check(not Collection.upgrade(noFunds,"listen",0) and noFunds.collection.listen.copies==2,"Oro insuficiente no gasta copias")
-    local r=Save.newSession()
+    local r=Save.newSession({love=65,trust=65})
     Events.apply(r,"one",{character="roxy",love=7,trust=8})
     Events.apply(r,"two",{character="roxy",love=5,trust=5})
     check(r.relationships.roxy.love==75 and r.relationships.roxy.trust==75,"Suma de todas las fuentes limitada a +10")
@@ -74,7 +74,7 @@ function Suite.run()
     check(Budget.ensure(r).eris.love==3,"Cada esposa tiene su propio límite")
     r.day=2;require("src.systems.daily").ensure(r)
     check(Budget.preview(r,"roxy",{love=5}).love==5,"Límite se reinicia al día siguiente")
-    local shop=Save.newSession();Events.apply(shop,"starter_gift",{starter=true});shop.rewardQueue={}
+    local shop=Save.newSession({love=65,trust=65});Events.apply(shop,"starter_gift",{starter=true});shop.rewardQueue={}
     local rev=shop.economy.revision
     check(Economy.buy(shop,"listen",rev,5),"Compra de cinco copias")
     check(shop.collection.listen.copies==5 and shop.gold==110,"Precio y cantidad exactos")
@@ -100,9 +100,9 @@ function Suite.run()
     check(not Economy.grant(s,0/0,"invalid"),"Rechaza oro no finito sin mutar el saldo")
     local v4=clone(shop);v4.version=4;v4.collection=nil;v4.economy=nil;v4.gold=nil
     local migrated=assert(Save.validate(v4))
-    check(migrated.version==5 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
+    check(migrated.version==6 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
     bad=clone(v4);bad.daily="invalid";check(not Save.validate(bad),"Rechaza estado diario v4 inválido durante migración")
-    local c=Save.newSession();Events.apply(c,"starter_gift",{starter=true})
+    local c=Save.newSession({love=65,trust=65});Events.apply(c,"starter_gift",{starter=true})
     c.checkpoint="day1_tutorial";c.events.tutorial_completed=true
     Collection.grant(c,"staff_strike",6);c.gold=1000
     Collection.upgrade(c,"staff_strike",c.economy.revision);Collection.upgrade(c,"staff_strike",c.economy.revision)
@@ -156,7 +156,7 @@ function Suite.run()
     love.filesystem.setIdentity("cartas_del_destino_v5_migration_tests")
     love.filesystem.remove(Save.filename);love.filesystem.remove(Save.backup)
     assert(love.filesystem.write("campaign-v4.json",original))
-    local disk=assert(Save.load());check(disk.version==5 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
+    local disk=assert(Save.load());check(disk.version==6 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
     check(Save.write(disk) and love.filesystem.read("campaign-v4.json")==original,"Escribir v5 conserva exactamente el archivo v4")
     love.filesystem.setIdentity(identity)
     local costs=Collection.view(s,"water_cannon",10)

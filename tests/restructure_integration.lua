@@ -56,7 +56,9 @@ function Suite.run()
         local cp=app.session.checkpoint
         local node=Chapters.get(cp)
         if cp=="campaign_complete" then break end
-        if s.kind=="reward" then
+        if s.kind=="family_scene" then
+            s:advance()
+        elseif s.kind=="reward" then
             capture("reward"); s:continue()
         elseif s.pendingDeparture or s.leaving then
             check(true,"La entrada espera al feedback y a la salida de la escena")

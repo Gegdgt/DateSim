@@ -68,11 +68,14 @@ function Collection.view(session,id,overrideLevel)
     local combat=Combat.byId[id] or card.combat
     local class=Collection.class(id)
     local costs=combat and Collection.combatCosts(id,level,combat)
+    local gold=Config.goldRequired(level,class)
+    local discount=session.family and session.family.discounts>0 and level<10
+    if discount then gold=math.max(1,math.floor(gold*(1-require("src.data.family").discountPercent/100))) end
     return {id=id,name=card.name,level=level,copies=entry.copies,unlocked=entry.unlocked,maxLevel=10,
         type=Social.byId[id] and (combat and "Híbrida" or "Social") or "Combate",class=class,className=Config.classes[class].name,
         baseEffect=Social.byId[id] and Collection.socialEffects(id,1),effect=Social.byId[id] and Collection.socialEffects(id,level),
         baseCombatEffect=combat and Collection.combatEffects(id,1,combat.effects),combatEffect=combat and Collection.combatEffects(id,level,combat.effects),
-        copiesRequired=Config.copiesRequired(level),goldRequired=Config.goldRequired(level,class),
+        copiesRequired=Config.copiesRequired(level),goldRequired=gold,discount=discount,
         socialCost=Social.byId[id] and card.cost,combatCost=costs and costs.cost,manaCost=costs and costs.manaCost,hpCost=costs and costs.hpCost,perBattle=costs and costs.perBattle}
 end
 function Collection.grant(session,id,count)
@@ -99,6 +102,7 @@ function Collection.upgrade(session,id,revision)
     if not receipt then return nil,err end
     local entry=session.collection[id]
     entry.copies=entry.copies-before.copiesRequired;entry.level=entry.level+1
+    if before.discount then session.family.discounts=session.family.discounts-1 end
     receipt.cardId=id;receipt.level=entry.level;receipt.copies=before.copiesRequired
     return {before=before,after=Collection.view(session,id),receipt=receipt}
 end

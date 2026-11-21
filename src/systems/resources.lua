@@ -386,7 +386,7 @@ function Resources:getPortrait(id)
     end
     return self.portraits[id]
 end
-function Resources:portrait(id,expression,x,y,scale)
+function Resources:portrait(id,expression,x,y,scale,grayscale)
     local img=self:getPortrait(id)
     local frame=EXPRESSIONS[expression or "neutral"] or 0
     local width,height=img:getWidth()/4,img:getHeight()
@@ -396,7 +396,15 @@ function Resources:portrait(id,expression,x,y,scale)
     end
     scale=integerScale(scale)
     love.graphics.setColor(1,1,1,1)
+    local previous=love.graphics.getShader()
+    if grayscale then
+        self.grayShader=self.grayShader or love.graphics.newShader([[vec4 effect(vec4 color, Image texture, vec2 uv, vec2 screen) {
+            vec4 pixel=Texel(texture,uv)*color;float gray=dot(pixel.rgb,vec3(0.299,0.587,0.114));return vec4(gray,gray,gray,pixel.a);
+        }]])
+        love.graphics.setShader(self.grayShader)
+    end
     love.graphics.draw(img,self.quads[key],math.floor(x),math.floor(y),0,scale,scale)
+    love.graphics.setShader(previous)
     return img
 end
 function Resources:getIcon(id)

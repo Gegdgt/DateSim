@@ -1,4 +1,32 @@
-# Verificación de cartas y economía — Fase 2
+# Verificación de familia y actividades — Fase 3
+
+Fecha: **21 de noviembre de 2026**. Pruebas ejecutadas con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados. **44 224 comprobaciones** sumando los módulos de la suite y sus ejecuciones focalizadas finales, sin contar repeticiones. No se modificaron los PNG ni los ASE originales.
+
+La primera ejecución general detectó expectativas anteriores del límite mínimo cero. Se actualizaron para verificar −100 y se ejecutaron los módulos afectados. Los grupos finales `family-ui`, `daily-ui`, `narrative`, `economy-ui`, `campaign` y `ui` terminaron con **`ALL TESTS PASSED`, salida 0**. La validación se realizó en varias ejecuciones, no en una única corrida final de toda la suite.
+
+| Cobertura | Resultado |
+| --- | --- |
+| Familia: 16 actividades, duelo real, visitas, recuperación, abandono, separaciones, encargos, libros y migración | 228 comprobaciones |
+| Interfaz familiar: confirmación/cancelación, tercera visita, anillo, caballo, libro y retratos grises | 2 400 comprobaciones; 22 capturas |
+| Ciclo diario y su interfaz | 1 010 + 36 comprobaciones |
+| Campaña: cinco finales, distribución libre, ausencia de compañeras, encargos y especialización | 30 924 comprobaciones; 35 recorridos completos |
+| Campaña gráfica | 1 290 comprobaciones; 742 pasos de pantalla |
+| Combate gráfico y su integración | 44 + 24 comprobaciones |
+| Niveles/economía e interfaz | 398 + 25 comprobaciones |
+| Diálogos y su interfaz | 73 + 2 788 + 277 comprobaciones |
+| Combate, equilibrio y entrenamiento | 1 620 + 919 + 84 comprobaciones; 120 + 288 victorias |
+| Entrenamiento integrado, barras, afinidad e introducción | 444 + 138 + 260 + 34 comprobaciones |
+| Recursos, movimiento, retratos, audio y matrimonios | 654 + 172 + 181 + 101 + 100 comprobaciones |
+
+Las rutas usan decisiones, combates y recursos reales. Para cubrir rutas con menos apoyo familiar, el conductor de campaña compra y mejora cartas con oro ganado; no inyecta recursos ni estadísticas. La ruta de especialización obtiene **1 908 oro**, lleva **Bastón y Dar ánimo a nivel 10**, termina con **1 106 oro** y ocupa **232 905 bytes** serializada. Las fixtures históricas de módulos independientes fijan explícitamente su antiguo 65/65; familia y campaña verifican el inicio nuevo 50/50.
+
+La migración v5→v6 conserva los bytes del archivo original. Se probaron también conversaciones históricas cuyas pérdidas habían quedado recortadas en cero: cargar no las reinterpreta con el nuevo mínimo −100. Permanecen vigentes las pruebas de migración v4, duplicados, presupuesto diario y gastos únicos.
+
+Se verificó por píxeles la escala de grises del retrato. Las escenas de separación se guardaron durante el anillo y continuaron sin repetir la consecuencia. Capturas revisadas: [agenda](../tests/artifacts/family-agenda.png), [librería](../tests/artifacts/family-books.png), [tercera visita de Roxy](../tests/artifacts/family-third-roxy.png), [Sylphiette y su hija](../tests/artifacts/family-horse-sylphiette.png) y [registro gris](../tests/artifacts/family-gray-journal.png).
+
+Registros locales: `tests/artifacts/family-final.log`, `family-daily.log`, `family-narrative.log`, `family-campaign.log` y `family-ui-campaign.log`. Los artefactos se excluyen de Git. `git diff --check` pasa. Las pruebas automatizadas verifican reglas y viabilidad; no sustituyen sesiones de equilibrio y lectura con jugadores.
+
+## Registro anterior — Fase 2
 
 Fecha: **21 de noviembre de 2026**. Ejecución real con **LÖVE 11.5 / LuaJIT**, renderizador y audio. Se conservaron los 40 IDs, los mazos y todos los PNG y ASE originales; `git diff --check` no detecta errores de formato.
 

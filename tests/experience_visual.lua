@@ -54,7 +54,7 @@ function Suite.run(app)
         app.options=require("src.systems.options").normalize({volume=.6,muted=true,
             textSpeed=50,textAnimation=true,reducedMotion=reduced or false,tutorialCompleted=false})
         app:applyOptions()
-        app.session=Save.newSession()
+        app.session=Save.newSession({love=65,trust=65})
         app.session.checkpoint=checkpoint
         app.session.day=checkpoint=="day1_tutorial" and 1 or 2
         local def=Progression.encounter(app.session,checkpoint)

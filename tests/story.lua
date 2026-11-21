@@ -26,7 +26,7 @@ function Suite.run()
         return roundtrip(session)
     end
 
-    local session = Save.newSession()
+    local session = Save.newSession({love=65,trust=65})
     local expressions = {neutral=true, happy=true, worried=true, angry=true}
     for id in pairs(Story.scenes) do
         local scene = Progression.scene(session, id)
@@ -52,7 +52,7 @@ function Suite.run()
     -- Recorrido independiente para cada compañero y cada tipo de resultado.
     for _, companion in ipairs({"sylphiette", "roxy", "eris"}) do
         for _, score in ipairs({0, 8}) do
-            session = Save.newSession()
+            session = Save.newSession({love=65,trust=65})
             session = nextTo(session, "day1_tutorial")
             session = nextTo(session, "day1_result", {score=score, trust=9, chemistry=9})
             check(session.relationships[companion].trust == 0, "Tutorial no afecta relaciones ajenas")
@@ -131,7 +131,7 @@ function Suite.run()
     check(not partial.events.companion_selected, "Permitir nueva selección tras guardado incompleto")
     partial.events.meeting_sylphiette, partial.events.meeting_roxy, partial.events.meeting_eris = true, true, true
     check(Progression.selectCompanion(partial, "eris") == "seal_intro" and partial.decisions.companion == "eris", "Reparar elección de compañero")
-    local lostChoice = Save.newSession()
+    local lostChoice = Save.newSession({love=65,trust=65})
     lostChoice.day, lostChoice.checkpoint = 2, "meet_roxy"
     lostChoice.events.choice_meet_roxy = true
     lostChoice.relationships.roxy.trust = 4
@@ -141,7 +141,7 @@ function Suite.run()
 
     -- A completed encounter can be saved before confirming its result. The
     -- restored actions, including the free action, grant their effects once.
-    local resumed=Save.newSession()
+    local resumed=Save.newSession({love=65,trust=65})
     resumed.day,resumed.checkpoint=2,"meet_roxy"
     check(Progression.choose(resumed,"meet_roxy","compare_notes"),"Elegir antes del encuentro real")
     check(Progression.next(resumed)=="encounter_roxy","Abrir encuentro real")

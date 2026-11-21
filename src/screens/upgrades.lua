@@ -84,7 +84,7 @@ function Upgrades.new(app,selected)
                 self.message=err or "Libro aplicado: +3 copias.";if receipt then app:save() end
             end,not view.effect or not view.unlocked or view.level==10 or (Economy.ensure(app.session).items.study_book or 0)<1)
         end
-        self:text(self.message or reason or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
+        self:text(self.message or reason or (view.discount and "Receta activa: ahorro del 20%; se consume al mejorar.") or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
         self:text("Tab y Enter: botones · Las mejoras no cambian los mazos equipados.",18,347,604,P.ink)
     end
     function s:keypressed(key)

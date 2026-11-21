@@ -22,6 +22,16 @@ function Suite.run()
         Events.apply(app.session,"starter_gift",{starter=true})
         app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
         local function settle() app:update(2);app:draw() end
+        local function drain()
+            settle()
+            for _=1,60 do
+                local screen=app.manager.current
+                if screen.kind=="reward" then screen:continue()
+                elseif screen.kind=="family_scene" then screen:advance()
+                else return end
+                settle()
+            end
+        end
         local function click(label,which)
             settle();local n=0
             for _,button in ipairs(app.manager.current.buttons) do
@@ -44,19 +54,19 @@ function Suite.run()
         end
         app:resume();capture("daily-agenda-start")
         for i=1,3 do
-            click("Pasar tiempo",2)
+            click("Roxy");click("Elegir actividad",1)
             check(app.session.daily.interactions_used==i,"Un clic reserva exactamente un espacio")
             app:continueGame();settle()
             check(app.session.daily.active_activity~=nil,"Continúa la decisión pendiente")
             capture("daily-activity")
-            click("Compartir una lectura (+2 amor / +1 conf.)")
+            click("Comparar las fórmulas (+3 amor / +2 conf.)")
             settle()
-            while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
+            drain()
         end
         check(app.session.daily.visits.roxy==3 and Daily.remaining(app.session)==0,"Tres visitas a Roxy desde la interfaz")
         capture("daily-agenda-spent")
         for _,button in ipairs(app.manager.current.buttons) do
-            if button.label=="Pasar tiempo" then check(button.disabled,"Cuarta visita deshabilitada") end
+            if button.label=="Elegir actividad" then check(button.disabled,"Cuarta visita deshabilitada") end
         end
         click("Encargos");capture("daily-favors")
         click("Solicitar",2)
@@ -70,12 +80,13 @@ function Suite.run()
         failWrite=false;check(app:endDay(),"Reintentar guardado de cierre")
         check(Json.encode(app.session.relationships)==relationships and app.session.externalEnergy==energy,"Reintento no repite efectos")
         settle()
-        while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
+        drain()
         check(app.manager.current.kind=="day_report","Muestra resumen persistido")
         capture("daily-summary")
         click("Comenzar día 2")
+        drain()
         check(app.session.day==2 and Daily.remaining(app.session)==3,"Resumen abre siguiente agenda")
-        click("Cambios de ayer");capture("daily-previous")
+        click("Ayer");capture("daily-previous")
         check(app.manager.current.kind=="day_report","Consulta de ayer accesible")
         click("Volver a la agenda")
         check(app.session.day==2 and Daily.remaining(app.session)==3,"Consultar no avanza ni consume")

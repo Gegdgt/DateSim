@@ -250,6 +250,7 @@ function Cards.preview(enc,index)
     local result=Resolver.resolve(enc.context,card.id,enc.memory)
     if not result then return nil end
     result.progressionVersion=enc.context.legacyProgression and 0 or 1
+    result.familyVersion=enc.memory and enc.memory.legacyAffinity and 0 or 1
     if enc.context.legacyEffects then
         local previous=legacyPreview(enc,index)
         previous.phrase,previous.reaction,previous.expression=result.phrase,result.reaction,result.expression
@@ -283,6 +284,7 @@ function Cards.pass(enc,expectedTurn)
     if enc.finished then return nil,"El encuentro ya terminó." end
     local result=assert(Resolver.resolve(enc.context,"pass",enc.memory))
     result.progressionVersion=enc.context.legacyProgression and 0 or 1
+    result.familyVersion=enc.memory and enc.memory.legacyAffinity and 0 or 1
     result.cost=0; result.actionTurn=enc.turn; result.applied=false
     local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
         or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
@@ -322,7 +324,8 @@ function Cards.restore(snapshot,deck,context)
         if type(entry)~="table" then return nil end
         enc.context.legacyProgression=entry.progressionVersion~=1
         enc.memory.legacyBudget=enc.context.legacyProgression
-        migrated=migrated or enc.context.legacyProgression
+        enc.memory.legacyAffinity=entry.familyVersion~=1
+        migrated=migrated or enc.context.legacyProgression or enc.memory.legacyAffinity
         local result
         if entry.cardId=="pass" then result=Cards.pass(enc)
         else
@@ -340,13 +343,14 @@ function Cards.restore(snapshot,deck,context)
             result.actualInterest=result.projectedInterest or 0
         end
     end
-    enc.context.legacyProgression=nil;enc.memory.legacyBudget=nil
+    enc.context.legacyProgression=nil;enc.memory.legacyBudget=nil;enc.memory.legacyAffinity=nil
     if migrated then
         -- Preserve historical responses, then use today's levels and budget for
         -- every new action. Pending reactions are still committed only once.
         enc.memory=Memory.capture(context.memory)
         for turn,result in ipairs(enc.log) do
             if not result.applied then
+                result.familyVersion=1
                 local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
                     or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
                 result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust

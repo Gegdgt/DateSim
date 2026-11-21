@@ -10,7 +10,7 @@ function Suite.run()
     local Font=require("src.ui.font")
     local checks=0
     local function check(ok,message) assert(ok,message); checks=checks+1 end
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.unlocked.self_joke=true; session.unlocked.remember=true
     local original=assert(Json.encode(session))
     check(Collection.canEdit(session),"Deck is editable at a safe checkpoint")

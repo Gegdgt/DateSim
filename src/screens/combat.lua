@@ -192,6 +192,7 @@ function CombatScreen.new(app,definition)
     end
     function s:retry()
         if self:busy() then return end
+        if self.definition.activity then return self:continue() end
         if self.enc.training and self.enc.finished then return self:continue() end
         local restored=Combat.retry(self.enc)
         if not restored then return end
@@ -200,10 +201,16 @@ function CombatScreen.new(app,definition)
         app:switch(CombatScreen.new(app,self.definition),{type="magic",duration=.35})
     end
     function s:leave()
+        if self.definition.activity then app:notify("Termina el encuentro reservado; puedes guardar y continuar después.");return end
         if app.practice then app:endPractice() else app:combatSafeExit() end
     end
     function s:continue()
         if self:busy() then return end
+        if self.definition.activity then
+            local ok,err=require("src.systems.daily").finishBattle(app.session,self.enc)
+            if ok then app:save();app:resume() else app:notify(err) end
+            return
+        end
         if self.enc.training and self.enc.finished then app:resume();return end
         if self.enc.outcome~="victory" then return end
         app:finishCombat(self.enc)
@@ -449,6 +456,13 @@ function CombatScreen.new(app,definition)
         self:begin();rect(P.shadow,0,0,640,360,.85)
         local won=self.enc.outcome=="victory"
         W.panel(69,31,502,296,{border=won and P.gold or P.danger})
+        if self.definition.activity and not self.enc.training then
+            self:text(won and "ACTIVIDAD COMPLETADA" or "RETIRADA A TIEMPO",90,52,460,P.gold,2,"center")
+            self:text(self.definition.title,94,101,452,P.ink)
+            self:text("Eris revisará los ataques, bloqueos y decisiones del encuentro. La actividad ya consumió su espacio; la recompensa se registra una vez.",94,142,452,P.ink)
+            self:button("Volver a la agenda",138,253,364,28,function()self:continue()end)
+            return
+        end
         if self.enc.training then
             self:text(won and "¡VICTORIA! — RUDY" or "DERROTA EN ENTRENAMIENTO — ERIS GANA",90,52,460,P.gold,1,"center")
             self:text("El ejercicio se detiene. Ambos están a salvo.",94,99,452,P.ink)

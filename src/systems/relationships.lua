@@ -1,11 +1,12 @@
 local Characters = require("src.data.characters")
-local Relationships = {defaults={love=65,trust=65}, thresholds={maintain=55,united=75}}
+local Config=require("src.data.family")
+local Relationships = {defaults={love=Config.initial,trust=Config.initial}, thresholds={maintain=55,united=75}}
 
 local function finite(n, fallback)
     if type(n)~="number" or n~=n or math.abs(n)==math.huge then return fallback or 0 end
     return n
 end
-local function clamp(n) return math.max(0,math.min(100,finite(n))) end
+local function clamp(n) return math.max(Config.minimum,math.min(Config.maximum,finite(n))) end
 local function empty(t) return not t or next(t)==nil end
 
 function Relationships.new(config)
@@ -13,8 +14,8 @@ function Relationships.new(config)
     local all={}
     for _,id in ipairs(Characters.romanceIds) do
         local personal={}
-        all[id]={love=clamp(finite(config.love,65)),trust=clamp(finite(config.trust,65)),
-            chemistry=clamp(finite(config.love,65)),events=personal,personalEvents=personal,
+        all[id]={love=clamp(finite(config.love,Config.initial)),trust=clamp(finite(config.trust,Config.initial)),
+            chemistry=clamp(finite(config.love,Config.initial)),events=personal,personalEvents=personal,
             decisions={},criticalDecisions={},promises={},brokenPromises={},sharedMoments={},
             pendingConflicts={},reconciliations={},history={},marriageState="married",routeState="married"}
     end
@@ -24,7 +25,7 @@ end
 function Relationships.refresh(r)
     r.chemistry=r.love -- Compatibility with the original social-card renderer.
     if r.marriageState~="separated" then
-        r.marriageState=(r.love<55 or r.trust<55 or not empty(r.pendingConflicts)) and "strained" or "married"
+        r.marriageState=(r.love<Config.strainedBelow or r.trust<Config.strainedBelow or not empty(r.pendingConflicts)) and "strained" or "married"
     end
     r.routeState=r.marriageState
 end

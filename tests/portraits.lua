@@ -26,7 +26,7 @@ function Suite.run()
         return encode(values)
     end
 
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     local intro=Progression.scene(session,"intro")
     check(intro.context=="hitogami_dream","El sueño declara el contexto; no se infiere del hablante")
     check(not Characters.byId.rudeus_japones,"La apariencia japonesa no crea una segunda identidad lógica")
@@ -175,7 +175,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==5,"Sin apariencia global persistida en el formato de progresión")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==6,"Sin apariencia global persistida en el formato de progresión")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2
@@ -193,7 +193,7 @@ function Suite.run()
                 {speaker="hitogami",expression="neutral",text="Escucha con atención."},
                 {speaker="hitogami",expression="happy",text="Hasta la próxima.",stage={rudeus={visible=false}}}}}
         local function futureScreen(saved)
-            local fixture={session=saved or Save.newSession(),resources=Resources.new(),audio=app.audio,
+            local fixture={session=saved or Save.newSession({love=65,trust=65}),resources=Resources.new(),audio=app.audio,
                 options=Options.normalize({muted=true,textAnimation=false}),mouse=function() return nil,nil end}
             function fixture:save() return Save.write(self.session) end
             Progression.scene=function(s,id)
@@ -254,7 +254,7 @@ function Suite.run()
             return originalInfo(path,...)
         end
         app.resources=Resources.new()
-        app.session=Save.newSession(); app.session.dialogueIndex=2
+        app.session=Save.newSession({love=65,trust=65}); app.session.dialogueIndex=2
         app:resume(); settle(); capture("missing-png")
         check(app.resources.sources[Assets.characters.rudeus_japones].status=="fallback","El sueño se dibuja completo aun sin el PNG japonés")
         check(#app.resources.warnings==1 and app.resources.warnings[1]:find("rudeus_japones",1,true),"Diagnóstico único identifica el PNG ausente")
@@ -262,7 +262,7 @@ function Suite.run()
         app.resources=Resources.new():preload()
 
         app.options=Options.normalize({muted=true,textAnimation=false,reducedMotion=true})
-        app.session=Save.newSession(); app:resume()
+        app.session=Save.newSession({love=65,trust=65}); app:resume()
         check(app.manager.effect.type=="dream" and app.manager.duration<=.15,"Movimiento reducido conserva el blanco del sueño con un fundido breve")
         white("reduced-dream-white")
         settle()

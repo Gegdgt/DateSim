@@ -9,7 +9,7 @@ Bars.colors={love={.94,.48,.65,1},trust={.40,.68,.96,1},interest={.91,.74,.37,1}
 local function finite(value)
     return type(value)=="number" and value==value and math.abs(value)<math.huge and value or 0
 end
-local function clamp(value) return math.max(0,math.min(100,finite(value))) end
+local function clamp(value) return math.max(require("src.data.family").minimum,math.min(require("src.data.family").maximum,finite(value))) end
 local function copy(values)
     local out={}; for key,value in pairs(values or {}) do out[key]=value end; return out
 end
@@ -106,9 +106,10 @@ function Bars:draw(anchor)
         local row=y+13+(i-1)*14
         Font.draw(field.label,x+5,row,{maxWidth=58,color={P.muted[1],P.muted[2],P.muted[3],alpha}})
         local value=math.floor(clamp(self.value[field.key])+.5)
-        Font.draw(tostring(value),x+box.w-26,row,{maxWidth=21,align="right",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
+        Font.draw(tostring(value),x+box.w-34,row,{maxWidth=29,align="right",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
         rect(P.shadow,x+5,row+9,box.w-10,4,alpha)
-        rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*clamp(self.value[field.key])/100),2,alpha)
+        local fraction=self.character=="nanahoshi" and clamp(self.value[field.key])/100 or (clamp(self.value[field.key])+100)/200
+        rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*fraction),2,alpha)
         local delta=feedback and feedback.deltas[field.key] or 0
         if delta~=0 then
             local lift=reduced and 0 or math.floor(math.min(1,feedback.age/.8)*4)

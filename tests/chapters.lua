@@ -313,7 +313,7 @@ function Suite.run()
 
     -- Preparación de una futura elección de ruta, sin publicar el día cinco.
     -- El mismo evento rechazado antes de tiempo debe poder aplicarse más tarde.
-    local futureRoute=Save.newSession()
+    local futureRoute=Save.newSession({love=65,trust=65})
     local beforeRoute=encode(futureRoute)
     local routeReward={route="roxy",character="roxy",trust=2,unlock={"combined_spell"}}
     check(not Events.apply(futureRoute,"future_route_choice",routeReward),"No fijar ruta antes del día cinco")

@@ -114,7 +114,7 @@ function Suite.run()
     check(free.finished and #free.log==3 and #free.discard==0,"Tres respiros cierran encuentro sin bloqueo")
 
     local profile=Options.normalize()
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.checkpoint="day1_tutorial"
     session.encounter=Cards.new(session.deck,{kind="magic"},function(n) return n end)
     session.tutorial=Tutorial.restore(nil,session.encounter)
@@ -183,7 +183,7 @@ function Suite.run()
     check(session.events.tutorial_completed and not session.tutorial,"Restaurar completado sin reactivar guía")
     check(Progression.next(session,session.checkpoint,{score=session.encounter.score,trust=0,chemistry=0})=="day1_result","Guía permite continuar historia")
     check(session.encounter==nil and session.encounterReview==nil and session.tutorial==nil,"La transición limpia estado de práctica")
-    local nextGame=Save.newSession()
+    local nextGame=Save.newSession({love=65,trust=65})
     nextGame.checkpoint="day1_tutorial"
     nextGame.encounter=Cards.new(nextGame.deck,{kind="magic"},function(n) return n end)
     nextGame.tutorial=Tutorial.restore(nil,nextGame.encounter)

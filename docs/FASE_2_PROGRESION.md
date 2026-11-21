@@ -1,5 +1,7 @@
 # Fase 2 — Cartas, duplicados y economía
 
+> Las fórmulas y los diez niveles siguen vigentes. La [Fase 3](FASE_3_FAMILIA.md) añade actividades, libros únicos, recetas de descuento, afinidad positiva/negativa y guardado v6 compatible con v5. El límite diario de +10 por estadística permanece.
+
 La colección conserva los **40 IDs**, los dos mazos y todos los PNG y ASE existentes. Cada ID tiene una sola entrada mejorable. La pantalla **MEJORAR CARTAS** se abre desde **M → Mejorar**; desde ella se accede a la tienda.
 
 ## Copias y niveles

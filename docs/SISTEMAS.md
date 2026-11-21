@@ -1,8 +1,10 @@
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 5. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 6. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
+
+`Family` conserva progreso, promesas, advertencias, separaciones permanentes y escenas pendientes. El catálogo ofrece 16 actividades; los combates reservan el espacio antes de empezar y aplican premios por resultado una vez. Cero visitas cuesta −20 amor/−20 confianza; la separación por abandono requiere umbral, historial y advertencia anterior. `family_routes` permite continuar sin escenas matrimoniales de esposas separadas. Los encargos entregan mañana, o hoy al gastar una interacción con advertencia previa. [Reglas y archivos de la Fase 3](FASE_3_FAMILIA.md).
 
 `CardCollection` mantiene una copia canónica por ID y deriva efectos y costes de `src/data/card_progression.lua`. `Economy` controla oro, stock por día y transacciones con revisión esperada; una confirmación antigua no puede volver a gastar. `Events.apply` acepta `copies={id=cantidad}` y `gold`, además de los desbloqueos existentes. `RelationshipBudget` limita las ganancias a diez por esposa y estadística, incluidas las decisiones narrativas ordinarias. [Contratos y fórmulas](FASE_2_PROGRESION.md).
 
@@ -42,7 +44,7 @@ La carta se adquiere antes de animarse. `rewardQueue` contiene únicamente carta
 
 ## Relaciones y finales
 
-`Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 65/65. `love` y `trust` se limitan a 0–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
+`Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 50/50. `love` y `trust` se limitan a −100–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
 
 Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión narrativa explícita. El diario registra los cambios efectivos después de aplicar los límites.
 

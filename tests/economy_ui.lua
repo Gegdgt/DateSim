@@ -16,7 +16,7 @@ function Suite.run()
     local function check(ok,msg) assert(ok,msg);count=count+1 end
     local ok,err=xpcall(function()
         local app=require("src.app").new()
-        app.session=Save.newSession();Events.apply(app.session,"starter_gift",{starter=true})
+        app.session=Save.newSession({love=65,trust=65});Events.apply(app.session,"starter_gift",{starter=true})
         Events.apply(app.session,"upgrade_fixture",{copies={listen=20,water_cannon=91},gold=10000})
         app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
         local sounds={};local audio=app.audio.effect

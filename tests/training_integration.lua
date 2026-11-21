@@ -72,7 +72,7 @@ function Suite.run()
             check(bounds and bounds.y+bounds.h<bounds.portrait.y and bounds.x>=328 and bounds.x+bounds.w<=632,"Barras sobre Eris sin invadir métricas ni retrato")
         end
         local function fixture(mode,deck,prior,checkpoint)
-            local session=prior and clone(prior) or Save.newSession()
+            local session=prior and clone(prior) or Save.newSession({love=65,trust=65})
             if not prior then Events.apply(session,"starter_gift",{starter=true}) end
             Events.apply(session,"training_test_resources_"..(checkpoint or "day5"),{externalEnergy=12,unlock=deck})
             session.checkpoint=checkpoint or "day5_eris_duel"

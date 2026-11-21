@@ -61,6 +61,22 @@ function Suite.run()
   check(Progression.next(s,s.checkpoint,result)~=nil,"Salida social incluso con resultado parcial")
  end
  local function battle(s,def,config)
+  -- Preparation uses earned gold and ordinary shop stock, including solo routes.
+  if not config.specialize then
+   for _,id in ipairs({"staff_strike","water_projectile","arcane_guard","simple_cut"}) do
+    local v=Collection.view(s,id)
+    while v and v.unlocked and v.level<math.min(6,s.day+1) do
+     local missing=math.max(0,v.copiesRequired-v.copies)
+     local quote=Economy.quote(s,id)
+     if missing>0 then
+      if not quote or quote.reason or missing>quote.stock or s.gold<quote.price*missing+v.goldRequired then break end
+      if not Economy.buy(s,id,quote.revision,missing) then break end
+     end
+     if not Collection.upgrade(s,id,s.economy.revision) then break end
+     v=Collection.view(s,id)
+    end
+   end
+  end
   -- Equip only earned techniques. Every route, including failed marriages, can
   -- prepare enough artifact magic without receiving a wife's exclusive card.
   local equipped={}
@@ -107,6 +123,9 @@ function Suite.run()
  local function run(config)
   local s=Save.newSession();local visited={};local steps=0
   while true do
+   Progression.skipUnavailable(s)
+   -- Pure campaign driver acknowledges presentation-only family scenes.
+   s.family.queue={}
    steps=steps+1;check(steps<200,"Campaña sin bloqueo permanente")
    local checkpoint=s.checkpoint;visited[checkpoint]=true
    local node=assert(Chapters.get(checkpoint))
@@ -166,18 +185,23 @@ function Suite.run()
     end
     while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
+     if not id or s.relationships[id].marriageState=="separated" then break end
+     if config.favors and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
      check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
      s=round(s)
      check(Daily.resolveActivity(s,"together")~=nil,"Decisión de actividad guardada")
     end
     if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
-     check(Daily.requestFavor(s,"cliff_notes")~=nil,"Encargo en cada jornada")
+     check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
     if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
     else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.kind=="hub" then
     local available=Progression.availableCompanions(s)
-    if #available>0 then check(Progression.selectCompanion(s,config.companion or config.preferred or "roxy")~=nil,"Compañía elegida")
+    if #available>0 then
+     local preferred=config.companion or config.preferred or "roxy"
+     if s.relationships[preferred].marriageState=="separated" then preferred=available[1] end
+     check(Progression.selectCompanion(s,preferred)~=nil,"Compañía disponible elegida")
     else
      local selected
      for _,place in ipairs(Progression.hub(s).locations) do if not s.events[place.completedEvent] then selected=place;break end end
@@ -243,6 +267,7 @@ function Suite.run()
  check(ending=="solitary","Negligencia acumulada conduce al camino solitario sin bloquear la aventura")
  local boundary=Save.newSession()
  boundary.day=7;boundary.checkpoint="day7_sylphiette"
+ boundary.relationships.sylphiette.love=65;boundary.relationships.sylphiette.trust=65
  Events.apply(boundary,"boundary_history",{character="sylphiette",love=-20,trust=-20,relationshipEvent="personal_resolution",critical={id="commitment",value=true},conflict="mirror_doubt"})
  check(boundary.relationships.sylphiette.love==45 and boundary.relationships.sylphiette.trust==45,"Fixture de frontera: reparación previa y valores45")
  check(Progression.choose(boundary,"day7_sylphiette","reconcile"),"La reparación con antecedentes es elegible en45")
@@ -252,8 +277,8 @@ function Suite.run()
   local dailyRun=run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",skipActivities=mode=="none",dailyWife=mode~="none" and mode or nil,favors=true})
   for day=1,7 do
    local report=dailyRun.daily_history[tostring(day)]
-   check(report and report.interactions_used==(mode=="none" and 0 or 3),"Siete cierres con distribución "..mode)
-   if mode~="none" then check(report.visits[mode]==3,"Repetición libre durante toda la campaña") end
+   check(report and report.interactions_used==(mode=="none" and (day==7 and 1 or 0) or 3),"Siete cierres con distribución "..mode)
+   if mode~="none" then check(report.visits[mode]==(day==7 and 2 or 3),"Repetición libre y ayuda final") end
   end
   for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
  end

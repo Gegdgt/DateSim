@@ -82,4 +82,19 @@ function Economy.use(session,itemId,cardId,revision)
     elseif itemId=="magic_material" then session.externalEnergy=math.min(30,(session.externalEnergy or 0)+item.energy) end
     return receipt
 end
+function Economy.buyBook(session,id,revision)
+    if session.combat or session.encounter then return nil,"Termina el encuentro antes de comprar." end
+    local family=require("src.systems.family").ensure(session)
+    if family.books[id] then return nil,"Ya adquiriste ese libro." end
+    for _,book in ipairs(require("src.data.books")) do
+        if book.id==id then
+            local receipt,err=Economy.spend(session,book.price,revision,"book_"..id);if not receipt then return nil,err end
+            local effect={};for key,value in pairs(book.effects) do effect[key]=value end
+            effect.book=id;effect.text="Libro adquirido: "..book.title
+            require("src.systems.events").apply(session,"book_"..id,effect)
+            return receipt
+        end
+    end
+    return nil,"Libro desconocido."
+end
 return Economy

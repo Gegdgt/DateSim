@@ -1,34 +1,13 @@
--- Actividades ordinarias: cada ejecución cuesta un espacio, aunque se repita.
--- Las escenas de chapters tienen su propia regla narrativa y nunca usan este coste.
-local list={
-    {id="time_sylphiette",character="sylphiette",title="Tiempo con Sylphiette",background="home",cost=1,
-        description="Compartir las tareas de casa o reservar un momento para escucharla.",
-        choices={
-            {id="together",label="Preparar juntos la casa",result="Repartís las tareas y dejáis tiempo para descansar juntos.",effects={love=2,trust=1}},
-            {id="listen",label="Escuchar cómo estuvo su día",result="Sylphiette puede terminar de contar lo que le preocupaba. Te quedas a escuchar.",effects={love=1,trust=2}},
-        }},
-    {id="time_roxy",character="roxy",title="Tiempo con Roxy",background="library",cost=1,
-        description="Una pausa entre libros para conversar o contrastar sus anotaciones.",
-        choices={
-            {id="together",label="Compartir una lectura",result="Elegís un relato y comparáis las partes que más os gustaron.",effects={love=2,trust=1}},
-            {id="listen",label="Revisar juntos sus notas",result="Roxy explica una duda. Revisáis las anotaciones como iguales.",effects={love=1,trust=2}},
-        }},
-    {id="time_eris",character="eris",title="Tiempo con Eris",background="training",cost=1,
-        description="Acompañarla durante una pausa o practicar coordinación sin un duelo.",
-        choices={
-            {id="together",label="Pasear después de la práctica",result="Eris baja la espada y camináis juntos antes de volver a casa.",effects={love=2,trust=1}},
-            {id="listen",label="Practicar señales de apoyo",result="Acordáis cuándo avanzar y cuándo cubrir la retirada del otro.",effects={love=1,trust=2}},
-        }},
-}
+local list=require("src.data.family_activities")
 local favors={
-    {id="cliff_notes",character="cliff",title="Cliff: estudiar una técnica",delay=1,
-        description="Cierre de mañana; hoy en D7.",reward="Curación, 2 Escuchar, 45 oro y 2 energía",
-        effects={unlock={"heal"},copies={listen=2},gold=require("src.data.economy").rewards.cliff,externalEnergy=2}},
-    {id="zanoba_artifact",character="zanoba",title="Zanoba: ajustar un artefacto",delay=0,
-        description="Al cerrar esta jornada.",reward="Defensa, 2 Bastón, 40 oro y 2 energía",
-        effects={unlock={"wind_guard"},copies={staff_strike=2},gold=require("src.data.economy").rewards.zanoba,externalEnergy=2}},
+ {id="cliff_notes",character="cliff",providers={"cliff"},title="Investigar cartas sociales",reward="45 oro; 2 Escuchar; Curación",effects={gold=45,copies={listen=2,heal=1}}},
+ {id="zanoba_artifact",character="zanoba",providers={"zanoba"},title="Conseguir cartas de combate",reward="40 oro; 2 Bastón; Defensa",effects={gold=40,copies={staff_strike=2,wind_guard=1}}},
+ {id="magic_materials",character="cliff",providers={"cliff","zanoba"},title="Obtener materiales mágicos",reward="2 materiales; 15 oro",effects={gold=15,items={magic_material=2}}},
+ {id="gold_search",character="cliff",providers={"cliff","zanoba"},title="Encargo remunerado",reward="65 oro",effects={gold=65}},
+ {id="enchantment_study",character="cliff",providers={"cliff"},title="Estudiar encantamientos",reward="1 receta; 1 Analizar runas",effects={discount=1,copies={analyze_runes=1}}},
+ {id="craft_materials",character="zanoba",providers={"zanoba"},title="Fabricar y reunir recursos",reward="1 material; 1 libro; 20 oro",effects={gold=20,items={magic_material=1,study_book=1}}},
 }
 local catalog={list=list,byId={},favors=favors,favorsById={}}
 for _,activity in ipairs(list) do catalog.byId[activity.id]=activity end
-for _,favor in ipairs(favors) do catalog.favorsById[favor.id]=favor end
+for _,favor in ipairs(favors) do favor.delay=1;favor.description="Entrega al comenzar mañana.";catalog.favorsById[favor.id]=favor end
 return catalog

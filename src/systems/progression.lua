@@ -17,23 +17,23 @@ function Progression.companion(session,checkpoint)
     local chapter=chapterFor(checkpoint or session.checkpoint)
     local key=chapter and chapter.companion and chapter.companion.decisionKey
     local id=key and (session.decisions or {})[key]
-    if id and Characters.byId[id] and Characters.byId[id].romance then return id end
+    if id and Characters.byId[id] and Characters.byId[id].romance and require("src.systems.family").active(session,id) then return id end
 end
 local function context(session,checkpoint) return {companion=Progression.companion(session,checkpoint)} end
 local function meets(session,condition,checkpoint) return Conditions.evaluate(session,condition,context(session,checkpoint)) end
 local function resolveText(text,session,checkpoint)
     if type(text)~="string" then return text end
-    local id=Progression.companion(session,checkpoint) or "sylphiette"
-    local replacements={companion=Story.companionNames[id] or "tu acompañante",
-        companionAdvice=Story.companionAdvice[id] or "Lo resolveremos juntos.",
-        companionMemory=Story.companionMemory[id] or "Compartimos un recuerdo verdadero."}
+    local id=Progression.companion(session,checkpoint) or "solo"
+    local replacements={companion=Story.companionNames[id] or "Rudy",
+        companionAdvice=Story.companionAdvice[id] or "Debo revisar la ruta antes de avanzar.",
+        companionMemory=Story.companionMemory[id] or "Conservo lo que aprendí durante el viaje."}
     return (text:gsub("{(%w+)}",function(key) return replacements[key] or "{"..key.."}" end))
 end
 local function definition(session,checkpoint)
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil end
     local raw=copy(node.definition)
-    local selected=Progression.companion(session,checkpoint) or "sylphiette"
+    local selected=Progression.companion(session,checkpoint) or "solo"
     for key,value in pairs((raw.variants or {})[selected] or {}) do raw[key]=value end
     return raw
 end
@@ -46,14 +46,27 @@ local function savedChoice(session,sceneId)
     for _,choice in ipairs(Progression.choices(session,sceneId)) do if choice.id==selected then return choice end end
 end
 local function move(session,checkpoint)
+    local routes=require("src.data.family_routes")
+    for _=1,20 do
+        local route=routes[checkpoint]
+        if not route or require("src.systems.family").active(session,route.wife) then break end
+        Events.apply(session,"skipped_"..checkpoint,{context="family",text="Se respeta la separación de "..Characters.byId[route.wife].shortName.."; su encuentro matrimonial no se realiza."})
+        if route.complete then Events.apply(session,"day5_complete",{text="Preparación familiar concluida respetando las separaciones."}) end
+        checkpoint=route.to
+    end
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Destino narrativo desconocido: "..tostring(checkpoint) end
     session.checkpoint,session.day=checkpoint,node.day
     Daily.ensure(session)
+    Daily.deliverFavors(session)
     session.dialogueIndex,session.encounter=1,nil
     session.encounterReview,session.tutorial=nil,nil
     session.combat,session.combatPreparation,session.trainingReview=nil,nil,nil
     return checkpoint
+end
+function Progression.skipUnavailable(session)
+    local route=require("src.data.family_routes")[session.checkpoint]
+    if route and not require("src.systems.family").active(session,route.wife) then return move(session,session.checkpoint) end
 end
 local function applyEffect(session,effect,checkpoint)
     if not meets(session,effect.requires,checkpoint) then return false end
@@ -94,7 +107,8 @@ function Progression.availableCompanions(session)
     local selection=hub and hub.companion
     local available={}
     if selection and meets(session,selection.requires,session.checkpoint) then
-        for _,id in ipairs(selection.options or {}) do available[#available+1]=id end
+        for _,id in ipairs(selection.options or {}) do if require("src.systems.family").active(session,id) then available[#available+1]=id end end
+        available[#available+1]="solo"
     end
     return available
 end
@@ -163,8 +177,9 @@ function Progression.scene(session,id)
     end
     local function append(line)
         if not meets(session,line.requires,id) then return end
+        if session.relationships[line.speaker] and not require("src.systems.family").active(session,line.speaker) then return end
         scene.lines[#scene.lines+1]={
-            speaker=line.speaker=="companion" and (Progression.companion(session,id) or "sylphiette") or line.speaker,
+            speaker=line.speaker=="companion" and (Progression.companion(session,id) or "narrator") or line.speaker,
             expression=line.expression or "neutral",animation=line.animation,text=resolveText(line.text,session,id),
             delivery=line.delivery,effect=line.effect,stateEffect=line.stateEffect,
             portrait=line.portrait,stage=line.stage}
@@ -179,6 +194,13 @@ function Progression.scene(session,id)
         if selected.speaker then append(selected) else for _,line in ipairs(selected) do append(line) end end
     end
     for _,line in ipairs(raw.lines or {}) do append(line) end
+    if #scene.lines==0 then scene.lines={{speaker="narrator",text="Rudy respeta la decisión de quienes se marcharon y continúa con las responsabilidades pendientes."}} end
+    if id=="day6_intro" and next(require("src.systems.family").ensure(session).departures) then
+        scene.lines[1].text="Cliff vigila las lecturas y Zanoba lleva el contenedor. Rudy decidirá si viaja con una esposa disponible o afronta el desafío solo. Quienes se marcharon no están convocadas."
+    end
+    if id=="day7_voice" and next(require("src.systems.family").ensure(session).departures) then
+        for _,line in ipairs(scene.lines) do if line.speaker=="narrator" and line.text:find("las tres",1,true) then line.text="Rudy explica la maldición a quienes siguen a su lado. La recuperación de su voz no revoca ninguna separación." end end
+    end
     return scene
 end
 function Progression.encounter(session,id)
@@ -261,7 +283,7 @@ function Progression.next(session,checkpoint,result)
     if node.definition.document and not (session.clues and session.clues[node.definition.document]) then
         return nil,"Examina y lee la carta antes de continuar."
     end
-    if node.definition.requiresCompanion and not Progression.companion(session,checkpoint) then
+    if node.definition.requiresCompanion and not Progression.companion(session,checkpoint) and not session.decisions[chapterFor(checkpoint).companion.decisionKey] then
         return nil,"Elige un acompañante antes de continuar."
     end
     if node.kind=="scene" and #Progression.choices(session,checkpoint)>0 and not savedChoice(session,checkpoint) then

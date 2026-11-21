@@ -80,7 +80,7 @@ function Suite.run()
     check(not manager:switch(second),"No reactiva la misma instancia de escena")
 
     local saved,advanced=0,0
-    local dialogApp={session=Save.newSession(),options={textSpeed=20,textAnimation=true},
+    local dialogApp={session=Save.newSession({love=65,trust=65}),options={textSpeed=20,textAnimation=true},
         save=function() saved=saved+1 end,next=function() advanced=advanced+1 end}
     local screen=DialogueScreen.new(dialogApp)
     screen:advance()

@@ -2,7 +2,10 @@
 return function()
     io.stdout:setvbuf("no")
     local group=os.getenv("DATESIM_TEST_GROUP")
-    love.filesystem.setIdentity("cartas_del_destino_v5_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    local module=os.getenv("DATESIM_TEST_MODULE")
+    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v6_tests_"..module);require("tests."..module).run();return end
+    love.filesystem.setIdentity("cartas_del_destino_v6_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="family" or group=="family-ui" then require("tests.family").run();if group=="family-ui" then require("tests.family_ui").run() end;return end
     if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
     elseif group=="narrative" then require("tests.curse_social").run();require("tests.dialogue_branching").run();require("tests.dialogue_visual").run();return
     elseif group=="combat-core" then require("tests.combat").run();require("tests.combat_balance").run();require("tests.training").run();return
@@ -29,6 +32,8 @@ return function()
     require("tests.marriages").run()
     require("tests.economy").run()
     require("tests.economy_ui").run()
+    require("tests.family").run()
+    require("tests.family_ui").run()
     require("tests.daily").run()
     require("tests.daily_ui").run()
     require("tests.combat").run()

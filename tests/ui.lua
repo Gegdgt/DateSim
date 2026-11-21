@@ -126,7 +126,7 @@ function Suite.run()
         check(app.session.dialogueIndex==1 and app.manager.current.visible==0,
             "Entrada repetida durante transición no salta texto nuevo")
 
-        app.session=Save.newSession()
+        app.session=Save.newSession({love=65,trust=65})
         app.session.day,app.session.checkpoint=2,"encounter_roxy"
         -- Two legal cards costing two leave the third turn with no energy.
         app.session.deck[9]="combined_spell"

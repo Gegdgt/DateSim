@@ -105,10 +105,18 @@ end
 
 function App:resume(transition)
     if not self.session then self:menu(); return end
+    Progression.skipUnavailable(self.session)
+    require("src.systems.daily").deliverFavors(self.session)
+    if #require("src.systems.family").ensure(self.session).queue>0 then
+        local phase=self.session.family.queue[1].phase
+        self:switch(require("src.screens.family_scene").new(self),{type=phase==4 and "horizontal" or "fade_in",duration=.3});return
+    end
     if self.session.rewardQueue and #self.session.rewardQueue>0 and not (self.session.combat and self.session.combat.training) then
         self:switch(require("src.screens.reward").new(self),{type="fade_in",duration=.2})
         return
     end
+    local activityBattle=require("src.systems.daily").battleDefinition(self.session)
+    if activityBattle then self:switch(require("src.screens.combat").new(self,activityBattle));return end
     local checkpoint=self.session.checkpoint
     local node=Chapters.get(checkpoint)
     if not node then self:notify("Punto de historia desconocido."); return end

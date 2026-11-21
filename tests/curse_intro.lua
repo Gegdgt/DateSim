@@ -10,7 +10,7 @@ function Suite.run()
  local count=0
  local function check(ok,msg) assert(ok,msg); count=count+1 end
  local function round(s) return assert(Save.validate(assert(Json.decode(assert(Json.encode(s)))))) end
- local s=Save.newSession()
+ local s=Save.newSession({love=65,trust=65})
  check(s.checkpoint=="intro" and Chapters.get("intro").definition.background=="dream","La historia comienza en el sueño")
  check(not s.curse.discoveredVoice and not s.curse.discoveredMana,"Rudy todavía desconoce los bloqueos")
  check(not Curse.canUseNaturalMagic(s) and not Curse.canSpeak(s),"Los bloqueos son efectivos desde el inicio")

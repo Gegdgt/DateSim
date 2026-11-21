@@ -45,6 +45,14 @@ local function validate(effect,depth)
     for _,id in ipairs(effect.unlock or {}) do if not knownCard(id) then return false,"Carta desconocida: "..tostring(id) end end
     if effect.gold~=nil and (type(effect.gold)~="number" or effect.gold%1~=0 or effect.gold<0 or effect.gold>100000) then return false,"Recompensa de oro inválida." end
     if effect.copies~=nil and type(effect.copies)~="table" then return false,"Lote de copias inválido." end
+    for _,field in ipairs({"familyProgress","items"}) do
+        if effect[field]~=nil and type(effect[field])~="table" then return false,"Recompensa familiar inválida." end
+        for key,value in pairs(effect[field] or {}) do
+            if type(key)~="string" or type(value)~="number" or value%1~=0 or value<1 or value>100 then return false,"Recompensa familiar inválida." end
+            if field=="items" and not require("src.data.economy").items[key] then return false,"Material desconocido." end
+        end
+    end
+    if effect.discount~=nil and (type(effect.discount)~="number" or effect.discount%1~=0 or effect.discount<1 or effect.discount>21) then return false,"Receta inválida." end
     for id,count in pairs(effect.copies or {}) do
         if not knownCard(id) or type(count)~="number" or count%1~=0 or count<1 or count>10000 then return false,"Recompensa de copias inválida." end
     end
@@ -74,9 +82,12 @@ function Events.apply(session,id,effects)
     session.journal=session.journal or {}; session.rewards=session.rewards or {}
     local grants={}
     local function unlock(cardId,count)
+        local owner=require("src.data.family").specialOwners[cardId]
+        if owner and not require("src.systems.family").active(session,owner) then return end
         grants[#grants+1]=assert(Collection.grant(session,cardId,count or 1))
     end
     local function apply(effect,path,inheritedText,inheritedHidden)
+        require("src.systems.family").applyEffects(session,effect)
         local delta={love=0,trust=0}
         if effect.character and session.relationships[effect.character] then
             delta=Budget.commit(session,effect.character,effect)

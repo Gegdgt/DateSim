@@ -25,7 +25,7 @@ function Memory.capture(session)
     for id,r in pairs(out.relationships) do
         local value=(session.relationships or {})[id] or r
         for _,key in ipairs({"love","trust"}) do
-            local n=value[key]; if type(n)=="number" and n==n then r[key]=math.max(0,math.min(100,n)) end
+            local n=value[key]; if type(n)=="number" and n==n then r[key]=math.max(require("src.data.family").minimum,math.min(require("src.data.family").maximum,n)) end
         end
         for _,key in ipairs({"events","decisions","criticalDecisions","promises","brokenPromises","sharedMoments","pendingConflicts","reconciliations"}) do r[key]=map(value[key]) end
         r.personalEvents=r.events

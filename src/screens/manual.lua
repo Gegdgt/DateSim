@@ -40,7 +40,9 @@ function Manual.new(app,returnTo)
         if self.section==1 then
             local char=Characters.list[self.page]
             local extra=Guide.characters[char.id]
-            app.resources:portrait(char.id,"neutral",34,103,2)
+            local separated=s.session.relationships[char.id] and s.session.relationships[char.id].marriageState=="separated"
+            app.resources:portrait(char.id,separated and "worried" or "neutral",34,103,2,separated)
+            if separated then self:text("SEPARACIÓN DEFINITIVA",27,251,148,P.muted) end
             self:text(char.name,182,91,426,P.gold)
             self:text(char.description,182,118,426,P.ink)
             self:text("PERSONALIDAD",182,161,426,P.teal)

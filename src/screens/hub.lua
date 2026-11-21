@@ -24,7 +24,7 @@ function Hub.new(app)
             local x=18+(i-1)*204
             W.panel(x,99,196,231)
             local visited=place.completedEvent and app.session.events[place.completedEvent]
-            app.resources:portrait(id,visited and "happy" or "neutral",x+34,108,2)
+            app.resources:portrait(id,visited and "happy" or "neutral",x+34,108,2,not require("src.systems.family").active(app.session,id))
             self:text(char.shortName,x+10,241,176,P.gold,1,"center")
             if place.scene then
                 self:text(place.title,x+10,258,176,P.muted,1,"center")
@@ -38,10 +38,12 @@ function Hub.new(app)
                 if ready then nextId,err=Progression.selectCompanion(app.session,id)
                 else nextId,err=Progression.visit(app.session,id) end
                 if nextId then app:save(); app:resume() else app:notify(err) end
-            end,visited and not ready)
+            end,(visited and not ready) or (ready and not require("src.systems.family").active(app.session,id)))
         end
         W.panel(18,336,604,20,{shadow=false})
-        self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink)
+        if ready then self:button("Viajar solo",190,335,260,23,function()
+            local ok,err=Progression.selectCompanion(app.session,"solo");if ok then app:save();app:resume() else app:notify(err) end
+        end) else self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink) end
     end
     function s:keypressed(key)
         if self:navigate(key) then return end

@@ -51,10 +51,11 @@ function Overlays.new(app,kind)
                 W.panel(x,49,196,215)
                 self:text(char.shortName,x+10,61,176,P.gold)
                 self:text(char.theme,x+10,79,176,P.muted)
-                self:text("Confianza "..r.trust.." / 100",x+10,113,176,P.ink)
-                W.bar(x+10,129,176,7,r.trust,100,P.teal)
-                self:text("Amor "..r.love.." / 100",x+10,150,176,P.ink)
-                W.bar(x+10,166,176,7,r.love,100,P.rose)
+                app.resources:portrait(id,r.marriageState=="separated" and "worried" or "neutral",x+125,105,1,r.marriageState=="separated")
+                self:text("Confianza "..r.trust,x+10,113,110,P.ink)
+                W.bar(x+10,129,108,7,r.trust+100,200,P.teal)
+                self:text("Amor "..r.love,x+10,150,110,P.ink)
+                W.bar(x+10,166,108,7,r.love+100,200,P.rose)
                 local conflicts,broken=0,0
                 for _,value in pairs(r.pendingConflicts or {}) do if value then conflicts=conflicts+1 end end
                 for _,value in pairs(r.promises or {}) do if value=="broken" or (type(value)=="table" and value.status=="broken") then broken=broken+1 end end

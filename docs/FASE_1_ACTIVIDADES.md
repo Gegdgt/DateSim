@@ -1,5 +1,7 @@
 # Fase 1: agenda y progresión diaria
 
+> Este documento describe la base de la agenda. La [Fase 3](FASE_3_FAMILIA.md) amplía las actividades y reemplaza sus valores iniciales de atención y encargos: −20 amor/−20 confianza por esposa no visitada, entregas al comenzar mañana, aceleración con una interacción y guardado v6.
+
 Los siete capítulos conservan sus escenas, elecciones, cartas y combates. Cada jornada tiene **tres actividades ordinarias y un encargo independiente**, elegido entre Cliff y Zanoba. Se puede repetir la misma esposa tres veces o combinar visitas. Dormir no exige gastar todos los espacios; exige terminar la historia obligatoria y cualquier decisión de actividad abierta.
 
 ## Recorrido jugable

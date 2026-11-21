@@ -10,11 +10,13 @@ En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibi�
 
 ## Organizar la jornada
 
-Dispones de tres actividades libres al día. **Pasar tiempo** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
+Dispones de tres actividades libres al día. **Elegir actividad** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
 
-En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida entrega copias para mejorarla.
+En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades y entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. **Ayudar hoy** muestra una advertencia: gasta una interacción, sin visita matrimonial, para recibir la recompensa hoy. El día 7 solo se aceptan encargos con ayuda inmediata. Una carta ya adquirida entrega copias para mejorarla.
 
-**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 1. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Cambios de ayer** permite volver a consultarlo.
+Eris ofrece práctica física, cacerías, duelos reales y coordinación; Sylphiette, hogar, recados de vuestra hija, Zenith, Lilia y conversaciones; Roxy, magia, cartas encantadas, libros e investigación. **Reparar un compromiso** facilita recuperar una relación negativa. La tercera visita recibe una reacción propia sobre las responsabilidades con las demás. La librería cobra oro y vende cada título una vez; las recetas reducen un 20% el oro de una mejora y se consumen.
+
+**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 20 de amor y 20 de confianza. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Ayer** permite volver a consultarlo.
 
 El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
 
@@ -42,7 +44,9 @@ Nanahoshi muestra **Confianza e Interés** durante el tutorial y las investigaci
 
 ## Cuidar los matrimonios
 
-Las tres relaciones comienzan con 65 de amor y confianza. Roxy valora cercanía y respeto intelectual; Sylphiette, responsabilidad y apoyo familiar; Eris, igualdad y confianza en su capacidad. Las decisiones, promesas y conflictos quedan en el diario; repetir acciones no borra lo ocurrido.
+Las tres relaciones comienzan con 50 de amor y confianza y admiten valores de −100 a 100. Roxy valora cercanía y respeto intelectual; Sylphiette, responsabilidad y apoyo familiar; Eris, igualdad y confianza en su capacidad. Las decisiones, promesas y conflictos quedan en el diario; repetir acciones no borra lo ocurrido. La afinidad alta facilita pequeñas bonificaciones; la negativa reduce ganancias ordinarias, pero permite reconciliación.
+
+El abandono reiterado puede provocar una separación a −30 o menos después de advertencias anteriores; una decisión crítica también puede romper el matrimonio. La esposa devuelve el anillo y se marcha (Sylphiette con su hija). Su retrato queda gris, sus actividades se bloquean y no podrá acompañarte ni conceder nuevas habilidades matrimoniales. Guardar, cargar y recuperar la voz no la hacen regresar. [Detalle de las reglas](FASE_3_FAMILIA.md).
 
 J abre el diario desde la historia. Consulta Historial y el botón Carta —H para releer la pista. Las misiones personales, el compromiso explícito y la reparación de conflictos cuentan para el final, además de las puntuaciones. Recuperar voz y poderes no restaura por sí solo una relación.
 
@@ -82,4 +86,4 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v5.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v6.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).

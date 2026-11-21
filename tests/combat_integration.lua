@@ -12,7 +12,7 @@ function Suite.run(app)
     local function encode(v) return assert(Json.encode(v)) end
     local function clone(v) return assert(Json.decode(encode(v))) end
     local function prepare(checkpoint,character)
-        local s=Save.newSession()
+        local s=Save.newSession({love=65,trust=65})
         assert(Events.apply(s,"nanahoshi_starter",{equipStarter=true,presenter="nanahoshi"}))
         s.rewardQueue={};s.checkpoint=checkpoint or "day1_tutorial";s.day=Chapters.get(s.checkpoint).day
         s.events.tutorial_completed=true

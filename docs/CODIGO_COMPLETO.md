@@ -1,6 +1,6 @@
 # Código completo del proyecto
 
-Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, guardado v5, animaciones y audio sintetizado.
+Este documento contiene las rutas y el contenido completo de los archivos de texto del proyecto. Los archivos reales ya están creados; no es necesario copiarlos desde aquí. Los PNG del juego están en assets/ y los editables ASE en sprite_sources/; los archivos binarios no se incluyen en este documento. Esta versión comprende siete días, cinco finales matrimoniales, colección progresiva, la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, guardado v6, animaciones y audio sintetizado.
 
 Raíz del proyecto: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim`
 
@@ -823,6 +823,8 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Fase 1: agenda y progresión diaria
 
+> Este documento describe la base de la agenda. La [Fase 3](FASE_3_FAMILIA.md) amplía las actividades y reemplaza sus valores iniciales de atención y encargos: −20 amor/−20 confianza por esposa no visitada, entregas al comenzar mañana, aceleración con una interacción y guardado v6.
+
 Los siete capítulos conservan sus escenas, elecciones, cartas y combates. Cada jornada tiene **tres actividades ordinarias y un encargo independiente**, elegido entre Cliff y Zanoba. Se puede repetir la misma esposa tres veces o combinar visitas. Dormir no exige gastar todos los espacios; exige terminar la historia obligatoria y cualquier decisión de actividad abierta.
 
 ## Recorrido jugable
@@ -996,6 +998,8 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Fase 2 — Cartas, duplicados y economía
 
+> Las fórmulas y los diez niveles siguen vigentes. La [Fase 3](FASE_3_FAMILIA.md) añade actividades, libros únicos, recetas de descuento, afinidad positiva/negativa y guardado v6 compatible con v5. El límite diario de +10 por estadística permanece.
+
 La colección conserva los **40 IDs**, los dos mazos y todos los PNG y ASE existentes. Cada ID tiene una sola entrada mejorable. La pantalla **MEJORAR CARTAS** se abre desde **M → Mejorar**; desde ella se accede a la tienda.
 
 ## Copias y niveles
@@ -1120,6 +1124,84 @@ Remove-Item Env:DATESIM_TEST_GROUP
 Las pruebas abarcan 91 copias, diez niveles, costes, descuentos, límites, duplicados, pulsaciones rápidas, replay, migración en disco y compatibilidad narrativa. Los resultados de ejecución están en [VERIFICACION.md](VERIFICACION.md).
 ````
 
+## docs/FASE_3_FAMILIA.md
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/FASE_3_FAMILIA.md`
+
+````markdown
+# Fase 3 — Actividades y consecuencias familiares
+
+La campaña conserva sus siete capítulos, introducción, cartas, mazos, PNG y ASE. La agenda ofrece **16 actividades**, tres espacios diarios repartibles libremente y un encargo independiente. Reservar una actividad consume exactamente un espacio; sus decisiones, combate y recompensas no consumen otro. Ayudar a un encargado sí utiliza uno y exige confirmar la advertencia en pantalla.
+
+## Actividades
+
+| Esposa | Actividades y recompensas |
+| --- | --- |
+| Eris | Entrenamiento físico, monstruos en solitario o acompañados, duelo amistoso y coordinación. Oro, copias ofensivas, materiales y progreso. El duelo evalúa los ataques, bloqueos, esquivas y oportunidades reales; admite victoria, derrota honorable, derrota honesta y aparente falta de esfuerzo. |
+| Sylphiette | Hogar, recados de su hija, cuidar a Zenith, ayudar a Lilia y conversaciones familiares. Cartas sociales, oro y responsabilidades verificables. Prometer un recado fija un plazo al cierre del día siguiente (día 7 como máximo); incumplir cuesta −3 amor/−5 confianza. Hacer el recado repara el conflicto. |
+| Roxy | Magia, cartas encantadas, libros e investigación. Cartas mágicas, materiales, recetas y conocimientos. Cada receta reduce un 20% el oro de una mejora, con coste mínimo de 1; se consume al mejorar y no reduce duplicados. |
+| Cada esposa | Reparar un compromiso: hasta +8 amor/+8 confianza, sujeto al límite diario pero sin reducción por afinidad negativa. No revierte una separación. |
+
+Tres sesiones de hogar, investigación o coordinación, con al menos 50/50 y matrimonio activo, permiten adquirir respectivamente Magia compartida, Conjuro combinado o Espada y magia, una sola vez. Dos victorias contra monstruos abren cacerías del guardián de las ruinas: hasta 60 oro y dos materiales en lugar de 40 oro y uno. Perder no cuenta como victoria.
+
+La segunda y tercera visita reconocen el regreso. La tercera añade una conversación original de la esposa sobre las responsabilidades familiares. Oro y copias se multiplican por 1, 0,9 y 0,8 según la visita, redondeando hacia abajo con mínimo 1. Las relaciones muestran siempre el valor aplicado.
+
+## Relaciones y separaciones
+
+Partidas nuevas: **50 amor/50 confianza**, matrimonio activo. Intervalo configurable **−100 a 100**. Si ambas cifras son al menos 75, una ganancia ordinaria de 2 o más recibe +1; si alguna es negativa, las ganancias ordinarias se reducen a la mitad, redondeando hacia abajo con mínimo 1. Los componentes originalmente cero siguen siendo cero. Las penalizaciones no se multiplican ni recuperan margen diario.
+
+El límite de **+10 amor y +10 confianza por esposa y jornada** suma cartas, actividades, combate e historia ordinaria. La reconciliación también respeta ese límite. Una visita concede hasta +1 confianza al cierre. Cero visitas aplica **−20 amor y −20 confianza** una sola vez; la historia obligatoria no cuenta como visita.
+
+El abandono puede separar cuando amor o confianza llega a −30, hubo al menos dos días sin visita y una advertencia de una jornada anterior. La cifra negativa aislada no separa. Las decisiones narrativas críticas conservan su capacidad de ruptura. El cierre muestra advertencias y pérdidas en el resumen.
+
+La separación se registra antes de su presentación. La escena tiene confrontación propia, expresión, anillo animado, salida hacia el bosque y partida a caballo; Sylphiette parte con su hija. Usa fondos y retratos originales y figuras pixeladas dibujadas con primitivas. La cola conserva fase y tiempo para continuar al cargar. El diario y registro de personajes aplican un shader gris real. Quedan bloqueadas actividades matrimoniales, nuevas cartas exclusivas, apoyos y selección como compañera. Las escenas personales pendientes se omiten y existe la opción de viajar solo. Curar la maldición no restablece matrimonios.
+
+## Encargos y libros
+
+| Tarea | Encargado | Premio |
+| --- | --- | --- |
+| `cliff_notes` | Cliff | 45 oro, 2 Escuchar y 1 Curación |
+| `zanoba_artifact` | Zanoba | 40 oro, 2 Bastón y 1 Defensa |
+| `magic_materials` | Cualquiera | 15 oro y 2 materiales |
+| `gold_search` | Cualquiera | 65 oro |
+| `enchantment_study` | Cliff | 1 receta y 1 Analizar runas |
+| `craft_materials` | Zanoba | 20 oro, 1 material y 1 libro de estudio |
+
+Se solicita un encargo total al día y se entrega al comenzar el siguiente. No puede repetirse el ID de ayer, aunque cambie el encargado. Ayudar entrega el mismo día y consume una interacción sin sumar visita. El día 7 solo se acepta solicitar y ayudar con un espacio disponible. Las entregas usan eventos únicos, independientes de las animaciones.
+
+La librería ofrece Fundamentos del flujo de agua (35 oro), Recetas de encantamiento (50) y Formas avanzadas de tierra (70). Cada título se compra una vez y desbloquea cartas, conocimiento o recetas. El libro consumible de estudio de la tienda anterior sigue disponible. Comprar durante una visita a la librería completa la actividad sin gastar un segundo espacio; comprar desde la tienda no cuenta como visita.
+
+## Archivos y persistencia
+
+| Archivo | Responsabilidad |
+| --- | --- |
+| `src/data/family.lua` | Afinidad, límites, repetición, advertencias, despedidas y propietarios de cartas exclusivas. |
+| `src/data/family_activities.lua` | Catálogo de actividades, decisiones y premios. |
+| `src/data/activities.lua` | Registro por ID y catálogo de encargos/proveedores. |
+| `src/data/books.lua` | Precios y efectos de libros. |
+| `src/data/family_routes.lua` | Continuación de escenas cuando una esposa ya se separó. |
+| `src/systems/family.lua` | Progreso, promesas, escenas, hitos y separación irreversible. |
+| `src/systems/daily.lua` | Reservas, combate de actividad, visitas, encargos y cierre idempotente. |
+| `src/screens/agenda.lua`, `books.lua`, `family_scene.lua` | Menú diario, librería, advertencias y presentación familiar. |
+
+`family` guarda progreso, advertencias, ausencias, separaciones, libros, recetas, plazo del recado y escenas vistas/pendientes. `daily` conserva reservas, visitas, actividades, ayuda al encargado y ganancias; `pending_favors` conserva ID, proveedor, fechas y entrega. Los registros por evento impiden duplicar recompensas o consecuencias.
+
+El formato **v6** utiliza `campaign-v6.json` y respaldo propio. Carga v5 conservando valores y progreso históricos; v4 pasa primero por la migración de economía. Los archivos anteriores permanecen intactos y las nuevas partidas empiezan en 50/50. Los encuentros sociales históricos mantienen sus efectos durante el replay; las nuevas acciones usan las reglas actuales.
+
+## Pruebas
+
+Con LÖVE 11.5 instalado:
+
+```powershell
+$env:DATESIM_TEST_GROUP = 'family-ui'
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+Remove-Item Env:DATESIM_TEST_GROUP
+& 'C:\Program Files\LOVE\lovec.exe' . --test
+```
+
+`tests/family.lua` cubre actividades, efectos reales, duelos, cupos, penalizaciones, recuperación, separaciones, encargos, libros y migración. `tests/family_ui.lua` ejercita confirmación/cancelación, diálogos, anillo guardado, caballo, librería y píxeles grises. La campaña se prueba además con todos los finales y distribuciones diarias; véase [VERIFICACION.md](VERIFICACION.md).
+````
+
 ## docs/GUARDADO.md
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/GUARDADO.md`
@@ -1127,20 +1209,22 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Guardado de la campaña de la maldición
 
-`src/systems/save.lua` usa **versión 5**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
+`src/systems/save.lua` usa **versión 6**, continuidad `rudy_curse`. LÖVE escribe en la identidad `cartas_del_destino`, normalmente `%APPDATA%\LOVE\cartas_del_destino\` en Windows.
 
 | Archivo | Función |
 | --- | --- |
-| `campaign-v5.json` | Partida actual. |
-| `campaign-v5.backup.json` | Última partida anterior válida. |
-| `campaign-v5.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
+| `campaign-v6.json` | Partida actual. |
+| `campaign-v6.backup.json` | Última partida anterior válida. |
+| `campaign-v6.tmp.json` | Escritura temporal previa; se elimina al completar el guardado. |
 | `options.json` | Preferencias globales de audio, texto, movimiento y ventana. |
 
 F5 guarda. También se guarda al avanzar, aplicar decisiones, resolver acciones, cambiar de pantalla y salir. La práctica usa una sesión desechable y no escribe la campaña; al terminar restaura la referencia a la partida original.
 
 ## Estado persistido
 
-La versión 5 añade `collection[id]={id,level,copies,unlocked}`, `gold`, `economy` (revisión, transacciones, stock por jornada, objetos y escudo preparado) y `daily.relationship_gains`. Tipo, efectos y costes se reconstruyen desde los catálogos. Las entregas guardan cantidades y distinguen primeros desbloqueos de duplicados. Las mejoras guardan el nivel y el gasto en la misma operación; la animación no vuelve a ejecutar transacciones al cargar.
+La versión 6 añade `family`: progreso de actividades, advertencias, ausencias, separaciones definitivas, libros, recetas, plazo del recado y escenas pendientes con fase/tiempo. Conserva relaciones entre −100 y 100, proveedor y aceleración de encargos y reservas de ayuda sin visitas. Un matrimonio separado permanece separado aunque se cargue otra escena o se cure la maldición. [Reglas familiares](FASE_3_FAMILIA.md).
+
+La versión 5 introdujo `collection[id]={id,level,copies,unlocked}`, `gold`, `economy` (revisión, transacciones, stock por jornada, objetos y escudo preparado) y `daily.relationship_gains`. Tipo, efectos y costes se reconstruyen desde los catálogos. Las entregas guardan cantidades y distinguen primeros desbloqueos de duplicados. Las mejoras guardan el nivel y el gasto en la misma operación; la animación no vuelve a ejecutar transacciones al cargar.
 
 Incluye checkpoint, día y posición de diálogo; maldición y descubrimientos; pistas; inventario del antídoto; capacidad externa; relaciones y sus historiales; decisiones, misiones y enemigos vencidos; cartas adquiridas; ambos mazos; entregas pendientes y su página; estado del documento abierto; encuentros y combate.
 
@@ -1154,7 +1238,7 @@ Los retratos contextuales se reconstruyen desde `checkpoint` y `dialogueIndex`: 
 
 ## Conversaciones, reparto y memoria
 
-Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v5. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
+Las conversaciones conservan `encounter.narrativeVersion=1`, dentro del formato general de campaña v6. `initialOrder` conserva el reparto después del barajado; `hand`, `drawPile`, `discard` y `reserve` conservan mano, pila, descarte y cartas incompatibles apartadas. `initialMemory` es la memoria al entrar; `memory` reconstruye las decisiones de esa conversación. No hace falta volver a consultar un generador aleatorio para cargarla.
 
 Cada acción registrada identifica la carta, su `responseId`, la secuencia escrita y sus consecuencias. `reactionIndex` conserva la línea del intercambio y `encounterReview` indica que aún se está leyendo su resultado. Al restaurar, `Cards.restore` reproduce las acciones desde el reparto y la memoria iniciales, comprueba los IDs resueltos, las cuatro zonas de cartas, energía, turno y avance. Un snapshot incompatible no se acepta como si fuera válido.
 
@@ -1162,7 +1246,7 @@ La carta consume energía y pasa al descarte al confirmarla. Los efectos sobre l
 
 `dialogueMemory.used` conserva el número de usos de cada respuesta o variante. Los eventos y decisiones de las cartas viven en los mapas habituales; promesas, conflictos, reconciliaciones y momentos compartidos continúan dentro de cada relación. No se crean estadísticas paralelas. Entre variantes con igual prioridad y condiciones válidas se prefiere la menos utilizada; cargar no cambia la memoria que decidió una respuesta ya jugada.
 
-El motor social conserva su soporte de replay anterior, pero la campaña v5 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
+El motor social conserva su soporte de replay anterior, pero la campaña v6 no importa encuentros activos de campañas v1/v2/v3. Las nuevas conversaciones usan el catálogo contextual; no se inventan decisiones, promesas ni premios para acciones históricas.
 
 ## Validación y recuperación
 
@@ -1170,15 +1254,15 @@ Antes de escribir se normalizan los datos. El guardado anterior válido se copia
 
 Se comprueban IDs, límites numéricos, checkpoints, elecciones, compañeras y mazos. Un mazo incompleto vuelve al punto de revisión de Nanahoshi conservando las decisiones. El combate se reproduce desde su reparto y comandos: cartas, turnos, tácticas, defensa, esquiva y ruptura del sello. Si el estado resultante no coincide con el snapshot, se descarta ese intento de batalla y se permite reconstruirlo; no se entregan premios al restaurar.
 
-Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v5. [Dificultad y límites](COMBATE.md).
+Los combates nuevos guardan `balanceVersion=2`, el día o perfil de dificultad, los usos de curación y la recuperación de escudo enemigo. El motor conserva el replay anterior con `balanceVersion=1`. El versionado del combate es independiente del formato de campaña v6. [Dificultad y límites](COMBATE.md).
 
 ## Importación de partidas anteriores
 
-Si no hay v5 válido, **Continuar** busca `campaign-v4.json` y su respaldo. Migra la misma partida: conserva checkpoint, historia, matrimonios, mazos, actividades y encargos. Inicializa cartas adquiridas en nivel 1 y oro en 120; las ganancias de relaciones del día se reconstruyen desde el diario y se limitan a diez por estadística. El siguiente guardado escribe v5 y **no modifica v4**.
+Si no hay v6 válido, **Continuar** busca v5 y luego v4, con sus respaldos. V5 conserva niveles, oro, relaciones y progreso; inicializa el registro familiar y respeta las fechas de encargos heredados. V4 recibe primero la migración de economía (cartas en nivel 1, oro inicial 120 y presupuesto diario reconstruido). El siguiente guardado escribe v6 y **no modifica v5 ni v4**. Las partidas nuevas empiezan en 50/50; migrar no reinicia estadísticas históricas.
 
 Los registros sociales anteriores conservan sus efectos históricos durante el replay; las nuevas acciones usan niveles y presupuesto diario. Los combates en curso conservan sus reglas anteriores hasta terminar. Los nuevos guardan `context.progressionVersion=1`, niveles por ID y preparación inicial, además de los comandos existentes. Cambiar el nivel durante un encuentro está prohibido.
 
-El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v5, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
+El menú detecta `campaign-v3.json`, `campaign-v2.json`, sus respaldos, `save.json` y `save.backup.json`. Cuando no hay una partida v6, ofrece **Importar campaña anterior**. La aceptación explícita inicia la nueva introducción e importa las cartas sociales y de combate compatibles, además de las opciones. No continúa escenas ni encuentros activos anteriores. Los archivos originales permanecen intactos. Si el destino contiene otra versión reconocible, la escritura se rechaza para conservarlo.
 
 Una partida nueva sin importación empieza sin cartas; Nanahoshi entrega diez en total. Una colección importada puede contener cartas previas compatibles: eso no equivale a conceder de nuevo esos premios.
 
@@ -1190,7 +1274,7 @@ El duelo se restaura reproduciendo sus comandos, incluido el contraataque. La pa
 
 ## Verificación
 
-La suite general usa `cartas_del_destino_v5_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
+La suite general usa `cartas_del_destino_v6_tests`, separada de los archivos del jugador. El entrenamiento usa además `cartas_del_destino_training_tests`. El ciclo diario prueba escritura/carga, cierres repetidos, encargos pendientes y conservación de v3; la interfaz prueba un fallo de escritura y su reintento. [Resultados](VERIFICACION.md). No se verificó resistencia frente a cortes físicos de energía.
 ````
 
 ## docs/MALDICION_RUDY.md
@@ -1277,11 +1361,13 @@ En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibi�
 
 ## Organizar la jornada
 
-Dispones de tres actividades libres al día. **Pasar tiempo** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
+Dispones de tres actividades libres al día. **Elegir actividad** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
 
-En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades. La agenda muestra cuándo entregarán su recompensa y los trabajos pendientes. Una carta ya adquirida entrega copias para mejorarla.
+En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades y entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. **Ayudar hoy** muestra una advertencia: gasta una interacción, sin visita matrimonial, para recibir la recompensa hoy. El día 7 solo se aceptan encargos con ayuda inmediata. Una carta ya adquirida entrega copias para mejorarla.
 
-**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 1. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Cambios de ayer** permite volver a consultarlo.
+Eris ofrece práctica física, cacerías, duelos reales y coordinación; Sylphiette, hogar, recados de vuestra hija, Zenith, Lilia y conversaciones; Roxy, magia, cartas encantadas, libros e investigación. **Reparar un compromiso** facilita recuperar una relación negativa. La tercera visita recibe una reacción propia sobre las responsabilidades con las demás. La librería cobra oro y vende cada título una vez; las recetas reducen un 20% el oro de una mejora y se consumen.
+
+**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 20 de amor y 20 de confianza. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Ayer** permite volver a consultarlo.
 
 El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
 
@@ -1309,7 +1395,9 @@ Nanahoshi muestra **Confianza e Interés** durante el tutorial y las investigaci
 
 ## Cuidar los matrimonios
 
-Las tres relaciones comienzan con 65 de amor y confianza. Roxy valora cercanía y respeto intelectual; Sylphiette, responsabilidad y apoyo familiar; Eris, igualdad y confianza en su capacidad. Las decisiones, promesas y conflictos quedan en el diario; repetir acciones no borra lo ocurrido.
+Las tres relaciones comienzan con 50 de amor y confianza y admiten valores de −100 a 100. Roxy valora cercanía y respeto intelectual; Sylphiette, responsabilidad y apoyo familiar; Eris, igualdad y confianza en su capacidad. Las decisiones, promesas y conflictos quedan en el diario; repetir acciones no borra lo ocurrido. La afinidad alta facilita pequeñas bonificaciones; la negativa reduce ganancias ordinarias, pero permite reconciliación.
+
+El abandono reiterado puede provocar una separación a −30 o menos después de advertencias anteriores; una decisión crítica también puede romper el matrimonio. La esposa devuelve el anillo y se marcha (Sylphiette con su hija). Su retrato queda gris, sus actividades se bloquean y no podrá acompañarte ni conceder nuevas habilidades matrimoniales. Guardar, cargar y recuperar la voz no la hacen regresar. [Detalle de las reglas](FASE_3_FAMILIA.md).
 
 J abre el diario desde la historia. Consulta Historial y el botón Carta —H para releer la pista. Las misiones personales, el compromiso explícito y la reparación de conflictos cuentan para el final, además de las puntuaciones. Recuperar voz y poderes no restaura por sí solo una relación.
 
@@ -1349,7 +1437,7 @@ El resultado muestra tus acciones y Eris lo recuerda. Si quedó molesta, puedes 
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v5.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v6.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
 ````
 
 ## docs/RECURSOS.md
@@ -1535,9 +1623,11 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 ````markdown
 # Sistemas de la maldición de Rudy
 
-La campaña usa `continuity="rudy_curse"` y esquema de guardado 5. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+La campaña usa `continuity="rudy_curse"` y esquema de guardado 6. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
 
 ## Actividades y cierre diario
+
+`Family` conserva progreso, promesas, advertencias, separaciones permanentes y escenas pendientes. El catálogo ofrece 16 actividades; los combates reservan el espacio antes de empezar y aplican premios por resultado una vez. Cero visitas cuesta −20 amor/−20 confianza; la separación por abandono requiere umbral, historial y advertencia anterior. `family_routes` permite continuar sin escenas matrimoniales de esposas separadas. Los encargos entregan mañana, o hoy al gastar una interacción con advertencia previa. [Reglas y archivos de la Fase 3](FASE_3_FAMILIA.md).
 
 `CardCollection` mantiene una copia canónica por ID y deriva efectos y costes de `src/data/card_progression.lua`. `Economy` controla oro, stock por día y transacciones con revisión esperada; una confirmación antigua no puede volver a gastar. `Events.apply` acepta `copies={id=cantidad}` y `gold`, además de los desbloqueos existentes. `RelationshipBudget` limita las ganancias a diez por esposa y estadística, incluidas las decisiones narrativas ordinarias. [Contratos y fórmulas](FASE_2_PROGRESION.md).
 
@@ -1577,7 +1667,7 @@ La carta se adquiere antes de animarse. `rewardQueue` contiene únicamente carta
 
 ## Relaciones y finales
 
-`Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 65/65. `love` y `trust` se limitan a 0–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
+`Relationships.new` crea los tres matrimonios con valores configurables, predeterminados en 50/50. `love` y `trust` se limitan a −100–100. Se guardan eventos personales, decisiones críticas, promesas, incumplimientos, momentos compartidos, conflictos pendientes, reconciliaciones y estado matrimonial. Los alias `chemistry` y `routeState` mantienen compatibles las vistas originales; no son estadísticas adicionales.
 
 Una promesa rota crea un conflicto. Cumplirla posteriormente no borra el historial: se necesita `reconcile` para reparar el conflicto. Un descenso de puntuación marca tensión; una separación exige una decisión narrativa explícita. El diario registra los cambios efectivos después de aplicar los límites.
 
@@ -1597,7 +1687,35 @@ La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERI
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/docs/VERIFICACION.md`
 
 ````markdown
-# Verificación de cartas y economía — Fase 2
+# Verificación de familia y actividades — Fase 3
+
+Fecha: **21 de noviembre de 2026**. Pruebas ejecutadas con **LÖVE 11.5 / LuaJIT**, renderizador real y guardados aislados. **44 224 comprobaciones** sumando los módulos de la suite y sus ejecuciones focalizadas finales, sin contar repeticiones. No se modificaron los PNG ni los ASE originales.
+
+La primera ejecución general detectó expectativas anteriores del límite mínimo cero. Se actualizaron para verificar −100 y se ejecutaron los módulos afectados. Los grupos finales `family-ui`, `daily-ui`, `narrative`, `economy-ui`, `campaign` y `ui` terminaron con **`ALL TESTS PASSED`, salida 0**. La validación se realizó en varias ejecuciones, no en una única corrida final de toda la suite.
+
+| Cobertura | Resultado |
+| --- | --- |
+| Familia: 16 actividades, duelo real, visitas, recuperación, abandono, separaciones, encargos, libros y migración | 228 comprobaciones |
+| Interfaz familiar: confirmación/cancelación, tercera visita, anillo, caballo, libro y retratos grises | 2 400 comprobaciones; 22 capturas |
+| Ciclo diario y su interfaz | 1 010 + 36 comprobaciones |
+| Campaña: cinco finales, distribución libre, ausencia de compañeras, encargos y especialización | 30 924 comprobaciones; 35 recorridos completos |
+| Campaña gráfica | 1 290 comprobaciones; 742 pasos de pantalla |
+| Combate gráfico y su integración | 44 + 24 comprobaciones |
+| Niveles/economía e interfaz | 398 + 25 comprobaciones |
+| Diálogos y su interfaz | 73 + 2 788 + 277 comprobaciones |
+| Combate, equilibrio y entrenamiento | 1 620 + 919 + 84 comprobaciones; 120 + 288 victorias |
+| Entrenamiento integrado, barras, afinidad e introducción | 444 + 138 + 260 + 34 comprobaciones |
+| Recursos, movimiento, retratos, audio y matrimonios | 654 + 172 + 181 + 101 + 100 comprobaciones |
+
+Las rutas usan decisiones, combates y recursos reales. Para cubrir rutas con menos apoyo familiar, el conductor de campaña compra y mejora cartas con oro ganado; no inyecta recursos ni estadísticas. La ruta de especialización obtiene **1 908 oro**, lleva **Bastón y Dar ánimo a nivel 10**, termina con **1 106 oro** y ocupa **232 905 bytes** serializada. Las fixtures históricas de módulos independientes fijan explícitamente su antiguo 65/65; familia y campaña verifican el inicio nuevo 50/50.
+
+La migración v5→v6 conserva los bytes del archivo original. Se probaron también conversaciones históricas cuyas pérdidas habían quedado recortadas en cero: cargar no las reinterpreta con el nuevo mínimo −100. Permanecen vigentes las pruebas de migración v4, duplicados, presupuesto diario y gastos únicos.
+
+Se verificó por píxeles la escala de grises del retrato. Las escenas de separación se guardaron durante el anillo y continuaron sin repetir la consecuencia. Capturas revisadas: [agenda](../tests/artifacts/family-agenda.png), [librería](../tests/artifacts/family-books.png), [tercera visita de Roxy](../tests/artifacts/family-third-roxy.png), [Sylphiette y su hija](../tests/artifacts/family-horse-sylphiette.png) y [registro gris](../tests/artifacts/family-gray-journal.png).
+
+Registros locales: `tests/artifacts/family-final.log`, `family-daily.log`, `family-narrative.log`, `family-campaign.log` y `family-ui-campaign.log`. Los artefactos se excluyen de Git. `git diff --check` pasa. Las pruebas automatizadas verifican reglas y viabilidad; no sustituyen sesiones de equilibrio y lectura con jugadores.
+
+## Registro anterior — Fase 2
 
 Fecha: **21 de noviembre de 2026**. Ejecución real con **LÖVE 11.5 / LuaJIT**, renderizador y audio. Se conservaron los 40 IDs, los mazos y todos los PNG y ASE originales; `git diff --check` no detecta errores de formato.
 
@@ -1915,6 +2033,8 @@ No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, 
 
 Las **40 cartas se mejoran hasta nivel 10** con duplicados y oro. Abre **M → Mejorar** para comparar efectos, costes y copias; la tienda vende copias adquiridas, libros, materiales y preparación. Cada esposa tiene un máximo diario de **+10 amor y +10 confianza**, compartido entre todas las fuentes. [Fórmulas, costes y arquitectura de la Fase 2](docs/FASE_2_PROGRESION.md).
 
+La **Fase 3** incorpora 16 actividades: combates y duelos con Eris, responsabilidades familiares con Sylphiette e investigación y librería con Roxy, además de reconciliación. No visitar a una esposa cuesta **−20 amor y −20 confianza** al cierre. Las advertencias preceden a una separación por abandono; la partida conserva la separación, su escena y el retrato gris. Cliff y Zanoba entregan al día siguiente; ayudar consume un espacio y adelanta la entrega. [Reglas, recompensas y archivos](docs/FASE_3_FAMILIA.md).
+
 Cada día dispone de **tres interacciones libres**, repetibles con cualquier esposa, y **un encargo independiente a Cliff o Zanoba**. La agenda muestra visitas, recompensas posibles y encargos pendientes. Permite dormir con espacios sin usar después de completar la historia obligatoria y consultar los cambios de ayer. Las escenas principales no gastan espacios. El Día 1 habilita actividades después del tutorial; el Día 7 cierra el tiempo libre antes de resolver los matrimonios. [Arquitectura y reglas de la agenda](docs/FASE_1_ACTIVIDADES.md).
 
 | Día | Contenido |
@@ -1935,13 +2055,13 @@ Nanahoshi entrega **diez cartas en total**: cinco sociales y cinco físicas. Los
 
 En cada conversación se barajan las cartas **equipadas, adquiridas y compatibles** y se roban hasta tres. El tutorial conserva un reparto guiado. Selecciona una carta para leer **«Rudy dirá»**, su intención y su coste; puedes cancelar antes de usarla. Cada encuentro social admite tres acciones y cuatro puntos de energía total. Jugar descarta la carta y roba la siguiente si queda alguna; **P** permite escuchar en silencio, sin energía ni voz gratuita, cuando prefieras esperar o no tengas una opción asequible. Cargar conserva la mano y el orden restante.
 
-Las conversaciones de Nanahoshi, Eris, Roxy y Sylphiette utilizan respuestas escritas por situación. La carta abre la frase de Rudy, la reacción de la otra persona y una continuación; amor, confianza y memoria se aplican al mostrar la reacción. Los números indican el cambio real, respetando el límite de 0–100. Una broma ante el entrenamiento de Eris, una duda sobre la fórmula de Roxy y una promesa a Sylphiette producen consecuencias distintas. La promesa de tiempo familiar puede cumplirse o incumplirse el día tres, recordarse el cuarto y repararse expresamente el quinto.
+Las conversaciones de Nanahoshi, Eris, Roxy y Sylphiette utilizan respuestas escritas por situación. La carta abre la frase de Rudy, la reacción de la otra persona y una continuación; amor, confianza y memoria se aplican al mostrar la reacción. Los números indican el cambio real, respetando el límite de −100–100. Una broma ante el entrenamiento de Eris, una duda sobre la fórmula de Roxy y una promesa a Sylphiette producen consecuencias distintas. La promesa de tiempo familiar puede cumplirse o incumplirse el día tres, recordarse el cuarto y repararse expresamente el quinto.
 
 El inventario contiene **15 cartas sociales, seis híbridas y 19 de combate**. El catálogo escrito cubre nueve conversaciones de entrada; el [informe de cobertura](docs/COBERTURA_DIALOGOS.md) distingue respuestas, variantes, continuaciones y combinaciones posibles. Todo funciona sin conexión mediante tablas Lua, sin generación de texto durante la partida. [Guía de conversaciones y autoría](docs/DIALOGOS.md).
 
 La carta firmada por **—H** es un documento, separado de ambos mazos. Se recoge mediante clic o teclado, se abre con animación y queda disponible en **J → Carta —H**. Leerla o cargar una partida no duplica sus eventos ni los regalos.
 
-Cada personaje utiliza sus cuatro expresiones reales y movimientos breves. Las tres relaciones empiezan en **65 de amor y 65 de confianza**, con límites de 0–100. Promesas, conflictos, decisiones, reconciliaciones y misiones afectan los diálogos y el desenlace; curarse no repara automáticamente los matrimonios. [Sistemas](docs/SISTEMAS.md).
+Cada personaje utiliza sus cuatro expresiones reales y movimientos breves. Las tres relaciones empiezan en **50 de amor y 50 de confianza**, con límites de −100–100. Promesas, conflictos, decisiones, reconciliaciones y misiones afectan los diálogos y el desenlace; curarse no repara automáticamente los matrimonios. [Sistemas](docs/SISTEMAS.md).
 
 Sobre los retratos se muestran barras animadas con valores y cambios con signo. Las esposas tienen **Amor y Confianza**; Nanahoshi, **Confianza e Interés**, sin añadirse a los finales matrimoniales. Solo cinco cartas sociales pueden despertar su interés. El día cinco incluye un duelo real contra Eris, evaluado por estrategia y esfuerzo: una derrota honesta no recibe el castigo por dejar pasar repetidamente oportunidades claras. [Barras, afinidad y reglas del entrenamiento](docs/AFINIDAD_Y_ENTRENAMIENTO.md).
 
@@ -1970,7 +2090,7 @@ La dificultad combina enemigos propios de cada día con perfiles acotados: apare
 
 ## Guardado y pruebas
 
-La continuidad `rudy_curse` usa **versión 5**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v5.json`, con respaldo `campaign-v5.backup.json`. Incluye niveles, duplicados, oro, transacciones, presupuesto diario y todo el progreso anterior. **Continuar** migra v4 conservando la historia y el archivo original. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
+La continuidad `rudy_curse` usa **versión 6**, en `%APPDATA%\LOVE\cartas_del_destino\campaign-v6.json`, con respaldo `campaign-v6.backup.json`. Incluye familia, actividades, encargos, niveles, oro y progreso narrativo. **Continuar** migra v5/v4 conservando la historia y los archivos originales. El menú también puede importar la colección compatible de v1/v2/v3 con aceptación explícita, comenzando una nueva campaña. [Formato y recuperación](docs/GUARDADO.md).
 
 ```powershell
 ./probar.ps1
@@ -1978,7 +2098,7 @@ La continuidad `rudy_curse` usa **versión 5**, en `%APPDATA%\LOVE\cartas_del_de
 & 'C:\Program Files\LOVE\lovec.exe' . --test
 ```
 
-La suite usa la identidad aislada `cartas_del_destino_v5_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
+La suite usa la identidad aislada `cartas_del_destino_v6_tests` y genera capturas en `tests/artifacts/`. Los resultados realmente ejecutados y sus límites figuran en [VERIFICACION.md](docs/VERIFICACION.md). [Entrega y archivos](docs/REESTRUCTURACION.md), [manual](docs/MANUAL.md), [animaciones](docs/ANIMACIONES.md), [audio](docs/AUDIO.md) y [recursos](assets/README.md).
 
 Se conservan los PNG y ASE existentes. Música y efectos son síntesis original sencilla; la valoración auditiva y las pruebas prolongadas con jugadores siguen siendo trabajo de producción.
 ````
@@ -2095,10 +2215,18 @@ end
 
 function App:resume(transition)
     if not self.session then self:menu(); return end
+    Progression.skipUnavailable(self.session)
+    require("src.systems.daily").deliverFavors(self.session)
+    if #require("src.systems.family").ensure(self.session).queue>0 then
+        local phase=self.session.family.queue[1].phase
+        self:switch(require("src.screens.family_scene").new(self),{type=phase==4 and "horizontal" or "fade_in",duration=.3});return
+    end
     if self.session.rewardQueue and #self.session.rewardQueue>0 and not (self.session.combat and self.session.combat.training) then
         self:switch(require("src.screens.reward").new(self),{type="fade_in",duration=.2})
         return
     end
+    local activityBattle=require("src.systems.daily").battleDefinition(self.session)
+    if activityBattle then self:switch(require("src.screens.combat").new(self,activityBattle));return end
     local checkpoint=self.session.checkpoint
     local node=Chapters.get(checkpoint)
     if not node then self:notify("Punto de historia desconocido."); return end
@@ -2398,39 +2526,18 @@ return Manager
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/activities.lua`
 
 ````lua
--- Actividades ordinarias: cada ejecución cuesta un espacio, aunque se repita.
--- Las escenas de chapters tienen su propia regla narrativa y nunca usan este coste.
-local list={
-    {id="time_sylphiette",character="sylphiette",title="Tiempo con Sylphiette",background="home",cost=1,
-        description="Compartir las tareas de casa o reservar un momento para escucharla.",
-        choices={
-            {id="together",label="Preparar juntos la casa",result="Repartís las tareas y dejáis tiempo para descansar juntos.",effects={love=2,trust=1}},
-            {id="listen",label="Escuchar cómo estuvo su día",result="Sylphiette puede terminar de contar lo que le preocupaba. Te quedas a escuchar.",effects={love=1,trust=2}},
-        }},
-    {id="time_roxy",character="roxy",title="Tiempo con Roxy",background="library",cost=1,
-        description="Una pausa entre libros para conversar o contrastar sus anotaciones.",
-        choices={
-            {id="together",label="Compartir una lectura",result="Elegís un relato y comparáis las partes que más os gustaron.",effects={love=2,trust=1}},
-            {id="listen",label="Revisar juntos sus notas",result="Roxy explica una duda. Revisáis las anotaciones como iguales.",effects={love=1,trust=2}},
-        }},
-    {id="time_eris",character="eris",title="Tiempo con Eris",background="training",cost=1,
-        description="Acompañarla durante una pausa o practicar coordinación sin un duelo.",
-        choices={
-            {id="together",label="Pasear después de la práctica",result="Eris baja la espada y camináis juntos antes de volver a casa.",effects={love=2,trust=1}},
-            {id="listen",label="Practicar señales de apoyo",result="Acordáis cuándo avanzar y cuándo cubrir la retirada del otro.",effects={love=1,trust=2}},
-        }},
-}
+local list=require("src.data.family_activities")
 local favors={
-    {id="cliff_notes",character="cliff",title="Cliff: estudiar una técnica",delay=1,
-        description="Cierre de mañana; hoy en D7.",reward="Curación, 2 Escuchar, 45 oro y 2 energía",
-        effects={unlock={"heal"},copies={listen=2},gold=require("src.data.economy").rewards.cliff,externalEnergy=2}},
-    {id="zanoba_artifact",character="zanoba",title="Zanoba: ajustar un artefacto",delay=0,
-        description="Al cerrar esta jornada.",reward="Defensa, 2 Bastón, 40 oro y 2 energía",
-        effects={unlock={"wind_guard"},copies={staff_strike=2},gold=require("src.data.economy").rewards.zanoba,externalEnergy=2}},
+ {id="cliff_notes",character="cliff",providers={"cliff"},title="Investigar cartas sociales",reward="45 oro; 2 Escuchar; Curación",effects={gold=45,copies={listen=2,heal=1}}},
+ {id="zanoba_artifact",character="zanoba",providers={"zanoba"},title="Conseguir cartas de combate",reward="40 oro; 2 Bastón; Defensa",effects={gold=40,copies={staff_strike=2,wind_guard=1}}},
+ {id="magic_materials",character="cliff",providers={"cliff","zanoba"},title="Obtener materiales mágicos",reward="2 materiales; 15 oro",effects={gold=15,items={magic_material=2}}},
+ {id="gold_search",character="cliff",providers={"cliff","zanoba"},title="Encargo remunerado",reward="65 oro",effects={gold=65}},
+ {id="enchantment_study",character="cliff",providers={"cliff"},title="Estudiar encantamientos",reward="1 receta; 1 Analizar runas",effects={discount=1,copies={analyze_runes=1}}},
+ {id="craft_materials",character="zanoba",providers={"zanoba"},title="Fabricar y reunir recursos",reward="1 material; 1 libro; 20 oro",effects={gold=20,items={magic_material=1,study_book=1}}},
 }
 local catalog={list=list,byId={},favors=favors,favorsById={}}
 for _,activity in ipairs(list) do catalog.byId[activity.id]=activity end
-for _,favor in ipairs(favors) do catalog.favorsById[favor.id]=favor end
+for _,favor in ipairs(favors) do favor.delay=1;favor.description="Entrega al comenzar mañana.";catalog.favorsById[favor.id]=favor end
 return catalog
 ````
 
@@ -2608,6 +2715,18 @@ return {
         victory={notes={72,76,79,84},duration=.45,gain=.18},
         defeat={notes={55,50,45},duration=.45,gain=.17},
     },
+}
+````
+
+## src/data/books.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/books.lua`
+
+````lua
+return {
+ {id="water_notes",title="Fundamentos del flujo de agua",price=35,description="Desbloquea Bala de agua y anota una nueva habilidad de estudio.",effects={unlock={"magic_bolt"},familyProgress={water_skill=1}}},
+ {id="rune_recipes",title="Recetas de encantamiento",price=50,description="Analizar runas, dos materiales y dos recetas: 20% de ahorro por mejora.",effects={unlock={"analyze_runes"},items={magic_material=2},discount=2,familyProgress={recipes=1}}},
+ {id="advanced_forms",title="Formas avanzadas de tierra",price=70,description="Desbloquea Pantano y una habilidad avanzada de investigación.",effects={unlock={"swamp"},familyProgress={advanced_study=1}}},
 }
 ````
 
@@ -4565,6 +4684,108 @@ end
 return {list=list,byId=byId,default="mana_anomaly",difficulty=difficulty,resolve=resolve}
 ````
 
+## src/data/family.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/family.lua`
+
+````lua
+return {
+ minimum=-100,maximum=100,initial=50,strainedBelow=25,separationAt=-30,
+ neglectPenalty=20,positiveAt=75,positiveBonus=1,negativeFactor=.5,
+ repetition={1,.9,.8},discountPercent=20,
+ repeated={
+  eris={expression="angry",text="¡Otra vez conmigo! Me gusta tenerte aquí, pero no voy a pelear con una cesta de ropa por tu atención. Ve a ver qué necesitan las demás.",reply="Rudy anota las tareas pendientes. Eris le da un empujón hacia la puerta, sin soltar todavía su mano."},
+  sylphiette={expression="worried",text="Hoy hemos tenido tres ratos juntos. Me alegra, Rudy, pero también quiero que Roxy y Eris puedan contar contigo. Compartir la casa incluye compartir tu tiempo.",reply="Sylphiette señala el horario familiar. Rudy añade un recordatorio para hablar con ambas."},
+  roxy={expression="worried",text="¿Ya se ha hecho tan tarde? He reservado otra silla para ti sin pensarlo... No quisiera que Sylphiette y Eris sintieran que las dejamos fuera.",reply="Roxy baja la mirada y cierra el libro. Acuerdan revisar las responsabilidades de casa."},
+ },
+ warnings={
+  eris="¡Rudy! Hoy no has reservado ni un momento para mí. Si esto sigue así, dejaré de esperarte con la espada guardada.",
+  sylphiette="Puedo ocuparme de muchas cosas, pero no sostener sola nuestra vida. Necesito que mañana reserves tiempo para nosotros.",
+  roxy="He vuelto a guardar tus apuntes sin poder hablar contigo. Una investigación no sustituye nuestra relación. No quiero acostumbrarme a tu ausencia.",
+ },
+ departures={
+  eris={expression="angry",lines={"No es por perder un duelo, Rudy. Ya te dije que no iba a seguir esperando mientras elegías dejarme fuera.","Mi espada no puede arreglar esto por los dos. Te devuelvo el anillo. Me marcho porque esta decisión también me pertenece."},exit="Eris deja el anillo frente a Rudy, monta sin pedir ayuda y toma el camino del bosque."},
+  sylphiette={expression="worried",lines={"Hablamos de repartir el tiempo y las responsabilidades. Yo cumplí; nuestra hija también siguió esperándote.","No voy a enseñarle que amar significa aceptar cualquier ausencia. Me llevo a nuestra hija. Necesitamos un hogar en el que podamos confiar."},exit="Sylphiette deja el anillo sobre la mesa. Asegura el equipaje de su hija y ambas parten a caballo."},
+  roxy={expression="worried",lines={"Puedo aceptar errores y preguntas sin respuesta. Lo que no puedo hacer es escribir yo sola un futuro para los dos.","Esto no es una prueba que puedas aprobar con otra promesa. Te devuelvo el anillo y me marcho. Necesito que respetes esa decisión."},exit="Roxy guarda sus libros, deja el anillo y monta hacia el camino. Recuperar la voz no cambia su decisión."},
+ },
+ specialOwners={shared_magic="sylphiette",combined_spell="roxy",sword_magic="eris"},
+}
+````
+
+## src/data/family_activities.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/family_activities.lua`
+
+````lua
+local function choice(id,label,result,love,trust,effects)
+ effects=effects or {};effects.love=love;effects.trust=trust
+ return {id=id,label=label,result=result,effects=effects}
+end
+local list={
+ {id="time_sylphiette",character="sylphiette",title="Ayudar en el hogar",background="home",description="Repartir las tareas permite que Sylphiette también descanse.",reward="12 oro; empatía y sinceridad",choices={
+  choice("together","Preparar juntos la casa","Termináis las barreras y recogéis la mesa. Sylphiette puede sentarse antes de que se enfríe el té.",3,2,{gold=12,copies={listen=1},familyProgress={household=1}}),
+  choice("listen","Escuchar cómo estuvo su día","Anotas lo que falta y asumes una tarea concreta para mañana.",2,3,{gold=10,copies={be_honest=1},familyProgress={household=1}})}},
+ {id="time_roxy",character="roxy",title="Estudiar magia",background="library",description="Comprobar una fórmula juntos, sin tratar a Roxy como una maestra infalible.",reward="Magia; materiales; investigación",choices={
+  choice("together","Comparar las fórmulas","Roxy corrige una runa y tú detectas otra. El experimento lleva ambos nombres.",3,2,{copies={water_projectile=1},items={magic_material=1},familyProgress={research=1}}),
+  choice("listen","Revisar juntos sus notas","Escuchas su hipótesis antes de probarla. La muestra confirma lo que faltaba.",2,3,{gold=8,copies={analyze_runes=1},familyProgress={research=1}})}},
+ {id="time_eris",character="eris",title="Entrenamiento compartido",background="training",description="Acordar señales de ataque y retirada. La coordinación exige escuchar a ambos.",reward="Ofensiva; coordinación; 14 oro",choices={
+  choice("together","Practicar relevos","Eris abre espacio y tú cubres la retirada. Ninguno decide por el otro.",3,2,{gold=14,copies={coordinated_attack=1},familyProgress={coordination=1}}),
+  choice("listen","Practicar señales de apoyo","Repetís la señal hasta reconocerla sin hablar. Eris aprueba con una sonrisa.",2,3,{gold=12,copies={staff_strike=2},familyProgress={coordination=1}})}},
+ {id="eris_physical",character="eris",title="Entrenamiento físico",background="training",description="Ataques, bloqueos y desplazamientos frente a un blanco encantado. Se juega un combate real.",reward="Hasta 28 oro; 3 Bastón; entrenamiento",battle="practice",choices={choice("practice","Comenzar la práctica","Eris observa tu postura y tus bloqueos.",0,0)}},
+ {id="eris_monsters",character="eris",title="Combatir monstruos",background="forest",description="Acordar una ruta con Eris y enfrentar una bestia. Puedes salir solo o junto a ella.",reward="Hasta 40 oro; cartas; materiales",battle="monsters",choices={choice("together","Salir junto a Eris","Revisáis las señales antes de entrar al bosque.",0,0),choice("solo","Salir solo con la ruta acordada","Eris comprueba la ruta y espera tu informe al regreso.",0,0)}},
+ {id="eris_duel",character="eris",title="Duelo amistoso",background="training",description="Eris evaluará ataques, defensa y esfuerzo reales. Perder con honor también tiene valor.",reward="Hasta 32 oro; ofensiva; desempeño real",battle="duel",choices={choice("duel","Aceptar el duelo","Eris apunta la espada al suelo. La práctica no será letal.",0,0)}},
+ {id="sylphiette_errands",character="sylphiette",title="Encargos familiares",background="home",description="Tu hija espera ayuda con sus recados. Sylphiette necesita que el compromiso llegue hasta el final.",reward="18 oro; sinceridad; compromiso",choices={
+  choice("shopping","Comprar lo que vuestra hija pidió","Comprobáis la lista y lleváis las compras juntos. Tu hija elige el cuento para la tarde.",3,2,{gold=18,copies={be_honest=1},familyProgress={family_errands=1}}),
+  choice("prepare","Preparar la tarde familiar","Dejas lista la merienda y organizas los recados para que nadie tenga que marcharse a mitad.",2,3,{gold=12,copies={remember=1},familyProgress={family_errands=1}})}},
+ {id="sylphiette_zenith",character="sylphiette",title="Cuidar a Zenith",background="home",description="Acompañar a Zenith, cuidar su comodidad y mantener una rutina digna.",reward="Empatía; cuidado; confianza",choices={
+  choice("garden","Acompañarla al jardín","Caminas al ritmo de Zenith y te sientas a su lado. Sylphiette puede descansar sabiendo que no está sola.",3,3,{copies={listen=2},familyProgress={zenith_care=1}}),
+  choice("routine","Preparar sus cuidados","Repasas la rutina con Sylphiette, sin hablar de Zenith como si no estuviera presente.",2,4,{copies={remember=1},familyProgress={zenith_care=1}})}},
+ {id="sylphiette_lilia",character="sylphiette",title="Ayudar a Lilia",background="home",description="Compartir trabajo doméstico real. Lilia no debería perseguirte para que cumplas.",reward="16 oro; sinceridad; tareas cumplidas",choices={
+  choice("repair","Reparar y ordenar la despensa","Lilia revisa el arreglo y te entrega el siguiente estante. No has terminado hasta dejarlo limpio.",2,3,{gold=16,copies={admit_error=1},familyProgress={lilia_help=1}}),
+  choice("supplies","Organizar las provisiones","Anotas las existencias con Lilia y dejas una lista clara para el próximo turno de compras.",3,2,{gold=12,copies={propose_plan=1},familyProgress={lilia_help=1}})}},
+ {id="sylphiette_talk",character="sylphiette",title="Conversación familiar",background="home",description="Escuchar a la familia y comprometerse con una acción verificable.",reward="Cartas sociales; promesas; apoyo",choices={
+  choice("promise","Asumir el próximo recado","Sylphiette acepta el compromiso. Lo importante será cumplirlo, no decirlo de una forma bonita.",2,3,{copies={encourage=1},promise={id="family_errand",status="pending"},familyProgress={family_talk=1}}),
+  choice("listen","Escuchar sin interrumpir","Dejas las cartas sobre la mesa y escuchas hasta el final. Después escribís un acuerdo entre los dos.",3,2,{copies={share_fear=1},familyProgress={family_talk=1}})}},
+ {id="roxy_cards",character="roxy",title="Cartas encantadas",background="library",description="Roxy revisa las runas de Nanahoshi. La receta ahorra oro en una mejora, sin eliminar su coste.",reward="Receta: 20% en una mejora; materiales",choices={
+  choice("recipe","Preparar una receta de mejora","Separáis el catalizador estable. Servirá para una mejora; después habrá que preparar otra muestra.",2,3,{discount=1,copies={analyze_runes=1},familyProgress={enchantments=1}}),
+  choice("materials","Recuperar materiales útiles","Roxy descarta los restos inestables. Conserváis dos muestras seguras.",3,2,{items={magic_material=2},familyProgress={enchantments=1}})}},
+ {id="roxy_books",character="roxy",title="Comprar libros",background="library",description="Roxy te acompaña a la librería. Los libros cuestan oro y se adquieren una sola vez.",reward="Habilidades, cartas o recetas",books=true,choices={choice("browse","Conversar sobre el catálogo","Comentáis los títulos y decidís esperar antes de gastar. También es útil elegir con cuidado.",1,2,{familyProgress={research=1}})}},
+ {id="roxy_research",character="roxy",title="Investigación conjunta",background="laboratory",description="Contrastar resultados como colegas. Cada sesión deja un registro para desafíos mayores.",reward="Investigación; magia; habilidades conjuntas",choices={
+  choice("test","Probar una hipótesis juntos","Roxy contiene el flujo mientras tú ajustas la runa. Ambos anotáis el error antes del resultado.",3,3,{copies={magic_bolt=1},items={magic_material=1},familyProgress={research=1}}),
+  choice("review","Revisar el experimento anterior","Reconocéis qué no funcionó. Roxy propone repetirlo con una variable menos.",2,4,{gold=10,copies={quick_study=1},familyProgress={research=1}})}},
+}
+for _,id in ipairs({"sylphiette","roxy","eris"}) do
+ list[#list+1]={id="reconcile_"..id,character=id,title="Reparar un compromiso",background="home",description="Reconocer el daño y cumplir una responsabilidad concreta. No revierte una separación definitiva.",reward="Recuperación: hasta +8 amor y +8 confianza",recovery=true,choices={choice("repair","Escuchar y reparar con hechos","Rudy reconoce el daño sin exigir perdón. Cumple la tarea acordada y deja espacio para volver a hablar.",8,8,{recovery=true,reconcile="daily_neglect",familyProgress={reconciliation=1}})}}
+end
+for _,activity in ipairs(list) do activity.cost=1 end
+return list
+````
+
+## src/data/family_routes.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/family_routes.lua`
+
+````lua
+-- Entradas personales que dejan de existir tras una separación permanente.
+local routes={
+ day5_eris_training_invitation={wife="eris",to="day5_sylphiette"},
+ day5_eris_duel={wife="eris",to="day5_sylphiette"},
+ day5_training_reflection={wife="eris",to="day5_sylphiette"},
+ day6_eris_rematch_offer={wife="eris",to="day6_companion"},
+ day6_eris_rematch={wife="eris",to="day6_companion"},
+ day6_eris_rematch_close={wife="eris",to="day6_companion"},
+}
+local wives={"sylphiette","roxy","eris"}
+for i,id in ipairs(wives) do
+ for _,prefix in ipairs({"day5_","day5_mission_","day5_battle_","day5_resolution_","day5_gift_","day5_after_"}) do
+  routes[prefix..id]={wife=id,to=wives[i+1] and "day5_"..wives[i+1] or "day5_agenda",complete=not wives[i+1]}
+ end
+ routes["day7_"..id]={wife=id,to=wives[i+1] and "day7_"..wives[i+1] or "day7_council"}
+ routes["day7_plan_"..id]={wife=id,to=wives[i+1] and "day7_plan_"..wives[i+1] or "day7_departures"}
+end
+return routes
+````
+
 ## src/data/manual.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/data/manual.lua`
@@ -4612,8 +4833,11 @@ return {
         {title="Efectos y límite diario",text="Una bonificación social de +1 sube a +2 en nivel 3, +3 en nivel 5, +4 en nivel 7 y +5 en nivel 9. Escuchar solo aumenta confianza; Coqueteo sutil solo amor. Las respuestas inapropiadas conservan las penalizaciones de su situación.\n\nCada esposa puede ganar hasta +10 amor y +10 confianza al día entre cartas, actividades, combates y eventos. Ves el valor realmente disponible. Perder puntos no devuelve capacidad para ganar más ese día."},
         {title="Oro, copias y suministros",text="Actividades, encargos, misiones, entrenamientos y victorias entregan oro. Mejorar abre la Tienda: vende copias de cartas adquiridas, con existencias diarias. Puedes especializar algunas cartas durante los siete días.\n\nLos libros entregan tres copias de una carta social; los materiales aumentan la energía externa hasta 30; preparar un combate concede cuatro de escudo inicial una sola vez. Revisa precios y oro antes de comprar."},
         {title="Agenda: tres actividades y un encargo",text="Cada día tienes tres espacios libres. Puedes repartirlos entre Sylphiette, Roxy y Eris o repetir la misma esposa. Cada actividad reserva un espacio y luego ofrece una decisión. Cliff y Zanoba comparten un encargo independiente por día; la agenda muestra sus premios y plazos.\n\nLa historia obligatoria no consume espacios. Después del tutorial también hay actividades del Día 1. Finalizar día permite dormir con espacios libres: se pierden, no se acumulan. Cambios de ayer conserva visitas, recompensas y relaciones."},
-        {title="Atención y cierre de la jornada",text="Una esposa visitada recibe hasta +1 confianza al cerrar el día; sin visita, -1. Las decisiones de actividad aumentan amor y confianza con sus propios efectos. Repetir no consume un espacio extra al guardar o cargar. Las separaciones siguen los acuerdos narrativos, no una cifra aislada.\n\nEl Día 7 anuncia el cierre del tiempo libre antes de resolver los matrimonios. Los encargos vencidos se entregan una sola vez. El resumen queda guardado antes de comenzar el capítulo siguiente. El guardado conserva los archivos de versiones anteriores."},
-        {title="Amor y confianza persistentes",text="Cada matrimonio comienza con 65 de amor y 65 de confianza (0–100). Los valores nunca se reinician por cambiar de día. Cumplir promesas, compartir responsabilidades y escuchar ayudan; ocultar riesgos y negar autonomía dañan los vínculos.\n\nLas decisiones, conflictos y reconciliaciones quedan en el diario. Una equivocación puede repararse con hechos. No basta con ganar combates ni con obtener una puntuación alta."},
+        {title="Atención y cierre de la jornada",text="Una esposa visitada recibe hasta +1 confianza al cerrar el día; sin visita pierde 20 de amor y 20 de confianza. La historia obligatoria no sustituye las visitas. La tercera interacción con una esposa incluye su reacción sobre las responsabilidades familiares.\n\nPuedes dormir con espacios libres. El Día 7 cierra el tiempo libre antes de los acuerdos finales. El resumen registra visitas, premios y pérdidas una sola vez. Guardar y cargar conserva las reservas y todos sus efectos."},
+        {title="Amor y confianza persistentes",text="Cada matrimonio comienza con 50 de amor y 50 de confianza; acepta valores de -100 a 100. Con ambos valores al menos en 75, las ganancias ordinarias de 2 o más reciben +1. Si alguno es negativo, se reducen a la mitad. Siempre rige el límite diario de +10 por estadística.\n\nReparar un compromiso permite hasta +8/+8 sin reducción por afinidad negativa. Las decisiones, conflictos y reconciliaciones quedan en el diario. Una relación negativa se puede recuperar antes de una separación definitiva."},
+        {title="Actividades y responsabilidades",text="Eris ofrece coordinación, práctica física, monstruos y duelos reales. Sylphiette necesita ayuda en el hogar, recados de vuestra hija, Zenith y Lilia. Roxy propone magia, cartas encantadas, libros e investigación. Cada actividad usa un espacio y admite repetición.\n\nPrometer un recado fija un plazo al cierre de mañana (día 7 como máximo). Incumplirlo cuesta -3 amor/-5 confianza; cumplirlo repara el conflicto. Oro y copias disminuyen ligeramente en visitas repetidas. Los hitos de trabajo conjunto desbloquean habilidades."},
+        {title="Encargos y librería",text="Cliff y Zanoba comparten una solicitud diaria: entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. Ayudar hoy exige confirmar el gasto de una interacción y no cuenta como visita a una esposa. El día 7 solo admite pedir y ayudar con espacio disponible.\n\nRoxy te acompaña a la librería: cada título cuesta oro y se compra una vez. Los libros desbloquean cartas, conocimientos y recetas. Cada receta reduce un 20% el oro de una mejora, mínimo 1, y se consume; los duplicados siguen siendo necesarios."},
+        {title="Separaciones definitivas",text="El abandono puede provocar una separación a -30 o menos, tras ausencias reiteradas y una advertencia de un día anterior. Las decisiones críticas también pueden romper el matrimonio. Una cifra negativa aislada no basta.\n\nLa esposa devuelve el anillo y se marcha; Sylphiette lleva a su hija. El retrato queda gris y se bloquean actividades, nuevas cartas matrimoniales y apoyo en combate. Puedes viajar solo. Guardar, cargar o recuperar la voz no la hacen regresar."},
         {title="Barras y cambios visibles",text="Sobre el retrato, cada esposa muestra Amor y Confianza con valores de 0 a 100. La reacción aplica el cambio una sola vez; sus números indican cuánto ganaste o perdiste realmente. Las barras se animan durante 0,6 segundos y puedes seguir leyendo.\n\nLos cambios positivos muestran un signo + y los negativos un signo menos. Movimiento reducido conserva números y efectos estáticos. Guardar conserva el valor definitivo: cargar o avanzar no repite puntos ni sonidos."},
         {title="La curiosidad de Nanahoshi",text="Nanahoshi muestra Confianza e Interés en el tutorial y las investigaciones de los días tres y cuatro. Solo Escuchar, Hablar con honestidad, Dar ánimo, Broma ligera y Coqueteo sutil pueden aumentar su interés según el contexto. Las demás pueden afectar su confianza.\n\nRepetir una carta en la misma conversación no repite la recompensa. Un halago puede sorprenderla o provocar sarcasmo: no la convierte en esposa ni abre otro final. Su afinidad se guarda aparte de los matrimonios."},
         {title="Cinco desenlaces",text="Familia Greyrat unida, Roxy, Eris, Sylphiette o El camino solitario. Se valoran amor, confianza, eventos personales, compromisos y conflictos pendientes. El desenlace familiar exige resolver los problemas de las tres.\n\nSi dos matrimonios siguen siendo viables, las conversaciones del festival resuelven los planes incompatibles de forma explícita. Una respuesta final no borra los siete días anteriores."},
@@ -4621,7 +4845,7 @@ return {
         {title="Dos mazos iniciales de cinco cartas",text="M abre la colección: Social permite cambiar las cartas de conversación; Combate prepara entre cinco y diez técnicas adquiridas. Los mazos aceptan entre cinco y diez cartas. Selecciona una posición y una carta; añade, sustituye o quita y guarda. Cancelar descarta el borrador.\n\nNo se admiten cartas bloqueadas, duplicados ni mazos de combate sin ofensiva viable. Las exclusivas exigen su compañera; si viaja otra, se adaptan con técnicas iniciales ya adquiridas. Se puede preparar el mazo antes de la misión o tras una derrota."},
         {title="Una mano distinta en cada conversación",text="Al entrar se barajan las cartas equipadas, adquiridas y compatibles con esa situación. Robas hasta tres; al jugar una, va al descarte y robas la siguiente si queda alguna. Las cartas sin diálogo para esa escena se apartan. El tutorial usa un reparto guiado.\n\nTienes tres acciones y cuatro puntos de energía para toda la conversación. Si tu mazo ofrece menos de tres opciones compatibles, verás un aviso. P permite escuchar en silencio sin gastar energía: consume una acción, no concede puntos y no utiliza la voz de Rudy."},
         {title="Leer, confirmar o cancelar una carta",text="Selecciona con clic, 1-3 o las flechas. El panel muestra nombre, coste, intención y la frase exacta bajo Rudy dirá. Elegir una carta no la juega. Utiliza el botón de jugar o Enter para confirmar; Cancelar o Esc cierra la selección sin gastar energía.\n\nLa misma carta tiene frases y reacciones distintas según la persona y la situación. Una broma sobre el entrenamiento puede enfadar a Eris. El coste bajo de una carta no garantiza una buena respuesta."},
-        {title="Leer el intercambio y sus consecuencias",text="Después de confirmar, la carta se anima. Lee la frase de Rudy, avanza a la reacción de la otra persona y continúa por las líneas siguientes. Al aparecer la reacción se aplican amor, confianza y recuerdos. Su retrato cambia de expresión.\n\nLa pantalla muestra el cambio real, respetando los límites de 0 a 100. Seguir leyendo no vuelve a sumar puntos. Hasta acabar el intercambio no se juega otra carta. Las conversaciones importantes tienen respuestas escritas; el juego no inventa frases durante la partida."},
+        {title="Leer el intercambio y sus consecuencias",text="Después de confirmar, la carta se anima. Lee la frase de Rudy, avanza a la reacción de la otra persona y continúa por las líneas siguientes. Al aparecer la reacción se aplican amor, confianza y recuerdos. Su retrato cambia de expresión.\n\nLa pantalla muestra el cambio real, respetando los límites de -100 a 100 y las ganancias diarias. Seguir leyendo no vuelve a sumar puntos. Hasta acabar el intercambio no se juega otra carta. Las conversaciones importantes tienen respuestas escritas."},
         {title="Promesas que vuelven a aparecer",text="Dar ánimo a Sylphiette puede registrar una promesa de tiempo juntos. El día tres decides si te quedas o te marchas; el cuarto ella recuerda lo que ocurrió. Si incumpliste, una disculpa ayuda a hablar, pero la reparación exige asumir el compromiso del día cinco.\n\nRoxy recuerda si escuchaste su investigación o te burlaste de sus dudas. Eris recuerda cómo trataste su entrenamiento. El diario conserva las decisiones. Repetir una carta romántica no borra promesas rotas ni conflictos pendientes."},
         {title="Guardar la mano y la respuesta",text="F5 guarda el reparto, la mano, el descarte, la energía y la posición del intercambio. Al continuar recibes el mismo orden; cargar no vuelve a sortear cartas ni repite los efectos de una respuesta ya registrada.\n\nLas variantes recuerdan decisiones, confianza y respuestas anteriores. El juego funciona sin conexión con diálogos escritos en Lua. La práctica del menú utiliza una sesión aparte y no cambia la campaña guardada."},
         {title="Vida, maná, acciones y escudo",text="La vida representa resistencia; a cero hay derrota. El maná natural permanece bloqueado hasta usar el antídoto. Los fragmentos recargan los artefactos con energía externa para agua y tierra. Las acciones limitan las técnicas de cada turno. El escudo absorbe daño antes que la vida y caduca al siguiente turno.\n\nLa defensa física consume una acción y no maná. Una barrera mágica consume energía externa mientras dure el bloqueo. Algunas técnicas físicas cuestan vida por esfuerzo y nunca pueden dejarlo por debajo de 1 PV. Bastón, piedra y empuje no requieren maná."},
@@ -4787,96 +5011,156 @@ local W=require("src.ui.widgets")
 local P=require("src.ui.palette")
 local Daily=require("src.systems.daily")
 local Catalog=require("src.data.activities")
-local Progression=require("src.systems.progression")
-local Controls=require("src.config.controls")
+local Family=require("src.systems.family")
 local Budget=require("src.systems.relationship_budget")
+local Progression=require("src.systems.progression")
 local Agenda={}
 function Agenda.new(app)
-    local s=Screen.new(app)
-    s.kind="agenda"; s.tab="activities"; s.page=1
-    local function commit(ok,err)
-        if not ok then app:notify(err); return end
-        if app:save() then app:resume() end
+ local s=Screen.new(app);s.kind="agenda";s.tab="sylphiette";s.page=1;s.provider="cliff"
+ local function commit(ok,err)
+  if not ok then app:notify(err);return end
+  if app:save() then app:resume() end
+ end
+ function s:draw()
+  self:begin();local session=app.session;local d=Daily.ensure(session)
+  app.resources:background("home");self:header("DÍA "..session.day.." / AGENDA · ORO "..session.gold)
+  if self.confirmHelp then
+   W.panel(65,70,510,245)
+   self:text("AYUDAR CONSUME UNA INTERACCIÓN",85,91,470,P.gold)
+   self:text("El encargo se entregará hoy. Gastarás uno de los tres espacios que podrías dedicar a tus esposas. Ayudar a Cliff o Zanoba no cuenta como visita matrimonial.",85,126,470,P.ink)
+   self:text("Sin ninguna visita, cada esposa pierde 20 de amor y 20 de confianza al cerrar el día.",85,190,470,P.danger)
+   self:button("Confirmar: gastar 1 espacio",85,257,300,34,function()
+    local request=self.confirmHelp;self.confirmHelp=nil
+    if request.instance then commit(Daily.accelerateFavor(session,request.instance))
+    else commit(Daily.requestFavor(session,request.id,request.provider,true)) end
+   end,Daily.remaining(session)<1)
+   self:button("Cancelar",400,257,152,34,function()self.confirmHelp=nil end)
+   return
+  end
+  if d.active_activity then
+   local active=d.active_activity;local def=Catalog.byId[active.id]
+   app.resources:background(def.background);W.panel(18,48,604,282)
+   app.resources:portrait(def.character,(active.visit or 1)==3 and "worried" or "happy",42,86,2)
+   self:text(def.title,190,65,410,P.gold)
+   self:text(def.description,190,91,408,P.ink)
+   self:text("Visita "..(active.visit or 1).." de hoy · quedan "..Daily.remaining(session).."/3",190,150,408,P.teal)
+   self:text(def.reward,190,175,408,P.gold)
+   for i,choice in ipairs(def.choices) do
+    local delta=Budget.preview(session,def.character,choice.effects)
+    local label=choice.label..(def.battle and "" or " ("..string.format("%+d amor / %+d conf.",delta.love,delta.trust)..")")
+    self:button(label,190,205+(i-1)*42,410,34,function()commit(Daily.resolveActivity(session,choice.id))end)
+   end
+   if def.books then self:button("Entrar a la librería",190,254,410,34,function()app:switch(require("src.screens.books").new(app))end) end
+   self:text("El espacio ya está reservado. Guardar conserva la actividad y su resultado pendiente.",24,340,592,P.muted)
+   return
+  end
+  for i,id in ipairs({"sylphiette","roxy","eris","favors"}) do
+   self:button(({sylphiette="Sylphiette",roxy="Roxy",eris="Eris",favors="Encargos"})[id],18+(i-1)*120,47,114,27,function()self.tab=id;self.page=1;self.keyboardFocus=nil end,false,self.tab==id)
+  end
+  self:button("Ayer",498,47,124,27,function()
+   app:switch(require("src.screens.day_report").new(app,session.daily_history[tostring(session.day-1)],function()app:resume()end))
+  end,not session.daily_history[tostring(session.day-1)])
+  W.panel(18,79,604,28)
+  self:text("Libres: "..Daily.remaining(session).."/3 · Encargo: "..(d.favor_used and "solicitado" or "disponible"),24,88,412,P.gold)
+  local list={}
+  if self.tab=="favors" then
+   for _,def in ipairs(Catalog.favors) do for _,provider in ipairs(def.providers) do if provider==self.provider then list[#list+1]=def end end end
+  else for _,def in ipairs(Catalog.list) do if def.character==self.tab then list[#list+1]=def end end end
+  local perPage=self.tab=="favors" and 2 or 3;local pages=math.max(1,math.ceil(#list/perPage))
+  self:button("<",450,81,35,25,function()self.page=self.page-1 end,self.page==1)
+  self:text(self.page.."/"..pages,492,90,78,P.ink)
+  self:button(">",582,81,40,25,function()self.page=self.page+1 end,self.page==pages)
+  if self.tab=="favors" then
+   self:button("Cliff",18,112,130,24,function()self.provider="cliff";self.page=1 end,false,self.provider=="cliff")
+   self:button("Zanoba",156,112,130,24,function()self.provider="zanoba";self.page=1 end,false,self.provider=="zanoba")
+   W.panel(294,112,328,24)
+   self:text("Mañana al comenzar · Ayudar: 1 espacio",304,120,312,P.muted)
+   for row=1,2 do
+    local def=list[(self.page-1)*2+row]
+    if def then
+     local y=143+(row-1)*59;W.panel(18,y,604,54)
+     self:text(def.title,28,y+7,400,P.gold);self:text(def.reward,28,y+23,400,P.ink)
+     local accelerated=session.day==7
+     local ok,err=Daily.favorAvailable(session,def.id,self.provider,accelerated)
+     self:button(accelerated and "Pedir y ayudar" or "Solicitar",452,y+8,158,25,function()
+      if accelerated then self.confirmHelp={id=def.id,provider=self.provider} else commit(Daily.requestFavor(session,def.id,self.provider)) end
+     end,not ok)
+     if not ok then self:text(err,28,y+37,580,P.muted) end
     end
-    function s:draw()
-        self:begin()
-        local session=app.session
-        local d=Daily.ensure(session)
-        app.resources:background("home")
-        self:header("DÍA "..session.day.." / AGENDA · ORO "..session.gold)
-        local active=d.active_activity
-        if active then
-            local def=Catalog.byId[active.id]
-            W.panel(18,48,604,278)
-            app.resources:portrait(def.character,"happy",42,82,2)
-            self:text(def.title,190,71,400,P.gold,2)
-            self:text(def.description,190,115,400,P.ink)
-            self:text("Espacio reservado · quedan "..Daily.remaining(session).." de 3",190,164,400,P.teal)
-            for i,choice in ipairs(def.choices) do
-                local delta=Budget.preview(session,def.character,choice.effects)
-                self:button(choice.label.." (+"..delta.love.." amor / +"..delta.trust.." conf.)",190,197+(i-1)*43,410,34,function()
-                    local result,err=Daily.resolveActivity(session,choice.id)
-                    commit(result,err)
-                    if result then app:notify(result) end
-                end)
-            end
-            self:text("Esta actividad ya reservó un espacio. Guardar conserva la decisión pendiente.",30,335,580,P.ink)
-            return
-        end
-        self:button("Actividades",18,47,190,27,function() self.tab="activities"; self.keyboardFocus=nil end,false,self.tab=="activities")
-        self:button("Encargos",218,47,190,27,function() self.tab="favors"; self.keyboardFocus=nil end,false,self.tab=="favors")
-        self:button("Cambios de ayer",418,47,204,27,function()
-            local report=session.daily_history[tostring(session.day-1)]
-            app:switch(require("src.screens.day_report").new(app,report,function() app:resume() end))
-        end,not session.daily_history[tostring(session.day-1)])
-        W.panel(18,80,604,26)
-        self:text("Libres: "..Daily.remaining(session).."/3   ·   Encargo: "..(d.favor_used and "solicitado" or "1 disponible").."   ·   Historia: "..(Daily.storyComplete(session) and "completa" or "pendiente"),28,89,584,P.gold)
-        if self.tab=="activities" then
-            local pages=math.max(1,math.ceil(#Catalog.list/3))
-            if pages>1 then
-                self:button("<",548,80,30,26,function() self.page=self.page-1 end,self.page==1)
-                self:button(">",586,80,30,26,function() self.page=self.page+1 end,self.page==pages)
-            end
-            for i=1,math.min(3,#Catalog.list-(self.page-1)*3) do
-                local def=Catalog.list[(self.page-1)*3+i]
-                local x=18+(i-1)*204
-                W.panel(x,113,196,153)
-                app.resources:portrait(def.character,"neutral",x+10,122,1)
-                self:text(def.title,x+80,126,106,P.gold)
-                self:text("Visitas: "..d.visits[def.character],x+80,160,106,P.teal)
-                self:text("1 espacio · +12 oro / +1 copia\n+2 amor/+1 conf. o +1/+2",x+10,195,176,P.ink)
-                local disabled=Daily.remaining(session)==0 or d.activities_locked or d.ending_processed or session.relationships[def.character].marriageState=="separated"
-                self:button("Pasar tiempo",x+10,232,176,24,function() commit(Daily.startActivity(session,def.id)) end,disabled)
-            end
-        else
-            for i,def in ipairs(Catalog.favors) do
-                local y=113+(i-1)*59
-                W.panel(18,y,604,54)
-                self:text(def.title,28,y+8,410,P.gold)
-                self:text(def.reward..". "..def.description,28,y+24,406,P.ink)
-                self:button("Solicitar",460,y+12,150,29,function() commit(Daily.requestFavor(session,def.id)) end,d.favor_used or d.activities_locked)
-            end
-            local pending={}
-            for _,favor in ipairs(session.pending_favors) do
-                if favor.status=="pending" then pending[#pending+1]=Catalog.favorsById[favor.id].character.." (cierre D"..favor.due_day..")" end
-            end
-            self:text("Pendientes: "..(#pending>0 and table.concat(pending,", ") or "ninguno")..". Las copias repetidas sirven para mejorar.",28,237,584,P.ink)
-        end
-        local finalLock=session.day==7 and not d.activities_locked
-        self:text(finalLock and "Resolver la historia cierra el tiempo libre antes de los acuerdos finales." or "Al dormir: +1 confianza si hubo visita; -1 si no. Los espacios libres se pierden.",24,274,592,P.ink)
-        self:button(finalLock and "Cerrar tiempo libre e ir a la historia" or "Continuar historia",18,301,330,29,function() commit(Progression.continueStory(session)) end,Daily.storyComplete(session))
-        self:button("Finalizar día",358,301,264,29,function() app:endDay() end,not Daily.storyComplete(session))
-        self:text("La historia obligatoria no consume espacios. Puedes dormir sin usar los tres.",24,341,592,P.muted)
+   end
+   for _,favor in ipairs(session.pending_favors) do if favor.status=="pending" then
+    W.panel(18,259,604,25)
+    self:text("Pendiente: "..Catalog.favorsById[favor.id].title,24,267,385,P.ink)
+    self:button("Ayudar hoy (1 espacio)",410,259,210,25,function()self.confirmHelp={instance=favor.instance_id}end,Daily.remaining(session)<1 or d.activities_locked)
+   end end
+  else
+   for row=1,3 do
+    local def=list[(self.page-1)*3+row]
+    if def then
+     local x=18+(row-1)*204;W.panel(x,114,196,167)
+     local separated=not Family.active(session,def.character)
+     app.resources:portrait(def.character,separated and "worried" or "neutral",x+10,121,1,separated)
+     self:text(def.title,x+80,125,106,P.gold)
+     self:text("Visitas: "..d.visits[def.character],x+80,164,106,P.teal)
+     self:text(def.reward,x+10,195,176,P.ink)
+     self:button(separated and "Separación definitiva" or "Elegir actividad",x+10,246,176,25,function()commit(Daily.startActivity(session,def.id))end,separated or Daily.remaining(session)==0 or d.activities_locked or d.ending_processed)
     end
-    function s:keypressed(key)
-        if self:navigate(key) then return end
-        if Controls.matches(Controls.back,key) then app:overlay("pause")
-        elseif Controls.matches(Controls.journal,key) then app:overlay("journal")
-        elseif Controls.matches(Controls.deck,key) then app:overlay("deck") end
-    end
-    return s
+   end
+  end
+  W.panel(18,284,604,22)
+  self:text("Sin visita: -20 amor y -20 confianza. La historia no sustituye las actividades.",24,291,592,P.ink)
+  local finalLock=session.day==7 and not d.activities_locked
+  self:button(finalLock and "Cerrar tiempo libre e ir a la historia" or "Continuar historia",18,311,330,27,function()commit(Progression.continueStory(session))end,Daily.storyComplete(session))
+  self:button("Finalizar día",358,311,264,27,function()app:endDay()end,not Daily.storyComplete(session))
+  W.panel(18,341,604,17)
+  self:text("Puedes dormir sin agotar los tres espacios. Los encargos normales tardan un día.",24,346,592,P.muted)
+ end
+ function s:keypressed(key)
+  if self:navigate(key) then return end
+  if key=="escape" then if self.confirmHelp then self.confirmHelp=nil else app:overlay("pause") end
+  elseif key=="j" then app:overlay("journal") elseif key=="m" then app:overlay("deck") end
+ end
+ return s
 end
 return Agenda
+````
+
+## src/screens/books.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/books.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local Economy=require("src.systems.economy")
+local Books={}
+function Books.new(app,returnTo)
+ local s=Screen.new(app);s.kind="books";s.returnTo=returnTo or function()app:resume()end
+ function s:draw()
+  self:begin();app.resources:background("library");W.panel(12,10,616,336)
+  self:text("LIBRERÍA · ORO "..app.session.gold,24,24,460,P.gold,2)
+  self:button("Volver",514,20,100,26,self.returnTo)
+  local family=require("src.systems.family").ensure(app.session)
+  for i,book in ipairs(require("src.data.books")) do
+   local y=65+(i-1)*82
+   W.panel(22,y,594,76);self:text(book.title,33,y+10,420,P.gold)
+   self:text(book.description,33,y+28,400,P.ink)
+   self:button(family.books[book.id] and "Adquirido" or book.price.." oro",454,y+20,150,32,function()
+    local receipt,err=Economy.buyBook(app.session,book.id,app.session.economy.revision)
+    self.message=err or "Libro y conocimientos guardados."
+    if receipt then
+     require("src.systems.daily").completeBookVisit(app.session)
+     if app:save() then app:resume() end
+    end
+   end,family.books[book.id] or app.session.gold<book.price or app.session.combat~=nil or app.session.encounter~=nil)
+  end
+  self:text(self.message or "Cada título se adquiere una vez. Las recetas se consumen al mejorar.",26,323,582,P.muted)
+ end
+ function s:keypressed(key) if key=="escape" then self.returnTo() else self:navigate(key) end end
+ return s
+end
+return Books
 ````
 
 ## src/screens/collection.lua
@@ -5421,6 +5705,7 @@ function CombatScreen.new(app,definition)
     end
     function s:retry()
         if self:busy() then return end
+        if self.definition.activity then return self:continue() end
         if self.enc.training and self.enc.finished then return self:continue() end
         local restored=Combat.retry(self.enc)
         if not restored then return end
@@ -5429,10 +5714,16 @@ function CombatScreen.new(app,definition)
         app:switch(CombatScreen.new(app,self.definition),{type="magic",duration=.35})
     end
     function s:leave()
+        if self.definition.activity then app:notify("Termina el encuentro reservado; puedes guardar y continuar después.");return end
         if app.practice then app:endPractice() else app:combatSafeExit() end
     end
     function s:continue()
         if self:busy() then return end
+        if self.definition.activity then
+            local ok,err=require("src.systems.daily").finishBattle(app.session,self.enc)
+            if ok then app:save();app:resume() else app:notify(err) end
+            return
+        end
         if self.enc.training and self.enc.finished then app:resume();return end
         if self.enc.outcome~="victory" then return end
         app:finishCombat(self.enc)
@@ -5678,6 +5969,13 @@ function CombatScreen.new(app,definition)
         self:begin();rect(P.shadow,0,0,640,360,.85)
         local won=self.enc.outcome=="victory"
         W.panel(69,31,502,296,{border=won and P.gold or P.danger})
+        if self.definition.activity and not self.enc.training then
+            self:text(won and "ACTIVIDAD COMPLETADA" or "RETIRADA A TIEMPO",90,52,460,P.gold,2,"center")
+            self:text(self.definition.title,94,101,452,P.ink)
+            self:text("Eris revisará los ataques, bloqueos y decisiones del encuentro. La actividad ya consumió su espacio; la recompensa se registra una vez.",94,142,452,P.ink)
+            self:button("Volver a la agenda",138,253,364,28,function()self:continue()end)
+            return
+        end
         if self.enc.training then
             self:text(won and "¡VICTORIA! — RUDY" or "DERROTA EN ENTRENAMIENTO — ERIS GANA",90,52,460,P.gold,1,"center")
             self:text("El ejercicio se detiene. Ambos están a salvo.",94,99,452,P.ink)
@@ -6824,6 +7122,78 @@ end
 return Encounter
 ````
 
+## src/screens/family_scene.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/family_scene.lua`
+
+````lua
+local Screen=require("src.ui.screen")
+local W=require("src.ui.widgets")
+local P=require("src.ui.palette")
+local Config=require("src.data.family")
+local Family=require("src.systems.family")
+local Scene={}
+local function pixel(x,y,w,h,color)
+ love.graphics.setColor(color);love.graphics.rectangle("fill",math.floor(x),math.floor(y),w,h)
+end
+function Scene.new(app)
+ local s=Screen.new(app);s.kind="family_scene";s.entry=assert(Family.ensure(app.session).queue[1])
+ function s:update(dt) self.entry.elapsed=math.min(20,self.entry.elapsed+dt) end
+ function s:advance()
+  if self.finished then if app:save() then app:resume() end;return end
+  local entry=self.entry;local count=entry.kind=="departure" and 5 or #entry.lines
+  if entry.kind=="departure" and (entry.phase==3 or entry.phase==4) and entry.elapsed<1.2 and not app.options.reducedMotion then return end
+  if entry.phase<count then entry.phase=entry.phase+1;entry.elapsed=0
+  else
+   require("src.systems.events").mark(app.session,entry.id.."_presented")
+   table.remove(app.session.family.queue,1)
+   self.finished=true
+  end
+  if app:save() then app:resume() end
+ end
+ function s:draw()
+  self:begin();local e=self.entry;local departure=e.kind=="departure";local data=Config.departures[e.character]
+  app.resources:background(departure and e.phase>=4 and "forest" or "home")
+  W.panel(8,7,624,30);self:text(departure and "UNA DECISIÓN DEFINITIVA" or "VIDA FAMILIAR",18,18,480,P.gold)
+  self:text("F5: guardar",530,18,94,P.muted)
+  if departure and e.phase==4 then
+   local t=app.options.reducedMotion and 1 or math.min(1,e.elapsed/2.5)
+   local x=75+math.floor(t*300);local y=160;local brown={.32,.18,.12,1}
+   -- Silueta montada dibujada en píxeles; retratos y fondo originales.
+   pixel(x,y,95,30,brown);pixel(x+80,y-24,18,45,brown);pixel(x+91,y-26,22,15,brown)
+   pixel(x+85,y-34,6,12,brown);pixel(x+5,y+24,9,35,brown);pixel(x+72,y+24,9,35,brown)
+   pixel(x-15,y+2,20,7,brown);pixel(x+34,y-5,34,12,{.55,.25,.16,1})
+   pixel(x+79,y-23,6,35,{.16,.10,.08,1});pixel(x+100,y-22,3,3,{.05,.04,.03,1})
+   pixel(x+18,y+27,7,27,{.24,.13,.09,1});pixel(x+85,y+27,7,27,{.24,.13,.09,1})
+   pixel(x+32,y+5,38,7,{.67,.4,.22,1});pixel(x+65,y-6,34,2,{.12,.09,.07,1})
+   app.resources:portrait(e.character,"worried",x+24,y-64,1)
+   if e.character=="sylphiette" then
+    pixel(x+59,y-18,12,17,{.45,.65,.45,1});pixel(x+60,y-27,10,10,{.94,.79,.62,1})
+    self:text("Sylphiette parte con su hija.",30,53,570,P.ink)
+   end
+  else
+   app.resources:portrait(e.character,departure and data.expression or e.expression,65,72,2)
+   app.resources:portrait("rudeus","worried",450,72,2)
+   if departure and e.phase==3 then
+    local t=app.options.reducedMotion and 1 or math.min(1,e.elapsed/1.2)
+    local x=235+math.floor(t*115);local y=120+math.floor(t*t*85)
+    for row=0,7 do for col=0,7 do
+     if (row==0 or row==7 or col==0 or col==7) and not ((row==0 or row==7) and (col==0 or col==7)) then pixel(x+col*3,y+row*3,3,3,P.gold) end
+    end end
+   end
+  end
+  W.panel(18,224,604,121)
+  local text=departure and (data.lines[e.phase] or (e.phase==3 and "El anillo queda frente a Rudy. La decisión no se deshace al recuperar la voz.") or (e.phase==4 and data.exit) or "Separación definitiva registrada. Su retrato permanece en gris; ya no participará como esposa ni compañera de combate.") or e.lines[e.phase]
+  self:text(require("src.data.characters").byId[e.character].shortName,30,236,570,P.gold)
+  self:text(text,30,257,570,P.ink)
+  self:button("Continuar",430,310,178,25,function() self:advance() end,departure and (e.phase==3 or e.phase==4) and e.elapsed<1.2 and not app.options.reducedMotion)
+ end
+ function s:keypressed(key) if key=="return" or key=="space" then self:advance() elseif key=="f5" then app:save() else self:navigate(key) end end
+ return s
+end
+return Scene
+````
+
 ## src/screens/history.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/screens/history.lua`
@@ -6917,7 +7287,7 @@ function Hub.new(app)
             local x=18+(i-1)*204
             W.panel(x,99,196,231)
             local visited=place.completedEvent and app.session.events[place.completedEvent]
-            app.resources:portrait(id,visited and "happy" or "neutral",x+34,108,2)
+            app.resources:portrait(id,visited and "happy" or "neutral",x+34,108,2,not require("src.systems.family").active(app.session,id))
             self:text(char.shortName,x+10,241,176,P.gold,1,"center")
             if place.scene then
                 self:text(place.title,x+10,258,176,P.muted,1,"center")
@@ -6931,10 +7301,12 @@ function Hub.new(app)
                 if ready then nextId,err=Progression.selectCompanion(app.session,id)
                 else nextId,err=Progression.visit(app.session,id) end
                 if nextId then app:save(); app:resume() else app:notify(err) end
-            end,visited and not ready)
+            end,(visited and not ready) or (ready and not require("src.systems.family").active(app.session,id)))
         end
         W.panel(18,336,604,20,{shadow=false})
-        self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink)
+        if ready then self:button("Viajar solo",190,335,260,23,function()
+            local ok,err=Progression.selectCompanion(app.session,"solo");if ok then app:save();app:resume() else app:notify(err) end
+        end) else self:text("Puedes consultar tus vínculos en el diario. Guardado automático activado.",26,343,588,P.ink) end
     end
     function s:keypressed(key)
         if self:navigate(key) then return end
@@ -6994,7 +7366,9 @@ function Manual.new(app,returnTo)
         if self.section==1 then
             local char=Characters.list[self.page]
             local extra=Guide.characters[char.id]
-            app.resources:portrait(char.id,"neutral",34,103,2)
+            local separated=s.session.relationships[char.id] and s.session.relationships[char.id].marriageState=="separated"
+            app.resources:portrait(char.id,separated and "worried" or "neutral",34,103,2,separated)
+            if separated then self:text("SEPARACIÓN DEFINITIVA",27,251,148,P.muted) end
             self:text(char.name,182,91,426,P.gold)
             self:text(char.description,182,118,426,P.ink)
             self:text("PERSONALIDAD",182,161,426,P.teal)
@@ -7263,10 +7637,11 @@ function Overlays.new(app,kind)
                 W.panel(x,49,196,215)
                 self:text(char.shortName,x+10,61,176,P.gold)
                 self:text(char.theme,x+10,79,176,P.muted)
-                self:text("Confianza "..r.trust.." / 100",x+10,113,176,P.ink)
-                W.bar(x+10,129,176,7,r.trust,100,P.teal)
-                self:text("Amor "..r.love.." / 100",x+10,150,176,P.ink)
-                W.bar(x+10,166,176,7,r.love,100,P.rose)
+                app.resources:portrait(id,r.marriageState=="separated" and "worried" or "neutral",x+125,105,1,r.marriageState=="separated")
+                self:text("Confianza "..r.trust,x+10,113,110,P.ink)
+                W.bar(x+10,129,108,7,r.trust+100,200,P.teal)
+                self:text("Amor "..r.love,x+10,150,110,P.ink)
+                W.bar(x+10,166,108,7,r.love+100,200,P.rose)
                 local conflicts,broken=0,0
                 for _,value in pairs(r.pendingConflicts or {}) do if value then conflicts=conflicts+1 end end
                 for _,value in pairs(r.promises or {}) do if value=="broken" or (type(value)=="table" and value.status=="broken") then broken=broken+1 end end
@@ -7392,6 +7767,7 @@ function Shop.new(app,cardId)
         self:begin();app.resources:background("library");W.panel(12,12,616,336)
         self:text("TIENDA · ORO: "..app.session.gold,26,25,438,P.gold,2)
         self:button("Volver",516,21,98,26,function() app:switch(require("src.screens.upgrades").new(app,self.cardId)) end)
+        self:button("Libros",406,21,100,26,function() app:switch(require("src.screens.books").new(app,function()app:switch(self)end)) end)
         local quote,err=Economy.quote(app.session,self.cardId)
         self:text("COPIAS: "..Collection.byId[self.cardId].name,26,67,580,P.teal)
         self:text(quote and (quote.price.." oro/copia · Existencias de hoy: "..quote.stock) or err,26,87,580,P.ink)
@@ -7654,7 +8030,7 @@ function Upgrades.new(app,selected)
                 self.message=err or "Libro aplicado: +3 copias.";if receipt then app:save() end
             end,not view.effect or not view.unlocked or view.level==10 or (Economy.ensure(app.session).items.study_book or 0)<1)
         end
-        self:text(self.message or reason or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
+        self:text(self.message or reason or (view.discount and "Receta activa: ahorro del 20%; se consume al mejorar.") or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
         self:text("Tab y Enter: botones · Las mejoras no cambian los mazos equipados.",18,347,604,P.ink)
     end
     function s:keypressed(key)
@@ -8108,11 +8484,14 @@ function Collection.view(session,id,overrideLevel)
     local combat=Combat.byId[id] or card.combat
     local class=Collection.class(id)
     local costs=combat and Collection.combatCosts(id,level,combat)
+    local gold=Config.goldRequired(level,class)
+    local discount=session.family and session.family.discounts>0 and level<10
+    if discount then gold=math.max(1,math.floor(gold*(1-require("src.data.family").discountPercent/100))) end
     return {id=id,name=card.name,level=level,copies=entry.copies,unlocked=entry.unlocked,maxLevel=10,
         type=Social.byId[id] and (combat and "Híbrida" or "Social") or "Combate",class=class,className=Config.classes[class].name,
         baseEffect=Social.byId[id] and Collection.socialEffects(id,1),effect=Social.byId[id] and Collection.socialEffects(id,level),
         baseCombatEffect=combat and Collection.combatEffects(id,1,combat.effects),combatEffect=combat and Collection.combatEffects(id,level,combat.effects),
-        copiesRequired=Config.copiesRequired(level),goldRequired=Config.goldRequired(level,class),
+        copiesRequired=Config.copiesRequired(level),goldRequired=gold,discount=discount,
         socialCost=Social.byId[id] and card.cost,combatCost=costs and costs.cost,manaCost=costs and costs.manaCost,hpCost=costs and costs.hpCost,perBattle=costs and costs.perBattle}
 end
 function Collection.grant(session,id,count)
@@ -8139,6 +8518,7 @@ function Collection.upgrade(session,id,revision)
     if not receipt then return nil,err end
     local entry=session.collection[id]
     entry.copies=entry.copies-before.copiesRequired;entry.level=entry.level+1
+    if before.discount then session.family.discounts=session.family.discounts-1 end
     receipt.cardId=id;receipt.level=entry.level;receipt.copies=before.copiesRequired
     return {before=before,after=Collection.view(session,id),receipt=receipt}
 end
@@ -8402,6 +8782,7 @@ function Cards.preview(enc,index)
     local result=Resolver.resolve(enc.context,card.id,enc.memory)
     if not result then return nil end
     result.progressionVersion=enc.context.legacyProgression and 0 or 1
+    result.familyVersion=enc.memory and enc.memory.legacyAffinity and 0 or 1
     if enc.context.legacyEffects then
         local previous=legacyPreview(enc,index)
         previous.phrase,previous.reaction,previous.expression=result.phrase,result.reaction,result.expression
@@ -8435,6 +8816,7 @@ function Cards.pass(enc,expectedTurn)
     if enc.finished then return nil,"El encuentro ya terminó." end
     local result=assert(Resolver.resolve(enc.context,"pass",enc.memory))
     result.progressionVersion=enc.context.legacyProgression and 0 or 1
+    result.familyVersion=enc.memory and enc.memory.legacyAffinity and 0 or 1
     result.cost=0; result.actionTurn=enc.turn; result.applied=false
     local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
         or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
@@ -8474,7 +8856,8 @@ function Cards.restore(snapshot,deck,context)
         if type(entry)~="table" then return nil end
         enc.context.legacyProgression=entry.progressionVersion~=1
         enc.memory.legacyBudget=enc.context.legacyProgression
-        migrated=migrated or enc.context.legacyProgression
+        enc.memory.legacyAffinity=entry.familyVersion~=1
+        migrated=migrated or enc.context.legacyProgression or enc.memory.legacyAffinity
         local result
         if entry.cardId=="pass" then result=Cards.pass(enc)
         else
@@ -8492,13 +8875,14 @@ function Cards.restore(snapshot,deck,context)
             result.actualInterest=result.projectedInterest or 0
         end
     end
-    enc.context.legacyProgression=nil;enc.memory.legacyBudget=nil
+    enc.context.legacyProgression=nil;enc.memory.legacyBudget=nil;enc.memory.legacyAffinity=nil
     if migrated then
         -- Preserve historical responses, then use today's levels and budget for
         -- every new action. Pending reactions are still committed only once.
         enc.memory=Memory.capture(context.memory)
         for turn,result in ipairs(enc.log) do
             if not result.applied then
+                result.familyVersion=1
                 local actual=result.affinityTarget and Affinity.preview(enc.memory,result.character,result)
                     or require("src.systems.relationship_budget").preview(enc.memory,result.character,result)
                 result.projectedLove,result.projectedTrust=actual.love or 0,actual.trust
@@ -9435,6 +9819,7 @@ local Catalog=require("src.data.activities")
 local Characters=require("src.data.characters")
 local Relationships=require("src.systems.relationships")
 local Events=require("src.systems.events")
+local Family=require("src.systems.family")
 local Daily={}
 local function copy(value)
     if type(value)~="table" then return value end
@@ -9482,9 +9867,32 @@ function Daily.startActivity(session,id)
     local d=session.daily
     d.interactions_used=d.interactions_used+1
     d.visits[def.character]=d.visits[def.character]+1
-    d.active_activity={id=id,instance_id=Daily.key(session,"activity_"..d.interactions_used)}
+    d.active_activity={id=id,instance_id=Daily.key(session,"activity_"..d.interactions_used),visit=d.visits[def.character]}
     d.events[d.active_activity.instance_id.."_started"]=true
     return d.active_activity
+end
+function Daily.activityEffect(session,effect)
+    local out=copy(effect)
+    local active=session.daily.active_activity
+    local factor=require("src.data.family").repetition[active.visit or 1] or .8
+    if out.gold then out.gold=math.max(1,math.floor(out.gold*factor)) end
+    for id,n in pairs(out.copies or {}) do out.copies[id]=math.max(1,math.floor(n*factor)) end
+    return out
+end
+local function completeActivity(session,choiceId,effect,text)
+    local d=session.daily;local active=d.active_activity;local def=Catalog.byId[active.id]
+    effect=Daily.activityEffect(session,effect)
+    effect.character=def.character;effect.context="activity";effect.text=text;effect.sharedMoment=active.instance_id
+    local delta=require("src.systems.relationship_budget").preview(session,def.character,effect)
+    local applied,err=Events.apply(session,active.instance_id,effect)
+    if not applied and err then return nil,err end
+    d.activities_completed[#d.activities_completed+1]={id=active.id,instance_id=active.instance_id,choice=choiceId,character=def.character}
+    local prefix=(active.visit or 1)>1 and ((active.visit==3 and "Antes de despedirse: " or "Al volver a encontrarse: ")) or ""
+    Family.notice(session,active.instance_id.."_result",def.character,prefix..text,delta.love<0 and "angry" or "happy",
+        "Resultado: "..string.format("%+d amor / %+d confianza",delta.love,delta.trust)..". Oro: "..(effect.gold or 0)..". Recompensas guardadas.")
+    Family.activityFinished(session,def,active.instance_id)
+    d.active_activity=nil;session.combat=nil
+    return text
 end
 function Daily.resolveActivity(session,choiceId)
     local d=Daily.ensure(session)
@@ -9493,44 +9901,111 @@ function Daily.resolveActivity(session,choiceId)
     local def=Catalog.byId[active.id]
     for _,choice in ipairs(def.choices) do
         if choice.id==choiceId then
-            local effect=copy(choice.effects)
-            effect.character=def.character; effect.context="activity"; effect.text=choice.result
-            effect.sharedMoment=active.instance_id
-            local economy=require("src.data.economy")
-            effect.gold=economy.rewards.activity
-            effect.copies={[economy.activityCopies[def.character]]=1}
-            local delta=require("src.systems.relationship_budget").preview(session,def.character,effect)
-            local applied,err=Events.apply(session,active.instance_id,effect)
-            if not applied and err then return nil,err end
-            d.activities_completed[#d.activities_completed+1]={id=active.id,instance_id=active.instance_id,choice=choiceId,character=def.character}
-            d.active_activity=nil
-            return choice.result.." (+"..delta.love.." amor / +"..delta.trust.." conf. / +"..effect.gold.." oro)"
+            if active.battle then return nil,"Termina el combate reservado." end
+            if def.battle then active.choice=choiceId;active.battle=true;return "Encuentro preparado." end
+            return completeActivity(session,choiceId,choice.effects,choice.result)
         end
     end
     return nil,"Elige una de las opciones de la actividad."
 end
-function Daily.requestFavor(session,id)
+function Daily.battleDefinition(session)
+    local active=Daily.ensure(session).active_activity
+    local def=active and Catalog.byId[active.id]
+    if not def or not active.battle then return nil end
+    return {kind="magic",title=def.title,background=def.background,activity=true,training=def.battle=="duel",
+        enemyId=def.battle=="duel" and "eris_training" or def.battle=="monsters" and ((Family.ensure(session).progress.monster_hunts or 0)>=2 and "ruins_guardian" or "forest_beast") or "mana_anomaly",
+        character=def.battle=="monsters" and active.choice=="together" and "eris" or nil,
+        difficulty=def.battle=="practice" and 1 or math.min(3,session.day),intro=def.description}
+end
+function Daily.finishBattle(session,enc)
+    local def=Daily.battleDefinition(session)
+    if not def or session.combat~=enc or not enc.finished then return nil,"El encuentro aún no ha terminado." end
+    local activity=Catalog.byId[session.daily.active_activity.id]
+    local won=enc.outcome=="victory"
+    local effect,text
+    if def.training then
+        local result=require("src.systems.training").evaluate(enc)
+        effect={love=result.love,trust=result.trust,gold=won and 32 or 16,copies={staff_strike=won and 3 or 1},familyProgress={training=1}}
+        effect.decision="activity_duel_result";effect.value=result.id
+        if result.id=="suspected_throw" then effect.conflict="training_effort" end
+        if result.id=="victory" or result.id=="honorable_defeat" then effect.reconcile="training_effort" end
+        text=require("src.data.training_dialogue")[result.id].effort..": "..result.reason
+    else
+        effect={love=won and 3 or 1,trust=won and 2 or 1,gold=won and (activity.battle=="monsters" and (def.enemyId=="ruins_guardian" and 60 or 40) or 28) or 6,
+            copies={staff_strike=won and 3 or 1},familyProgress={}}
+        if won or activity.battle~="monsters" then effect.familyProgress[activity.battle=="monsters" and "monster_hunts" or "training"]=1 end
+        if won and activity.battle=="monsters" then effect.items={magic_material=def.enemyId=="ruins_guardian" and 2 or 1};effect.copies.simple_cut=1 end
+        text=won and "Eris revisa contigo los ataques y bloqueos que funcionaron. El informe abre el camino a desafíos mayores." or "Os retiráis a tiempo. Eris señala un error concreto y acuerda cómo practicarlo la próxima vez."
+    end
+    return completeActivity(session,session.daily.active_activity.choice,effect,text)
+end
+function Daily.completeBookVisit(session)
+    local active=Daily.ensure(session).active_activity
+    if active and active.id=="roxy_books" then return completeActivity(session,"purchase",{love=3,trust=2,familyProgress={research=1}},"Roxy revisa contigo el libro comprado. Elegís una técnica que practicaréis juntos.") end
+end
+function Daily.favorAvailable(session,id,provider,accelerate)
     local ok,err=available(session); if not ok then return nil,err end
     local d=session.daily
     if d.favor_used then return nil,"Ya solicitaste el encargo de hoy." end
     local def=Catalog.favorsById[id]
     if not def then return nil,"Encargo desconocido." end
+    provider=provider or def.character
+    local valid=false;for _,p in ipairs(def.providers) do if p==provider then valid=true end end
+    if not valid then return nil,"Ese encargado no realiza esta tarea." end
+    for _,favor in ipairs(session.pending_favors) do
+        if favor.requested_day==session.day-1 and favor.id==id then return nil,"No puedes repetir la tarea de ayer, aunque cambies de encargado." end
+    end
+    if accelerate and Daily.remaining(session)<1 then return nil,"Ayudar requiere una interacción libre." end
+    if session.day==7 and not accelerate then return nil,"En el Día 7 debes solicitar y ayudar para recibirlo hoy." end
+    return true
+end
+function Daily.deliverFavors(session)
+    local d=Daily.ensure(session)
+    for _,favor in ipairs(session.pending_favors) do
+        if favor.status=="pending" and favor.due_day<=session.day then
+            local def=Catalog.favorsById[favor.id];local effect=copy(def.effects)
+            effect.presenter=favor.provider or def.character;effect.context="favor";effect.text="Entrega de "..def.title..": "..def.reward
+            local key=favor.instance_id.."_delivered"
+            local applied,err=Events.apply(session,key,effect);if not applied and err then return nil,err end
+            session.rewards[key]=true;favor.status="delivered";favor.delivered_day=session.day
+            if d.favor_requested and d.favor_requested.instance_id==favor.instance_id then d.favor_requested=copy(favor) end
+        end
+    end
+    return true
+end
+function Daily.accelerateFavor(session,instance)
+    local ok,err=available(session);if not ok then return nil,err end
+    if Daily.remaining(session)<1 then return nil,"Ayudar requiere una interacción libre." end
+    for _,favor in ipairs(session.pending_favors) do
+        if favor.instance_id==instance and favor.requested_day==session.day and favor.status=="pending" and not favor.accelerated then
+            local d=session.daily;d.interactions_used=d.interactions_used+1
+            local key=Daily.key(session,"activity_"..d.interactions_used)
+            Events.apply(session,key,{context="favor_help",text="Ayudaste a "..(favor.provider or Catalog.favorsById[favor.id].character).."; consumiste una interacción libre."})
+            d.activities_completed[#d.activities_completed+1]={id="help_favor",instance_id=key,choice=favor.id,favor=instance}
+            favor.accelerated=true;favor.due_day=session.day
+            return Daily.deliverFavors(session)
+        end
+    end
+    return nil,"Ese encargo no está pendiente."
+end
+function Daily.requestFavor(session,id,provider,accelerate)
+    local ok,err=Daily.favorAvailable(session,id,provider,accelerate);if not ok then return nil,err end
+    local d=session.daily;local def=Catalog.favorsById[id]
     local key=Daily.key(session,"favor_"..id)
     Events.apply(session,key,{context="favor",text="Encargo solicitado: "..def.title})
-    local favor={id=id,instance_id=key,requested_day=session.day,due_day=math.min(7,session.day+def.delay),status="pending"}
+    local favor={id=id,provider=provider or def.character,instance_id=key,requested_day=session.day,due_day=session.day+1,status="pending"}
     session.pending_favors[#session.pending_favors+1]=favor
     d.favor_used=true; d.favor_requested=copy(favor)
+    if accelerate then Daily.accelerateFavor(session,key) end
     return favor
 end
 -- Efectos acotados por día/persona; el abandono nunca separa por una cifra sola.
 function Daily.applyAttention(session)
     local d=Daily.ensure(session)
+    Family.resolveCommitments(session)
     for _,id in ipairs(Characters.romanceIds) do
         local visited=d.visits[id]>0
-        if session.relationships[id].marriageState~="separated" then
-            Events.apply(session,Daily.key(session,"attention_"..id),{character=id,context="daily",
-                trust=visited and 1 or -1,text=visited and "Tiempo compartido durante la jornada." or "Hoy no reservaste tiempo libre para este vínculo."})
-        end
+        Family.attention(session,id,visited)
     end
 end
 function Daily.lockActivities(session)
@@ -9548,20 +10023,7 @@ function Daily.finish(session)
     if d.active_activity then return nil,"Termina la actividad pendiente antes de dormir." end
     Events.apply(session,Daily.key(session,"interactions_recorded"),{context="daily",text="Interacciones utilizadas: "..d.interactions_used.." de 3."})
     Daily.applyAttention(session)
-    -- Los encargos futuros permanecen pendientes al avanzar de día.
-    for _,favor in ipairs(session.pending_favors) do
-        if favor.status=="pending" and favor.due_day<=session.day then
-            local def=Catalog.favorsById[favor.id]
-            local effect=copy(def.effects)
-            effect.presenter=def.character; effect.context="favor"; effect.text="Entrega de "..def.title..": "..def.reward
-            local key=favor.instance_id.."_delivered"
-            local applied,err=Events.apply(session,key,effect)
-            if not applied and err then return nil,err end
-            session.rewards[key]=true
-            favor.status="delivered"; favor.delivered_day=session.day
-            if d.favor_requested and d.favor_requested.instance_id==favor.instance_id then d.favor_requested=copy(favor) end
-        end
-    end
+    local delivered,deliveryError=Daily.deliverFavors(session);if not delivered then return nil,deliveryError end
     for _,activity in ipairs(d.activities_completed) do
         Events.apply(session,activity.instance_id.."_mission",{mission=activity.instance_id,hidden=true,context="daily"})
     end
@@ -9608,16 +10070,24 @@ function Daily.restore(session,input)
     local visits={sylphiette=0,roxy=0,eris=0}
     local seen={}
     local function reserve(record,completed)
-        if type(record)~="table" or not Catalog.byId[record.id] then return false end
+        if type(record)~="table" or (not Catalog.byId[record.id] and record.id~="help_favor") then return false end
         local index=type(record.instance_id)=="string" and tonumber(record.instance_id:match("^day"..session.day.."_activity_(%d)$"))
         if not index or index<1 or index>d.interactions_used or seen[index] then return false end
         if completed then
-            local valid=false
-            for _,choice in ipairs(Catalog.byId[record.id].choices) do if record.choice==choice.id then valid=true end end
+            local valid=record.id=="help_favor" and Catalog.favorsById[record.choice]~=nil
+                or record.id=="roxy_books" and record.choice=="purchase"
+            for _,choice in ipairs(Catalog.byId[record.id] and Catalog.byId[record.id].choices or {}) do if record.choice==choice.id then valid=true end end
             if not valid or not session.events[record.instance_id] then return false end
         end
         seen[index]=true
+        if record.id=="help_favor" then return completed end
         local id=Catalog.byId[record.id].character; visits[id]=visits[id]+1
+        if record.battle then
+            if not Catalog.byId[record.id].battle then return false end
+            local valid=false
+            for _,choice in ipairs(Catalog.byId[record.id].choices) do if record.choice==choice.id then valid=true end end
+            if not valid then return false end
+        end
         return true
     end
     for _,record in ipairs(d.activities_completed) do if not reserve(record,true) then return nil,"Actividad guardada inválida." end end
@@ -9640,13 +10110,16 @@ function Daily.restore(session,input)
         return out
     end
     session.daily=clean(d,0); session.daily.events=session.daily.events or {}
+    if session.daily.active_activity then
+        session.daily.active_activity.visit=visits[Catalog.byId[session.daily.active_activity.id].character]
+    end
     local function validSnapshot(value)
         if type(value)~="table" then return false end
         for _,id in ipairs(Characters.romanceIds) do
             local r=value[id]
             if type(r)~="table" then return false end
             for _,field in ipairs({"love","trust"}) do
-                if type(r[field])~="number" or r[field]~=r[field] or r[field]<0 or r[field]>100 then return false end
+                if type(r[field])~="number" or r[field]~=r[field] or r[field]<require("src.data.family").minimum or r[field]>require("src.data.family").maximum then return false end
             end
             if not ({married=true,strained=true,separated=true})[r.marriageState] then return false end
         end
@@ -9667,18 +10140,33 @@ function Daily.restore(session,input)
         end
     end
     session.pending_favors={}
-    local favors={}
+    local favors,byInstance={},{}
     for _,favor in ipairs(type(input.pending_favors)=="table" and input.pending_favors or {}) do
         local def=type(favor)=="table" and Catalog.favorsById[favor.id]
         local day=def and favor.requested_day
         if type(day)~="number" or day%1~=0 or day<1 or day>session.day or favors[day]
             or favor.instance_id~="day"..day.."_favor_"..favor.id
-            or favor.due_day~=math.min(7,day+def.delay)
+            or (favor.due_day~=(favor.accelerated and day or day+1) and not favor.legacyDelivery)
+            or type(favor.due_day)~="number" or favor.due_day<day or favor.due_day>7
             or (favor.status~="pending" and favor.status~="delivered")
             or not session.events[favor.instance_id]
             or (favor.status=="delivered" and not session.events[favor.instance_id.."_delivered"]) then return nil,"Encargo guardado inválido." end
-        favors[day]=true; session.pending_favors[#session.pending_favors+1]=clean(favor,0)
+        local provider=favor.provider or def.character
+        local allowed=false;for _,id in ipairs(def.providers) do if id==provider then allowed=true end end
+        if not allowed then return nil,"Encargado guardado inválido." end
+        favors[day]=true;byInstance[favor.instance_id]=favor;session.pending_favors[#session.pending_favors+1]=clean(favor,0)
         if day==session.day then session.daily.favor_requested=clean(favor,0) end
+    end
+    local helped={}
+    for _,record in ipairs(d.activities_completed) do
+        if record.id=="help_favor" then
+            local favor=byInstance[record.favor]
+            if not favor or not favor.accelerated or favor.requested_day~=session.day or favor.id~=record.choice or helped[record.favor] then return nil,"Ayuda guardada inconsistente." end
+            helped[record.favor]=true
+        end
+    end
+    for id,favor in pairs(byInstance) do
+        if favor.requested_day==session.day and favor.accelerated and not helped[id] then return nil,"Falta la interacción de ayuda." end
     end
     if (d.favor_used==true)~=(favors[session.day]==true) then return nil,"Reserva de encargo inconsistente." end
     if not d.favor_used then session.daily.favor_requested=nil end
@@ -9758,7 +10246,7 @@ function Memory.capture(session)
     for id,r in pairs(out.relationships) do
         local value=(session.relationships or {})[id] or r
         for _,key in ipairs({"love","trust"}) do
-            local n=value[key]; if type(n)=="number" and n==n then r[key]=math.max(0,math.min(100,n)) end
+            local n=value[key]; if type(n)=="number" and n==n then r[key]=math.max(require("src.data.family").minimum,math.min(require("src.data.family").maximum,n)) end
         end
         for _,key in ipairs({"events","decisions","criticalDecisions","promises","brokenPromises","sharedMoments","pendingConflicts","reconciliations"}) do r[key]=map(value[key]) end
         r.personalEvents=r.events
@@ -10339,6 +10827,21 @@ function Economy.use(session,itemId,cardId,revision)
     elseif itemId=="magic_material" then session.externalEnergy=math.min(30,(session.externalEnergy or 0)+item.energy) end
     return receipt
 end
+function Economy.buyBook(session,id,revision)
+    if session.combat or session.encounter then return nil,"Termina el encuentro antes de comprar." end
+    local family=require("src.systems.family").ensure(session)
+    if family.books[id] then return nil,"Ya adquiriste ese libro." end
+    for _,book in ipairs(require("src.data.books")) do
+        if book.id==id then
+            local receipt,err=Economy.spend(session,book.price,revision,"book_"..id);if not receipt then return nil,err end
+            local effect={};for key,value in pairs(book.effects) do effect[key]=value end
+            effect.book=id;effect.text="Libro adquirido: "..book.title
+            require("src.systems.events").apply(session,"book_"..id,effect)
+            return receipt
+        end
+    end
+    return nil,"Libro desconocido."
+end
 return Economy
 ````
 
@@ -10394,6 +10897,14 @@ local function validate(effect,depth)
     for _,id in ipairs(effect.unlock or {}) do if not knownCard(id) then return false,"Carta desconocida: "..tostring(id) end end
     if effect.gold~=nil and (type(effect.gold)~="number" or effect.gold%1~=0 or effect.gold<0 or effect.gold>100000) then return false,"Recompensa de oro inválida." end
     if effect.copies~=nil and type(effect.copies)~="table" then return false,"Lote de copias inválido." end
+    for _,field in ipairs({"familyProgress","items"}) do
+        if effect[field]~=nil and type(effect[field])~="table" then return false,"Recompensa familiar inválida." end
+        for key,value in pairs(effect[field] or {}) do
+            if type(key)~="string" or type(value)~="number" or value%1~=0 or value<1 or value>100 then return false,"Recompensa familiar inválida." end
+            if field=="items" and not require("src.data.economy").items[key] then return false,"Material desconocido." end
+        end
+    end
+    if effect.discount~=nil and (type(effect.discount)~="number" or effect.discount%1~=0 or effect.discount<1 or effect.discount>21) then return false,"Receta inválida." end
     for id,count in pairs(effect.copies or {}) do
         if not knownCard(id) or type(count)~="number" or count%1~=0 or count<1 or count>10000 then return false,"Recompensa de copias inválida." end
     end
@@ -10423,9 +10934,12 @@ function Events.apply(session,id,effects)
     session.journal=session.journal or {}; session.rewards=session.rewards or {}
     local grants={}
     local function unlock(cardId,count)
+        local owner=require("src.data.family").specialOwners[cardId]
+        if owner and not require("src.systems.family").active(session,owner) then return end
         grants[#grants+1]=assert(Collection.grant(session,cardId,count or 1))
     end
     local function apply(effect,path,inheritedText,inheritedHidden)
+        require("src.systems.family").applyEffects(session,effect)
         local delta={love=0,trust=0}
         if effect.character and session.relationships[effect.character] then
             delta=Budget.commit(session,effect.character,effect)
@@ -10494,6 +11008,109 @@ function Events.apply(session,id,effects)
 end
 
 return Events
+````
+
+## src/systems/family.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/src/systems/family.lua`
+
+````lua
+local Config=require("src.data.family")
+local Family={}
+function Family.ensure(session)
+ session.family=session.family or {progress={},warnings={},neglect={},departures={},queue={},seen={},books={},discounts=0}
+ return session.family
+end
+function Family.active(session,id)
+ return session.relationships[id] and session.relationships[id].marriageState~="separated"
+end
+function Family.notice(session,key,id,text,expression,reply)
+ local f=Family.ensure(session)
+ if f.seen[key] then return end
+ f.seen[key]=true
+ f.queue[#f.queue+1]={id=key,character=id,kind="notice",phase=1,elapsed=0,
+  expression=expression or "worried",lines={text,reply or "Rudy registra el compromiso. La próxima jornada mostrará si lo cumple."}}
+end
+function Family.depart(session,id,reason)
+ local f=Family.ensure(session)
+ if f.departures[id] then return end
+ f.departures[id]={day=session.day,reason=reason or "critical_decision",permanent=true}
+ session.relationships[id].marriageState="separated";session.relationships[id].routeState="separated"
+ session.decisions["separated_"..id]=true
+ f.queue[#f.queue+1]={id="departure_"..id,character=id,kind="departure",phase=1,elapsed=0}
+end
+function Family.applyEffects(session,effect)
+ local f=Family.ensure(session)
+ for id,value in pairs(effect.familyProgress or {}) do f.progress[id]=(f.progress[id] or 0)+value end
+ for id,value in pairs(effect.items or {}) do
+  local e=require("src.systems.economy").ensure(session);e.items[id]=(e.items[id] or 0)+value
+ end
+ if effect.discount then f.discounts=math.min(21,f.discounts+effect.discount) end
+ if effect.book then f.books[effect.book]=true end
+ if effect.promise and effect.promise.id=="family_errand" then
+  if effect.promise.status=="pending" and session.relationships.sylphiette.promises.family_errand==nil then
+   f.commitmentDue=math.min(7,session.day+1)
+  elseif effect.promise.status~="pending" then f.commitmentDue=nil end
+ end
+ if effect.marriageState=="separated" and session.relationships[effect.character] then Family.depart(session,effect.character,effect.context or "critical_decision") end
+end
+function Family.resolveCommitments(session)
+ local f=Family.ensure(session)
+ if f.commitmentDue and f.commitmentDue<=session.day and Family.active(session,"sylphiette") then
+  require("src.systems.events").apply(session,"family_errand_due",{character="sylphiette",love=-3,trust=-5,
+   promise={id="family_errand",status="broken"},context="daily",text="El recado prometido quedó pendiente: -3 amor / -5 confianza. Se puede reparar cumpliéndolo."})
+  Family.notice(session,"family_errand_warning","sylphiette","Nuestra hija esperaba ese recado. Prefiero que elijas un momento que puedas cumplir; todavía puedes hacerte cargo.","worried")
+  f.commitmentDue=nil
+ end
+end
+function Family.attention(session,id,visited)
+ local f=Family.ensure(session);local Events=require("src.systems.events")
+ local key="day"..session.day.."_attention_"..id
+ if session.events[key] or not Family.active(session,id) then return end
+ if visited then
+  Events.apply(session,key,{character=id,trust=1,context="daily",text="Tiempo compartido durante la jornada."})
+ else
+  local earlier=f.warnings[id] and f.warnings[id].day<session.day
+  f.neglect[id]=(f.neglect[id] or 0)+1
+  Events.apply(session,key,{character=id,love=-Config.neglectPenalty,trust=-Config.neglectPenalty,
+   conflict="daily_neglect",context="daily",text="Sin interacción: -20 amor y -20 confianza por abandono."})
+  local r=session.relationships[id]
+  if earlier and f.neglect[id]>=2 and (r.love<=Config.separationAt or r.trust<=Config.separationAt) then
+   Events.apply(session,"neglect_separation_"..id,{character=id,marriageState="separated",context="neglect",text="Separación definitiva tras advertencias y ausencias repetidas."})
+  else
+   f.warnings[id]=f.warnings[id] or {day=session.day}
+   Family.notice(session,key.."_warning",id,Config.warnings[id],id=="eris" and "angry" or "worried")
+  end
+ end
+end
+function Family.activityFinished(session,def,instance)
+ local f=Family.ensure(session);local Events=require("src.systems.events")
+ local visits=session.daily.visits[def.character]
+ if visits==3 then
+  local line=Config.repeated[def.character]
+  Family.notice(session,"day"..session.day.."_third_"..def.character,def.character,line.text,line.expression,line.reply)
+  Events.apply(session,instance.."_responsibility",{character=def.character,decision="family_reminder_"..def.character,value=session.day,text=line.text,context="activity"})
+ end
+ if def.id=="sylphiette_errands" then
+  Events.apply(session,instance.."_kept",{character="sylphiette",promise={id="family_errand",status="kept"},reconcile="family_errand",context="activity",text="Recado familiar cumplido con hechos."})
+ end
+ if (f.progress.monster_hunts or 0)>=2 then
+  Family.notice(session,"hunt_challenge_unlocked","eris","Ya conoces la ruta y has vencido dos veces. Podemos investigar al guardián de las ruinas; prepara el mazo antes de volver a salir.","happy","Las siguientes cacerías enfrentarán al guardián y entregarán mejores recompensas.")
+ end
+ local milestones={
+  {id="coordination",wife="eris",card="sword_magic",text="Eris reconoce vuestras señales. Habéis construido una técnica de espada y magia juntos."},
+  {id="research",wife="roxy",card="combined_spell",text="Roxy coloca ambos nombres en el informe. Ya podéis sostener un conjuro combinado."},
+  {id="household",wife="sylphiette",card="shared_magic",text="Sylphiette confía en el reparto que habéis mantenido. La magia compartida también nace de cuidar la casa."},
+ }
+ for _,m in ipairs(milestones) do
+  local r=session.relationships[m.wife]
+  if (f.progress[m.id] or 0)>=3 and Family.active(session,m.wife) and r.love>=50 and r.trust>=50 and not session.events["activity_skill_"..m.id] then
+   Events.apply(session,"activity_skill_"..m.id,{character=m.wife,unlock={m.card},relationshipEvent="activity_skill",sharedMoment=m.id,context="activity",text=m.text})
+   Family.notice(session,"skill_scene_"..m.id,m.wife,m.text,"happy","Rudy repasa el acuerdo. La habilidad seguirá requiriendo que ella pueda acompañarlo.")
+  end
+ end
+end
+return Family
 ````
 
 ## src/systems/json.lua
@@ -11251,23 +11868,23 @@ function Progression.companion(session,checkpoint)
     local chapter=chapterFor(checkpoint or session.checkpoint)
     local key=chapter and chapter.companion and chapter.companion.decisionKey
     local id=key and (session.decisions or {})[key]
-    if id and Characters.byId[id] and Characters.byId[id].romance then return id end
+    if id and Characters.byId[id] and Characters.byId[id].romance and require("src.systems.family").active(session,id) then return id end
 end
 local function context(session,checkpoint) return {companion=Progression.companion(session,checkpoint)} end
 local function meets(session,condition,checkpoint) return Conditions.evaluate(session,condition,context(session,checkpoint)) end
 local function resolveText(text,session,checkpoint)
     if type(text)~="string" then return text end
-    local id=Progression.companion(session,checkpoint) or "sylphiette"
-    local replacements={companion=Story.companionNames[id] or "tu acompañante",
-        companionAdvice=Story.companionAdvice[id] or "Lo resolveremos juntos.",
-        companionMemory=Story.companionMemory[id] or "Compartimos un recuerdo verdadero."}
+    local id=Progression.companion(session,checkpoint) or "solo"
+    local replacements={companion=Story.companionNames[id] or "Rudy",
+        companionAdvice=Story.companionAdvice[id] or "Debo revisar la ruta antes de avanzar.",
+        companionMemory=Story.companionMemory[id] or "Conservo lo que aprendí durante el viaje."}
     return (text:gsub("{(%w+)}",function(key) return replacements[key] or "{"..key.."}" end))
 end
 local function definition(session,checkpoint)
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil end
     local raw=copy(node.definition)
-    local selected=Progression.companion(session,checkpoint) or "sylphiette"
+    local selected=Progression.companion(session,checkpoint) or "solo"
     for key,value in pairs((raw.variants or {})[selected] or {}) do raw[key]=value end
     return raw
 end
@@ -11280,14 +11897,27 @@ local function savedChoice(session,sceneId)
     for _,choice in ipairs(Progression.choices(session,sceneId)) do if choice.id==selected then return choice end end
 end
 local function move(session,checkpoint)
+    local routes=require("src.data.family_routes")
+    for _=1,20 do
+        local route=routes[checkpoint]
+        if not route or require("src.systems.family").active(session,route.wife) then break end
+        Events.apply(session,"skipped_"..checkpoint,{context="family",text="Se respeta la separación de "..Characters.byId[route.wife].shortName.."; su encuentro matrimonial no se realiza."})
+        if route.complete then Events.apply(session,"day5_complete",{text="Preparación familiar concluida respetando las separaciones."}) end
+        checkpoint=route.to
+    end
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Destino narrativo desconocido: "..tostring(checkpoint) end
     session.checkpoint,session.day=checkpoint,node.day
     Daily.ensure(session)
+    Daily.deliverFavors(session)
     session.dialogueIndex,session.encounter=1,nil
     session.encounterReview,session.tutorial=nil,nil
     session.combat,session.combatPreparation,session.trainingReview=nil,nil,nil
     return checkpoint
+end
+function Progression.skipUnavailable(session)
+    local route=require("src.data.family_routes")[session.checkpoint]
+    if route and not require("src.systems.family").active(session,route.wife) then return move(session,session.checkpoint) end
 end
 local function applyEffect(session,effect,checkpoint)
     if not meets(session,effect.requires,checkpoint) then return false end
@@ -11328,7 +11958,8 @@ function Progression.availableCompanions(session)
     local selection=hub and hub.companion
     local available={}
     if selection and meets(session,selection.requires,session.checkpoint) then
-        for _,id in ipairs(selection.options or {}) do available[#available+1]=id end
+        for _,id in ipairs(selection.options or {}) do if require("src.systems.family").active(session,id) then available[#available+1]=id end end
+        available[#available+1]="solo"
     end
     return available
 end
@@ -11397,8 +12028,9 @@ function Progression.scene(session,id)
     end
     local function append(line)
         if not meets(session,line.requires,id) then return end
+        if session.relationships[line.speaker] and not require("src.systems.family").active(session,line.speaker) then return end
         scene.lines[#scene.lines+1]={
-            speaker=line.speaker=="companion" and (Progression.companion(session,id) or "sylphiette") or line.speaker,
+            speaker=line.speaker=="companion" and (Progression.companion(session,id) or "narrator") or line.speaker,
             expression=line.expression or "neutral",animation=line.animation,text=resolveText(line.text,session,id),
             delivery=line.delivery,effect=line.effect,stateEffect=line.stateEffect,
             portrait=line.portrait,stage=line.stage}
@@ -11413,6 +12045,13 @@ function Progression.scene(session,id)
         if selected.speaker then append(selected) else for _,line in ipairs(selected) do append(line) end end
     end
     for _,line in ipairs(raw.lines or {}) do append(line) end
+    if #scene.lines==0 then scene.lines={{speaker="narrator",text="Rudy respeta la decisión de quienes se marcharon y continúa con las responsabilidades pendientes."}} end
+    if id=="day6_intro" and next(require("src.systems.family").ensure(session).departures) then
+        scene.lines[1].text="Cliff vigila las lecturas y Zanoba lleva el contenedor. Rudy decidirá si viaja con una esposa disponible o afronta el desafío solo. Quienes se marcharon no están convocadas."
+    end
+    if id=="day7_voice" and next(require("src.systems.family").ensure(session).departures) then
+        for _,line in ipairs(scene.lines) do if line.speaker=="narrator" and line.text:find("las tres",1,true) then line.text="Rudy explica la maldición a quienes siguen a su lado. La recuperación de su voz no revoca ninguna separación." end end
+    end
     return scene
 end
 function Progression.encounter(session,id)
@@ -11495,7 +12134,7 @@ function Progression.next(session,checkpoint,result)
     if node.definition.document and not (session.clues and session.clues[node.definition.document]) then
         return nil,"Examina y lee la carta antes de continuar."
     end
-    if node.definition.requiresCompanion and not Progression.companion(session,checkpoint) then
+    if node.definition.requiresCompanion and not Progression.companion(session,checkpoint) and not session.decisions[chapterFor(checkpoint).companion.decisionKey] then
         return nil,"Elige un acompañante antes de continuar."
     end
     if node.kind=="scene" and #Progression.choices(session,checkpoint)>0 and not savedChoice(session,checkpoint) then
@@ -11581,10 +12220,24 @@ end
 function Budget.preview(session,id,effect)
     local gains=Budget.ensure(session)[id]
     local allowed={love=effect.love or effect.chemistry or 0,trust=effect.trust or 0}
+    local relationship=(session.relationships or {})[id]
+    if relationship and relationship.marriageState=="separated" and not session.legacyAffinity then return {love=0,trust=0,chemistry=0} end
+    if relationship and not session.legacyAffinity and not session.legacyBudget and not effect.recovery then
+        local config=require("src.data.family")
+        for _,key in ipairs({"love","trust"}) do
+            if allowed[key]>0 then
+                if relationship.love<0 or relationship.trust<0 then allowed[key]=math.max(1,math.floor(allowed[key]*config.negativeFactor))
+                elseif relationship.love>=config.positiveAt and relationship.trust>=config.positiveAt and allowed[key]>=2 then allowed[key]=allowed[key]+config.positiveBonus end
+            end
+        end
+    end
     if gains and not session.legacyBudget then
         for _,key in ipairs({"love","trust"}) do
             if allowed[key]>0 then allowed[key]=math.min(allowed[key],math.max(0,Budget.limit-gains[key])) end
         end
+    end
+    if relationship and session.legacyAffinity then
+        for _,key in ipairs({"love","trust"}) do allowed[key]=math.max(0,math.min(100,relationship[key]+allowed[key]))-relationship[key] end
     end
     return Relationships.preview(session.relationships or {},id,allowed)
 end
@@ -11603,13 +12256,14 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 
 ````lua
 local Characters = require("src.data.characters")
-local Relationships = {defaults={love=65,trust=65}, thresholds={maintain=55,united=75}}
+local Config=require("src.data.family")
+local Relationships = {defaults={love=Config.initial,trust=Config.initial}, thresholds={maintain=55,united=75}}
 
 local function finite(n, fallback)
     if type(n)~="number" or n~=n or math.abs(n)==math.huge then return fallback or 0 end
     return n
 end
-local function clamp(n) return math.max(0,math.min(100,finite(n))) end
+local function clamp(n) return math.max(Config.minimum,math.min(Config.maximum,finite(n))) end
 local function empty(t) return not t or next(t)==nil end
 
 function Relationships.new(config)
@@ -11617,8 +12271,8 @@ function Relationships.new(config)
     local all={}
     for _,id in ipairs(Characters.romanceIds) do
         local personal={}
-        all[id]={love=clamp(finite(config.love,65)),trust=clamp(finite(config.trust,65)),
-            chemistry=clamp(finite(config.love,65)),events=personal,personalEvents=personal,
+        all[id]={love=clamp(finite(config.love,Config.initial)),trust=clamp(finite(config.trust,Config.initial)),
+            chemistry=clamp(finite(config.love,Config.initial)),events=personal,personalEvents=personal,
             decisions={},criticalDecisions={},promises={},brokenPromises={},sharedMoments={},
             pendingConflicts={},reconciliations={},history={},marriageState="married",routeState="married"}
     end
@@ -11628,7 +12282,7 @@ end
 function Relationships.refresh(r)
     r.chemistry=r.love -- Compatibility with the original social-card renderer.
     if r.marriageState~="separated" then
-        r.marriageState=(r.love<55 or r.trust<55 or not empty(r.pendingConflicts)) and "strained" or "married"
+        r.marriageState=(r.love<Config.strainedBelow or r.trust<Config.strainedBelow or not empty(r.pendingConflicts)) and "strained" or "married"
     end
     r.routeState=r.marriageState
 end
@@ -12125,7 +12779,7 @@ function Resources:getPortrait(id)
     end
     return self.portraits[id]
 end
-function Resources:portrait(id,expression,x,y,scale)
+function Resources:portrait(id,expression,x,y,scale,grayscale)
     local img=self:getPortrait(id)
     local frame=EXPRESSIONS[expression or "neutral"] or 0
     local width,height=img:getWidth()/4,img:getHeight()
@@ -12135,7 +12789,15 @@ function Resources:portrait(id,expression,x,y,scale)
     end
     scale=integerScale(scale)
     love.graphics.setColor(1,1,1,1)
+    local previous=love.graphics.getShader()
+    if grayscale then
+        self.grayShader=self.grayShader or love.graphics.newShader([[vec4 effect(vec4 color, Image texture, vec2 uv, vec2 screen) {
+            vec4 pixel=Texel(texture,uv)*color;float gray=dot(pixel.rgb,vec3(0.299,0.587,0.114));return vec4(gray,gray,gray,pixel.a);
+        }]])
+        love.graphics.setShader(self.grayShader)
+    end
     love.graphics.draw(img,self.quads[key],math.floor(x),math.floor(y),0,scale,scale)
+    love.graphics.setShader(previous)
     return img
 end
 function Resources:getIcon(id)
@@ -12218,7 +12880,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=5,filename="campaign-v5.json",backup="campaign-v5.backup.json",optionsFile="options.json",
+local Save={version=6,filename="campaign-v6.json",backup="campaign-v6.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -12261,6 +12923,7 @@ function Save.newSession(config)
         journal={},rewardQueue={},rewards={},missions={},defeatedEnemies={},familyEvents={},events_by_day={},options=Options.normalize()}
     Daily.ensure(s)
     Collection.ensure(s);Economy.ensure(s)
+    require("src.systems.family").ensure(s)
     return s
 end
 
@@ -12295,6 +12958,14 @@ function Save.validate(input)
                     for _,field in ipairs({"love","trust"}) do gains[field]=math.min(10,gains[field]+math.max(0,tonumber(entry[field]) or 0)) end
                 end
             end
+        end
+    end
+    if input.version==5 then
+        local encoded,err=Json.encode(input);if not encoded then return nil,err end
+        input=Json.decode(encoded);input.version=6;input.family=nil
+        input.migration=type(input.migration)=="table" and input.migration or {};input.migration.familySource="campaign-v5.json"
+        for _,favor in ipairs(type(input.pending_favors)=="table" and input.pending_favors or {}) do
+            if type(favor)=="table" then favor.legacyDelivery=true end
         end
     end
     if input.version~=Save.version then return nil,"Versión de guardado no compatible." end
@@ -12332,7 +13003,9 @@ function Save.validate(input)
             local data=input.relationships[id]
             if type(data)=="table" then
                 local r=s.relationships[id]
-                r.trust=number(data.trust,65,0,100); r.love=number(data.love,65,0,100)
+                local familyConfig=require("src.data.family")
+                r.trust=number(data.trust,familyConfig.initial,familyConfig.minimum,familyConfig.maximum)
+                r.love=number(data.love,familyConfig.initial,familyConfig.minimum,familyConfig.maximum)
                 r.events=map(data.events,true); r.personalEvents=r.events
                 r.decisions=map(data.decisions,false); r.criticalDecisions=map(data.criticalDecisions,false)
                 for _,field in ipairs({"brokenPromises","sharedMoments","pendingConflicts","reconciliations"}) do r[field]=map(data[field],true) end
@@ -12343,6 +13016,47 @@ function Save.validate(input)
                 if data.marriageState=="separated" then r.marriageState="separated" end
                 Relationships.refresh(r)
             end
+        end
+    end
+    local family=s.family
+    if type(input.family)=="table" then
+        local saved=input.family
+        for _,key in ipairs({"progress","books","seen","departures","warnings","neglect"}) do
+            if type(saved[key])~="table" then return nil,"Registro familiar inválido." end
+        end
+        for _,key in ipairs({"progress","neglect"}) do
+            for id,value in pairs(saved[key]) do
+                if type(id)~="string" or #id>100 or type(value)~="number" or value%1~=0 or value<0 or value>100000 then return nil,"Contador familiar inválido." end
+                family[key][id]=value
+            end
+        end
+        family.books=map(saved.books,true);family.seen=map(saved.seen,true)
+        family.discounts=math.floor(number(saved.discounts,0,0,21))
+        if saved.commitmentDue~=nil then family.commitmentDue=math.floor(number(saved.commitmentDue,7,1,7)) end
+        for _,id in ipairs(Characters.romanceIds) do
+            local warning=saved.warnings[id];if type(warning)=="table" then family.warnings[id]={day=math.floor(number(warning.day,1,1,7))} end
+            local departure=saved.departures[id]
+            if type(departure)=="table" then
+                family.departures[id]={day=math.floor(number(departure.day,1,1,7)),reason=type(departure.reason)=="string" and departure.reason or "critical_decision",permanent=true}
+                s.relationships[id].marriageState="separated";s.relationships[id].routeState="separated";s.decisions["separated_"..id]=true
+            end
+        end
+        for _,entry in ipairs(type(saved.queue)=="table" and saved.queue or {}) do
+            if type(entry)=="table" and s.relationships[entry.character] and type(entry.id)=="string" and (entry.kind=="notice" or entry.kind=="departure") then
+                local lines=copyList(type(entry.lines)=="table" and entry.lines or {})
+                if entry.kind=="notice" then
+                    if #lines<1 or #lines>5 then return nil,"Diálogo familiar inválido." end
+                    for _,line in ipairs(lines) do if type(line)~="string" or #line>2000 then return nil,"Línea familiar inválida." end end
+                end
+                family.queue[#family.queue+1]={id=entry.id,character=entry.character,kind=entry.kind,
+                    phase=math.floor(number(entry.phase,1,1,entry.kind=="departure" and 5 or #lines)),elapsed=number(entry.elapsed,0,0,20),expression=type(entry.expression)=="string" and entry.expression or "worried",lines=lines}
+            else return nil,"Escena familiar guardada inválida." end
+        end
+    end
+    for _,id in ipairs(Characters.romanceIds) do
+        if s.decisions["separated_"..id] or s.relationships[id].marriageState=="separated" then
+            s.relationships[id].marriageState="separated";s.relationships[id].routeState="separated"
+            family.departures[id]=family.departures[id] or {day=s.day,reason="previous_save",permanent=true}
         end
     end
     local CombatData=require("src.data.combat_cards")
@@ -12449,7 +13163,7 @@ function Save.validate(input)
             if type(value)~="number" or value~=value or value<0 or value>10 then return nil,"Límite diario de relaciones inválido." end
         end
     end
-    local definition=Progression.encounter(s,s.checkpoint)
+    local definition=Daily.battleDefinition(s) or Progression.encounter(s,s.checkpoint)
     if definition then
         local context=require("src.systems.dialogue_resolver").context(s,definition,s.checkpoint)
         if definition.tutorial and type(input.encounter)=="table" and type(input.encounter.context)=="table"
@@ -12479,7 +13193,7 @@ function Save.validate(input)
         if type(result.title)=="string" and #result.title<=200 then s.lastResult.title=result.title end
         if Characters.byId[result.character] then s.lastResult.character=result.character end
     end
-    if definition and definition.training and s.combat and s.combat.finished then
+    if definition and definition.training and not definition.activity and s.combat and s.combat.finished then
         local result=require("src.systems.training").evaluate(s.combat)
         local data=result and require("src.data.training_dialogue")[result.id]
         if data then
@@ -12522,7 +13236,7 @@ function Save.write(session)
     end
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
-    local ok; ok,err=writeFile("campaign-v5.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-v6.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -12530,7 +13244,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v5.tmp.json")
+    pcall(love.filesystem.remove,"campaign-v6.tmp.json")
     return true
 end
 
@@ -12545,12 +13259,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and decoded.version==4 then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña v4 recuperada con cartas de nivel 1. El archivo original se conserva; se guardará en v5." end
+            if session then return session,"Campaña recuperada con progreso familiar. El archivo original se conserva; se guardará en v6." end
         end
     end
     return nil,err or "No hay guardado válido disponible."
@@ -13124,7 +13838,7 @@ Bars.colors={love={.94,.48,.65,1},trust={.40,.68,.96,1},interest={.91,.74,.37,1}
 local function finite(value)
     return type(value)=="number" and value==value and math.abs(value)<math.huge and value or 0
 end
-local function clamp(value) return math.max(0,math.min(100,finite(value))) end
+local function clamp(value) return math.max(require("src.data.family").minimum,math.min(require("src.data.family").maximum,finite(value))) end
 local function copy(values)
     local out={}; for key,value in pairs(values or {}) do out[key]=value end; return out
 end
@@ -13221,9 +13935,10 @@ function Bars:draw(anchor)
         local row=y+13+(i-1)*14
         Font.draw(field.label,x+5,row,{maxWidth=58,color={P.muted[1],P.muted[2],P.muted[3],alpha}})
         local value=math.floor(clamp(self.value[field.key])+.5)
-        Font.draw(tostring(value),x+box.w-26,row,{maxWidth=21,align="right",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
+        Font.draw(tostring(value),x+box.w-34,row,{maxWidth=29,align="right",color={P.ink[1],P.ink[2],P.ink[3],alpha}})
         rect(P.shadow,x+5,row+9,box.w-10,4,alpha)
-        rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*clamp(self.value[field.key])/100),2,alpha)
+        local fraction=self.character=="nanahoshi" and clamp(self.value[field.key])/100 or (clamp(self.value[field.key])+100)/200
+        rect(Bars.colors[field.key],x+6,row+10,math.floor((box.w-12)*fraction),2,alpha)
         local delta=feedback and feedback.deltas[field.key] or 0
         if delta~=0 then
             local lift=reduced and 0 or math.floor(math.min(1,feedback.age/.8)*4)
@@ -13411,7 +14126,7 @@ function Suite.run()
  local function clone(value) return assert(Json.decode(encoded(value))) end
  local function round(value) return assert(Save.validate(clone(value))) end
  local function fixture(scene)
-  local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
+  local s=Save.newSession({love=65,trust=65});Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
   scene=scene or "nanahoshi_test"
   s.checkpoint=scene=="nanahoshi_test" and "day1_tutorial" or scene
   s.day=require("src.data.chapters").get(s.checkpoint).day
@@ -13466,7 +14181,7 @@ function Suite.run()
  local repeatAfterLoad=Resolver.resolve(context,"subtle_flirt")
  check(Memory.commit(loaded,repeatAfterLoad,"nanahoshi_test",3) and repeatAfterLoad.actualInterest==0,"El registro anti repetición sobrevive al guardado")
  check(loaded.events.nano_compliment_noticed and loaded.decisions[Memory.key("nanahoshi_test",1)]=="subtle_flirt","Se conservan la decisión y el reconocimiento de Nanahoshi")
- local old=Save.newSession();old.affinities=nil;local restoredOld=round(old)
+ local old=Save.newSession({love=65,trust=65});old.affinities=nil;local restoredOld=round(old)
  check(restoredOld.affinities.nanahoshi.trust==35 and restoredOld.affinities.nanahoshi.interest==0,"Guardado v3 sin afinidad recibe valores predeterminados")
  check(encoded(restoredOld.relationships)==encoded(old.relationships),"Migrar afinidad no cambia relaciones antiguas")
  local unknown=Affinity.sanitize("nanahoshi",{cardId="remember",trust=2,interest=100})
@@ -13754,6 +14469,22 @@ function Suite.run()
   check(Progression.next(s,s.checkpoint,result)~=nil,"Salida social incluso con resultado parcial")
  end
  local function battle(s,def,config)
+  -- Preparation uses earned gold and ordinary shop stock, including solo routes.
+  if not config.specialize then
+   for _,id in ipairs({"staff_strike","water_projectile","arcane_guard","simple_cut"}) do
+    local v=Collection.view(s,id)
+    while v and v.unlocked and v.level<math.min(6,s.day+1) do
+     local missing=math.max(0,v.copiesRequired-v.copies)
+     local quote=Economy.quote(s,id)
+     if missing>0 then
+      if not quote or quote.reason or missing>quote.stock or s.gold<quote.price*missing+v.goldRequired then break end
+      if not Economy.buy(s,id,quote.revision,missing) then break end
+     end
+     if not Collection.upgrade(s,id,s.economy.revision) then break end
+     v=Collection.view(s,id)
+    end
+   end
+  end
   -- Equip only earned techniques. Every route, including failed marriages, can
   -- prepare enough artifact magic without receiving a wife's exclusive card.
   local equipped={}
@@ -13800,6 +14531,9 @@ function Suite.run()
  local function run(config)
   local s=Save.newSession();local visited={};local steps=0
   while true do
+   Progression.skipUnavailable(s)
+   -- Pure campaign driver acknowledges presentation-only family scenes.
+   s.family.queue={}
    steps=steps+1;check(steps<200,"Campaña sin bloqueo permanente")
    local checkpoint=s.checkpoint;visited[checkpoint]=true
    local node=assert(Chapters.get(checkpoint))
@@ -13859,18 +14593,23 @@ function Suite.run()
     end
     while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
+     if not id or s.relationships[id].marriageState=="separated" then break end
+     if config.favors and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
      check(Daily.startActivity(s,"time_"..id)~=nil,"Actividad libre con "..id)
      s=round(s)
      check(Daily.resolveActivity(s,"together")~=nil,"Decisión de actividad guardada")
     end
     if config.favors and not s.daily.favor_used and not s.daily.activities_locked then
-     check(Daily.requestFavor(s,"cliff_notes")~=nil,"Encargo en cada jornada")
+     check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
     if Daily.storyComplete(s) then check(Progression.endDay(s)~=nil,"Cierre diario explícito")
     else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.kind=="hub" then
     local available=Progression.availableCompanions(s)
-    if #available>0 then check(Progression.selectCompanion(s,config.companion or config.preferred or "roxy")~=nil,"Compañía elegida")
+    if #available>0 then
+     local preferred=config.companion or config.preferred or "roxy"
+     if s.relationships[preferred].marriageState=="separated" then preferred=available[1] end
+     check(Progression.selectCompanion(s,preferred)~=nil,"Compañía disponible elegida")
     else
      local selected
      for _,place in ipairs(Progression.hub(s).locations) do if not s.events[place.completedEvent] then selected=place;break end end
@@ -13936,6 +14675,7 @@ function Suite.run()
  check(ending=="solitary","Negligencia acumulada conduce al camino solitario sin bloquear la aventura")
  local boundary=Save.newSession()
  boundary.day=7;boundary.checkpoint="day7_sylphiette"
+ boundary.relationships.sylphiette.love=65;boundary.relationships.sylphiette.trust=65
  Events.apply(boundary,"boundary_history",{character="sylphiette",love=-20,trust=-20,relationshipEvent="personal_resolution",critical={id="commitment",value=true},conflict="mirror_doubt"})
  check(boundary.relationships.sylphiette.love==45 and boundary.relationships.sylphiette.trust==45,"Fixture de frontera: reparación previa y valores45")
  check(Progression.choose(boundary,"day7_sylphiette","reconcile"),"La reparación con antecedentes es elegible en45")
@@ -13945,8 +14685,8 @@ function Suite.run()
   local dailyRun=run({keep={sylphiette=true,roxy=true,eris=true},preferred="roxy",companion="roxy",skipActivities=mode=="none",dailyWife=mode~="none" and mode or nil,favors=true})
   for day=1,7 do
    local report=dailyRun.daily_history[tostring(day)]
-   check(report and report.interactions_used==(mode=="none" and 0 or 3),"Siete cierres con distribución "..mode)
-   if mode~="none" then check(report.visits[mode]==3,"Repetición libre durante toda la campaña") end
+   check(report and report.interactions_used==(mode=="none" and (day==7 and 1 or 0) or 3),"Siete cierres con distribución "..mode)
+   if mode~="none" then check(report.visits[mode]==(day==7 and 2 or 3),"Repetición libre y ayuda final") end
   end
   for _,favor in ipairs(dailyRun.pending_favors) do check(favor.status=="delivered","Ningún encargo pendiente tras el epílogo") end
  end
@@ -13973,7 +14713,7 @@ function Suite.run()
     local Json=require("src.systems.json")
     local checks=0
     local function check(value,message) assert(value,message); checks=checks+1 end
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.unlocked.self_joke,session.unlocked.remember=true,true
     local before=assert(Json.encode(session))
     local groups=Collection.groups(session)
@@ -14376,7 +15116,7 @@ function Suite.run()
 
     -- Preparación de una futura elección de ruta, sin publicar el día cinco.
     -- El mismo evento rechazado antes de tiempo debe poder aplicarse más tarde.
-    local futureRoute=Save.newSession()
+    local futureRoute=Save.newSession({love=65,trust=65})
     local beforeRoute=encode(futureRoute)
     local routeReward={route="roxy",character="roxy",trust=2,unlock={"combined_spell"}}
     check(not Events.apply(futureRoute,"future_route_choice",routeReward),"No fijar ruta antes del día cinco")
@@ -14829,7 +15569,7 @@ function Suite.run(app)
     local function encode(v) return assert(Json.encode(v)) end
     local function clone(v) return assert(Json.decode(encode(v))) end
     local function prepare(checkpoint,character)
-        local s=Save.newSession()
+        local s=Save.newSession({love=65,trust=65})
         assert(Events.apply(s,"nanahoshi_starter",{equipStarter=true,presenter="nanahoshi"}))
         s.rewardQueue={};s.checkpoint=checkpoint or "day1_tutorial";s.day=Chapters.get(s.checkpoint).day
         s.events.tutorial_completed=true
@@ -14989,7 +15729,7 @@ function Suite.run(app)
         for i,value in ipairs(enc.hand) do if value==id then return i end end
     end
     local function open(tutorial)
-        app.session=Save.newSession();app.session.checkpoint="day1_tutorial";app.practice=true
+        app.session=Save.newSession({love=65,trust=65});app.session.checkpoint="day1_tutorial";app.practice=true
         app.session.combatDeck={};for i,id in ipairs(require("src.data.combat_cards").starterDeck) do app.session.combatDeck[i]=id end
         app.options=require("src.systems.options").normalize({muted=true})
         app:applyOptions()
@@ -15138,7 +15878,7 @@ function Suite.run()
  local count=0
  local function check(ok,msg) assert(ok,msg); count=count+1 end
  local function round(s) return assert(Save.validate(assert(Json.decode(assert(Json.encode(s)))))) end
- local s=Save.newSession()
+ local s=Save.newSession({love=65,trust=65})
  check(s.checkpoint=="intro" and Chapters.get("intro").definition.background=="dream","La historia comienza en el sueño")
  check(not s.curse.discoveredVoice and not s.curse.discoveredMana,"Rudy todavía desconoce los bloqueos")
  check(not Curse.canUseNaturalMagic(s) and not Curse.canSpeak(s),"Los bloqueos son efectivos desde el inicio")
@@ -15337,7 +16077,7 @@ function Suite.run()
         check(Progression.next(s)=="day2_agenda","Siguiente capítulo comienza en agenda")
         check(s.day==2 and s.daily.day==2 and Daily.remaining(s)==3,"Renueva exactamente tres espacios")
         check(s.daily_history["1"].visits[wives[a]]>=1,"Historial de ayer disponible")
-        check(s.pending_favors[1].status=="pending","Encargo futuro persiste")
+        check(s.pending_favors[1].status=="delivered","Encargo se entrega al comenzar el día siguiente")
         complete(s);check(Progression.endDay(s),"Dormir voluntariamente con cero actividades")
         check(s.daily_history["2"].unused==3,"Espacios sin usar registrados")
         check(s.pending_favors[1].status=="delivered" and s.unlocked.heal,"Encargo entregado al cierre debido")
@@ -15361,7 +16101,7 @@ function Suite.run()
     check(Save.write(s),"Guardado real con actividad y encargo")
     s=assert(Save.load());check(s.daily.visits.roxy==1 and s.daily.favor_used,"Carga de disco conserva jornada")
     Progression.endDay(s)
-    check(s.unlocked.wind_guard and s.pending_favors[1].status=="delivered","Zanoba entrega el mismo día")
+    check(not s.unlocked.wind_guard and s.pending_favors[1].status=="pending","Zanoba entrega mañana salvo ayuda explícita")
     check(s.events_by_day["1"].day1_activity_1,"Eventos indexados por día e identificador")
     check(Save.write(s),"Cierre guardado en disco")
     local loaded=assert(Save.load())
@@ -15390,7 +16130,7 @@ function Suite.run()
     check(Save.write(loaded) and love.filesystem.read("campaign-v3.json")==raw,"Nunca sobrescribe v3")
     love.filesystem.remove("campaign-v3.json")
     local final=agenda(7);final.inventory.antidote=true
-    Daily.requestFavor(final,"cliff_notes")
+    Daily.requestFavor(final,"cliff_notes",nil,true)
     check(final.pending_favors[1].due_day==7,"Encargo final se resuelve antes del epílogo")
     check(Progression.continueStory(final)=="day7_intro","Historia final sigue accesible con cero actividades")
     check(final.daily.activities_locked and not Daily.startActivity(final,"time_roxy"),"Día siete fija atención antes de resolver matrimonios")
@@ -15436,6 +16176,16 @@ function Suite.run()
         Events.apply(app.session,"starter_gift",{starter=true})
         app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
         local function settle() app:update(2);app:draw() end
+        local function drain()
+            settle()
+            for _=1,60 do
+                local screen=app.manager.current
+                if screen.kind=="reward" then screen:continue()
+                elseif screen.kind=="family_scene" then screen:advance()
+                else return end
+                settle()
+            end
+        end
         local function click(label,which)
             settle();local n=0
             for _,button in ipairs(app.manager.current.buttons) do
@@ -15458,19 +16208,19 @@ function Suite.run()
         end
         app:resume();capture("daily-agenda-start")
         for i=1,3 do
-            click("Pasar tiempo",2)
+            click("Roxy");click("Elegir actividad",1)
             check(app.session.daily.interactions_used==i,"Un clic reserva exactamente un espacio")
             app:continueGame();settle()
             check(app.session.daily.active_activity~=nil,"Continúa la decisión pendiente")
             capture("daily-activity")
-            click("Compartir una lectura (+2 amor / +1 conf.)")
+            click("Comparar las fórmulas (+3 amor / +2 conf.)")
             settle()
-            while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
+            drain()
         end
         check(app.session.daily.visits.roxy==3 and Daily.remaining(app.session)==0,"Tres visitas a Roxy desde la interfaz")
         capture("daily-agenda-spent")
         for _,button in ipairs(app.manager.current.buttons) do
-            if button.label=="Pasar tiempo" then check(button.disabled,"Cuarta visita deshabilitada") end
+            if button.label=="Elegir actividad" then check(button.disabled,"Cuarta visita deshabilitada") end
         end
         click("Encargos");capture("daily-favors")
         click("Solicitar",2)
@@ -15484,12 +16234,13 @@ function Suite.run()
         failWrite=false;check(app:endDay(),"Reintentar guardado de cierre")
         check(Json.encode(app.session.relationships)==relationships and app.session.externalEnergy==energy,"Reintento no repite efectos")
         settle()
-        while app.manager.current.kind=="reward" do app.manager.current:continue();settle() end
+        drain()
         check(app.manager.current.kind=="day_report","Muestra resumen persistido")
         capture("daily-summary")
         click("Comenzar día 2")
+        drain()
         check(app.session.day==2 and Daily.remaining(app.session)==3,"Resumen abre siguiente agenda")
-        click("Cambios de ayer");capture("daily-previous")
+        click("Ayer");capture("daily-previous")
         check(app.manager.current.kind=="day_report","Consulta de ayer accesible")
         click("Volver a la agenda")
         check(app.session.day==2 and Daily.remaining(app.session)==3,"Consultar no avanza ni consume")
@@ -15522,7 +16273,7 @@ function Suite.fixture(checkpoint,deck)
     local Events=require("src.systems.events")
     local Data=require("src.data.cards")
     local Progression=require("src.systems.progression")
-    local s=Save.newSession()
+    local s=Save.newSession({love=65,trust=65})
     Events.apply(s,"starter_gift",{starter=true})
     s.rewardQueue={}; s.events.tutorial_completed=true
     s.checkpoint=checkpoint
@@ -15578,7 +16329,7 @@ function Suite.run()
         conversations=conversations+1
         check(node.id==id and Characters.byId[node.character]~=nil,"Conversación con identidad estable: "..id)
         check(type(node.day)=="number" and type(node.background)=="string" and type(node.emotion)=="string","Contexto narrativo completo: "..id)
-        local s=Save.newSession(); s.day=node.day
+        local s=Save.newSession({love=65,trust=65}); s.day=node.day
         for _,card in ipairs(Data.list) do s.unlocked[card.id]=true end
         local context=Resolver.context(s,{kind="conversation",character=node.character},checkpoint)
         local phrases={}
@@ -15697,7 +16448,7 @@ function Suite.run()
     check(Resolver.resolve(Resolver.context(low,futureDef),"be_honest").responseId~=Resolver.resolve(Resolver.context(high,futureDef),"be_honest").responseId,
         "Confianza baja y alta seleccionan variantes emocionales distintas")
 
-    for _,case in ipairs({{card="subtle_flirt",love=99,trust=100,actualLove=1,actualTrust=0},{card="light_joke",love=2,trust=1,actualLove=-2,actualTrust=-1}}) do
+    for _,case in ipairs({{card="subtle_flirt",love=99,trust=100,actualLove=1,actualTrust=0},{card="light_joke",love=-98,trust=-99,actualLove=-2,actualTrust=-1}}) do
         local clamped,clampedDef=Suite.fixture("encounter_eris")
         clamped.relationships.eris.love=case.love; clamped.relationships.eris.trust=case.trust
         local enc=Cards.new(clamped.deck,Resolver.context(clamped,clampedDef),Suite.rng(71))
@@ -15709,7 +16460,7 @@ function Suite.run()
             enc=Cards.new(clamped.deck,Resolver.context(clamped,clampedDef),function(n) return n end); index=1
         end
         local preview=Cards.preview(enc,index)
-        check(preview.projectedLove==case.actualLove and preview.projectedTrust==case.actualTrust,"Vista previa respeta topes 0/100")
+        check(preview.projectedLove==case.actualLove and preview.projectedTrust==case.actualTrust,"Vista previa respeta topes -100/100")
         local result=assert(Cards.play(enc,index,enc.turn))
         check(Memory.commit(clamped,result,clamped.checkpoint,1),"Aplicar efecto limitado por el vínculo")
         check(result.actualLove==case.actualLove and result.actualTrust==case.actualTrust,"La UI recibe el cambio real limitado")
@@ -16068,7 +16819,7 @@ function Suite.run()
     local count=0
     local function check(ok,msg) assert(ok,msg);count=count+1 end
     local function clone(s) return assert(Json.decode(assert(Json.encode(s)))) end
-    local s=Save.newSession()
+    local s=Save.newSession({love=65,trust=65})
     Events.apply(s,"starter_gift",{starter=true})
     check(#Collection.list==40,"Se conservan las cuarenta cartas")
     check(s.collection.listen.level==1 and s.collection.listen.copies==0,"Primera copia desbloquea nivel 1")
@@ -16116,9 +16867,9 @@ function Suite.run()
     check(Collection.view(s,"staff_strike",10).combatEffect.damage<30,"Básica tiene otra curva")
     check(Collection.view(s,"heal",10).combatEffect.heal==10 and Collection.view(s,"earth_wall",10).combatEffect.shield==18,"Curación y defensa acotadas")
     check(Collection.view(s,"focus",10).combatEffect.mana==Collection.view(s,"focus",1).combatEffect.mana,"Recuperación de recursos no escala")
-    local noFunds=Save.newSession();Collection.grant(noFunds,"listen",3);noFunds.gold=0
+    local noFunds=Save.newSession({love=65,trust=65});Collection.grant(noFunds,"listen",3);noFunds.gold=0
     check(not Collection.upgrade(noFunds,"listen",0) and noFunds.collection.listen.copies==2,"Oro insuficiente no gasta copias")
-    local r=Save.newSession()
+    local r=Save.newSession({love=65,trust=65})
     Events.apply(r,"one",{character="roxy",love=7,trust=8})
     Events.apply(r,"two",{character="roxy",love=5,trust=5})
     check(r.relationships.roxy.love==75 and r.relationships.roxy.trust==75,"Suma de todas las fuentes limitada a +10")
@@ -16131,7 +16882,7 @@ function Suite.run()
     check(Budget.ensure(r).eris.love==3,"Cada esposa tiene su propio límite")
     r.day=2;require("src.systems.daily").ensure(r)
     check(Budget.preview(r,"roxy",{love=5}).love==5,"Límite se reinicia al día siguiente")
-    local shop=Save.newSession();Events.apply(shop,"starter_gift",{starter=true});shop.rewardQueue={}
+    local shop=Save.newSession({love=65,trust=65});Events.apply(shop,"starter_gift",{starter=true});shop.rewardQueue={}
     local rev=shop.economy.revision
     check(Economy.buy(shop,"listen",rev,5),"Compra de cinco copias")
     check(shop.collection.listen.copies==5 and shop.gold==110,"Precio y cantidad exactos")
@@ -16157,9 +16908,9 @@ function Suite.run()
     check(not Economy.grant(s,0/0,"invalid"),"Rechaza oro no finito sin mutar el saldo")
     local v4=clone(shop);v4.version=4;v4.collection=nil;v4.economy=nil;v4.gold=nil
     local migrated=assert(Save.validate(v4))
-    check(migrated.version==5 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
+    check(migrated.version==6 and migrated.collection.listen.level==1 and migrated.checkpoint==shop.checkpoint,"Migra v4 sin reiniciar la historia")
     bad=clone(v4);bad.daily="invalid";check(not Save.validate(bad),"Rechaza estado diario v4 inválido durante migración")
-    local c=Save.newSession();Events.apply(c,"starter_gift",{starter=true})
+    local c=Save.newSession({love=65,trust=65});Events.apply(c,"starter_gift",{starter=true})
     c.checkpoint="day1_tutorial";c.events.tutorial_completed=true
     Collection.grant(c,"staff_strike",6);c.gold=1000
     Collection.upgrade(c,"staff_strike",c.economy.revision);Collection.upgrade(c,"staff_strike",c.economy.revision)
@@ -16213,7 +16964,7 @@ function Suite.run()
     love.filesystem.setIdentity("cartas_del_destino_v5_migration_tests")
     love.filesystem.remove(Save.filename);love.filesystem.remove(Save.backup)
     assert(love.filesystem.write("campaign-v4.json",original))
-    local disk=assert(Save.load());check(disk.version==5 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
+    local disk=assert(Save.load());check(disk.version==6 and disk.encounter,"Continuar encuentra y migra v4 desde disco")
     check(Save.write(disk) and love.filesystem.read("campaign-v4.json")==original,"Escribir v5 conserva exactamente el archivo v4")
     love.filesystem.setIdentity(identity)
     local costs=Collection.view(s,"water_cannon",10)
@@ -16251,7 +17002,7 @@ function Suite.run()
     local function check(ok,msg) assert(ok,msg);count=count+1 end
     local ok,err=xpcall(function()
         local app=require("src.app").new()
-        app.session=Save.newSession();Events.apply(app.session,"starter_gift",{starter=true})
+        app.session=Save.newSession({love=65,trust=65});Events.apply(app.session,"starter_gift",{starter=true})
         Events.apply(app.session,"upgrade_fixture",{copies={listen=20,water_cannon=91},gold=10000})
         app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
         local sounds={};local audio=app.audio.effect
@@ -16426,7 +17177,7 @@ function Suite.run()
     check(free.finished and #free.log==3 and #free.discard==0,"Tres respiros cierran encuentro sin bloqueo")
 
     local profile=Options.normalize()
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.checkpoint="day1_tutorial"
     session.encounter=Cards.new(session.deck,{kind="magic"},function(n) return n end)
     session.tutorial=Tutorial.restore(nil,session.encounter)
@@ -16495,7 +17246,7 @@ function Suite.run()
     check(session.events.tutorial_completed and not session.tutorial,"Restaurar completado sin reactivar guía")
     check(Progression.next(session,session.checkpoint,{score=session.encounter.score,trust=0,chemistry=0})=="day1_result","Guía permite continuar historia")
     check(session.encounter==nil and session.encounterReview==nil and session.tutorial==nil,"La transición limpia estado de práctica")
-    local nextGame=Save.newSession()
+    local nextGame=Save.newSession({love=65,trust=65})
     nextGame.checkpoint="day1_tutorial"
     nextGame.encounter=Cards.new(nextGame.deck,{kind="magic"},function(n) return n end)
     nextGame.tutorial=Tutorial.restore(nil,nextGame.encounter)
@@ -16607,7 +17358,7 @@ function Suite.run(app)
         app.options=require("src.systems.options").normalize({volume=.6,muted=true,
             textSpeed=50,textAnimation=true,reducedMotion=reduced or false,tutorialCompleted=false})
         app:applyOptions()
-        app.session=Save.newSession()
+        app.session=Save.newSession({love=65,trust=65})
         app.session.checkpoint=checkpoint
         app.session.day=checkpoint=="day1_tutorial" and 1 or 2
         local def=Progression.encounter(app.session,checkpoint)
@@ -16766,6 +17517,258 @@ end
 return Suite
 ````
 
+## tests/family.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/family.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Save=require("src.systems.save")
+ local Daily=require("src.systems.daily")
+ local Events=require("src.systems.events")
+ local Catalog=require("src.data.activities")
+ local Budget=require("src.systems.relationship_budget")
+ local Economy=require("src.systems.economy")
+ local Collection=require("src.systems.card_collection")
+ local Combat=require("src.systems.combat")
+ local Json=require("src.systems.json")
+ local count=0
+ local function check(ok,msg)assert(ok,msg);count=count+1 end
+ local function clone(s)return assert(Json.decode(assert(Json.encode(s))))end
+ local function fresh(day)
+  local s=Save.newSession();Events.apply(s,"starter_gift",{starter=true});s.rewardQueue={}
+  s.day=day or 1;s.checkpoint="day"..s.day.."_agenda";Daily.ensure(s);return s
+ end
+ local function round(s)local loaded,err=Save.validate(clone(s));check(loaded~=nil,err or "Carga válida");return loaded end
+ local function close(s)Events.mark(s,Daily.config(s).completionEvent);return assert(Daily.finish(s))end
+ for id,r in pairs(fresh().relationships)do check(r.love==50 and r.trust==50 and r.marriageState=="married","Inicio 50/50 activo: "..id)end
+ local ids={sylphiette=0,roxy=0,eris=0}
+ for _,def in ipairs(Catalog.list)do
+  ids[def.character]=ids[def.character]+1
+  local s=fresh();check(Daily.startActivity(s,def.id),"Reservar "..def.id)
+  check(Daily.remaining(s)==2 and s.daily.visits[def.character]==1,"Un espacio por actividad")
+  s=round(s);check(Daily.resolveActivity(s,def.choices[1].id),"Elegir "..def.id)
+  if def.battle then
+   local d=Daily.battleDefinition(s);s.externalEnergy=30
+   s.combat=Combat.new(s.deck,{day=s.day,enemyId=d.enemyId,character=d.character,difficulty=d.difficulty,
+    combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=30,cardLevels=Collection.levels(s)},function()return 17 end)
+   for turn=1,40 do if s.combat.finished then break end;Combat.endTurn(s.combat)end
+   check(s.combat.finished,"Combate real finito")
+   s=round(s);check(s.combat,"Combate de actividad persiste")
+   local enc=s.combat;check(Daily.finishBattle(s,enc),"Recompensa de actividad")
+   check(not Daily.finishBattle(s,enc),"Recompensa no duplicada")
+   if def.battle=="duel" then check(s.decisions.activity_duel_result=="suspected_throw","Duelo reconoce falta real de esfuerzo")end
+  end
+  check(s.daily.interactions_used==1 and #s.daily.activities_completed==1,"Resolver no gasta segundo espacio")
+  local gold=s.gold;check(not Daily.resolveActivity(s,def.choices[1].id) and s.gold==gold,"Actividad no se repite sin reservar")
+  round(s)
+ end
+ check(ids.eris>=4 and ids.sylphiette>=5 and ids.roxy>=4,"Actividades de las tres esposas")
+ for _,wife in ipairs({"sylphiette","roxy","eris"})do
+  local s=fresh()
+  for n=1,3 do check(Daily.startActivity(s,"time_"..wife),"Repetir esposa");check(Daily.resolveActivity(s,"together"),"Resolver repetición")end
+  check(s.daily.visits[wife]==3 and not Daily.startActivity(s,"time_"..wife),"Cuarta actividad rechazada")
+  check(s.family.seen["day1_third_"..wife],"Diálogo propio de tercera visita")
+  local report=close(s);local stable=Json.encode(s)
+  check(Daily.finish(s)==report and Json.encode(s)==stable,"Cierre idempotente")
+  for id,r in pairs(s.relationships)do
+   if id~=wife then check(r.love==30 and r.trust==30,"Abandono -20/-20 por esposa")
+   else check(s.daily.relationship_gains[id].love<=10 and s.daily.relationship_gains[id].trust<=10,"Límite positivo diario")end
+  end
+ end
+ local s=fresh();Events.apply(s,"harm",{character="roxy",love=-60,trust=-55})
+ check(s.relationships.roxy.love==-10 and s.relationships.roxy.marriageState~="separated","Negativo no separa automáticamente")
+ check(Budget.preview(s,"roxy",{love=4,trust=4}).love==2,"Afinidad negativa reduce ganancias")
+ check(Daily.startActivity(s,"reconcile_roxy") and Daily.resolveActivity(s,"repair"),"Reconciliación negativa")
+ check(s.relationships.roxy.love==-2 and s.relationships.roxy.trust==3,"Recuperación no reducida")
+ s=round(s);check(s.relationships.roxy.love==-2,"Persisten valores negativos")
+ s=fresh();s.relationships.roxy.love=80;s.relationships.roxy.trust=80
+ check(Budget.preview(s,"roxy",{love=2,trust=2}).love==3,"Afinidad alta facilita bonificaciones")
+ s=fresh()
+ for day=1,4 do
+  s.day=day;s.checkpoint="day"..day.."_agenda";Daily.ensure(s);close(s);s=round(s)
+  if day<4 then check(s.relationships.roxy.marriageState~="separated","Advertencias previas")end
+ end
+ check(s.relationships.roxy.love==-30 and s.family.departures.roxy.permanent,"Separación tras abandono reiterado")
+ check(not Daily.startActivity(s,"time_roxy"),"Sin actividades tras separación")
+ Events.apply(s,"late_reward",{character="roxy",love=100,trust=100,unlock={"combined_spell"}})
+ check(not s.unlocked.combined_spell and s.relationships.roxy.love==-30,"Sin exclusivas ni reactivación por puntos")
+ s.inventory.antidoteUsed=true;s=round(s);check(s.relationships.roxy.marriageState=="separated","Cura y carga no revierten separación")
+ local chapter=require("src.data.chapters").byId.day6
+ s.checkpoint=chapter.companion.selectionCheckpoint;s.decisions[chapter.companion.decisionKey]="roxy"
+ check(not require("src.systems.progression").companion(s),"Exclusión del combate final")
+ s=fresh();Events.apply(s,"break",{character="eris",marriageState="separated"})
+ check(s.family.departures.eris and #s.family.queue==1,"Ruptura crítica prepara escena")
+ s=fresh(2);check(Daily.requestFavor(s,"gold_search","cliff"),"Solicitar encargo")
+ check(Daily.remaining(s)==3 and s.gold==120,"Solicitud independiente")
+ close(s);check(s.gold==120,"No entrega al cierre del día solicitado")
+ s.day=3;s.checkpoint="day3_agenda";Daily.ensure(s);Daily.deliverFavors(s)
+ check(s.gold==185 and s.pending_favors[1].delivered_day==3,"Entrega al comenzar mañana")
+ Daily.deliverFavors(s);check(s.gold==185,"Entrega única")
+ check(not Daily.requestFavor(s,"gold_search","zanoba"),"Mismo ID prohibido con otro encargado")
+ check(Daily.requestFavor(s,"magic_materials","zanoba"),"Otra tarea disponible")
+ check(Daily.accelerateFavor(s,s.pending_favors[2].instance_id),"Ayudar acelera")
+ check(s.daily.interactions_used==1 and s.daily.visits.roxy==0 and s.economy.items.magic_material==2,"Ayudar consume espacio sin visita")
+ check(not Daily.accelerateFavor(s,s.pending_favors[2].instance_id),"Ayuda idempotente");round(s)
+ s=fresh(7);check(not Daily.requestFavor(s,"cliff_notes"),"Día 7 sin encargos futuros")
+ check(Daily.requestFavor(s,"cliff_notes","cliff",true) and s.daily.interactions_used==1,"Día 7 acelera con espacio");round(s)
+ s=fresh();s.gold=300
+ check(Economy.buyBook(s,"rune_recipes",s.economy.revision),"Libro cuesta oro")
+ check(s.gold==250 and s.unlocked.analyze_runes and s.family.discounts==2,"Libro desbloquea conocimientos")
+ check(not Economy.buyBook(s,"rune_recipes",s.economy.revision),"Libro adquirido una vez")
+ Collection.grant(s,"listen",2)
+ check(Collection.view(s,"listen").goldRequired==4 and Collection.upgrade(s,"listen",s.economy.revision),"Receta reduce coste sin mejorar gratis")
+ check(s.family.discounts==1 and s.gold==246,"Descuento consume receta")
+ check(Save.write(s),"Guardar en disco")
+ local loaded=assert(Save.load());check(loaded.family.books.rune_recipes and loaded.family.discounts==1,"Libros y recetas persisten")
+ for _,case in ipairs({{mode="win",result="victory"},{mode="honor",result="honorable_defeat"}}) do
+  s=fresh(5)
+  local deck=case.mode=="win" and {"staff_strike","simple_cut","stone_throw","push","coordinated_attack","water_projectile","arcane_guard","heavy_spell","swamp","heal"} or require("src.data.combat_cards").starterDeck
+  for _,id in ipairs(deck) do if not s.unlocked[id] then Collection.grant(s,id,1) end end
+  s.combatDeck=deck;s.externalEnergy=12
+  assert(Daily.startActivity(s,"eris_duel"));assert(Daily.resolveActivity(s,"duel"))
+  s.combat=Combat.new(s.deck,{enemyId="eris_training",day=5,difficulty=3,combatDeck=deck,unlocked=s.unlocked,curse=s.curse,externalEnergy=12,cardLevels=Collection.levels(s)},function()return 17 end)
+  require("tests.training").solve(s.combat,case.mode)
+  check(Daily.finishBattle(s,s.combat) and s.decisions.activity_duel_result==case.result,"Actividad evalúa desempeño real: "..case.result)
+  round(s)
+ end
+ s=fresh();assert(Daily.startActivity(s,"eris_monsters"));assert(Daily.resolveActivity(s,"solo"))
+ check(Daily.battleDefinition(s).character==nil,"Cacería permite salir solo")
+ s.family.progress.monster_hunts=2
+ check(Daily.battleDefinition(s).enemyId=="ruins_guardian","Dos victorias abren un desafío mayor")
+ s=fresh();assert(Daily.startActivity(s,"sylphiette_talk"));assert(Daily.resolveActivity(s,"promise"))
+ check(s.family.commitmentDue==2,"Promesa con plazo verificable")
+ close(s);s.day=2;s.checkpoint="day2_agenda";Daily.ensure(s);s=round(s);close(s)
+ check(s.relationships.sylphiette.promises.family_errand=="broken","Incumplimiento familiar queda registrado")
+ s.day=3;s.checkpoint="day3_agenda";Daily.ensure(s);assert(Daily.startActivity(s,"sylphiette_errands"));assert(Daily.resolveActivity(s,"shopping"))
+ check(s.relationships.sylphiette.reconciliations.family_errand,"Cumplir el recado repara el compromiso")
+ local malformed=clone(s);malformed.family.progress.research=true
+ check(not Save.validate(malformed),"Rechaza contador familiar no numérico")
+ malformed=clone(s);malformed.family.queue={{id="bad",character="rudeus",kind="departure",phase=1}}
+ check(not Save.validate(malformed),"Rechaza partida de quien no es esposa")
+ local identity=love.filesystem.getIdentity();love.filesystem.setIdentity("cartas_del_destino_family_v5_migration_tests")
+ for _,file in ipairs({Save.filename,Save.backup,"campaign-v6.tmp.json","campaign-v5.backup.json"}) do love.filesystem.remove(file) end
+ local old=fresh();old.version=5;old.family=nil;old.relationships.roxy.love=65
+ local bytes=assert(Json.encode(old));assert(love.filesystem.write("campaign-v5.json",bytes))
+ local migrated=assert(Save.load());check(migrated.version==6 and migrated.relationships.roxy.love==65,"Migración v5 conserva afinidad histórica")
+ check(Save.write(migrated) and love.filesystem.read("campaign-v5.json")==bytes,"Escribir v6 conserva bytes originales v5")
+ love.filesystem.setIdentity(identity)
+ local oldSocial,definition=require("tests.dialogue_branching").fixture("encounter_eris",{"listen","be_honest","encourage","subtle_flirt","light_joke"})
+ oldSocial.relationships.eris.love=2;oldSocial.relationships.eris.trust=1
+ local Cards=require("src.systems.cards");local Memory=require("src.systems.dialogue_memory")
+ oldSocial.encounter=Cards.new(oldSocial.deck,require("src.systems.dialogue_resolver").context(oldSocial,definition),function(n)return n end)
+ oldSocial.encounter.memory.legacyAffinity=true
+ local reaction=assert(Cards.play(oldSocial.encounter,1));reaction.familyVersion=nil
+ oldSocial.legacyAffinity=true;assert(Memory.commit(oldSocial,reaction,oldSocial.checkpoint,1));oldSocial.legacyAffinity=nil
+ oldSocial.version=5;oldSocial.family=nil;oldSocial.encounterReview=true
+ local migratedSocial=round(oldSocial)
+ check(migratedSocial.encounter and migratedSocial.relationships.eris.love==0 and migratedSocial.encounter.log[1].actualLove==-2,"Replay v5 conserva el antiguo límite cero sin nueva penalización")
+ migratedSocial=round(migratedSocial)
+ check(migratedSocial.encounter and migratedSocial.encounter.log[1].actualTrust==-1,"Segunda carga no reinterpreta el efecto histórico")
+ print("Family phase 3: "..count.." checks passed.")
+ return count
+end
+return Suite
+````
+
+## tests/family_ui.lua
+
+Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/family_ui.lua`
+
+````lua
+local Suite={}
+function Suite.run()
+ local Save=require("src.systems.save")
+ local Events=require("src.systems.events")
+ local Daily=require("src.systems.daily")
+ local Family=require("src.systems.family")
+ local Json=require("src.systems.json")
+ local old={write=Save.write,load=Save.load,exists=Save.exists,readOptions=Save.readOptions,legacyInfo=Save.legacyInfo}
+ local stored;local count=0;local captures=0
+ local function check(ok,msg)assert(ok,msg);count=count+1 end
+ Save.write=function(s)stored=assert(Json.encode(assert(Save.validate(s))));return true end
+ Save.load=function()return stored and Save.validate(assert(Json.decode(stored)))end
+ Save.exists=function()return stored~=nil end
+ Save.readOptions=function()return{muted=true,textAnimation=false,reducedMotion=false}end
+ Save.legacyInfo=function()return nil end
+ local ok,err=xpcall(function()
+  local app=require("src.app").new()
+  app.session=Save.newSession();Events.apply(app.session,"starter_gift",{starter=true});app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
+  local function settle()app:update(2);if app.manager.transition>0 then app:update(2)end;app:draw()end
+  local function capture(name)
+   settle();local pixels=app.canvas:newImageData();local bytes=pixels:encode("png")
+   local f=assert(io.open(love.filesystem.getSource().."/tests/artifacts/family-"..name..".png","wb"));f:write(bytes:getString());f:close()
+   pixels:release();bytes:release();captures=captures+1
+  end
+  local function click(label)
+   app:draw();for _,b in ipairs(app.manager.current.buttons)do if b.label==label then check(not b.disabled,"Botón activo "..label);b.action();settle();return end end
+   error("Botón ausente "..label)
+  end
+  local function drain()
+   for _=1,80 do
+    local screen=app.manager.current
+    if screen.kind=="family_scene" then screen:advance()
+    elseif screen.kind=="reward" then screen:continue()
+    else return end
+    settle()
+   end
+   error("Presentaciones sin fin")
+  end
+  app:resume();capture("agenda")
+  click("Roxy");capture("roxy")
+  click("Eris");capture("eris")
+  check(Daily.startActivity(app.session,"time_eris"),"Reserva primera visita")
+  app:save();app:resume();capture("activity")
+  local result=Daily.resolveActivity(app.session,"together");check(result,"Actividad aplicada")
+  app:save();app:resume();check(app.manager.current.kind=="family_scene","Resultado narrativo visible");capture("result");drain()
+  for _=2,3 do Daily.startActivity(app.session,"time_eris");Daily.resolveActivity(app.session,"together");app:save();app:resume();drain()end
+  check(app.session.family.seen.day1_third_eris,"Tercera conversación registrada")
+  local scene=require("src.data.family").repeated.eris
+  Family.notice(app.session,"visual_third","eris",scene.text,scene.expression,scene.reply);app:resume();capture("third-eris");drain()
+  for _,id in ipairs({"sylphiette","roxy"}) do
+   local line=require("src.data.family").repeated[id];Family.notice(app.session,"visual_third_"..id,id,line.text,line.expression,line.reply)
+   app:resume();capture("third-"..id);drain()
+  end
+  app.session=Save.newSession();Events.apply(app.session,"starter_gift",{starter=true});app.session.rewardQueue={};app.session.checkpoint="day1_agenda"
+  app:resume();click("Encargos");capture("favors");click("Solicitar")
+  check(app.session.daily.interactions_used==0,"Solicitud no gasta espacio")
+  click("Encargos");click("Ayudar hoy (1 espacio)");capture("help-warning")
+  check(app.session.daily.interactions_used==0,"Advertencia no gasta antes de confirmar")
+  click("Cancelar");check(app.session.daily.interactions_used==0,"Cancelar conserva espacios")
+  click("Ayudar hoy (1 espacio)");click("Confirmar: gastar 1 espacio");drain()
+  check(app.session.daily.interactions_used==1 and app.session.daily.visits.sylphiette==0,"Confirmación gasta un espacio sin visita")
+  app.session.gold=200;app:switch(require("src.screens.books").new(app));capture("books")
+  click("50 oro");drain();check(app.session.family.books.rune_recipes,"Librería compra y guarda")
+  for _,id in ipairs({"sylphiette","roxy","eris"})do
+   Events.apply(app.session,"visual_departure_"..id,{character=id,marriageState="separated"})
+   app:save();app:resume();capture("confrontation-"..id)
+   app.manager.current:advance();settle();app.manager.current:advance();settle();capture("ring-"..id)
+   local phase=app.session.family.queue[1].phase;app:save();app.session=assert(Save.load());app:resume();settle()
+   check(app.session.family.queue[1].phase==phase and app.session.relationships[id].marriageState=="separated","Cargar conserva anillo y separación")
+   app.manager.current:advance();settle();capture("horse-"..id)
+   drain();check(app.session.events["departure_"..id.."_presented"],"Partida presentada una sola vez")
+  end
+  app:overlay("journal");capture("gray-journal")
+  local resources=app.resources;local original=resources.portrait;local grays={}
+  resources.portrait=function(self,id,expression,x,y,scale,gray)if gray then grays[id]=true end;return original(self,id,expression,x,y,scale,gray)end
+  app:draw();for _,id in ipairs({"eris","roxy","sylphiette"})do check(grays[id],"Registro dibuja en gris "..id)end
+  resources.portrait=original
+  app:switch(require("src.screens.manual").new(app));app.manager.current:changeSection(1);app.manager.current.page=2;capture("gray-character")
+  -- Confirm the shader output, not just its flag, on an actual portrait pixel.
+  local canvas=love.graphics.newCanvas(64,64);love.graphics.setCanvas(canvas);love.graphics.clear(0,0,0,0)
+  resources:portrait("sylphiette","neutral",0,0,1,true);love.graphics.setCanvas()
+  local image=canvas:newImageData();local opaque=0
+  for y=0,63 do for x=0,63 do local r,g,b,a=image:getPixel(x,y);if a>.5 then opaque=opaque+1;check(math.abs(r-g)<.01 and math.abs(g-b)<.01,"Píxel de retrato realmente gris")end end end
+  check(opaque>100,"Retrato gris conserva el sprite");image:release();canvas:release();app.audio:stop()
+ end,debug.traceback)
+ for key,value in pairs(old)do Save[key]=value end
+ assert(ok,err)
+ print("Family UI: "..count.." checks passed; "..captures.." real-renderer captures.")
+end
+return Suite
+````
+
 ## tests/gameplay.lua
 
 Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/DateSim/tests/gameplay.lua`
@@ -16904,18 +17907,18 @@ function Suite.run()
     for _,bad in ipairs({'{','{"a":1,}','{"a":1,"a":2}','[1,]','01','1.','1.e3','1e999','"\\uD800"','os.execute("bad")'}) do
         check(Json.decode(bad)==nil,"Rechazar JSON mal formado: "..bad)
     end
-    local s=Save.newSession()
+    local s=Save.newSession({love=65,trust=65})
     s.checkpoint="day1_tutorial"; s.encounter=Cards.new(s.deck,{kind="magic",character="nanahoshi"},function(n) return n end)
     Cards.play(s.encounter,1)
     local round=Save.validate(assert(Json.decode(assert(Json.encode(s)))))
     check(round.encounter.energy==2 and round.encounter.turn==2 and round.encounter.discard[1]=="earth_barrier","Guardar estado exacto del encuentro")
-    local roxySave=Save.newSession()
+    local roxySave=Save.newSession({love=65,trust=65})
     roxySave.checkpoint="encounter_roxy"
     roxySave.encounter=Cards.new(roxySave.deck,{kind="investigation",character="roxy"},function(n) return n end)
     Cards.play(roxySave.encounter,2)
     local roxyRestored=Save.validate(roxySave)
     check(roxyRestored.encounter.context.kind=="investigation" and roxyRestored.encounter.score==3,"Restaurar contexto canónico de Roxy")
-    local sealSave=Save.newSession()
+    local sealSave=Save.newSession({love=65,trust=65})
     sealSave.checkpoint="seal_encounter"; sealSave.decisions.companion="eris"
     sealSave.encounter=Cards.new(sealSave.deck,{kind="magic",character="eris"},function(n) return n end)
     Cards.play(sealSave.encounter,1)
@@ -16934,7 +17937,7 @@ function Suite.run()
         remove=function(path) files[path]=nil; return true end,
     }}
     local ok,errorMessage=pcall(function()
-        local session=Save.newSession()
+        local session=Save.newSession({love=65,trust=65})
         check(Save.write(session),"Guardar nueva partida")
         check(Save.exists() and Save.load().checkpoint=="intro","Continuar partida")
         session.checkpoint="hub"; session.decisions.companion="eris"
@@ -16943,7 +17946,7 @@ function Suite.run()
         files[Save.filename]="truncated{"
         local backup,message=Save.load()
         check(backup and backup.checkpoint=="intro" and message~=nil,"Recuperar backup si archivo está truncado")
-        local active=Save.newSession()
+        local active=Save.newSession({love=65,trust=65})
         active.checkpoint="encounter_roxy"
         active.decisions.choice_meet_roxy="compare_notes"
         active.decisions.roxy_equality="colleagues"
@@ -17242,7 +18245,7 @@ function Suite.run()
     local Font=require("src.ui.font")
     local checks=0
     local function check(ok,message) assert(ok,message); checks=checks+1 end
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.unlocked.self_joke=true; session.unlocked.remember=true
     local original=assert(Json.encode(session))
     check(Collection.canEdit(session),"Deck is editable at a safe checkpoint")
@@ -17429,8 +18432,8 @@ function Suite.run()
             sharedMoment="investigation",critical={id="commitment",value=true},promise={id="return",status="pending"}}),"Misión personal "..id)
         check(Events.apply(s,"promise_"..id,{character=id,love=3,trust=3,promise={id="return",status="kept"}}),"Promesa cumplida "..id)
     end
-    local s=Save.newSession()
-    check(s.version==5 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
+    local s=Save.newSession({love=65,trust=65})
+    check(s.version==6 and s.continuity=="rudy_curse","Versión y continuidad explícitas")
     check(#s.deck==0 and #s.combatDeck==0 and next(s.unlocked)==nil,"Sin cartas antes de Nanahoshi")
     for _,id in ipairs(names) do
         check(s.relationships[id].love==65 and s.relationships[id].trust==65,"Matrimonio comienza positivamente")
@@ -17440,11 +18443,11 @@ function Suite.run()
     local custom=R.new({love=77,trust=81})
     check(custom.roxy.love==77 and custom.roxy.trust==81,"Valores iniciales configurables")
     R.apply(custom,"roxy",{love=1000,trust=-200})
-    check(custom.roxy.love==100 and custom.roxy.trust==0,"Amor y confianza limitados a 0..100")
+    check(custom.roxy.love==100 and custom.roxy.trust==-100,"Amor y confianza limitados a -100..100")
     local preview=R.preview(custom,"roxy",{love=10,trust=-10})
     check(preview.love==0 and preview.trust==0 and custom.roxy.love==100,"Vista previa respeta límites sin mutar")
     R.apply(custom,"roxy",{love=0/0,trust=math.huge})
-    check(custom.roxy.love==100 and custom.roxy.trust==0,"Deltas no finitos ignorados")
+    check(custom.roxy.love==100 and custom.roxy.trust==-100,"Deltas no finitos ignorados")
     check(Events.apply(s,"starter_test",{starter=true,presenter="nanahoshi"}),"Entrega del mazo inicial")
     check(Cards.validateDeck(s.deck,s.unlocked),"Cinco cartas sociales iniciales desbloqueadas")
     check(Combat.validateDeck(s.combatDeck,s.unlocked),"Diez técnicas iniciales de combate viables")
@@ -17465,12 +18468,12 @@ function Suite.run()
     check(s.journal[4].character=="roxy" and s.journal[4].love==4 and s.journal[4].trust==2,"Diario registra los efectos de cada esposa en lotes")
     local limited=Save.newSession({love=99,trust=1})
     Events.apply(limited,"secret",{text="Una preocupación reservada",hidden=true,batch={{character="roxy",love=5,trust=-5,decision="private_choice",value="listen"}}})
-    check(limited.journal[2].love==1 and limited.journal[2].trust==-1 and limited.journal[2].decision=="private_choice","Diario registra el cambio efectivo, no un delta fuera de límites")
+    check(limited.journal[2].love==1 and limited.journal[2].trust==-5 and limited.journal[2].decision=="private_choice","Diario admite confianza negativa y respeta el máximo positivo")
     check(limited.journal[2].hidden and limited.journal[2].text=="Una preocupación reservada","Secreto oculta señal inmediata pero permanece consultable en diario")
     check(not Events.apply(s,"shared_duty",{character="roxy",love=5}),"Carga conserva clave idempotente")
     table.remove(s.rewardQueue,1); s=round(s)
     check(#s.rewardQueue==0 and s.rewards.starter_test,"Cerrar animación no borra recompensa ni reaparece al cargar")
-    local promise=Save.newSession()
+    local promise=Save.newSession({love=65,trust=65})
     fulfilled(promise,"eris")
     Events.apply(promise,"late",{character="eris",love=-12,trust=-12,promise={id="return",status="broken"},critical={id="tactics",value="reckless"}})
     check(not R.canMaintain(promise.relationships,"eris"),"Promesa rota afecta viabilidad aunque los números basten")
@@ -17480,12 +18483,12 @@ function Suite.run()
     promise=round(promise)
     check(promise.relationships.eris.brokenPromises["return"]==true and promise.relationships.eris.reconciliations["return"]==true,"El aprendizaje conserva el error y la reparación")
     check(promise.relationships.eris.promises["return"]=="kept" and promise.relationships.eris.criticalDecisions.tactics=="reckless","Promesas y decisiones críticas persisten")
-    local family=Save.newSession()
+    local family=Save.newSession({love=65,trust=65})
     for _,id in ipairs(names) do fulfilled(family,id) end
     check(R.ending(family.relationships)=="family_united","Final familia requiere los tres eventos y esfuerzos")
     check(R.ending(round(family).relationships)=="family_united","Final familia estable tras cargar")
     for _,survivor in ipairs(names) do
-        local single=Save.newSession()
+        local single=Save.newSession({love=65,trust=65})
         for _,id in ipairs(names) do
             if id==survivor then fulfilled(single,id)
             else
@@ -17497,34 +18500,34 @@ function Suite.run()
         check(R.ending(single.relationships)==survivor,"Final individual alcanzable: "..survivor)
         check(R.ending(round(single).relationships)==survivor,"Final individual persiste: "..survivor)
     end
-    local solitary=Save.newSession()
+    local solitary=Save.newSession({love=65,trust=65})
     for _,id in ipairs(names) do
         Events.apply(solitary,"neglect_"..id,{character=id,love=-35,trust=-35,conflict="neglect",critical={id="commitment",value=false}})
         Events.apply(solitary,"separation_"..id,{character=id,marriageState="separated"})
     end
     check(R.ending(solitary.relationships)=="solitary","Camino solitario por errores acumulados")
-    local pair=Save.newSession()
+    local pair=Save.newSession({love=65,trust=65})
     fulfilled(pair,"roxy"); fulfilled(pair,"eris")
     Events.apply(pair,"sylphie_distance",{character="sylphiette",love=-30,trust=-30,conflict="absence"})
     local ending,reason,viable=R.ending(pair.relationships)
     check(ending==nil and reason=="resolution_required" and #viable==2,"Dos matrimonios viables requieren escena de resolución")
     Events.apply(pair,"explicit_parting",{character="eris",marriageState="separated",decision="residence",value="roxy"})
     check(R.ending(pair.relationships)=="roxy","Acuerdo explícito resuelve la pareja sin elegir un máximo")
-    local low=Save.newSession()
+    local low=Save.newSession({love=65,trust=65})
     for _,id in ipairs(names) do Events.apply(low,"personal_"..id,{character=id,relationshipEvent="personal_resolution"}) end
     check(R.ending(low.relationships)~="family_united","Eventos sin compromiso explícito no otorgan automáticamente unión")
-    local malformed=Save.newSession()
+    local malformed=Save.newSession({love=65,trust=65})
     malformed.relationships.roxy.love=1000; malformed.relationships.eris.trust=-1
     malformed.relationships.sylphiette.love=0/0
     local sanitized=assert(Save.validate(malformed))
-    check(sanitized.relationships.roxy.love==100 and sanitized.relationships.eris.trust==0 and sanitized.relationships.sylphiette.love==65,"Carga sanea estadísticas")
+    check(sanitized.relationships.roxy.love==100 and sanitized.relationships.eris.trust==-1 and sanitized.relationships.sylphiette.love==50,"Carga sanea valores inválidos y conserva negativos")
     check(Save.validate({version=1,checkpoint="intro"})==nil,"No convierte vínculos v1 en matrimonios silenciosamente")
     check(Save.validate({version=999})==nil,"Versión futura rechazada")
-    local damaged=Save.newSession()
+    local damaged=Save.newSession({love=65,trust=65})
     damaged.checkpoint="day1_tutorial"; damaged.events.starter_gift=true
     damaged=assert(Save.validate(damaged))
     check(#damaged.deck==5 and #damaged.combatDeck==5 and #damaged.rewardQueue==0,"Recupera mazos de una entrega ganada sin duplicar premio")
-    local missingGift=Save.newSession()
+    local missingGift=Save.newSession({love=65,trust=65})
     missingGift.checkpoint="day1_tutorial"; missingGift.decisions.important="remember"
     missingGift=assert(Save.validate(missingGift))
     check(missingGift.checkpoint~="day1_tutorial" and missingGift.decisions.important=="remember" and next(missingGift.unlocked)==nil,"Corrupción sin entrega vuelve al tutorial conservando decisiones y sin inventar cartas")
@@ -17539,7 +18542,7 @@ function Suite.run()
         check(Save.legacyInfo().day==3 and not Save.exists(),"Menú distingue guardado legado de campaña nueva")
         check(Save.migrateLegacy(false)==nil,"Cambio de continuidad exige aceptación explícita")
         local imported=assert(Save.migrateLegacy(true))
-        check(imported.day==1 and imported.relationships.roxy.love==65 and imported.migration.acceptedContinuity,"Importación comienza nueva historia conocida")
+        check(imported.day==1 and imported.relationships.roxy.love==50 and imported.migration.acceptedContinuity,"Importación comienza nueva historia con 50/50")
         check(imported.unlocked.remember and not imported.unlocked.nonexistent and imported.options.volume==.35,"Importa colección compatible y configuración")
         check(Save.write(imported),"Escribir migración en archivo separado")
         check(files[Save.legacyFilename]==legacy and files[Save.filename]~=nil,"No sobrescribe el guardado original")
@@ -17556,7 +18559,7 @@ function Suite.run()
     end)
     love=oldLove
     assert(tested,err)
-    print("Marriages/save v5: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
+    print("Marriages/save v6: "..checked.." checks passed (five endings, decisions, promises, rewards and explicit migration).")
     return checked
 end
 return Suite
@@ -17649,7 +18652,7 @@ function Suite.run()
     check(not manager:switch(second),"No reactiva la misma instancia de escena")
 
     local saved,advanced=0,0
-    local dialogApp={session=Save.newSession(),options={textSpeed=20,textAnimation=true},
+    local dialogApp={session=Save.newSession({love=65,trust=65}),options={textSpeed=20,textAnimation=true},
         save=function() saved=saved+1 end,next=function() advanced=advanced+1 end}
     local screen=DialogueScreen.new(dialogApp)
     screen:advance()
@@ -17841,7 +18844,7 @@ function Suite.run()
         return encode(values)
     end
 
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     local intro=Progression.scene(session,"intro")
     check(intro.context=="hitogami_dream","El sueño declara el contexto; no se infiere del hablante")
     check(not Characters.byId.rudeus_japones,"La apariencia japonesa no crea una segunda identidad lógica")
@@ -17990,7 +18993,7 @@ function Suite.run()
         app:continueGame(); settle()
         check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
-        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==5,"Sin apariencia global persistida en el formato de progresión")
+        check(app.session.portrait==nil and app.session.appearance==nil and Save.version==6,"Sin apariencia global persistida en el formato de progresión")
 
         -- Una entrada explícita de escenas anteriores conserva su dirección.
         app.session.checkpoint="day1_signature"; app.session.dialogueIndex=2
@@ -18008,7 +19011,7 @@ function Suite.run()
                 {speaker="hitogami",expression="neutral",text="Escucha con atención."},
                 {speaker="hitogami",expression="happy",text="Hasta la próxima.",stage={rudeus={visible=false}}}}}
         local function futureScreen(saved)
-            local fixture={session=saved or Save.newSession(),resources=Resources.new(),audio=app.audio,
+            local fixture={session=saved or Save.newSession({love=65,trust=65}),resources=Resources.new(),audio=app.audio,
                 options=Options.normalize({muted=true,textAnimation=false}),mouse=function() return nil,nil end}
             function fixture:save() return Save.write(self.session) end
             Progression.scene=function(s,id)
@@ -18069,7 +19072,7 @@ function Suite.run()
             return originalInfo(path,...)
         end
         app.resources=Resources.new()
-        app.session=Save.newSession(); app.session.dialogueIndex=2
+        app.session=Save.newSession({love=65,trust=65}); app.session.dialogueIndex=2
         app:resume(); settle(); capture("missing-png")
         check(app.resources.sources[Assets.characters.rudeus_japones].status=="fallback","El sueño se dibuja completo aun sin el PNG japonés")
         check(#app.resources.warnings==1 and app.resources.warnings[1]:find("rudeus_japones",1,true),"Diagnóstico único identifica el PNG ausente")
@@ -18077,7 +19080,7 @@ function Suite.run()
         app.resources=Resources.new():preload()
 
         app.options=Options.normalize({muted=true,textAnimation=false,reducedMotion=true})
-        app.session=Save.newSession(); app:resume()
+        app.session=Save.newSession({love=65,trust=65}); app:resume()
         check(app.manager.effect.type=="dream" and app.manager.duration<=.15,"Movimiento reducido conserva el blanco del sueño con un fundido breve")
         white("reduced-dream-white")
         settle()
@@ -18134,7 +19137,7 @@ function Suite.run()
     local function near(a,b) return math.abs(a-b)<.001 end
     local sounds={}
     local audio={effect=function(_,name) sounds[#sounds+1]=name end}
-    local session=Save.newSession()
+    local session=Save.newSession({love=65,trust=65})
     session.relationships.eris.love,session.relationships.eris.trust=98,1
     local bars=Bars.new(session,"eris",{audio=audio})
     check(bars and bars.value.love==98 and bars.value.trust==1,"Valores iniciales matrimoniales definitivos")
@@ -18142,12 +19145,12 @@ function Suite.run()
     Events.apply(session,"bars_bounds",{character="eris",love=5,trust=-5})
     local committed=encode(session)
     check(bars:apply("bars_bounds",session,{love=5,trust=-5},"Una respuesta sincera, pero brusca."),"Un evento confirmado inicia el feedback")
-    check(bars.target.love==100 and bars.target.trust==0 and bars.value.love==98,"El destino lógico queda aplicado antes de animar")
-    check(bars:feedback().deltas.love==2 and bars:feedback().deltas.trust==-1,"El feedback usa los deltas reales recortados")
+    check(bars.target.love==100 and bars.target.trust==-4 and bars.value.love==98,"El destino lógico queda aplicado antes de animar")
+    check(bars:feedback().deltas.love==2 and bars:feedback().deltas.trust==-5,"El feedback usa los deltas reales recortados")
     bars:update(.3)
-    check(near(bars.value.love,99) and near(bars.value.trust,.5),"La interpolación alcanza el punto medio a 0.3 segundos")
+    check(near(bars.value.love,99) and near(bars.value.trust,-1.5),"La interpolación alcanza el punto medio a 0.3 segundos")
     bars:update(.3)
-    check(bars.value.love==100 and bars.value.trust==0 and bars.tween==nil,"La interpolación termina exactamente a 0.6 segundos")
+    check(bars.value.love==100 and bars.value.trust==-4 and bars.tween==nil,"La interpolación termina exactamente a 0.6 segundos")
     check(encode(session)==committed,"La presentación nunca escribe en el estado lógico")
     check(not bars:apply("bars_bounds",session) and #sounds==1 and sounds[1]=="negative","Un evento repetido no repite ni feedback ni sonido")
     local loaded=Bars.new(session,"eris",{audio=audio})
@@ -18163,7 +19166,7 @@ function Suite.run()
     session.affinities.nanahoshi.interest=oldNana+3
     nana:apply("nana_bars",session,{interest=3},"La propuesta ayuda a investigar.")
     check(nana.value.interest==oldNana+3 and nana:feedback().deltas.interest==3,"Movimiento reducido muestra el valor definitivo sin desplazamiento")
-    local invalid=Save.newSession(); invalid.relationships.eris.love=0/0; invalid.relationships.eris.trust=math.huge
+    local invalid=Save.newSession({love=65,trust=65}); invalid.relationships.eris.love=0/0; invalid.relationships.eris.trust=math.huge
     local sanitized=Bars.new(invalid,"eris")
     check(sanitized.value.love==0 and sanitized.value.trust==0,"Números no finitos nunca deforman las barras")
     for id,node in pairs(require("src.data.dialogue").nodes) do
@@ -18202,7 +19205,7 @@ function Suite.run()
         love.graphics.setCanvas(app.canvas); rendered={}
         bars:draw({x=40,y=94,w=64,h=64,width=116})
         local signed=table.concat(rendered,"\n")
-        check(signed:find("+2",1,true) and signed:find("-1",1,true),"El renderer conserva los signos del incremento y descenso reales")
+        check(signed:find("+2",1,true) and signed:find("-5",1,true),"El renderer conserva los signos del incremento y descenso reales")
         rendered={}; nana:draw({x=180,y=94,w=64,h=64,width=116})
         local affinityText=table.concat(rendered,"\n")
         check(affinityText:find("Confianza",1,true) and affinityText:find("Interés",1,true) and not affinityText:find("Amor",1,true),"El renderer de Nanahoshi no muestra amor")
@@ -18272,7 +19275,7 @@ function Suite.run()
             {speaker="roxy",expression="happy",text="Podemos revisar juntas las notas."},
             {speaker="rudeus",expression="neutral",delivery="enchanted",text="Empecemos por el primer símbolo."},
         }}
-        app.session=Save.newSession(); app.session.checkpoint="day1_warning"
+        app.session=Save.newSession({love=65,trust=65}); app.session.checkpoint="day1_warning"
         Progression.scene=function() return synthetic end
         local screen=require("src.screens.dialogue").new(app)
         app.manager.current=screen; app.manager.transition=0; screen:update(2); draw()
@@ -18290,7 +19293,7 @@ function Suite.run()
         check(screen.relationshipBars.roxy.lastBounds.x==39 and screen.relationshipBars.eris.lastBounds.x==473,"Reparto explícito ancla cada barra a su propio retrato")
         capture("dialogue-cast")
         Progression.scene=originalScene
-        app.session=Save.newSession(); app:resume(); settle(); draw()
+        app.session=Save.newSession({love=65,trust=65}); app:resume(); settle(); draw()
         local dream=app.manager.current
         check(not dream.relationshipBars.roxy.lastBounds and not dream.relationshipBars.eris.lastBounds and not dream.relationshipBars.nanahoshi.lastBounds,"El sueño de Hitogami no muestra barras ajenas")
         capture("dream-no-bars")
@@ -18607,7 +19610,9 @@ function Suite.run()
         local cp=app.session.checkpoint
         local node=Chapters.get(cp)
         if cp=="campaign_complete" then break end
-        if s.kind=="reward" then
+        if s.kind=="family_scene" then
+            s:advance()
+        elseif s.kind=="reward" then
             capture("reward"); s:continue()
         elseif s.pendingDeparture or s.leaving then
             check(true,"La entrada espera al feedback y a la salida de la escena")
@@ -18739,7 +19744,10 @@ Ruta exacta: `C:/Users/gegdg/Documents/.UVG/Anio6/SegundoSemestre/GameEngine/Dat
 return function()
     io.stdout:setvbuf("no")
     local group=os.getenv("DATESIM_TEST_GROUP")
-    love.filesystem.setIdentity("cartas_del_destino_v5_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    local module=os.getenv("DATESIM_TEST_MODULE")
+    if module then assert(module:match("^[a-z_]+$"));love.filesystem.setIdentity("cartas_del_destino_v6_tests_"..module);require("tests."..module).run();return end
+    love.filesystem.setIdentity("cartas_del_destino_v6_tests"..(group and ("_"..group:gsub("[^%w]","_")) or ""))
+    if group=="family" or group=="family-ui" then require("tests.family").run();if group=="family-ui" then require("tests.family_ui").run() end;return end
     if group=="economy" or group=="economy-ui" then require("tests.economy").run();if group=="economy-ui" then require("tests.economy_ui").run() end; return
     elseif group=="narrative" then require("tests.curse_social").run();require("tests.dialogue_branching").run();require("tests.dialogue_visual").run();return
     elseif group=="combat-core" then require("tests.combat").run();require("tests.combat_balance").run();require("tests.training").run();return
@@ -18766,6 +19774,8 @@ return function()
     require("tests.marriages").run()
     require("tests.economy").run()
     require("tests.economy_ui").run()
+    require("tests.family").run()
+    require("tests.family_ui").run()
     require("tests.daily").run()
     require("tests.daily_ui").run()
     require("tests.combat").run()
@@ -18816,7 +19826,7 @@ function Suite.run()
         return roundtrip(session)
     end
 
-    local session = Save.newSession()
+    local session = Save.newSession({love=65,trust=65})
     local expressions = {neutral=true, happy=true, worried=true, angry=true}
     for id in pairs(Story.scenes) do
         local scene = Progression.scene(session, id)
@@ -18842,7 +19852,7 @@ function Suite.run()
     -- Recorrido independiente para cada compañero y cada tipo de resultado.
     for _, companion in ipairs({"sylphiette", "roxy", "eris"}) do
         for _, score in ipairs({0, 8}) do
-            session = Save.newSession()
+            session = Save.newSession({love=65,trust=65})
             session = nextTo(session, "day1_tutorial")
             session = nextTo(session, "day1_result", {score=score, trust=9, chemistry=9})
             check(session.relationships[companion].trust == 0, "Tutorial no afecta relaciones ajenas")
@@ -18921,7 +19931,7 @@ function Suite.run()
     check(not partial.events.companion_selected, "Permitir nueva selección tras guardado incompleto")
     partial.events.meeting_sylphiette, partial.events.meeting_roxy, partial.events.meeting_eris = true, true, true
     check(Progression.selectCompanion(partial, "eris") == "seal_intro" and partial.decisions.companion == "eris", "Reparar elección de compañero")
-    local lostChoice = Save.newSession()
+    local lostChoice = Save.newSession({love=65,trust=65})
     lostChoice.day, lostChoice.checkpoint = 2, "meet_roxy"
     lostChoice.events.choice_meet_roxy = true
     lostChoice.relationships.roxy.trust = 4
@@ -18931,7 +19941,7 @@ function Suite.run()
 
     -- A completed encounter can be saved before confirming its result. The
     -- restored actions, including the free action, grant their effects once.
-    local resumed=Save.newSession()
+    local resumed=Save.newSession({love=65,trust=65})
     resumed.day,resumed.checkpoint=2,"meet_roxy"
     check(Progression.choose(resumed,"meet_roxy","compare_notes"),"Elegir antes del encuentro real")
     check(Progression.next(resumed)=="encounter_roxy","Abrir encuentro real")
@@ -19195,7 +20205,7 @@ function Suite.run()
             check(bounds and bounds.y+bounds.h<bounds.portrait.y and bounds.x>=328 and bounds.x+bounds.w<=632,"Barras sobre Eris sin invadir métricas ni retrato")
         end
         local function fixture(mode,deck,prior,checkpoint)
-            local session=prior and clone(prior) or Save.newSession()
+            local session=prior and clone(prior) or Save.newSession({love=65,trust=65})
             if not prior then Events.apply(session,"starter_gift",{starter=true}) end
             Events.apply(session,"training_test_resources_"..(checkpoint or "day5"),{externalEnergy=12,unlock=deck})
             session.checkpoint=checkpoint or "day5_eris_duel"
@@ -19448,7 +20458,7 @@ function Suite.run()
         check(app.session.dialogueIndex==1 and app.manager.current.visible==0,
             "Entrada repetida durante transición no salta texto nuevo")
 
-        app.session=Save.newSession()
+        app.session=Save.newSession({love=65,trust=65})
         app.session.day,app.session.checkpoint=2,"encounter_roxy"
         -- Two legal cards costing two leave the third turn with no energy.
         app.session.deck[9]="combined_spell"
@@ -19556,7 +20566,7 @@ chunks = ["# Código completo del proyecto\n\n"
           "la maldición de Rudy, retratos contextuales, conversaciones ramificadas escritas, memoria de promesas, "
           "cartas parlantes, barras animadas, afinidad de Nanahoshi, entrenamiento con Eris, "
           "dificultad por día, energía externa, compañeras, agenda diaria con tres actividades y un encargo, "
-          "guardado v5, animaciones y audio sintetizado.\n\n"
+          "guardado v6, animaciones y audio sintetizado.\n\n"
           f"Raíz del proyecto: `{root.as_posix()}`\n"]
 for path in files:
     content = path.read_text(encoding="utf-8-sig")

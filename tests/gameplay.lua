@@ -131,18 +131,18 @@ function Suite.run()
     for _,bad in ipairs({'{','{"a":1,}','{"a":1,"a":2}','[1,]','01','1.','1.e3','1e999','"\\uD800"','os.execute("bad")'}) do
         check(Json.decode(bad)==nil,"Rechazar JSON mal formado: "..bad)
     end
-    local s=Save.newSession()
+    local s=Save.newSession({love=65,trust=65})
     s.checkpoint="day1_tutorial"; s.encounter=Cards.new(s.deck,{kind="magic",character="nanahoshi"},function(n) return n end)
     Cards.play(s.encounter,1)
     local round=Save.validate(assert(Json.decode(assert(Json.encode(s)))))
     check(round.encounter.energy==2 and round.encounter.turn==2 and round.encounter.discard[1]=="earth_barrier","Guardar estado exacto del encuentro")
-    local roxySave=Save.newSession()
+    local roxySave=Save.newSession({love=65,trust=65})
     roxySave.checkpoint="encounter_roxy"
     roxySave.encounter=Cards.new(roxySave.deck,{kind="investigation",character="roxy"},function(n) return n end)
     Cards.play(roxySave.encounter,2)
     local roxyRestored=Save.validate(roxySave)
     check(roxyRestored.encounter.context.kind=="investigation" and roxyRestored.encounter.score==3,"Restaurar contexto canónico de Roxy")
-    local sealSave=Save.newSession()
+    local sealSave=Save.newSession({love=65,trust=65})
     sealSave.checkpoint="seal_encounter"; sealSave.decisions.companion="eris"
     sealSave.encounter=Cards.new(sealSave.deck,{kind="magic",character="eris"},function(n) return n end)
     Cards.play(sealSave.encounter,1)
@@ -161,7 +161,7 @@ function Suite.run()
         remove=function(path) files[path]=nil; return true end,
     }}
     local ok,errorMessage=pcall(function()
-        local session=Save.newSession()
+        local session=Save.newSession({love=65,trust=65})
         check(Save.write(session),"Guardar nueva partida")
         check(Save.exists() and Save.load().checkpoint=="intro","Continuar partida")
         session.checkpoint="hub"; session.decisions.companion="eris"
@@ -170,7 +170,7 @@ function Suite.run()
         files[Save.filename]="truncated{"
         local backup,message=Save.load()
         check(backup and backup.checkpoint=="intro" and message~=nil,"Recuperar backup si archivo está truncado")
-        local active=Save.newSession()
+        local active=Save.newSession({love=65,trust=65})
         active.checkpoint="encounter_roxy"
         active.decisions.choice_meet_roxy="compare_notes"
         active.decisions.roxy_equality="colleagues"
