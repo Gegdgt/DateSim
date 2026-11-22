@@ -1,6 +1,8 @@
 -- Manifiesto de PNG de ejecución. Los ASE editables viven en sprite_sources/.
 -- Los identificadores son los de las tablas narrativas y src/data/cards.lua.
 return {
+    -- Catálogo independiente: no altera la precarga ni los IDs del dating sim.
+    exploration=require("src.data.exploration_assets"),
     characters={
         rudeus="assets/characters/rudeus.png",
         rudeus_japones="assets/characters/rudeus_japones.png", -- Apariencia; la identidad sigue siendo rudeus.

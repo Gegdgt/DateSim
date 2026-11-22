@@ -348,3 +348,33 @@ Los avisos de PNG o audio inexistentes emitidos durante las pruebas corresponden
 ## Límites
 
 No se realizó una sesión prolongada con jugadores ni una mezcla de audio evaluada subjetivamente. La música y los efectos son síntesis original. Las frases de las cartas se presentan como texto encantado y sonido de activación, sin doblaje grabado. No se probaron cortes físicos de energía, todas las resoluciones de monitor o una importación con cada guardado histórico real del usuario. No se afirma haber realizado esas verificaciones.
+
+## Migración de exploración — 22 de noviembre de 2026
+
+Entorno ejecutado: **LÖVE 11.5 (Mysterious Mysteries), Windows / LuaJIT**. Se ejecutó la suite completa antes de modificar la integración y nuevamente con la integración terminada. Ambas finalizaron con `ALL TESTS PASSED`. Las identidades de prueba existentes aislaron los guardados del usuario.
+
+| Ejecución | Resultado observado | Registro local |
+| --- | --- | --- |
+| Suite anterior, antes de integrar | `ALL TESTS PASSED` | `tests/artifacts/exploration-baseline.log` |
+| Suite completa con migración integrada | `ALL TESTS PASSED`; incluye las pruebas nuevas | `tests/artifacts/exploration-full-suite.log` |
+| Recursos de exploración después de retirar `assets/New` | 3,702 comprobaciones, `ALL TESTS PASSED` | `tests/artifacts/exploration-after-cleanup.log` |
+| Recursos anteriores después de retirar `assets/New` | 654 comprobaciones, `ALL TESTS PASSED` | `tests/artifacts/exploration-legacy-after-cleanup.log` |
+| Capturas de calibración | 14 mapas renderizados, `ALL TESTS PASSED` | `tests/artifacts/exploration-visual.log` |
+| Verificación SHA-256 | 109 archivos migrados + 157 anteriores intactos; ZIP y carpeta archivada coinciden con los originales | `python tools/migrate_exploration_assets.py verify` y cotejo de `.asset_backups/original-delivery/` |
+
+La suite integrada completó **40 rutas de campaña**, cinco finales y **28,848 comprobaciones de campaña**, incluyendo guardado/carga y progresión. El recorrido de interfaz registró **1,462 comprobaciones y 825 pasos por pantallas reales**. Se ejecutaron también recursos, animación, retratos, audio/opciones, matrimonios, economía, familia, agenda diaria, combate/balance, entrenamiento, guerra, finales, afinidad, diálogos y las integraciones incluidas en `tests/run.lua`. No hubo regresiones observadas en esos sistemas. Los avisos de recursos ausentes o corruptos del registro son fallos deliberadamente inyectados por las suites; la precarga normal exige cero sustituciones.
+
+La nueva prueba comprueba los 53 PNG y 53 ASE, metadatos, hashes y dimensiones originales; nombres exactos incluyendo mayúsculas; carga CPU/GPU; fotogramas y duraciones; sprites 4 × 4; reposo NPC; caballo; píxeles de objetos frente al atlas; caché compartida; 78 referencias antiguas del manifiesto; datos de 14 mapas, 13 conexiones bidireccionales y 26 portales. Verifica destinos, retornos, lados, alcance, geometría declarada y rechazo de errores introducidos en memoria. No hay referencias a la carpeta temporal en el código de ejecución.
+
+Se inspeccionaron visualmente los 14 mapas originales y las 14 capturas con zonas transitables, portales y Rudy. Se ajustaron la llegada junto a los pilares de Sharia, los umbrales de Sylphie/Eris y la activación de las cuatro puertas superiores. Las capturas finales están en `tests/artifacts/exploration-<id>.png`; los datos revisados se exportan a `tests/artifacts/exploration-map-review.json`.
+
+**Límites comprobados y documentados:**
+
+- El grafo previsto alcanza los 14 mapas desde casa. Sólo 12 enlaces están calibrados y habilitados en los datos; el acceso izquierdo de la universidad no muestra una abertura. Ese enlace permanece pendiente en ambos sentidos. El grafo habilitado alcanza 10 mapas desde casa.
+- Las colisiones cubren accesos y corredores revisados; el resto queda bloqueado. No se implementó ni se probó un motor de movimiento libre, que no existía. Todos los mapas mantienen `explorationReady=false`.
+- Las cabeceras generales, dimensiones y límites de chunks de los 53 ASE se comprobaron. Los 18 ASE originales de mapas/tilesets contienen 120 registros de capa no estándar; se conservan exactamente, sin reparación. No se certificó su apertura en LibreSprite. Esta advertencia no se confunde con un fallo de integridad causado por la migración.
+- La comprobación del juego existente fue automática, con su renderer real; no se realizó una sesión humana prolongada.
+
+`assets/New` quedó fuera del árbol de ejecución: la revisión automática rechazó el borrado recursivo (`blocked by policy`) y se eligió trasladar todos los originales, sin eliminarlos, a `.asset_backups/original-delivery/`. También se conserva `.asset_backups/exploration-originals.zip`, SHA-256 `d0203de646979369b682b6332060dd1c4f248d918f818a9792cacc2a63a809a4`. Ambos respaldos son locales e ignorados por Git. Tras el traslado se repitieron con éxito las suites de recursos nuevos y anteriores. Totales definitivos, incluyendo anteriores: **130 PNG en assets y 127 ASE en sprite_sources**.
+
+Detalle: [inventario](ASSETS_INVENTORY.md), [conexiones y coordenadas](MAPAS_CONEXIONES.md).

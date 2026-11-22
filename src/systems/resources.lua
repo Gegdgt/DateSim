@@ -371,6 +371,42 @@ function Resources:getBackground(id)
     return self.backgrounds[id]
 end
 function Resources:background(id) return draw(self:getBackground(id),0,0,2) end
+-- Recursos de exploración bajo demanda; nunca se precargan junto al dating sim.
+-- Una imagen inválida devuelve nil + motivo, sin crear arte de sustitución.
+function Resources:getExploration(group,id)
+    local entries=Assets.exploration[group]
+    local entry=entries and entries[id]
+    if not entry then return nil,"Recurso de exploración desconocido: "..tostring(group).."/"..tostring(id) end
+    if not self.images[entry.image] then
+        local img,reason=image(entry.image,entry.width,entry.height)
+        if not img then return nil,reason end
+        self.images[entry.image]=img
+        self.sources[entry.image]={status="png",path=entry.image,width=entry.width,height=entry.height}
+    end
+    return self.images[entry.image]
+end
+
+-- Por defecto todos los objetos comparten el atlas. El modo individual es explícito.
+-- Devuelve imagen, quad (nil para individual), error (si falla).
+function Resources:getObjectSprite(id,mode)
+    local entry=Assets.exploration.items[id]
+    if not entry then return nil,nil,"Objeto desconocido: "..tostring(id) end
+    mode=mode or "atlas"
+    if mode=="individual" then
+        local img,err=self:getExploration("items",id)
+        return img,nil,err
+    end
+    if mode~="atlas" then return nil,nil,"Modo de objeto desconocido: "..tostring(mode) end
+    local img,err=self:getExploration("atlases","objects")
+    if not img then return nil,nil,err end
+    local key="object:"..id
+    if not self.quads[key] then
+        local r=entry.atlasRect
+        self.quads[key]=love.graphics.newQuad(r.x,r.y,r.w,r.h,img:getDimensions())
+    end
+    return img,self.quads[key]
+end
+
 function Resources:getPortrait(id)
     id=id or "rudeus"
     if not self.portraits[id] then

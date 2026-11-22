@@ -12,6 +12,26 @@ Juego narrativo de cartas en español para **LÖVE 11.5 / LuaJIT**. En esta cont
 
 No requiere red ni paquetes de Lua adicionales. Ventana inicial de 1280 × 720, canvas lógico de 640 × 360 y filtro `nearest`. El menú ofrece campaña, continuación, práctica social y de combate, combate libre, manual y opciones.
 
+## Recursos y mundo explorable
+
+Los **53 PNG nuevos** están organizados en `assets/characters/{portraits,overworld,npc_idle}`, `assets/maps/{greyrat_house,sharia,ranoa}`, `assets/tilesets`, `assets/objects/{items,atlases}` y `assets/animations/horse`. Los **53 ASE originales** están en las mismas categorías bajo `sprite_sources/`, sin conversión ni modificación binaria. El TXT de tilesets y el CSV/JSON del atlas se conservan junto a sus PNG. Los recursos anteriores mantienen sus rutas.
+
+`src/data/assets.lua` incorpora el catálogo `exploration` mediante `src/data/exploration_assets.lua`. Se carga bajo demanda con `Resources:getExploration(grupo,id)`; `Resources:getObjectSprite(id)` comparte un solo atlas para todos los objetos. El audio existente sigue usando `src/data/audio.lua` y síntesis; `assets/audio/` y `assets/ui/` quedan preparados para futuros archivos.
+
+`src/data/maps.lua` registra **14 mapas**, `map_connections.lua` define **13 enlaces bidireccionales** y `map_collisions.lua` separa suelo revisado, obstáculos y accesos. Esto prepara datos; todavía no incorpora movimiento libre. Los fondos de conversación de 320 × 180 siguen siendo recursos distintos.
+
+Hay **12 enlaces calibrados y uno pendiente**: el acceso izquierdo de la universidad no presenta una abertura visible en el PNG. Además, los 18 ASE de mapas/tilesets traen registros de capas no estándar; se conservan sus bytes y se documenta la incidencia, sin certificar su apertura en LibreSprite. Consulta el [inventario completo, hashes y recuperación](docs/ASSETS_INVENTORY.md) y el [diagrama, coordenadas y convenciones](docs/MAPAS_CONEXIONES.md).
+
+```powershell
+python tools/migrate_exploration_assets.py verify
+$env:DATESIM_TEST_MODULE = 'exploration_assets'
+./probar.ps1
+$env:DATESIM_TEST_MODULE = 'exploration_visual'
+./probar.ps1
+Remove-Item Env:DATESIM_TEST_MODULE
+./probar.ps1
+```
+
 ## Campaña completa
 
 La **Fase 6** integra el HUD de actividades, seguimiento de misiones y cartas, relaciones negativas visibles, resumen animado, información de mejoras y audio sintetizado. Incluye simulación reproducible de **33 campañas**, además de la regresión de 40 rutas y 576 batallas de Badigadi. Los cinco finales se alcanzaron; la partida manual completa y la revisión auditiva quedan pendientes. [Informe, costes, resultados y límites](docs/FASE_6_INFORME.md) · [CSV de balance](docs/BALANCE_FASE_6.csv).

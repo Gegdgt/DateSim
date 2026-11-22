@@ -1,0 +1,17 @@
+archivo,x,y,ancho,alto,colores_opacos
+01_moneda_oro,0,0,16,16,10
+02_bolsa_oro,16,0,16,16,10
+03_libro_magia,32,0,16,16,11
+04_pergamino,48,0,16,16,10
+05_carta_encantada,0,16,16,16,10
+06_cofre_cerrado,16,16,16,16,10
+07_cofre_abierto,32,16,16,16,10
+08_fragmento_mana,48,16,16,16,10
+09_material_magico,0,32,16,16,11
+10_frasco_pocion,16,32,16,16,10
+11_antidoto,32,32,16,16,10
+12_escoba,48,32,16,16,10
+13_flor,0,48,16,16,10
+14_anillo_matrimonio,16,48,16,16,10
+15_nota_misteriosa,32,48,16,16,10
+16_indicador_interaccion,48,48,16,16,10

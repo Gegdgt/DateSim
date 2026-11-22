@@ -1,5 +1,7 @@
 # Recursos de pixel art
 
+La entrega de exploración añade 53 PNG y sus 53 ASE nativos. Su [inventario y verificación SHA-256](../docs/ASSETS_INVENTORY.md) registra las rutas exactas. `maps/` contiene mapas explorables; `backgrounds/` conserva exclusivamente los fondos narrativos anteriores. Los nuevos archivos se consultan en `Assets.exploration` y se cargan bajo demanda. No se sustituyeron retratos ni cartas existentes.
+
 LÖVE carga los PNG desde `assets/`. El manifiesto [`src/data/assets.lua`](../src/data/assets.lua) declara las rutas y [`src/systems/resources.lua`](../src/systems/resources.lua) valida dimensiones, aplica `nearest` y mantiene una caché. Los editables ASE permanecen en `sprite_sources/`. Esta reestructuración conecta los recursos existentes; no sustituye las ilustraciones por nuevas imágenes provisionales.
 
 | Carpeta | Recursos existentes | Fuentes editables |

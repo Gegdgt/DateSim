@@ -28,6 +28,7 @@ return function()
         return
     end
     require("tests.resources").run()
+    require("tests.exploration_assets").run()
     require("tests.motion").run()
     require("tests.portraits").run()
     require("tests.audio_options").run()

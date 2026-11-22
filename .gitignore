@@ -5,3 +5,4 @@ tests/artifacts/*.json
 dist/
 *.love
 __pycache__/
+.asset_backups/

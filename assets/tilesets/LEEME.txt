@@ -1,0 +1,19 @@
+TILESETS DE EXPLORACION
+
+4 hojas de 256 x 256 px. Cuadricula 16 x 16 px. 24 colores por hoja.
+Los archivos ASE contienen 16 capas de pixeles editables, una por fila.
+
+FILAS 1-4: familias de conexiones. Columnas 1-16 = mascara 0-15.
+Bits: norte=1, este=2, sur=4, oeste=8. Suma los lados conectados.
+Ejemplo: norte+sur=5, columna 6; los cuatro lados=15, columna 16.
+Fila 5, columnas 1-4: superficies completas para rellenar areas.
+Filas restantes: objetos completos de una celda. Algunos objetos tienen variantes repetidas.
+
+Familias por filas 1-4:
+Hogar: alfombra, pared crema, madera, piedra.
+Exterior: tierra, piedra, entrenamiento, cesped claro.
+Universidad: piedra clara, pared crema, alfombra, madera.
+Cementerio: tierra, piedra, tierra alternativa, cesped claro.
+
+En el motor, usar filtro nearest/point y desactivar mipmaps.
+Los fondos de los objetos son opacos; para colocarlos sobre otro terreno se pueden editar o recortar en LibreSprite.

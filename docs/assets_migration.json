@@ -1,0 +1,3701 @@
+{
+  "schema": 1,
+  "source": "assets/New",
+  "backup": ".asset_backups/exploration-originals.zip",
+  "counts": {
+    ".ase": 53,
+    ".png": 53,
+    ".txt": 1,
+    ".csv": 1,
+    ".json": 1
+  },
+  "missing": [],
+  "unexpected": [],
+  "duplicates": [],
+  "files": [
+    {
+      "name": "01_moneda_oro.ase",
+      "original": "assets/New/01_moneda_oro.ase",
+      "destination": "sprite_sources/objects/items/01_moneda_oro.ase",
+      "category": "objects/items",
+      "bytes": 512,
+      "sha256": "449d76a388978158a6ef5543e6b40895a4cc1e54cca8f28c3ed9dc73a71a0e22",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "01_moneda_oro.png",
+      "original": "assets/New/01_moneda_oro.png",
+      "destination": "assets/objects/items/01_moneda_oro.png",
+      "category": "objects/items",
+      "bytes": 385,
+      "sha256": "9d4f677d10a6d4d8ed671803a536c363a94095d383a7aac83f7da1d55973d25d",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "02_bolsa_oro.ase",
+      "original": "assets/New/02_bolsa_oro.ase",
+      "destination": "sprite_sources/objects/items/02_bolsa_oro.ase",
+      "category": "objects/items",
+      "bytes": 488,
+      "sha256": "a38090c91ec1f86f474457dab777f69091a683d124bcd2aa323f3d52de98f458",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "02_bolsa_oro.png",
+      "original": "assets/New/02_bolsa_oro.png",
+      "destination": "assets/objects/items/02_bolsa_oro.png",
+      "category": "objects/items",
+      "bytes": 326,
+      "sha256": "fb6a24a2f8c2c813c4fe91ed0d362e82c5ed70ae9a948c598df3ff31e942ba84",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "03_libro_magia.ase",
+      "original": "assets/New/03_libro_magia.ase",
+      "destination": "sprite_sources/objects/items/03_libro_magia.ase",
+      "category": "objects/items",
+      "bytes": 443,
+      "sha256": "3f86f15f2a80051b267f8c5d771746dece34979e6bac150f9cf20b20c541c01b",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "03_libro_magia.png",
+      "original": "assets/New/03_libro_magia.png",
+      "destination": "assets/objects/items/03_libro_magia.png",
+      "category": "objects/items",
+      "bytes": 267,
+      "sha256": "8c3b6302297974f8f5992a2ac38fb502250cf194d9c544cbc37c5d0bc97c73cd",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "04_pergamino.ase",
+      "original": "assets/New/04_pergamino.ase",
+      "destination": "sprite_sources/objects/items/04_pergamino.ase",
+      "category": "objects/items",
+      "bytes": 462,
+      "sha256": "f553b7029c15b7775cc5158f6d5220cabb0cea85168fccff46538871e82e14c2",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "04_pergamino.png",
+      "original": "assets/New/04_pergamino.png",
+      "destination": "assets/objects/items/04_pergamino.png",
+      "category": "objects/items",
+      "bytes": 267,
+      "sha256": "93c4face02855e7a6941213537d888246ffd7436b80c81c60f34f36833b240b7",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "05_carta_encantada.ase",
+      "original": "assets/New/05_carta_encantada.ase",
+      "destination": "sprite_sources/objects/items/05_carta_encantada.ase",
+      "category": "objects/items",
+      "bytes": 448,
+      "sha256": "25b7804daaa8d3834135115e9314c8dae265d71b8b0e5d44e9112490162c6a30",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "05_carta_encantada.png",
+      "original": "assets/New/05_carta_encantada.png",
+      "destination": "assets/objects/items/05_carta_encantada.png",
+      "category": "objects/items",
+      "bytes": 258,
+      "sha256": "cb060de606b20e2fc5d64f1b95c78dd035c5f47fadc107a4598bce53cd861bf5",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "06_cofre_cerrado.ase",
+      "original": "assets/New/06_cofre_cerrado.ase",
+      "destination": "sprite_sources/objects/items/06_cofre_cerrado.ase",
+      "category": "objects/items",
+      "bytes": 474,
+      "sha256": "233e0ae2209186187b58149276acc5cf197e03b16cec6ff9f381a9cb42fd5fe1",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "06_cofre_cerrado.png",
+      "original": "assets/New/06_cofre_cerrado.png",
+      "destination": "assets/objects/items/06_cofre_cerrado.png",
+      "category": "objects/items",
+      "bytes": 336,
+      "sha256": "dce8eb415876a4f3a5376b95d24b0e328a2cf6b73e79d192d799fc30e0b07ac3",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "07_cofre_abierto.ase",
+      "original": "assets/New/07_cofre_abierto.ase",
+      "destination": "sprite_sources/objects/items/07_cofre_abierto.ase",
+      "category": "objects/items",
+      "bytes": 507,
+      "sha256": "ab2124cde3c8bed3c5a5c52629b0682020d55fe814e75c7a9dd89dd424d29854",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "07_cofre_abierto.png",
+      "original": "assets/New/07_cofre_abierto.png",
+      "destination": "assets/objects/items/07_cofre_abierto.png",
+      "category": "objects/items",
+      "bytes": 395,
+      "sha256": "0ac3a4cce9f2f81095f1d22d333155e0d5af05fd6347d16f6fb9c9bb18bc9677",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "08_fragmento_mana.ase",
+      "original": "assets/New/08_fragmento_mana.ase",
+      "destination": "sprite_sources/objects/items/08_fragmento_mana.ase",
+      "category": "objects/items",
+      "bytes": 465,
+      "sha256": "9ebe61aa2934158bffe20c55892427f771a0dce183a73e1120e8c2c29eabea09",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "08_fragmento_mana.png",
+      "original": "assets/New/08_fragmento_mana.png",
+      "destination": "assets/objects/items/08_fragmento_mana.png",
+      "category": "objects/items",
+      "bytes": 262,
+      "sha256": "aec224a6fb40f0300ab4c2c43c00ea0457ab171bb98c1dd6acb9b48754c4f9ff",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "09_material_magico.ase",
+      "original": "assets/New/09_material_magico.ase",
+      "destination": "sprite_sources/objects/items/09_material_magico.ase",
+      "category": "objects/items",
+      "bytes": 510,
+      "sha256": "9478b1936c78d1d5d91bd0072bec032d1e29fcebb82986fe7d60dc01d89c55cd",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "09_material_magico.png",
+      "original": "assets/New/09_material_magico.png",
+      "destination": "assets/objects/items/09_material_magico.png",
+      "category": "objects/items",
+      "bytes": 362,
+      "sha256": "500277607dfeacc4fbba6dd73099ba7640662f7d66b61850d713294a516b3468",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "10_frasco_pocion.ase",
+      "original": "assets/New/10_frasco_pocion.ase",
+      "destination": "sprite_sources/objects/items/10_frasco_pocion.ase",
+      "category": "objects/items",
+      "bytes": 467,
+      "sha256": "502f2878ece08e20b18b5e081344e02fd0ea9ef6fa1bc07443ca72d264ef934f",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "10_frasco_pocion.png",
+      "original": "assets/New/10_frasco_pocion.png",
+      "destination": "assets/objects/items/10_frasco_pocion.png",
+      "category": "objects/items",
+      "bytes": 302,
+      "sha256": "6b1807ab41da6b93e730032254a07d5016577a3c26e423abdceb2956e0a5864e",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "11_antidoto.ase",
+      "original": "assets/New/11_antidoto.ase",
+      "destination": "sprite_sources/objects/items/11_antidoto.ase",
+      "category": "objects/items",
+      "bytes": 428,
+      "sha256": "3b9c9eaabc7503d5becf2708b639d64c981c7dfed75655a5fff0cc604f096f5e",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "11_antidoto.png",
+      "original": "assets/New/11_antidoto.png",
+      "destination": "assets/objects/items/11_antidoto.png",
+      "category": "objects/items",
+      "bytes": 226,
+      "sha256": "b5e11e9dba882c96b9bd163177d86a66c80cf3ab67bcd07ca88a71617713d1b6",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "12_escoba.ase",
+      "original": "assets/New/12_escoba.ase",
+      "destination": "sprite_sources/objects/items/12_escoba.ase",
+      "category": "objects/items",
+      "bytes": 410,
+      "sha256": "dd6b490b4e0d8d30a62f572293578a0f8d63f81a6d6f3e5f4098aeeaf3274a20",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "12_escoba.png",
+      "original": "assets/New/12_escoba.png",
+      "destination": "assets/objects/items/12_escoba.png",
+      "category": "objects/items",
+      "bytes": 176,
+      "sha256": "0be2124cbbb717a19a71942c882269fae045405e9f26d0e57f67a3a793218042",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "13_flor.ase",
+      "original": "assets/New/13_flor.ase",
+      "destination": "sprite_sources/objects/items/13_flor.ase",
+      "category": "objects/items",
+      "bytes": 467,
+      "sha256": "b6d54af4a732379ed6f6a136bd95b140972f8b54fc4d7a4b29e78e0be200d22a",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "13_flor.png",
+      "original": "assets/New/13_flor.png",
+      "destination": "assets/objects/items/13_flor.png",
+      "category": "objects/items",
+      "bytes": 292,
+      "sha256": "187a69c18b2575be60fe7134de135440275b411aef24f4644884c5938385a405",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "14_anillo_matrimonio.ase",
+      "original": "assets/New/14_anillo_matrimonio.ase",
+      "destination": "sprite_sources/objects/items/14_anillo_matrimonio.ase",
+      "category": "objects/items",
+      "bytes": 476,
+      "sha256": "2a919108f955c7769198922cd246b502cbb5e55e4488fca2d07399a626775c6d",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "14_anillo_matrimonio.png",
+      "original": "assets/New/14_anillo_matrimonio.png",
+      "destination": "assets/objects/items/14_anillo_matrimonio.png",
+      "category": "objects/items",
+      "bytes": 307,
+      "sha256": "b3f5ed5457c08dc04d13112609cd48a886c64fc374f6870e5d188a71de2ade1f",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "15_nota_misteriosa.ase",
+      "original": "assets/New/15_nota_misteriosa.ase",
+      "destination": "sprite_sources/objects/items/15_nota_misteriosa.ase",
+      "category": "objects/items",
+      "bytes": 447,
+      "sha256": "b3cb2fcc81de7f4e261079f4f313f66f2ec1bf381c1d42e0e53f2922e933fb66",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "15_nota_misteriosa.png",
+      "original": "assets/New/15_nota_misteriosa.png",
+      "destination": "assets/objects/items/15_nota_misteriosa.png",
+      "category": "objects/items",
+      "bytes": 237,
+      "sha256": "c1dbc1bc2e2019135dfecb7ba0baa4b683b2d452f2353eb00ad41f81c2970d0d",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "16_indicador_interaccion.ase",
+      "original": "assets/New/16_indicador_interaccion.ase",
+      "destination": "sprite_sources/objects/items/16_indicador_interaccion.ase",
+      "category": "objects/items",
+      "bytes": 451,
+      "sha256": "31d024e6d944b805f1c5c59aa2ad793290e69336ae55fb1ceec21918f4432548",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "Contorno",
+          "Color"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 2,
+          "0x2005": 2
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "16_indicador_interaccion.png",
+      "original": "assets/New/16_indicador_interaccion.png",
+      "destination": "assets/objects/items/16_indicador_interaccion.png",
+      "category": "objects/items",
+      "bytes": 195,
+      "sha256": "3c83981f95490b6a5a0caa1e347b66f6c4a009aa3c9da25bb150c08de3db4982",
+      "png": {
+        "width": 16,
+        "height": 16,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "aisha.ase",
+      "original": "assets/New/aisha.ase",
+      "destination": "sprite_sources/characters/portraits/aisha.ase",
+      "category": "characters/portraits",
+      "bytes": 5011,
+      "sha256": "f58e257047a6e090143176ec390e1ecc89c7f2979a57c826b1ca468eaf7a7a94",
+      "ase": {
+        "width": 64,
+        "height": 64,
+        "frames": 4,
+        "depth": 32,
+        "durationsMs": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "layers": [
+          "Vestimenta",
+          "Cabeza y cabello",
+          "Rostro y expresiones"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2018": 1,
+          "0x2005": 12
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "aisha.png",
+      "original": "assets/New/aisha.png",
+      "destination": "assets/characters/portraits/aisha.png",
+      "category": "characters/portraits",
+      "bytes": 1209,
+      "sha256": "4a1a1d1054dae106a745d7b2a55a3c705c7d6e9b09f5dc6c1e6072c168c6a52e",
+      "png": {
+        "width": 256,
+        "height": 64,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "aisha_idle.ase",
+      "original": "assets/New/aisha_idle.ase",
+      "destination": "sprite_sources/characters/npc_idle/aisha_idle.ase",
+      "category": "characters/npc_idle",
+      "bytes": 1079,
+      "sha256": "0b0c1fa2a70abec77f30863203fef98ed5058f5ac96c715866964cb4fd3151d9",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 2,
+        "depth": 32,
+        "durationsMs": [
+          500,
+          500
+        ],
+        "layers": [
+          "Base compartida",
+          "Movimiento"
+        ],
+        "chunks": {
+          "0x2004": 2,
+          "0x2018": 1,
+          "0x2005": 4
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "aisha_idle.png",
+      "original": "assets/New/aisha_idle.png",
+      "destination": "assets/characters/npc_idle/aisha_idle.png",
+      "category": "characters/npc_idle",
+      "bytes": 594,
+      "sha256": "2b396cd8079116cbe280fe75c705cca084cce2a4210827879acb186b53a748d8",
+      "png": {
+        "width": 48,
+        "height": 32,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "biblioteca_ranoa_map.ase",
+      "original": "assets/New/biblioteca_ranoa_map.ase",
+      "destination": "sprite_sources/maps/ranoa/biblioteca_ranoa_map.ase",
+      "category": "maps/ranoa",
+      "bytes": 54454,
+      "sha256": "2cd033a720199d8fc1435d6511735776d10bf5abd63bcbf91d212aee2eacf8ee",
+      "ase": {
+        "width": 512,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 14645 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 27127 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 45305 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "biblioteca_ranoa_map.png",
+      "original": "assets/New/biblioteca_ranoa_map.png",
+      "destination": "assets/maps/ranoa/biblioteca_ranoa_map.png",
+      "category": "maps/ranoa",
+      "bytes": 30442,
+      "sha256": "84c977501de78f763efa5c80ebf1ffa036b4bfbbf1376d0bd8b968025e15f615",
+      "png": {
+        "width": 512,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "caballo_salida.ase",
+      "original": "assets/New/caballo_salida.ase",
+      "destination": "sprite_sources/animations/horse/caballo_salida.ase",
+      "category": "animations/horse",
+      "bytes": 2209,
+      "sha256": "92876186b2a6b8391bf5035a3971c6bbfa053a996b27c72c15178fee48224d68",
+      "ase": {
+        "width": 48,
+        "height": 32,
+        "frames": 4,
+        "depth": 32,
+        "durationsMs": [
+          140,
+          140,
+          140,
+          140
+        ],
+        "layers": [
+          "Caballo",
+          "Jinete - colocar sprite aqui"
+        ],
+        "chunks": {
+          "0x2004": 2,
+          "0x2018": 1,
+          "0x2005": 4
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "caballo_salida.png",
+      "original": "assets/New/caballo_salida.png",
+      "destination": "assets/animations/horse/caballo_salida.png",
+      "category": "animations/horse",
+      "bytes": 2237,
+      "sha256": "d027db53391fc37e65bb40bdef8f704c283f22b4292bc52dc0b16bd9f04bbefe",
+      "png": {
+        "width": 192,
+        "height": 32,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "camino_sharia_map.ase",
+      "original": "assets/New/camino_sharia_map.ase",
+      "destination": "sprite_sources/maps/sharia/camino_sharia_map.ase",
+      "category": "maps/sharia",
+      "bytes": 113557,
+      "sha256": "f70f7db7f256b1cfa4e4e7fb4e962c931f989d737551215d13d8c35b72b02bce",
+      "ase": {
+        "width": 768,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 41371 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 73458 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 85541 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "camino_sharia_map.png",
+      "original": "assets/New/camino_sharia_map.png",
+      "destination": "assets/maps/sharia/camino_sharia_map.png",
+      "category": "maps/sharia",
+      "bytes": 65706,
+      "sha256": "a796456bbcee533a690d1e34504ad45d3e54492c333ea74b568a63949e5a1256",
+      "png": {
+        "width": 768,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "casa_planta_baja_map.ase",
+      "original": "assets/New/casa_planta_baja_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/casa_planta_baja_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 122796,
+      "sha256": "f39ca45345406f243ecfb1b6c0d58971ac6e8f4df082d889b1db66c384041364",
+      "ase": {
+        "width": 640,
+        "height": 384,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 33136 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 57265 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 96588 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "casa_planta_baja_map.png",
+      "original": "assets/New/casa_planta_baja_map.png",
+      "destination": "assets/maps/greyrat_house/casa_planta_baja_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 69163,
+      "sha256": "b5f9352268fb16f3e0ac698c57c4fefdcbb162bcd0e7bb81a58ee4cdcf6f4a3a",
+      "png": {
+        "width": 640,
+        "height": 384,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "casa_segundo_piso_map.ase",
+      "original": "assets/New/casa_segundo_piso_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/casa_segundo_piso_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 57242,
+      "sha256": "b148809db2410648083989b5f471881c46525fdbf16a84fa8bb85ba1e09bbab8",
+      "ase": {
+        "width": 512,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 21068 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 51511 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 53257 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "casa_segundo_piso_map.png",
+      "original": "assets/New/casa_segundo_piso_map.png",
+      "destination": "assets/maps/greyrat_house/casa_segundo_piso_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 35998,
+      "sha256": "14f14b79ca5cae3fc90331d5badd65446a05ed0246f58663b59f22bfdd015ab7",
+      "png": {
+        "width": 512,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "cementerio_ranoa_map.ase",
+      "original": "assets/New/cementerio_ranoa_map.ase",
+      "destination": "sprite_sources/maps/sharia/cementerio_ranoa_map.ase",
+      "category": "maps/sharia",
+      "bytes": 69985,
+      "sha256": "8d44118f7c90e5d38df7962c9a5cb1dfe6d041430eeedb221e7623e54d6f863d",
+      "ase": {
+        "width": 512,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 26135 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 41973 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 47962 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "cementerio_ranoa_map.png",
+      "original": "assets/New/cementerio_ranoa_map.png",
+      "destination": "assets/maps/sharia/cementerio_ranoa_map.png",
+      "category": "maps/sharia",
+      "bytes": 42044,
+      "sha256": "c5289b981b3dde04a043bb9081197d24d848eab350ee7a3ca615c788fd323063",
+      "png": {
+        "width": 512,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "Cliff_walk.ase",
+      "original": "assets/New/Cliff_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Cliff_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 9664,
+      "sha256": "9d16fd76838979ad4b83cbe04f3009504a5eeaa7a08ed36ecd2a3f72fdabb946",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        "layers": [
+          "Cuerpo y capa",
+          "Cabeza y cabello",
+          "Uniforme y detalles"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2018": 1,
+          "0x2005": 48
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Cliff_walk.png",
+      "original": "assets/New/Cliff_walk.png",
+      "destination": "assets/characters/overworld/Cliff_walk.png",
+      "category": "characters/overworld",
+      "bytes": 5784,
+      "sha256": "c1ead061e4f96b4043da3e12f747e894711b27ed8f79e9757bd1c2c76990a769",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "dormitorio_eris_map.ase",
+      "original": "assets/New/dormitorio_eris_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/dormitorio_eris_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 18278,
+      "sha256": "fa264e2a497083fcfc262f06b9e0e8644455d16df1a2ba21c4e5fd24b2b540eb",
+      "ase": {
+        "width": 320,
+        "height": 192,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 5720 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 11461 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 16496 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "dormitorio_eris_map.png",
+      "original": "assets/New/dormitorio_eris_map.png",
+      "destination": "assets/maps/greyrat_house/dormitorio_eris_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 10172,
+      "sha256": "7bb988c9b4133ee62deb7d41e7af6b04bc05aa499af610027eeadc52d402658f",
+      "png": {
+        "width": 320,
+        "height": 192,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "dormitorio_roxy_map.ase",
+      "original": "assets/New/dormitorio_roxy_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/dormitorio_roxy_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 21555,
+      "sha256": "d0da60d1727e5135f28bc7cfadc6d2f3ec2f197884f83c1d25663f67b716528a",
+      "ase": {
+        "width": 320,
+        "height": 192,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 8336 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 13321 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 18070 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "dormitorio_roxy_map.png",
+      "original": "assets/New/dormitorio_roxy_map.png",
+      "destination": "assets/maps/greyrat_house/dormitorio_roxy_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 12152,
+      "sha256": "513f230401f4833da2636f3043ab232c2b76ba756098449d820a60c04692a213",
+      "png": {
+        "width": 320,
+        "height": 192,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "dormitorio_sylphie_map.ase",
+      "original": "assets/New/dormitorio_sylphie_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/dormitorio_sylphie_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 19469,
+      "sha256": "60b983af8c7699560acb2178911d24c8ea9877ae2521a08adfa20f611469262f",
+      "ase": {
+        "width": 320,
+        "height": 192,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 8469 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 12984 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 16454 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "dormitorio_sylphie_map.png",
+      "original": "assets/New/dormitorio_sylphie_map.png",
+      "destination": "assets/maps/greyrat_house/dormitorio_sylphie_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 11224,
+      "sha256": "1487030348c6ca60d8002c8597f783f700a539140bad0ab1347ff35acbb39292",
+      "png": {
+        "width": 320,
+        "height": 192,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "Eris_walk.ase",
+      "original": "assets/New/Eris_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Eris_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 10963,
+      "sha256": "046b39d51d201d64da79f071734cec8b5af972745702242f142b3984ae6231a5",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130,
+          130
+        ],
+        "layers": [
+          "Cabello posterior",
+          "Cuerpo y botas",
+          "Rostro",
+          "Cabello frontal",
+          "Accesorios"
+        ],
+        "chunks": {
+          "0x2004": 5,
+          "0x2005": 80
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Eris_walk.png",
+      "original": "assets/New/Eris_walk.png",
+      "destination": "assets/characters/overworld/Eris_walk.png",
+      "category": "characters/overworld",
+      "bytes": 2895,
+      "sha256": "3e4f4db4fd503f58c7c8f226e65daa7fad9903da4530941e3c201470f7e197cc",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "estudio_rudy_map.ase",
+      "original": "assets/New/estudio_rudy_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/estudio_rudy_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 23899,
+      "sha256": "e1bd71d4634b0b007d12bfe533f8e95dc6fe9b1d03343c9f381593d12774b02f",
+      "ase": {
+        "width": 320,
+        "height": 192,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 9341 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 14766 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 20012 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "estudio_rudy_map.png",
+      "original": "assets/New/estudio_rudy_map.png",
+      "destination": "assets/maps/greyrat_house/estudio_rudy_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 13559,
+      "sha256": "c23056ce50ce5056f360d759fbecac1e798bf636369cd0904d272665a1c08104",
+      "png": {
+        "width": 320,
+        "height": 192,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "jardin_casa_map.ase",
+      "original": "assets/New/jardin_casa_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/jardin_casa_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 67074,
+      "sha256": "7a6705bece0d609b553fcfdc107aeb69e16ea2cf9fbfd5a7811a70223b3f4703",
+      "ase": {
+        "width": 512,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2019": 1,
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 362 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 20341 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 40672 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 43703 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "jardin_casa_map.png",
+      "original": "assets/New/jardin_casa_map.png",
+      "destination": "assets/maps/greyrat_house/jardin_casa_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 41012,
+      "sha256": "ec9804ec89942e2bd47876d2bfeaf8cb2fc69952b133907d8f6529181525f45c",
+      "png": {
+        "width": 512,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "laboratorio_nanahoshi_map.ase",
+      "original": "assets/New/laboratorio_nanahoshi_map.ase",
+      "destination": "sprite_sources/maps/ranoa/laboratorio_nanahoshi_map.ase",
+      "category": "maps/ranoa",
+      "bytes": 42547,
+      "sha256": "cec9e65d7f786047c87a7857c095ab2fd4686561dad5a4fabd6dbca6dab48408",
+      "ase": {
+        "width": 512,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 10965 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 23410 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 34791 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "laboratorio_nanahoshi_map.png",
+      "original": "assets/New/laboratorio_nanahoshi_map.png",
+      "destination": "assets/maps/ranoa/laboratorio_nanahoshi_map.png",
+      "category": "maps/ranoa",
+      "bytes": 22300,
+      "sha256": "d83b32444860856609beed7d8c51c525a290b2dbf36e23e3cf4805616b8888a2",
+      "png": {
+        "width": 512,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "LEEME.txt",
+      "original": "assets/New/LEEME.txt",
+      "destination": "assets/tilesets/LEEME.txt",
+      "category": "tilesets",
+      "bytes": 947,
+      "sha256": "5b365d6450f0c1d6b748c399284b1012cc4bfca5767bd5b452648aaf66de31c3"
+    },
+    {
+      "name": "lilia.ase",
+      "original": "assets/New/lilia.ase",
+      "destination": "sprite_sources/characters/portraits/lilia.ase",
+      "category": "characters/portraits",
+      "bytes": 5866,
+      "sha256": "a81a958c697e3c13b9b434ab2fa1aad5e267b949a506dcb23813d2eb545c9e2d",
+      "ase": {
+        "width": 64,
+        "height": 64,
+        "frames": 4,
+        "depth": 32,
+        "durationsMs": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "layers": [
+          "Vestimenta",
+          "Cabeza y cabello",
+          "Rostro y expresiones"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2018": 1,
+          "0x2005": 12
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "lilia.png",
+      "original": "assets/New/lilia.png",
+      "destination": "assets/characters/portraits/lilia.png",
+      "category": "characters/portraits",
+      "bytes": 1472,
+      "sha256": "58f6c412ecf7c519f89b9bf92f2f8129a18bc5d6f5f38ba6d830f421204002c7",
+      "png": {
+        "width": 256,
+        "height": 64,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "lilia_idle.ase",
+      "original": "assets/New/lilia_idle.ase",
+      "destination": "sprite_sources/characters/npc_idle/lilia_idle.ase",
+      "category": "characters/npc_idle",
+      "bytes": 1179,
+      "sha256": "2889c91570d1529568eb167aaccec3a2e0374ca5d5b424be60129d42409252cb",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 2,
+        "depth": 32,
+        "durationsMs": [
+          500,
+          500
+        ],
+        "layers": [
+          "Base compartida",
+          "Movimiento"
+        ],
+        "chunks": {
+          "0x2004": 2,
+          "0x2018": 1,
+          "0x2005": 4
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "lilia_idle.png",
+      "original": "assets/New/lilia_idle.png",
+      "destination": "assets/characters/npc_idle/lilia_idle.png",
+      "category": "characters/npc_idle",
+      "bytes": 620,
+      "sha256": "a4aaf4a25523598d009d6b0a7b54a5c37bab02b7bda1b25179a6ed1497c6ef41",
+      "png": {
+        "width": 48,
+        "height": 32,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "lucy.ase",
+      "original": "assets/New/lucy.ase",
+      "destination": "sprite_sources/characters/portraits/lucy.ase",
+      "category": "characters/portraits",
+      "bytes": 4252,
+      "sha256": "ba104fe59ec073a9fefacd2effc838a12d553ce1ddcd6514405e59d4222807ff",
+      "ase": {
+        "width": 64,
+        "height": 64,
+        "frames": 4,
+        "depth": 32,
+        "durationsMs": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "layers": [
+          "Vestimenta",
+          "Cabeza y cabello",
+          "Rostro y expresiones"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2018": 1,
+          "0x2005": 12
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "lucy.png",
+      "original": "assets/New/lucy.png",
+      "destination": "assets/characters/portraits/lucy.png",
+      "category": "characters/portraits",
+      "bytes": 1091,
+      "sha256": "170753be44144703793183faac810193592ad5bb894b5618b6dd7a853bb3f29e",
+      "png": {
+        "width": 256,
+        "height": 64,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "lucy_idle.ase",
+      "original": "assets/New/lucy_idle.ase",
+      "destination": "sprite_sources/characters/npc_idle/lucy_idle.ase",
+      "category": "characters/npc_idle",
+      "bytes": 694,
+      "sha256": "9ae42154d75c6b4816b70236190f248b9704bf4d8438db0f3ef1b39ca808de4b",
+      "ase": {
+        "width": 16,
+        "height": 16,
+        "frames": 2,
+        "depth": 32,
+        "durationsMs": [
+          500,
+          500
+        ],
+        "layers": [
+          "Base compartida",
+          "Movimiento"
+        ],
+        "chunks": {
+          "0x2004": 2,
+          "0x2018": 1,
+          "0x2005": 4
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "lucy_idle.png",
+      "original": "assets/New/lucy_idle.png",
+      "destination": "assets/characters/npc_idle/lucy_idle.png",
+      "category": "characters/npc_idle",
+      "bytes": 460,
+      "sha256": "b4aa863fdac1a4a0066c3f839db6e5c17c3ad83cd7baba7296b979fd6be6dc66",
+      "png": {
+        "width": 32,
+        "height": 16,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "Nanahoshi_walk.ase",
+      "original": "assets/New/Nanahoshi_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Nanahoshi_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 11275,
+      "sha256": "254721e06672cd17b0f4ffb2b3cf4cb2cabde869406ab2c0fcd9da1bcfcff38f",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145,
+          145
+        ],
+        "layers": [
+          "Cabello posterior",
+          "Cuerpo y botas",
+          "Piel",
+          "Cabello frontal",
+          "Rostro y ojos",
+          "Mascara y detalles"
+        ],
+        "chunks": {
+          "0x2004": 6,
+          "0x2005": 96
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Nanahoshi_walk.png",
+      "original": "assets/New/Nanahoshi_walk.png",
+      "destination": "assets/characters/overworld/Nanahoshi_walk.png",
+      "category": "characters/overworld",
+      "bytes": 2144,
+      "sha256": "a8d2710ab6dcc8c3eac0fa1af0693b820d8239697399f10db0ed984b93617aeb",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "norn.ase",
+      "original": "assets/New/norn.ase",
+      "destination": "sprite_sources/characters/portraits/norn.ase",
+      "category": "characters/portraits",
+      "bytes": 5771,
+      "sha256": "8d8756af429862e774854679c7482cd0fe94f0cac70097ab645d0c528b28e47c",
+      "ase": {
+        "width": 64,
+        "height": 64,
+        "frames": 4,
+        "depth": 32,
+        "durationsMs": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "layers": [
+          "Vestimenta",
+          "Cabeza y cabello",
+          "Rostro y expresiones"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2018": 1,
+          "0x2005": 12
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "norn.png",
+      "original": "assets/New/norn.png",
+      "destination": "assets/characters/portraits/norn.png",
+      "category": "characters/portraits",
+      "bytes": 1361,
+      "sha256": "90fb4e32fe1bb491e32c35ca3c2d5b08ca4f2076cf64a48e6dd73ed7d626a6d1",
+      "png": {
+        "width": 256,
+        "height": 64,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "norn_idle.ase",
+      "original": "assets/New/norn_idle.ase",
+      "destination": "sprite_sources/characters/npc_idle/norn_idle.ase",
+      "category": "characters/npc_idle",
+      "bytes": 983,
+      "sha256": "4e9edb281938fe130e16cb4c8fea4efbf0d9724e8add9de4dae5bc4612aa7e04",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 2,
+        "depth": 32,
+        "durationsMs": [
+          500,
+          500
+        ],
+        "layers": [
+          "Base compartida",
+          "Movimiento"
+        ],
+        "chunks": {
+          "0x2004": 2,
+          "0x2018": 1,
+          "0x2005": 4
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "norn_idle.png",
+      "original": "assets/New/norn_idle.png",
+      "destination": "assets/characters/npc_idle/norn_idle.png",
+      "category": "characters/npc_idle",
+      "bytes": 564,
+      "sha256": "e3b40ffcea9089299efb232dc04ff784b6da7583b7e6b28ff7696ab83cc93b01",
+      "png": {
+        "width": 48,
+        "height": 32,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "objetos_atlas.csv",
+      "original": "assets/New/objetos_atlas.csv",
+      "destination": "assets/objects/atlases/objetos_atlas.csv",
+      "category": "objects/atlases",
+      "bytes": 544,
+      "sha256": "6cbaa90ba06debd1a28303a7acec3c6ffcdf29fa8dd254c1bc54ea8714f57271"
+    },
+    {
+      "name": "objetos_atlas.json",
+      "original": "assets/New/objetos_atlas.json",
+      "destination": "assets/objects/atlases/objetos_atlas.json",
+      "category": "objects/atlases",
+      "bytes": 2386,
+      "sha256": "12db99aa9c89b0e7e27ca0bce38d6386a6a0addfc0bfdca2ef519b32ad9aa5fd"
+    },
+    {
+      "name": "objetos_atlas_64x64.ase",
+      "original": "assets/New/objetos_atlas_64x64.ase",
+      "destination": "sprite_sources/objects/atlases/objetos_atlas_64x64.ase",
+      "category": "objects/atlases",
+      "bytes": 3759,
+      "sha256": "1fe023d614bfa3a1fc08422e17a30003caded3da441ec3fb85ddc9d876d47196",
+      "ase": {
+        "width": 64,
+        "height": 64,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          "01_moneda_oro",
+          "02_bolsa_oro",
+          "03_libro_magia",
+          "04_pergamino",
+          "05_carta_encantada",
+          "06_cofre_cerrado",
+          "07_cofre_abierto",
+          "08_fragmento_mana",
+          "09_material_magico",
+          "10_frasco_pocion",
+          "11_antidoto",
+          "12_escoba",
+          "13_flor",
+          "14_anillo_matrimonio",
+          "15_nota_misteriosa",
+          "16_indicador_interaccion"
+        ],
+        "chunks": {
+          "0x4": 1,
+          "0x2004": 16,
+          "0x2005": 16
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "objetos_atlas_64x64.png",
+      "original": "assets/New/objetos_atlas_64x64.png",
+      "destination": "assets/objects/atlases/objetos_atlas_64x64.png",
+      "category": "objects/atlases",
+      "bytes": 3208,
+      "sha256": "2e0b58beef13df0c7138b2cd51242a7598cc7ec182d0ab902407cb7b3070c045",
+      "png": {
+        "width": 64,
+        "height": 64,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "patio_eris_map.ase",
+      "original": "assets/New/patio_eris_map.ase",
+      "destination": "sprite_sources/maps/greyrat_house/patio_eris_map.ase",
+      "category": "maps/greyrat_house",
+      "bytes": 49940,
+      "sha256": "9e0e6ce900d570c922d6ea0c7ccc75c2366bd39ef89ef293b1054d0210f2f4ca",
+      "ase": {
+        "width": 640,
+        "height": 384,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2019": 1,
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 362 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 20127 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 40680 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 48894 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "patio_eris_map.png",
+      "original": "assets/New/patio_eris_map.png",
+      "destination": "assets/maps/greyrat_house/patio_eris_map.png",
+      "category": "maps/greyrat_house",
+      "bytes": 28785,
+      "sha256": "d903e4f0279537cd249d004409f398a5ada1655b65afff15b2f6dc210737df32",
+      "png": {
+        "width": 640,
+        "height": 384,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "Roxy_walk.ase",
+      "original": "assets/New/Roxy_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Roxy_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 9773,
+      "sha256": "5ea6da069fd4fe7e49892f7fae17d6cced69681cb36bc50139ccf29bf3844cb6",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "layers": [
+          "Cuerpo",
+          "Cabeza",
+          "Accesorios"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2005": 48
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Roxy_walk.png",
+      "original": "assets/New/Roxy_walk.png",
+      "destination": "assets/characters/overworld/Roxy_walk.png",
+      "category": "characters/overworld",
+      "bytes": 5813,
+      "sha256": "0bcc4426b10f85e8031af88b0dbd03035f9f4de8ef2a1040f1136b868f588994",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "Rudeus_walk.ase",
+      "original": "assets/New/Rudeus_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Rudeus_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 9308,
+      "sha256": "af555f573d872cd583e0c1409bc1049b843f42f5c10d7c36859ec6ba96b0e1e9",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "layers": [
+          "Cuerpo",
+          "Cabeza",
+          "Detalles"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2005": 48
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Rudeus_walk.png",
+      "original": "assets/New/Rudeus_walk.png",
+      "destination": "assets/characters/overworld/Rudeus_walk.png",
+      "category": "characters/overworld",
+      "bytes": 6173,
+      "sha256": "6c03564af4926297eca97a7b025d4588497322c768e044e511e2dd2ea567a12d",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "Sylphie_walk.ase",
+      "original": "assets/New/Sylphie_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Sylphie_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 9222,
+      "sha256": "f5d0c5f4a5d588de42761e76a5a68d576fb111040e01e85ce90fb1fcff72dc44",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140
+        ],
+        "layers": [
+          "Cuerpo y botas",
+          "Rostro y orejas",
+          "Cabello",
+          "Detalles y accesorios"
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 64
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Sylphie_walk.png",
+      "original": "assets/New/Sylphie_walk.png",
+      "destination": "assets/characters/overworld/Sylphie_walk.png",
+      "category": "characters/overworld",
+      "bytes": 2135,
+      "sha256": "529ab53451513ebe116f98ce2c74e3fe19cd9ab94ddaf8a062585481a4b5a266",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "taller_cliff_zanoba_map.ase",
+      "original": "assets/New/taller_cliff_zanoba_map.ase",
+      "destination": "sprite_sources/maps/ranoa/taller_cliff_zanoba_map.ase",
+      "category": "maps/ranoa",
+      "bytes": 52324,
+      "sha256": "c6f35bcf396cb514cee0e18a968c21a3b15457d43542fa00b56af6025efc7a29",
+      "ase": {
+        "width": 512,
+        "height": 320,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 23799 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 32624 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 45294 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "taller_cliff_zanoba_map.png",
+      "original": "assets/New/taller_cliff_zanoba_map.png",
+      "destination": "assets/maps/ranoa/taller_cliff_zanoba_map.png",
+      "category": "maps/ranoa",
+      "bytes": 30434,
+      "sha256": "fb41de9b65f9b84f0279d0fe9ae457478c69adc51b77a5d801b0444905343ee5",
+      "png": {
+        "width": 512,
+        "height": 320,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "tileset_cementerio.ase",
+      "original": "assets/New/tileset_cementerio.ase",
+      "destination": "sprite_sources/tilesets/tileset_cementerio.ase",
+      "category": "tilesets",
+      "bytes": 35325,
+      "sha256": "15a8c0e1b7313a152a0a50d921c09870d2fdcf7f931475d0cbfe98e1491ab34e",
+      "ase": {
+        "width": 256,
+        "height": 256,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 16,
+          "0x2005": 16
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 509 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 873 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1238 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1595 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 3954 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 6812 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 9626 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 12503 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 15416 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 18317 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 21019 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 23951 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 26898 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 29950 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 32562 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "tileset_cementerio.png",
+      "original": "assets/New/tileset_cementerio.png",
+      "destination": "assets/tilesets/tileset_cementerio.png",
+      "category": "tilesets",
+      "bytes": 23699,
+      "sha256": "fb2722d6bb8db5518ec79327a8f3ac0a01836de2ac183c0e75170025246d9a98",
+      "png": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "tileset_exterior.ase",
+      "original": "assets/New/tileset_exterior.ase",
+      "destination": "sprite_sources/tilesets/tileset_exterior.ase",
+      "category": "tilesets",
+      "bytes": 28221,
+      "sha256": "e8a7b63ce6f71d3ae8058736df3a37337eb7a95e9cc1a9da95f1bfa3ccfb014d",
+      "ase": {
+        "width": 256,
+        "height": 256,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 16,
+          "0x2005": 16
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 508 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 870 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1234 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1590 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 3619 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 6203 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 8544 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 10597 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 12618 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 14661 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 16505 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 18701 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 21347 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 23769 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 26079 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "tileset_exterior.png",
+      "original": "assets/New/tileset_exterior.png",
+      "destination": "assets/tilesets/tileset_exterior.png",
+      "category": "tilesets",
+      "bytes": 18870,
+      "sha256": "41c45c97839619f1a539b299e458c278415f0c47ef18e9d5191c5133f2e58074",
+      "png": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "tileset_hogar.ase",
+      "original": "assets/New/tileset_hogar.ase",
+      "destination": "sprite_sources/tilesets/tileset_hogar.ase",
+      "category": "tilesets",
+      "bytes": 29311,
+      "sha256": "7e88742e74d60688b3b7d9a08b00e2452ca77c6274fbd6c91cb652255b75f62b",
+      "ase": {
+        "width": 256,
+        "height": 256,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 16,
+          "0x2005": 16
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 488 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 825 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1160 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1497 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 3608 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 5488 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 7416 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 9631 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 11878 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 14445 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 16714 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 19138 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 21681 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 24207 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 26695 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "tileset_hogar.png",
+      "original": "assets/New/tileset_hogar.png",
+      "destination": "assets/tilesets/tileset_hogar.png",
+      "category": "tilesets",
+      "bytes": 19357,
+      "sha256": "cb841a1be349245179e5f9d0b0b8af025abdf9a4d49fe1c46589c469392bea80",
+      "png": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "tileset_universidad.ase",
+      "original": "assets/New/tileset_universidad.ase",
+      "destination": "sprite_sources/tilesets/tileset_universidad.ase",
+      "category": "tilesets",
+      "bytes": 31221,
+      "sha256": "92e2876805f9904c4f8162f74e0485f92ae4837ac8c3e298734241e7f49dce5d",
+      "ase": {
+        "width": 256,
+        "height": 256,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 16,
+          "0x2005": 16
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 459 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 776 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1092 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 1412 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 3641 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 5477 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 7721 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 10333 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 12743 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 15419 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 18152 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 20705 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 23581 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 26114 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 28531 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "tileset_universidad.png",
+      "original": "assets/New/tileset_universidad.png",
+      "destination": "assets/tilesets/tileset_universidad.png",
+      "category": "tilesets",
+      "bytes": 20699,
+      "sha256": "e0015f82ed460f72bd96d39baa5f1d26499e1b2812b9c234ad34b0aa4c1c6a15",
+      "png": {
+        "width": 256,
+        "height": 256,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "universidad_exterior_map.ase",
+      "original": "assets/New/universidad_exterior_map.ase",
+      "destination": "sprite_sources/maps/ranoa/universidad_exterior_map.ase",
+      "category": "maps/ranoa",
+      "bytes": 101184,
+      "sha256": "3b5a6886ddbc2215d9966081423f991662ac1bbf125ab4980659aad262f11a9f",
+      "ase": {
+        "width": 640,
+        "height": 384,
+        "frames": 1,
+        "depth": 32,
+        "durationsMs": [
+          100
+        ],
+        "layers": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 4
+        },
+        "warnings": [
+          "Layer chunk at byte 144 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 47316 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 82351 does not match the standard 16-byte layer header",
+          "Layer chunk at byte 86760 does not match the standard 16-byte layer header"
+        ]
+      }
+    },
+    {
+      "name": "universidad_exterior_map.png",
+      "original": "assets/New/universidad_exterior_map.png",
+      "destination": "assets/maps/ranoa/universidad_exterior_map.png",
+      "category": "maps/ranoa",
+      "bytes": 229479,
+      "sha256": "bacfc59191c2db552c96567a3acd557939da25df9bc53cba8a889420c30ad302",
+      "png": {
+        "width": 640,
+        "height": 384,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "Zanoba_walk.ase",
+      "original": "assets/New/Zanoba_walk.ase",
+      "destination": "sprite_sources/characters/overworld/Zanoba_walk.ase",
+      "category": "characters/overworld",
+      "bytes": 8904,
+      "sha256": "019c1d380a469b754fa019318569f16818d604c348827fd2f5089cc44d420a74",
+      "ase": {
+        "width": 24,
+        "height": 32,
+        "frames": 16,
+        "depth": 32,
+        "durationsMs": [
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120
+        ],
+        "layers": [
+          "Cuerpo y uniforme",
+          "Rostro",
+          "Cabello",
+          "Gafas y detalles"
+        ],
+        "chunks": {
+          "0x2004": 4,
+          "0x2005": 64
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "Zanoba_walk.png",
+      "original": "assets/New/Zanoba_walk.png",
+      "destination": "assets/characters/overworld/Zanoba_walk.png",
+      "category": "characters/overworld",
+      "bytes": 2500,
+      "sha256": "cb482a0e3e31aca8a26953be2c6d97f19ffa1c121022a42a2a5726386a4e1b0d",
+      "png": {
+        "width": 96,
+        "height": 128,
+        "mode": "RGBA"
+      }
+    },
+    {
+      "name": "zenith.ase",
+      "original": "assets/New/zenith.ase",
+      "destination": "sprite_sources/characters/portraits/zenith.ase",
+      "category": "characters/portraits",
+      "bytes": 4922,
+      "sha256": "430353cd1706826445e0b63f2b0987d05797d9ca7628a9ad6eff4d140ca0f6f7",
+      "ase": {
+        "width": 64,
+        "height": 64,
+        "frames": 4,
+        "depth": 32,
+        "durationsMs": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "layers": [
+          "Vestimenta",
+          "Cabeza y cabello",
+          "Rostro y expresiones"
+        ],
+        "chunks": {
+          "0x2004": 3,
+          "0x2018": 1,
+          "0x2005": 12
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "zenith.png",
+      "original": "assets/New/zenith.png",
+      "destination": "assets/characters/portraits/zenith.png",
+      "category": "characters/portraits",
+      "bytes": 1230,
+      "sha256": "e2d0695730e5fa91e007bf0a005162286fab25b435d605dc1d3d14c8007293c0",
+      "png": {
+        "width": 256,
+        "height": 64,
+        "mode": "P"
+      }
+    },
+    {
+      "name": "zenith_lucy_idle.ase",
+      "original": "assets/New/zenith_lucy_idle.ase",
+      "destination": "sprite_sources/characters/npc_idle/zenith_lucy_idle.ase",
+      "category": "characters/npc_idle",
+      "bytes": 1170,
+      "sha256": "58018cc5c884eb86ac0ae0185d2cfc7969117aa308dffad117a0ead6d44cecdb",
+      "ase": {
+        "width": 32,
+        "height": 32,
+        "frames": 2,
+        "depth": 32,
+        "durationsMs": [
+          500,
+          500
+        ],
+        "layers": [
+          "Base compartida",
+          "Movimiento"
+        ],
+        "chunks": {
+          "0x2004": 2,
+          "0x2018": 1,
+          "0x2005": 4
+        },
+        "warnings": []
+      }
+    },
+    {
+      "name": "zenith_lucy_idle.png",
+      "original": "assets/New/zenith_lucy_idle.png",
+      "destination": "assets/characters/npc_idle/zenith_lucy_idle.png",
+      "category": "characters/npc_idle",
+      "bytes": 619,
+      "sha256": "2bb2b3436e45405280dba0c27e7d473c0bf221e9397b87c50fdb98fdb12e87bf",
+      "png": {
+        "width": 64,
+        "height": 32,
+        "mode": "P"
+      }
+    }
+  ],
+  "legacyFiles": [
+    {
+      "path": "assets/backgrounds/.gitkeep",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1
+    },
+    {
+      "path": "assets/backgrounds/arena_badigadi.png",
+      "sha256": "ea36572b5994434bf3456d8316d41e44a55147b2f88b05262b870110695b1616",
+      "bytes": 48740
+    },
+    {
+      "path": "assets/backgrounds/biblioteca.png",
+      "sha256": "e6b2a7a6992171580a3c495439ec250864a9750b9580b12d564388717c267c7f",
+      "bytes": 16397
+    },
+    {
+      "path": "assets/backgrounds/bosque.png",
+      "sha256": "bc00ffd88fe5ac2e45eaa97c20d67d131788a0634d08c079d6367a94d50d3eaf",
+      "bytes": 12918
+    },
+    {
+      "path": "assets/backgrounds/botica_oculta.png",
+      "sha256": "9565515ea35f571b209fb68e30a6d0a6073b269d6b4ba1632d4a789bd629bc9e",
+      "bytes": 48396
+    },
+    {
+      "path": "assets/backgrounds/dimension_espejo.png",
+      "sha256": "67040a19536d2cfa3ac061d4f5a04c7a07e44196abc876a94d7750de3d661908",
+      "bytes": 19404
+    },
+    {
+      "path": "assets/backgrounds/festival.png",
+      "sha256": "226453884ce6c9719ec34046cfe4992f4e92ad6c350cd5afb06a3b59d40c10b4",
+      "bytes": 18442
+    },
+    {
+      "path": "assets/backgrounds/hogar_greyrat.png",
+      "sha256": "1dc00f033b2abb774f2a589fca350f3580bfbcec3710c0cf33ac1b92d7174af6",
+      "bytes": 13153
+    },
+    {
+      "path": "assets/backgrounds/laboratorio.png",
+      "sha256": "6631304088b5f4631b7dd1177e56288f9b1b3a6b8375f6939e35280a57a4df43",
+      "bytes": 32542
+    },
+    {
+      "path": "assets/backgrounds/observatorio.png",
+      "sha256": "5e54bbe654bf01f567f12d92872bc61541a2befed4256d520a7cca46f8cfae09",
+      "bytes": 16062
+    },
+    {
+      "path": "assets/backgrounds/patio_universidad.png",
+      "sha256": "f3b62352e8117ec9e3382888fcf0ffbbd6659915981f33d9b7cafca521e4249a",
+      "bytes": 16084
+    },
+    {
+      "path": "assets/backgrounds/ruinas.png",
+      "sha256": "44dfee52db75a00d6bfd11071d35a29e1931902bce04c3a239112495cffff965",
+      "bytes": 17302
+    },
+    {
+      "path": "assets/backgrounds/sueno_hitogami.png",
+      "sha256": "48c5f0d337790520046593c0e40e9654e7a24f05d1c5e07a2115583b9f45bc4f",
+      "bytes": 33292
+    },
+    {
+      "path": "assets/cards/.gitkeep",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1
+    },
+    {
+      "path": "assets/cards/bases/fondo_pergamino.png",
+      "sha256": "dde0e302a358fff04915f3291cdef3e3731486fbaa771c04405517bd8149f262",
+      "bytes": 395
+    },
+    {
+      "path": "assets/cards/extras/cartas_atlas_5x1.png",
+      "sha256": "88288f782a8a8cc3225b00a9e982cb7b4530824eefb21aec74704ecb39abc8cd",
+      "bytes": 3038
+    },
+    {
+      "path": "assets/cards/extras/ejemplo_love2d.lua",
+      "sha256": "bbf4a922dc9ed7cbe66396060c60e80d1292083750d083850ce6b2c3b19f664f",
+      "bytes": 1175
+    },
+    {
+      "path": "assets/cards/extras/iconos_atlas.png",
+      "sha256": "a58162698f6f685376e427fe538d71342ae20868a8ff0966dc2d5630d235a059",
+      "bytes": 2993
+    },
+    {
+      "path": "assets/cards/extras/manifest.json",
+      "sha256": "18dfddcb0d2090b7896ce1c9f5398ac4d077301bd7fd95ad20c1c0a20b434a8c",
+      "bytes": 1814
+    },
+    {
+      "path": "assets/cards/extras/validacion_ase.json",
+      "sha256": "6f98db1fefe2e4c0dabad9237527530f73b2428a63fb250bba28f528bbbf73a9",
+      "bytes": 5100
+    },
+    {
+      "path": "assets/cards/extras/vista_previa.png",
+      "sha256": "3b3159c13913a24ba55a7b12dab7098e31f1676f4961f7a787f542fd746d73ea",
+      "bytes": 18227
+    },
+    {
+      "path": "assets/cards/iconos/analizar_runas.png",
+      "sha256": "0203cfdb8f0d79834e15ac95f774edb2ca5cf2fd72d3a2464ba756de807c5125",
+      "bytes": 215
+    },
+    {
+      "path": "assets/cards/iconos/antidoto.png",
+      "sha256": "a9b19e94d5909280052312d4bf55b6b2956af873a52da2a559e920ca2b254c81",
+      "bytes": 347
+    },
+    {
+      "path": "assets/cards/iconos/ataque_coordinado.png",
+      "sha256": "2cc535b171645b90d81a08249e1a0831a06aaa6a24d76be606ce421c08751b04",
+      "bytes": 513
+    },
+    {
+      "path": "assets/cards/iconos/bala_agua.png",
+      "sha256": "c6f46917b32b762e124893cbdec51c97bb653b80194a28299162472e0683a1b3",
+      "bytes": 360
+    },
+    {
+      "path": "assets/cards/iconos/barrera_de_tierra.png",
+      "sha256": "75b818b6f960dfee1463e625f747187975381819d9e47e301e4eca57bcbd0c9d",
+      "bytes": 296
+    },
+    {
+      "path": "assets/cards/iconos/broma_ligera.png",
+      "sha256": "fe0862075506f0efac07a491af5848df463ea59155eb5a2977bdece585c82831",
+      "bytes": 241
+    },
+    {
+      "path": "assets/cards/iconos/cambiar_de_tema.png",
+      "sha256": "0f047a41cae9c294667b872a43f7ade1db2241aa2f12ec7a9a27523605feea80",
+      "bytes": 285
+    },
+    {
+      "path": "assets/cards/iconos/canon_agua.png",
+      "sha256": "9c6e369ce7f325d75a93d5dc5ffaa414dc29b4d060d846ad9552b229dc729083",
+      "bytes": 400
+    },
+    {
+      "path": "assets/cards/iconos/categoria_empatia.png",
+      "sha256": "276e42843ccf3ab69128a320e5edbb234767b9bfdf47392ab13d1e1d6daed739",
+      "bytes": 233
+    },
+    {
+      "path": "assets/cards/iconos/categoria_humor.png",
+      "sha256": "1cabf6990814ca53e5111ae38de6d3a734c994929040952d221d2930e9011f81",
+      "bytes": 234
+    },
+    {
+      "path": "assets/cards/iconos/categoria_magia_iniciativa.png",
+      "sha256": "c5efea84f4ae013a4b9c0f3922f1cc3e9de0b965eddae083168440654cbe79ee",
+      "bytes": 193
+    },
+    {
+      "path": "assets/cards/iconos/categoria_sinceridad.png",
+      "sha256": "6f831cda71de69e9415fcfdf01a79f12a4620db0d453adf0deb66eb4c6b8a19a",
+      "bytes": 215
+    },
+    {
+      "path": "assets/cards/iconos/compartir_un_miedo.png",
+      "sha256": "4a3d433cfd016f1ca53a475a417b3e8386229077b8e4e0175d400a7ce5e8aa35",
+      "bytes": 270
+    },
+    {
+      "path": "assets/cards/iconos/conjuro_combinado.png",
+      "sha256": "beeacc5422c64aa091c00f35bb685c956080e670bc447f56f7b29fc55a0e809e",
+      "bytes": 298
+    },
+    {
+      "path": "assets/cards/iconos/coqueteo_sutil.png",
+      "sha256": "ef7db6a30359d655e275cd239e56618c91855c9cee7c84b2813c664b4f636e42",
+      "bytes": 257
+    },
+    {
+      "path": "assets/cards/iconos/corte_sencillo.png",
+      "sha256": "a2d19189d7d76db56ea02b3f939a21f4c27bc26e3167978a79cf8d79284440b3",
+      "bytes": 434
+    },
+    {
+      "path": "assets/cards/iconos/coste_mana.png",
+      "sha256": "526d11f98751cc486b83e000f59a419d9775316d6ee4b70732b3b1314b298538",
+      "bytes": 258
+    },
+    {
+      "path": "assets/cards/iconos/dar_animo.png",
+      "sha256": "9d5d54d77f0361d27ed17a20846264099c47085403aceeec7928553a6331c405",
+      "bytes": 287
+    },
+    {
+      "path": "assets/cards/iconos/disculpa_sincera.png",
+      "sha256": "f1971df58665e202983a33cd935877e000a9ea8214d935a693bdf166324e27df",
+      "bytes": 414
+    },
+    {
+      "path": "assets/cards/iconos/elegir_juntos.png",
+      "sha256": "9a8e732bdbd1256946d8413fc4dc4f29964827121c3575cc8f6abe1911bf9262",
+      "bytes": 303
+    },
+    {
+      "path": "assets/cards/iconos/empuje.png",
+      "sha256": "a40ad4dff1e81cbd3ff0bb5202b889a645f448c89cf0a0531ecbd63b9b03fd42",
+      "bytes": 311
+    },
+    {
+      "path": "assets/cards/iconos/escuchar.png",
+      "sha256": "6f7e20c9745ac342acfc445a6fb4c25af1ad0a25c5198599218c6d0e503d92a1",
+      "bytes": 271
+    },
+    {
+      "path": "assets/cards/iconos/espada_y_magia.png",
+      "sha256": "aa8b8518e7cc489e7cd439faf74c1b77853305dbbf5fcc3b5a5e7277b4719073",
+      "bytes": 274
+    },
+    {
+      "path": "assets/cards/iconos/fragmento_mana.png",
+      "sha256": "d65c4cfa0a0302cd7355684acde99cf218d7339d317998063cee8991594b4d49",
+      "bytes": 383
+    },
+    {
+      "path": "assets/cards/iconos/golpe_baston.png",
+      "sha256": "f85ca5e290d2433666abb2ee8f1788b1403c85d0488313b9fd2b071a87286a76",
+      "bytes": 317
+    },
+    {
+      "path": "assets/cards/iconos/hablar_con_honestidad.png",
+      "sha256": "5d84e62eeef38b8a72ec5b70f662cdba9805ee66d90ca9f1701cf03b143b0f56",
+      "bytes": 295
+    },
+    {
+      "path": "assets/cards/iconos/lanzamiento_piedra.png",
+      "sha256": "543e7828a7e793cf34dbf19ae280ea1afdf6ea8bdd393493dfbad042e343c594",
+      "bytes": 308
+    },
+    {
+      "path": "assets/cards/iconos/magia_compartida.png",
+      "sha256": "55a04c022f197dc9c6f06c0269a79147b0928fee663e31c4d050c7b90c2270be",
+      "bytes": 277
+    },
+    {
+      "path": "assets/cards/iconos/muro_tierra.png",
+      "sha256": "cc26ea189b413411e24369674e0fca840d6cc7446adb668375977c8d0c40f8e5",
+      "bytes": 333
+    },
+    {
+      "path": "assets/cards/iconos/pantano.png",
+      "sha256": "56e537b4f5da936f7dc22b9ff5bca5dad055b7bd3713b4aac9d3c7d84e32efd4",
+      "bytes": 402
+    },
+    {
+      "path": "assets/cards/iconos/pocion_silencio.png",
+      "sha256": "51290344150c546bb7bd6b71a254cee1f2f1a4ecd0a07fb4c9c4bca970a217ea",
+      "bytes": 387
+    },
+    {
+      "path": "assets/cards/iconos/proponer_un_plan.png",
+      "sha256": "f78474bf210d31d95a24bab70f764aea4cc6875730d6252c6875169fd76f4e8e",
+      "bytes": 275
+    },
+    {
+      "path": "assets/cards/iconos/proyectil_agua.png",
+      "sha256": "3575267ffdc3b24ad7cd0e4066d25b47c9ec2f2b3b9ed91ad5e36ae478a816f7",
+      "bytes": 358
+    },
+    {
+      "path": "assets/cards/iconos/proyectil_piedra.png",
+      "sha256": "cf6fc47832344580c408858a108061c50190f38dcf514bee878c1cfb4652cc4b",
+      "bytes": 387
+    },
+    {
+      "path": "assets/cards/iconos/reconocer_un_error.png",
+      "sha256": "b75a25cbef47897c43e9df0d2c9c8257a88c36781b88910c2680333b16134562",
+      "bytes": 279
+    },
+    {
+      "path": "assets/cards/iconos/recordar_un_detalle.png",
+      "sha256": "7641f7bf16878b91ad7bc9186d9525d1a5117320e690e218aad2e18fe7cc0210",
+      "bytes": 281
+    },
+    {
+      "path": "assets/cards/iconos/reirse_de_uno_mismo.png",
+      "sha256": "0cdc31f4527c80702d1afebfe1a24caf40b96a5a0011c02e260bf2e3238aff45",
+      "bytes": 261
+    },
+    {
+      "path": "assets/cards/iconos/respuesta_atrevida.png",
+      "sha256": "1eccbaadaddea121f03d7c7e7244cc18fc3732936b6ecc8566e7e84995de033d",
+      "bytes": 284
+    },
+    {
+      "path": "assets/cards/iconos/respuesta_enojada.png",
+      "sha256": "1f8538b5476984691049156241c8e3c5f5107847d847f876e0bd757ff56f83df",
+      "bytes": 321
+    },
+    {
+      "path": "assets/cards/iconos/respuesta_feliz.png",
+      "sha256": "eb586fb71651bcdb8f35c402079358f1f571772c472147c7719f019648d6552f",
+      "bytes": 336
+    },
+    {
+      "path": "assets/cards/iconos/sello_mana.png",
+      "sha256": "444be60cd9650bccb8cac1f7c967c5c8672d067f2b449f5adb281017dc7f75fa",
+      "bytes": 349
+    },
+    {
+      "path": "assets/cards/marcos/marco_empatia.png",
+      "sha256": "391d68ab65d5fc548d5ca68fd7799751a515ea274a6d352b91037bb345d6b93c",
+      "bytes": 766
+    },
+    {
+      "path": "assets/cards/marcos/marco_humor.png",
+      "sha256": "1436fdc0f7288b8fe4ea64d2a3aeb95929745eb68ce8d54d9705ce550f785881",
+      "bytes": 761
+    },
+    {
+      "path": "assets/cards/marcos/marco_magia_iniciativa.png",
+      "sha256": "f33ac4366834c869d8a09e8e3e575c2f327f9c8f542515501dffdddd04dfa912",
+      "bytes": 761
+    },
+    {
+      "path": "assets/cards/marcos/marco_sinceridad.png",
+      "sha256": "bc913ef90eba3f785f67d3066ace72e5ab1dd64ac960e3cda687ce440217d12d",
+      "bytes": 763
+    },
+    {
+      "path": "assets/cards/reverso/reverso_espejo.png",
+      "sha256": "120ce6e71fdad61b81e085cbd0cc553a0384838b00038648b662f61d0197c7c7",
+      "bytes": 1232
+    },
+    {
+      "path": "assets/characters/.gitkeep",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1
+    },
+    {
+      "path": "assets/characters/anomalia_mana.png",
+      "sha256": "89fd838bed8f7104f9f30656836b907350fdb895d322aba6eb27fc0e2c12339d",
+      "bytes": 6899
+    },
+    {
+      "path": "assets/characters/badigadi.png",
+      "sha256": "bf7110cfe36d65c808c3770acc4378e10359b5cef987b5b7e5de2ee862a8993c",
+      "bytes": 5625
+    },
+    {
+      "path": "assets/characters/badigadi_battle.png",
+      "sha256": "15a43fc83398061c16079f900099117911b724cd937c89507fc002a26c61f3f1",
+      "bytes": 14667
+    },
+    {
+      "path": "assets/characters/cliff.png",
+      "sha256": "09e8f64fe556ca0ee92cbe312f7ac7bd5cfc17dd71c43cf3bbb2ade476cd9eb8",
+      "bytes": 3307
+    },
+    {
+      "path": "assets/characters/emisario.png",
+      "sha256": "a05c9a535f59bbcaf32261bc4642147a57923f874027e27824eff4f79fa6b441",
+      "bytes": 4930
+    },
+    {
+      "path": "assets/characters/eris.png",
+      "sha256": "99206d1a4799f622bbad504b6d9f8caaf96729f7d4fe4430f34a588e75a79b0a",
+      "bytes": 2837
+    },
+    {
+      "path": "assets/characters/guardian_ruinas.png",
+      "sha256": "5b843fc0e09081c972fd548e54ef4a20c2c8d25afe7d29360f20ded756919299",
+      "bytes": 6378
+    },
+    {
+      "path": "assets/characters/hitogami.png",
+      "sha256": "7311c6676bec5b5eb17369f6b773e37f703198d5e45b56462f463b667c1efe7f",
+      "bytes": 7717
+    },
+    {
+      "path": "assets/characters/nanahoshi.png",
+      "sha256": "1102cf574cb3ac763d13b3157799d2d01f5d45d36a8dd9bd21abb70fab852b15",
+      "bytes": 3032
+    },
+    {
+      "path": "assets/characters/orsted.png",
+      "sha256": "d19aa7db1d086c3389b6db71a02c29fe2281a341be65c73c162c24a32e8160eb",
+      "bytes": 5397
+    },
+    {
+      "path": "assets/characters/roxy.png",
+      "sha256": "7792341620390dc153593602bcbdd9202ff1f6e426863b8ee202fb0924fa1388",
+      "bytes": 2641
+    },
+    {
+      "path": "assets/characters/rudeus.png",
+      "sha256": "60803a265a0322889755261c03a1686ea3b5dd4afda32bc4ea66e00340e307a8",
+      "bytes": 2925
+    },
+    {
+      "path": "assets/characters/rudeus_japones.png",
+      "sha256": "2c854fb32e1f8441fdd090550e71baaa2d5660b4f8a67e0bf2e066b2dcabdfda",
+      "bytes": 4571
+    },
+    {
+      "path": "assets/characters/sylphiette.png",
+      "sha256": "60b2c6e72acb363dc9d5132a19c8fa311b3a8501ff663f14b9672d7d3941ca76",
+      "bytes": 3190
+    },
+    {
+      "path": "assets/characters/zanoba.png",
+      "sha256": "278b7286b0b4f75a96875a3efca2ae930cb325e6031994122a835247badee1ea",
+      "bytes": 3012
+    },
+    {
+      "path": "sprite_sources/backgrounds/arena_badigadi.ase",
+      "sha256": "d2c691a2aee15f4f4552a1939f59be37e1cef0b5a7c652dce9311da57aa3455e",
+      "bytes": 123330
+    },
+    {
+      "path": "sprite_sources/backgrounds/biblioteca.ase",
+      "sha256": "e3b32117e697e6c04bcbcbaaedd8a3887f93463bd995db384a2fba526ac51c06",
+      "bytes": 13306
+    },
+    {
+      "path": "sprite_sources/backgrounds/bosque.ase",
+      "sha256": "bf5addaf0c8dd19fdcc20e8f17940a6ac63065bae6a83ad0f224cce12900368c",
+      "bytes": 12224
+    },
+    {
+      "path": "sprite_sources/backgrounds/botica_oculta.ase",
+      "sha256": "eb423bca33e4fe2fbe2ee56eedd2437287af4561801c3f2d588c737fa74a9030",
+      "bytes": 143951
+    },
+    {
+      "path": "sprite_sources/backgrounds/dimension_espejo.ase",
+      "sha256": "b6870dbb4b0a60b830c2517badcaa1af6673006f8e7034cd97038800c63e4d89",
+      "bytes": 18802
+    },
+    {
+      "path": "sprite_sources/backgrounds/festival.ase",
+      "sha256": "880d48f93751c1dd36fb0319983a0dbc52000470449f867f72e88467a14ebc77",
+      "bytes": 16496
+    },
+    {
+      "path": "sprite_sources/backgrounds/hogar_greyrat.ase",
+      "sha256": "584520c66fbb4ea08f61044bea32048aa1ad9144706b92976b9d94c0000291a2",
+      "bytes": 50725
+    },
+    {
+      "path": "sprite_sources/backgrounds/laboratorio.ase",
+      "sha256": "910cccd9d15d0720eb228622b03f3063baa376183456fb4918da258f07e4d207",
+      "bytes": 18702
+    },
+    {
+      "path": "sprite_sources/backgrounds/observatorio.ase",
+      "sha256": "98a83b12b4f9c3f9f35ba38d6e33e1b67b28f4e574901785e3e181435956ee71",
+      "bytes": 13518
+    },
+    {
+      "path": "sprite_sources/backgrounds/patio_universidad.ase",
+      "sha256": "2891e9586fe00c6576899ebce74238201dd5cb30aacfd3c7c372f41e47ac059f",
+      "bytes": 10344
+    },
+    {
+      "path": "sprite_sources/backgrounds/ruinas.ase",
+      "sha256": "ce7f4a6d209e2d0c3b2b4eb691ee98a5a339987e5f5210b48d7aa69067c1f114",
+      "bytes": 14489
+    },
+    {
+      "path": "sprite_sources/backgrounds/sueno_hitogami.ase",
+      "sha256": "e64988da3861187f5ac8835f202cc48a53a0ea8bd1185bbd638c08c3a2423b69",
+      "bytes": 27305
+    },
+    {
+      "path": "sprite_sources/cards/bases/fondo_pergamino.ase",
+      "sha256": "a4a7f59cfac947fb71ab55d1f4bb18bb451489d6fb111824b0ba73657d791c84",
+      "bytes": 380
+    },
+    {
+      "path": "sprite_sources/cards/iconos/analizar_runas.ase",
+      "sha256": "56eac3492203ca79bd179deaecea9b9cdd4a85862d1fb50e301cdedb881fc920",
+      "bytes": 400
+    },
+    {
+      "path": "sprite_sources/cards/iconos/antidoto.ase",
+      "sha256": "f89a6339e95c03a8ca73c1da64e172b4aee203674f739be3b4ec111fa31a2c8b",
+      "bytes": 630
+    },
+    {
+      "path": "sprite_sources/cards/iconos/ataque_coordinado.ase",
+      "sha256": "1ff7d8790e8774329cfe376eb692cf4c6d741be9121b62159b80605ee83c0505",
+      "bytes": 762
+    },
+    {
+      "path": "sprite_sources/cards/iconos/bala_agua.ase",
+      "sha256": "4c2506c2bca9e7266db5ad36aa0148f3c5ef057eba223b4260c15121e0ecbb30",
+      "bytes": 666
+    },
+    {
+      "path": "sprite_sources/cards/iconos/barrera_de_tierra.ase",
+      "sha256": "c85ddd423f63c3fbd8155a691e53cb5dcaca278e79525b0d86d1e9ddb11af3f4",
+      "bytes": 496
+    },
+    {
+      "path": "sprite_sources/cards/iconos/broma_ligera.ase",
+      "sha256": "5c20f33452f853d743356b809c03d3fecd80747c1bffdde688bcdfdb0b892e68",
+      "bytes": 466
+    },
+    {
+      "path": "sprite_sources/cards/iconos/cambiar_de_tema.ase",
+      "sha256": "909ddb6139b4a4752a2dee05619240e40179739a24ed077574b7b9b53bb4f9d5",
+      "bytes": 433
+    },
+    {
+      "path": "sprite_sources/cards/iconos/canon_agua.ase",
+      "sha256": "00c5c88542f66881e25c26ba1bedeb73afd099b404ee278f5bfffc758b115157",
+      "bytes": 671
+    },
+    {
+      "path": "sprite_sources/cards/iconos/categoria_empatia.ase",
+      "sha256": "a05ccee5226952cdebaf3975624639fc69aeb3f0ef157812a6785bb45ba1b36c",
+      "bytes": 439
+    },
+    {
+      "path": "sprite_sources/cards/iconos/categoria_humor.ase",
+      "sha256": "b5b2915e526b6390a7fb96959124afff888b358e0f533996868e96a38c092871",
+      "bytes": 462
+    },
+    {
+      "path": "sprite_sources/cards/iconos/categoria_magia_iniciativa.ase",
+      "sha256": "77815a5832cf4ec0dcbbcec9e390643a27734ac02e119d43c3a055f0f1d83d32",
+      "bytes": 389
+    },
+    {
+      "path": "sprite_sources/cards/iconos/categoria_sinceridad.ase",
+      "sha256": "9223f077e8167ed053d69b21e53ba0b5629cf73afc49039bd43f0071f6c3e4e5",
+      "bytes": 442
+    },
+    {
+      "path": "sprite_sources/cards/iconos/compartir_un_miedo.ase",
+      "sha256": "cd401e4e2ecd5c11920156cb92b718dc6fb4da904532f1e0f6e41c8a1591c572",
+      "bytes": 479
+    },
+    {
+      "path": "sprite_sources/cards/iconos/conjuro_combinado.ase",
+      "sha256": "6f0a64b006aa418eac55a4848c43ff8d40940c66d9209c5176644ad7abed29ac",
+      "bytes": 484
+    },
+    {
+      "path": "sprite_sources/cards/iconos/coqueteo_sutil.ase",
+      "sha256": "e1635ba61a2362b6e937b2c03d7aff81920af51b0eaa544268f272389bbe8262",
+      "bytes": 595
+    },
+    {
+      "path": "sprite_sources/cards/iconos/corte_sencillo.ase",
+      "sha256": "4421ace8de9ed431b2f58f018e3e60415a962f59378d4317354371e3917823d5",
+      "bytes": 672
+    },
+    {
+      "path": "sprite_sources/cards/iconos/coste_mana.ase",
+      "sha256": "7ef428488358645e71e092da3ac56a4c9b2805e0b3b0314bf7924e9151b682b6",
+      "bytes": 487
+    },
+    {
+      "path": "sprite_sources/cards/iconos/dar_animo.ase",
+      "sha256": "7560fc82f4fc7f30af9d80a8187aefe2d9f7c32172f54923ec42a53bfc0e8f40",
+      "bytes": 480
+    },
+    {
+      "path": "sprite_sources/cards/iconos/disculpa_sincera.ase",
+      "sha256": "81842870ffbe71b50a054d6b455a969593edb9faa51611bdbbd974abb544d69b",
+      "bytes": 727
+    },
+    {
+      "path": "sprite_sources/cards/iconos/elegir_juntos.ase",
+      "sha256": "dd032d5f5d99e4080f36d304cad0bba69b73be7ba9c80b8eb003f0d44530587c",
+      "bytes": 494
+    },
+    {
+      "path": "sprite_sources/cards/iconos/empuje.ase",
+      "sha256": "32fd33c0989d49febe36389e8b8049d95592131e352064c3289adf47519cfd20",
+      "bytes": 632
+    },
+    {
+      "path": "sprite_sources/cards/iconos/escuchar.ase",
+      "sha256": "45e9d2bb09b81da42f0cbbc2bdbcbcb154d14d0eb55bf33a2aca63445cd08836",
+      "bytes": 497
+    },
+    {
+      "path": "sprite_sources/cards/iconos/espada_y_magia.ase",
+      "sha256": "782835e0ec9105a717c10b787f0f4ec3409ff367291ca953b39d0d21afa3eaca",
+      "bytes": 475
+    },
+    {
+      "path": "sprite_sources/cards/iconos/fragmento_mana.ase",
+      "sha256": "f33319a25f877c20ec60630857771d11594a9c50954f00a2b5809d3db680bf85",
+      "bytes": 697
+    },
+    {
+      "path": "sprite_sources/cards/iconos/golpe_baston.ase",
+      "sha256": "a61376fd66f9d12400ad8be01069bd764b080941ec3ac7d145bedc29cbc53ae9",
+      "bytes": 634
+    },
+    {
+      "path": "sprite_sources/cards/iconos/hablar_con_honestidad.ase",
+      "sha256": "148fda379deda4b287e2ecd9766ded49933f35ddbf68011195b982422ce25fe4",
+      "bytes": 504
+    },
+    {
+      "path": "sprite_sources/cards/iconos/lanzamiento_piedra.ase",
+      "sha256": "d833f9a9eda1f1b90cb49567e8881243222102f8d678c8e51884b78f560d78cc",
+      "bytes": 629
+    },
+    {
+      "path": "sprite_sources/cards/iconos/magia_compartida.ase",
+      "sha256": "31b82e4f7ce4933d5bdf0f7f50ccc8d159ca59f13bd367ea6e72ca7f16356150",
+      "bytes": 473
+    },
+    {
+      "path": "sprite_sources/cards/iconos/muro_tierra.ase",
+      "sha256": "cedf3f3e9a346eb4ff707af0cfe6b79419cd1a378a8b79ca99ee30140979700d",
+      "bytes": 674
+    },
+    {
+      "path": "sprite_sources/cards/iconos/pantano.ase",
+      "sha256": "baa23437b6db7fc90b43b23317b37669cab17ac4686659ab617c1dda8b1bfa2e",
+      "bytes": 685
+    },
+    {
+      "path": "sprite_sources/cards/iconos/pocion_silencio.ase",
+      "sha256": "24f7342a5de48dff6622a8db99af54ac6920b4ad5a79e89bb4dda64242c29f44",
+      "bytes": 649
+    },
+    {
+      "path": "sprite_sources/cards/iconos/proponer_un_plan.ase",
+      "sha256": "0e12efe9720bf5ba32cd20a0384bdb29eb701765d2be5f1d3feb042f14bbb176",
+      "bytes": 488
+    },
+    {
+      "path": "sprite_sources/cards/iconos/proyectil_agua.ase",
+      "sha256": "4b6c75632594f6da2d0906c6d9586b647ea2cd4f8acccd39e54e657020c1a71d",
+      "bytes": 659
+    },
+    {
+      "path": "sprite_sources/cards/iconos/proyectil_piedra.ase",
+      "sha256": "6f78c99cc0263969463c2664ab5f61d3f0c1a7430f52bcfaacac1dd1bf887c62",
+      "bytes": 668
+    },
+    {
+      "path": "sprite_sources/cards/iconos/reconocer_un_error.ase",
+      "sha256": "f981ade49ae832cadb5e33dbb91387038d7e88c587e83ae5311b220e0dc91b81",
+      "bytes": 477
+    },
+    {
+      "path": "sprite_sources/cards/iconos/recordar_un_detalle.ase",
+      "sha256": "e7c1ee6e43a73920aff0bbfdb7e7ab5eac95db68fb0b2d43e04c49e07ed0b606",
+      "bytes": 481
+    },
+    {
+      "path": "sprite_sources/cards/iconos/reirse_de_uno_mismo.ase",
+      "sha256": "4dcabb66c608ce6b9ed820ff7f2060c0ba4d058290076b220e908e006c0bfd5d",
+      "bytes": 478
+    },
+    {
+      "path": "sprite_sources/cards/iconos/respuesta_atrevida.ase",
+      "sha256": "b0bc1d86b8079c3d3ccefbdf53fb09ed051c9749160268a7762311a41c85b170",
+      "bytes": 606
+    },
+    {
+      "path": "sprite_sources/cards/iconos/respuesta_enojada.ase",
+      "sha256": "84fcae8a824818e6eb1c5f7c1cf62d870ed5303a8e3c7512b2bda95878332c68",
+      "bytes": 641
+    },
+    {
+      "path": "sprite_sources/cards/iconos/respuesta_feliz.ase",
+      "sha256": "a47ec18ed59c734b641691123c692c8fffb1993e45d2bb67d3f01141f51bc299",
+      "bytes": 650
+    },
+    {
+      "path": "sprite_sources/cards/iconos/sello_mana.ase",
+      "sha256": "c5b02148b21a3e96beeec427a6e53c463d34419796a014ffd81362fdd9707373",
+      "bytes": 655
+    },
+    {
+      "path": "sprite_sources/cards/marcos/marco_empatia.ase",
+      "sha256": "d8e95603714fda58047241d08e47f0e52002ca4a5f6b03932088a9b8bf500996",
+      "bytes": 951
+    },
+    {
+      "path": "sprite_sources/cards/marcos/marco_humor.ase",
+      "sha256": "77820b0db4e2acb3536bed5f7c0ff681d932ee43214790b46b2dad02629c318c",
+      "bytes": 942
+    },
+    {
+      "path": "sprite_sources/cards/marcos/marco_magia_iniciativa.ase",
+      "sha256": "7b3a6c5720518279b0e35dac936f3042034f371117fc8e3133fa6f0d46121d71",
+      "bytes": 950
+    },
+    {
+      "path": "sprite_sources/cards/marcos/marco_sinceridad.ase",
+      "sha256": "0093fe203ee08f09f6cc10ea2494a475b2da939677a2d444663f6490bc016ab3",
+      "bytes": 948
+    },
+    {
+      "path": "sprite_sources/cards/reverso/reverso_espejo.ase",
+      "sha256": "924b5acb95935d87fa4d0a6a53817cf60ef02dd944bfee2b820e9042339d9515",
+      "bytes": 1282
+    },
+    {
+      "path": "sprite_sources/characters/anomalia_mana.ase",
+      "sha256": "7710fe57f188c51dd7f78b8a284e32c84f8daa11d6247a5580b8a5f03cb9fa31",
+      "bytes": 6531
+    },
+    {
+      "path": "sprite_sources/characters/badigadi.ase",
+      "sha256": "d64c642f2294d930557dbb75a92c7e9adf7e45e6bd9de62e402171b2aa7481af",
+      "bytes": 6621
+    },
+    {
+      "path": "sprite_sources/characters/badigadi_battle.ase",
+      "sha256": "ce41d7f03044f56e876dba208d6804a9546be75a3435ac12dc3dee78fced6a51",
+      "bytes": 14912
+    },
+    {
+      "path": "sprite_sources/characters/cliff.ase",
+      "sha256": "2db23a4e6a4065e4c2ffb9f9fed573cece7f86f079550d5269fe67a4c3efe52d",
+      "bytes": 6367
+    },
+    {
+      "path": "sprite_sources/characters/emisario.ase",
+      "sha256": "546515b3d02cb7afcd6c4c7c88fa698f089d11aba573bae45fe44623c916afa7",
+      "bytes": 10227
+    },
+    {
+      "path": "sprite_sources/characters/eris.ase",
+      "sha256": "ae82eec444ad000a89dc7f49489420ab7f8be24f889c95d5347acc4f2e46a447",
+      "bytes": 5741
+    },
+    {
+      "path": "sprite_sources/characters/guardian_ruinas.ase",
+      "sha256": "331357e212e6e8d7f49490150d339b1b35d80576a7d4c9f67efbfd7ae82234aa",
+      "bytes": 7213
+    },
+    {
+      "path": "sprite_sources/characters/hitogami.ase",
+      "sha256": "f2500e2da2976b154f14be52b8e477dcfc90ea5698c3b15f2a41ac0a9c08b681",
+      "bytes": 6573
+    },
+    {
+      "path": "sprite_sources/characters/nanahoshi.ase",
+      "sha256": "b21d7f3168dd4bca3375886078dceec6de66fc867f3d2ad2b701796459178601",
+      "bytes": 6322
+    },
+    {
+      "path": "sprite_sources/characters/orsted.ase",
+      "sha256": "3674605108a5426bea9cef709741fb3783140008f206b1037cd497dda5593906",
+      "bytes": 7881
+    },
+    {
+      "path": "sprite_sources/characters/roxy.ase",
+      "sha256": "7d530d5f121d60c44ba0ae4398397c6dc81ec2c091cffe63c0fe8a76ac082169",
+      "bytes": 6196
+    },
+    {
+      "path": "sprite_sources/characters/rudeus.ase",
+      "sha256": "dc964168422c68ae79a74dbe5eba588d14327472ea598a151bc0d214dd1a1601",
+      "bytes": 5582
+    },
+    {
+      "path": "sprite_sources/characters/rudeus_japones.ase",
+      "sha256": "980ffc52e61e6d9fe0c27fae5f961cefcf686f4274bb406c8c6b59812d35f573",
+      "bytes": 8211
+    },
+    {
+      "path": "sprite_sources/characters/sylphiette.ase",
+      "sha256": "7c67267464d1fa9c265fd39c3900968262339510e8c90c07f3a37c47b30d0eff",
+      "bytes": 6458
+    },
+    {
+      "path": "sprite_sources/characters/zanoba.ase",
+      "sha256": "e7b814e24e5bbeef9e5de2d5b054c88e0ad12420886e25efa353fd7bc1d3ac02",
+      "bytes": 5301
+    }
+  ],
+  "legacyManifest": [
+    {
+      "group": "characters",
+      "id": "rudeus",
+      "path": "assets/characters/rudeus.png"
+    },
+    {
+      "group": "characters",
+      "id": "rudeus_japones",
+      "path": "assets/characters/rudeus_japones.png"
+    },
+    {
+      "group": "characters",
+      "id": "sylphiette",
+      "path": "assets/characters/sylphiette.png"
+    },
+    {
+      "group": "characters",
+      "id": "roxy",
+      "path": "assets/characters/roxy.png"
+    },
+    {
+      "group": "characters",
+      "id": "eris",
+      "path": "assets/characters/eris.png"
+    },
+    {
+      "group": "characters",
+      "id": "nanahoshi",
+      "path": "assets/characters/nanahoshi.png"
+    },
+    {
+      "group": "characters",
+      "id": "zanoba",
+      "path": "assets/characters/zanoba.png"
+    },
+    {
+      "group": "characters",
+      "id": "cliff",
+      "path": "assets/characters/cliff.png"
+    },
+    {
+      "group": "characters",
+      "id": "hitogami",
+      "path": "assets/characters/hitogami.png"
+    },
+    {
+      "group": "characters",
+      "id": "orsted",
+      "path": "assets/characters/orsted.png"
+    },
+    {
+      "group": "characters",
+      "id": "emisario",
+      "path": "assets/characters/emisario.png"
+    },
+    {
+      "group": "characters",
+      "id": "badigadi",
+      "path": "assets/characters/badigadi.png"
+    },
+    {
+      "group": "characters",
+      "id": "badigadi_battle",
+      "path": "assets/characters/badigadi_battle.png"
+    },
+    {
+      "group": "characters",
+      "id": "anomalia_mana",
+      "path": "assets/characters/anomalia_mana.png"
+    },
+    {
+      "group": "characters",
+      "id": "guardian_ruinas",
+      "path": "assets/characters/guardian_ruinas.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "laboratory",
+      "path": "assets/backgrounds/laboratorio.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "home",
+      "path": "assets/backgrounds/hogar_greyrat.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "dream",
+      "path": "assets/backgrounds/sueno_hitogami.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "apothecary",
+      "path": "assets/backgrounds/botica_oculta.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "arena",
+      "path": "assets/backgrounds/arena_badigadi.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "courtyard",
+      "path": "assets/backgrounds/patio_universidad.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "library",
+      "path": "assets/backgrounds/biblioteca.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "ruins",
+      "path": "assets/backgrounds/ruinas.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "garden",
+      "path": "assets/backgrounds/patio_universidad.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "training",
+      "path": "assets/backgrounds/bosque.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "forest",
+      "path": "assets/backgrounds/bosque.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "observatory",
+      "path": "assets/backgrounds/observatorio.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "mirror_dimension",
+      "path": "assets/backgrounds/dimension_espejo.png"
+    },
+    {
+      "group": "backgrounds",
+      "id": "festival",
+      "path": "assets/backgrounds/festival.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "listen",
+      "path": "assets/cards/iconos/escuchar.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "subtle_flirt",
+      "path": "assets/cards/iconos/coqueteo_sutil.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "happy_reply",
+      "path": "assets/cards/iconos/respuesta_feliz.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "bold_reply",
+      "path": "assets/cards/iconos/respuesta_atrevida.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "angry_reply",
+      "path": "assets/cards/iconos/respuesta_enojada.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "sincere_apology",
+      "path": "assets/cards/iconos/disculpa_sincera.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "staff_strike",
+      "path": "assets/cards/iconos/golpe_baston.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "simple_cut",
+      "path": "assets/cards/iconos/corte_sencillo.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "stone_throw",
+      "path": "assets/cards/iconos/lanzamiento_piedra.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "push",
+      "path": "assets/cards/iconos/empuje.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "coordinated_attack",
+      "path": "assets/cards/iconos/ataque_coordinado.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "water_projectile",
+      "path": "assets/cards/iconos/proyectil_agua.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "magic_bolt",
+      "path": "assets/cards/iconos/bala_agua.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "heavy_spell",
+      "path": "assets/cards/iconos/canon_agua.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "water_cannon",
+      "path": "assets/cards/iconos/canon_agua.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "arcane_guard",
+      "path": "assets/cards/iconos/muro_tierra.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "earth_wall",
+      "path": "assets/cards/iconos/muro_tierra.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "ice_lance",
+      "path": "assets/cards/iconos/proyectil_piedra.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "swamp",
+      "path": "assets/cards/iconos/pantano.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "mana_fragment",
+      "path": "assets/cards/iconos/fragmento_mana.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "mana_seal",
+      "path": "assets/cards/iconos/sello_mana.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "silence_potion",
+      "path": "assets/cards/iconos/pocion_silencio.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "antidote",
+      "path": "assets/cards/iconos/antidoto.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "encourage",
+      "path": "assets/cards/iconos/dar_animo.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "remember",
+      "path": "assets/cards/iconos/recordar_un_detalle.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "light_joke",
+      "path": "assets/cards/iconos/broma_ligera.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "change_subject",
+      "path": "assets/cards/iconos/cambiar_de_tema.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "self_joke",
+      "path": "assets/cards/iconos/reirse_de_uno_mismo.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "be_honest",
+      "path": "assets/cards/iconos/hablar_con_honestidad.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "admit_error",
+      "path": "assets/cards/iconos/reconocer_un_error.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "share_fear",
+      "path": "assets/cards/iconos/compartir_un_miedo.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "propose_plan",
+      "path": "assets/cards/iconos/proponer_un_plan.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "analyze_runes",
+      "path": "assets/cards/iconos/analizar_runas.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "earth_barrier",
+      "path": "assets/cards/iconos/barrera_de_tierra.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "shared_magic",
+      "path": "assets/cards/iconos/magia_compartida.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "combined_spell",
+      "path": "assets/cards/iconos/conjuro_combinado.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "sword_magic",
+      "path": "assets/cards/iconos/espada_y_magia.png"
+    },
+    {
+      "group": "cardIcons",
+      "id": "choose_together",
+      "path": "assets/cards/iconos/elegir_juntos.png"
+    },
+    {
+      "group": "cardFrames",
+      "id": "empathy",
+      "path": "assets/cards/marcos/marco_empatia.png"
+    },
+    {
+      "group": "cardFrames",
+      "id": "humor",
+      "path": "assets/cards/marcos/marco_humor.png"
+    },
+    {
+      "group": "cardFrames",
+      "id": "sincerity",
+      "path": "assets/cards/marcos/marco_sinceridad.png"
+    },
+    {
+      "group": "cardFrames",
+      "id": "initiative",
+      "path": "assets/cards/marcos/marco_magia_iniciativa.png"
+    },
+    {
+      "group": "categoryIcons",
+      "id": "empathy",
+      "path": "assets/cards/iconos/categoria_empatia.png"
+    },
+    {
+      "group": "categoryIcons",
+      "id": "humor",
+      "path": "assets/cards/iconos/categoria_humor.png"
+    },
+    {
+      "group": "categoryIcons",
+      "id": "sincerity",
+      "path": "assets/cards/iconos/categoria_sinceridad.png"
+    },
+    {
+      "group": "categoryIcons",
+      "id": "initiative",
+      "path": "assets/cards/iconos/categoria_magia_iniciativa.png"
+    },
+    {
+      "group": "",
+      "id": "cardBase",
+      "path": "assets/cards/bases/fondo_pergamino.png"
+    },
+    {
+      "group": "",
+      "id": "cardBack",
+      "path": "assets/cards/reverso/reverso_espejo.png"
+    },
+    {
+      "group": "",
+      "id": "manaIcon",
+      "path": "assets/cards/iconos/coste_mana.png"
+    }
+  ]
+}

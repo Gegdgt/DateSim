@@ -1,0 +1,140 @@
+{
+  "size": {
+    "w": 64,
+    "h": 64
+  },
+  "cell": {
+    "w": 16,
+    "h": 16
+  },
+  "sprites": [
+    {
+      "archivo": "01_moneda_oro",
+      "x": 0,
+      "y": 0,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "02_bolsa_oro",
+      "x": 16,
+      "y": 0,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "03_libro_magia",
+      "x": 32,
+      "y": 0,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 11
+    },
+    {
+      "archivo": "04_pergamino",
+      "x": 48,
+      "y": 0,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "05_carta_encantada",
+      "x": 0,
+      "y": 16,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "06_cofre_cerrado",
+      "x": 16,
+      "y": 16,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "07_cofre_abierto",
+      "x": 32,
+      "y": 16,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "08_fragmento_mana",
+      "x": 48,
+      "y": 16,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "09_material_magico",
+      "x": 0,
+      "y": 32,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 11
+    },
+    {
+      "archivo": "10_frasco_pocion",
+      "x": 16,
+      "y": 32,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "11_antidoto",
+      "x": 32,
+      "y": 32,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "12_escoba",
+      "x": 48,
+      "y": 32,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "13_flor",
+      "x": 0,
+      "y": 48,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "14_anillo_matrimonio",
+      "x": 16,
+      "y": 48,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "15_nota_misteriosa",
+      "x": 32,
+      "y": 48,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    },
+    {
+      "archivo": "16_indicador_interaccion",
+      "x": 48,
+      "y": 48,
+      "ancho": 16,
+      "alto": 16,
+      "colores_opacos": 10
+    }
+  ]
+}
