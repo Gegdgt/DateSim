@@ -18,7 +18,6 @@ function Menu.new(app)
         self:text("UNA HISTORIA ALTERNATIVA",44,42,330,P.teal)
         self:text("MUSHOKU TENSEI",44,65,330,P.gold,2)
         self:text("LAS CARTAS\nDEL DESTINO",44,94,330,P.ink,2)
-        self:text("Siete días. Una voz sellada.\nUna familia que necesita escucharte.",44,146,310,P.muted)
         if self.legacyConfirm then
             self:text("Nueva campaña con agenda y mejoras.\nSe reinicia la historia y se conserva\nla colección compatible. El original queda\nintacto; se crea campaign-v5.json.",44,186,310,P.gold)
             self:button("Aceptar e importar",44,250,310,25,function() app:newGame(true) end)
@@ -37,7 +36,6 @@ function Menu.new(app)
             self:button("Opciones",44,296,150,24,function() app:overlay("options") end)
             self:button("Salir",204,296,150,24,function() love.event.quit() end)
         end
-        self:text("HISTORIA DISPONIBLE / DÍAS 1 A "..Chapters.last.day,44,330,320,P.muted)
         app.resources:portrait("sylphiette","happy",417,131,1)
         app.resources:portrait("roxy","neutral",523,131,1)
         app.resources:portrait("eris","neutral",476,217,1)
@@ -45,7 +43,6 @@ function Menu.new(app)
         if self.legacy and not self.hasSave and not self.legacyConfirm then
             self:button("Importar campaña anterior",403,258,222,26,function() self.legacyConfirm=true end)
         end
-        self:text("FAN GAME · PERSONAJES ADULTOS",400,333,229,P.ink)
     end
     return s
 end
