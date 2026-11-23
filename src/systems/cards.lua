@@ -1,5 +1,9 @@
 local Data = require("src.data.cards")
 local Cards = {}
+local Social=require("src.systems.social_rules")
+function Cards.cost(enc,id)
+    return enc.energyVersion==2 and Social.cost(id,enc.context.character) or Data.byId[id].cost
+end
 local metrics={"score","trust","chemistry"}
 local function delta(layer)
     local out={}
@@ -41,11 +45,14 @@ function Cards.new(deck,context,rng)
     local pile=copy(deck)
     rng=rng or (love and love.math and love.math.random) or math.random
     -- Fisher-Yates, each permutation equally likely with a uniform RNG.
+    local source,steps=copy(pile),{}
     for i=#pile,2,-1 do
         local j=rng(i)
+        steps[#steps+1]={i=i,j=j}
         pile[i],pile[j]=pile[j],pile[i]
     end
-    local encounter={hand={},drawPile=pile,discard={},energy=4,turn=1,maxTurns=3,
+    local encounter={hand={},drawPile=pile,discard={},energy=Social.energy,energyVersion=2,maxEnergy=Social.energy,turn=1,maxTurns=3,
+                     initialOrder=copy(pile),shuffleSource=source,shuffleSteps=steps,
                      score=0,finished=false,log={},context=context or {kind="conversation"}}
     for _=1,3 do encounter.hand[#encounter.hand+1]=table.remove(pile) end
     return encounter
@@ -56,7 +63,7 @@ function Cards.canPlay(enc,index)
     if type(index)~="number" or index%1~=0 then return false,"Selecciona una carta de la mano." end
     local card=Data.byId[enc.hand[index]]
     if not card then return false,"Selecciona una carta de la mano." end
-    if enc.energy<card.cost then return false,"No hay energía suficiente." end
+    if enc.energy<Cards.cost(enc,card.id) then return false,"No hay energía suficiente." end
     if card.revealsSecret and enc.context.curse and enc.context.curse.active
         and require("src.data.characters").byId[enc.context.character]
         and require("src.data.characters").byId[enc.context.character].romance then
@@ -75,7 +82,7 @@ end
 function Cards.preview(enc,index)
     local card=Data.byId[enc.hand[index]]
     if not card then return nil end
-    local result={cardId=card.id,cost=card.cost,contextKind=enc.context.kind,score=0,trust=0,chemistry=0,
+    local result={cardId=card.id,cost=Cards.cost(enc,card.id),contextKind=enc.context.kind,score=0,trust=0,chemistry=0,
         base=delta(card.effects),contextBonus=delta(card.contexts[enc.context.kind]),
         affinityBonus=delta(card.affinities[enc.context.character]),targetAdjustment=delta()}
     local layers={result.base,result.contextBonus,result.affinityBonus}
@@ -84,7 +91,8 @@ function Cards.preview(enc,index)
     end
     local Collection=require("src.systems.card_collection")
     if not enc.context.legacyProgression then
-        local scaled=Collection.socialEffects(card.id,Collection.level(enc.context.memory or enc.context,card.id),{love=result.chemistry,trust=result.trust})
+        local scaled=enc.energyVersion==2 and Social.effects(enc.context.memory or enc.context,card.id,enc.context.character,{love=result.chemistry,trust=result.trust},{})
+            or Collection.socialEffects(card.id,Collection.level(enc.context.memory or enc.context,card.id),{love=result.chemistry,trust=result.trust})
         result.chemistry,result.trust=scaled.love,scaled.trust
     end
     result.phrase=Cards.phrase(card,enc.context)
@@ -134,7 +142,7 @@ function Cards.play(enc,index,expectedTurn)
     if not ok then return nil,err end
     local result=Cards.preview(enc,index)
     local id=table.remove(enc.hand,index)
-    enc.energy=enc.energy-Data.byId[id].cost
+    enc.energy=enc.energy-Cards.cost(enc,id)
     enc.discard[#enc.discard+1]=id
     if #enc.drawPile>0 then result.drawnCard=table.remove(enc.drawPile); enc.hand[#enc.hand+1]=result.drawnCard end
     return finishAction(enc,result)
@@ -162,7 +170,7 @@ function Cards.restore(snapshot,deck,context)
     if not Cards.validateDeck(deck) then return nil end
     local counts={}
     for _,id in ipairs(deck) do counts[id]=1 end
-    local enc={context=context or snapshot.context,hand={},drawPile={},discard={},log={}}
+    local enc={context=context or snapshot.context,hand={},drawPile={},discard={},log={},energyVersion=snapshot.energyVersion}
     if type(enc.context)~="table" then return nil end
     local total=0
     for _,zone in ipairs({"hand","drawPile","discard"}) do
@@ -175,7 +183,7 @@ function Cards.restore(snapshot,deck,context)
     if total~=#deck or #enc.hand<2 or #enc.hand>3 or #enc.discard>3 then return nil end
     if #enc.hand~=math.min(3,#deck-#enc.discard) then return nil end
     if type(snapshot.log)~="table" or #snapshot.log>3 then return nil end
-    local energy,score,played=4,0,0
+    local energy,score,played=snapshot.energyVersion==2 and Social.energy or 4,0,0
     for _,entry in ipairs(snapshot.log) do
         if type(entry)~="table" then return nil end
         local result
@@ -185,11 +193,11 @@ function Cards.restore(snapshot,deck,context)
             played=played+1
             if enc.discard[played]~=entry.cardId then return nil end
             local card=Data.byId[entry.cardId]
-            if not card or energy<card.cost then return nil end
-            local scratch={hand={entry.cardId},context=enc.context,finished=false,energy=energy}
+            if not card or energy<Cards.cost(enc,card.id) then return nil end
+            local scratch={hand={entry.cardId},context=enc.context,finished=false,energy=energy,energyVersion=enc.energyVersion}
             if not replayLegacyCanPlay(scratch,1) then return nil end
             result=replayLegacyPreview(scratch,1)
-            energy=energy-card.cost
+            energy=energy-Cards.cost(enc,card.id)
         end
         score=score+result.score
         enc.log[#enc.log+1]=result
@@ -197,6 +205,9 @@ function Cards.restore(snapshot,deck,context)
     if played~=#enc.discard then return nil end
     enc.energy=energy; enc.score=score; enc.turn=#enc.log+1
     enc.maxTurns=3; enc.finished=enc.turn>3
+    enc.maxEnergy=snapshot.energyVersion==2 and Social.energy or 4
+    enc.initialOrder=snapshot.initialOrder;enc.shuffleSource=snapshot.shuffleSource;enc.shuffleSteps=snapshot.shuffleSteps
+    enc.dealElapsed=tonumber(snapshot.dealElapsed) or 0;enc.dealComplete=snapshot.dealComplete==true or #enc.log>0
     return enc
 end
 
@@ -223,7 +234,9 @@ local function fromOrder(deck,context,order)
     for _,id in ipairs(order) do if not present[id] then return nil end; present[id]=nil end
     local enc={narrativeVersion=1,affinityVersion=context.affinityDisabled and 0 or 1,context=context,initialMemory=Memory.capture(context.memory),
         memory=Memory.capture(context.memory),initialOrder=copy(order),reserve=reserve,
-        hand={},drawPile=copy(order),discard={},energy=4,turn=1,maxTurns=3,score=0,finished=false,log={},reactionIndex=1}
+        hand={},drawPile=copy(order),discard={},energy=context.socialRulesVersion==2 and Social.energy or 4,
+        energyVersion=context.socialRulesVersion,maxEnergy=context.socialRulesVersion==2 and Social.energy or 4,
+        turn=1,maxTurns=3,score=0,finished=false,log={},reactionIndex=1}
     for _=1,math.min(3,#enc.drawPile) do enc.hand[#enc.hand+1]=table.remove(enc.drawPile) end
     enc.notice=#allowed<3 and "Tu mazo tiene menos de tres respuestas compatibles. Puedes escuchar sin gastar energía; prepara el mazo antes de otra conversación." or nil
     return enc
@@ -232,9 +245,12 @@ function Cards.new(deck,context,rng)
     if not Resolver.node(context) then return legacyNew(deck,context,rng) end
     local valid,err=Cards.validateDeck(deck,context.unlocked); assert(valid,err)
     local order=filtered(deck,context)
+    local source,steps=copy(order),{}
     rng=rng or (love and love.math and love.math.random) or math.random
-    for i=#order,2,-1 do local j=rng(i); order[i],order[j]=order[j],order[i] end
-    return assert(fromOrder(deck,context,order))
+    for i=#order,2,-1 do local j=rng(i);steps[#steps+1]={i=i,j=j}; order[i],order[j]=order[j],order[i] end
+    context.socialRulesVersion=2
+    local enc=assert(fromOrder(deck,context,order));enc.shuffleSource=source;enc.shuffleSteps=steps
+    return enc
 end
 function Cards.canPlay(enc,index)
     if Resolver.node(enc.context) then
@@ -256,7 +272,7 @@ function Cards.preview(enc,index)
         previous.phrase,previous.reaction,previous.expression=result.phrase,result.reaction,result.expression
         return previous
     end
-    result.cost=card.cost; result.contextKind=enc.context.kind
+    result.cost=Cards.cost(enc,card.id); result.contextKind=enc.context.kind
     result.base={score=result.score,trust=result.trust,chemistry=result.chemistry}
     result.contextBonus=delta(); result.affinityBonus=delta(); result.targetAdjustment=delta()
     local state=enc.memory or enc.context.memory or {}
@@ -313,12 +329,15 @@ function Cards.restore(snapshot,deck,context)
     if snapshot.narrativeVersion~=1 or not Cards.validateDeck(deck,context and context.unlocked) or not Resolver.node(context) then return nil end
     if type(snapshot.initialOrder)~="table" or type(snapshot.initialMemory)~="table" or type(snapshot.log)~="table" or #snapshot.log>3 then return nil end
     local replayContext=Memory.copy(context)
+    replayContext.socialRulesVersion=snapshot.energyVersion==2 and 2 or nil
     -- Los snapshots anteriores a la afinidad conservan sus deltas originales.
     -- La siguiente conversación nueva sí usa el sistema de confianza e interés.
     if snapshot.affinityVersion~=1 then replayContext.affinityDisabled=true end
     replayContext.memory=Memory.capture(snapshot.initialMemory)
     local enc=fromOrder(deck,replayContext,snapshot.initialOrder)
     if not enc then return nil end
+    enc.shuffleSource=Memory.copy(snapshot.shuffleSource);enc.shuffleSteps=Memory.copy(snapshot.shuffleSteps)
+    enc.dealElapsed=tonumber(snapshot.dealElapsed) or 0;enc.dealComplete=snapshot.dealComplete==true or #snapshot.log>0
     local migrated=false
     for turn,entry in ipairs(snapshot.log) do
         if type(entry)~="table" then return nil end

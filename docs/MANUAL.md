@@ -2,43 +2,63 @@
 
 Rudy y sus tres esposas son adultos. Una poción le ha quitado la voz y la magia. Hitogami amenaza sus matrimonios si revela deliberadamente su secreto mientras permanece maldito. Tienes siete días para encontrar el antídoto y afrontar las consecuencias de tus decisiones.
 
+## Terminar y consultar tu campaña
+
+El Día 7 puedes preparar cartas, equipo y relaciones y guardar con F5 antes de afrontar a Badigadi. Viajar solo es una opción válida; sus 1000 PV, ataques y sello se resuelven con las mismas reglas de combate. Una derrota permite reintentar. El antídoto recupera la voz y el maná, pero no recupera matrimonios separados.
+
+Las explicaciones familiares, la devolución de las cartas a Nanahoshi y el epílogo preceden al cierre de la última jornada. El Día 7 concluye por desenlace, sin una séptima noche obligatoria. Al continuar aparece **Resumen de los siete días**. Las pestañas General, Sylphie, Roxy y Eris se eligen con clic o 1–4. **Recuerdos y decisiones** permite recorrer los acontecimientos; **Ver final** vuelve a la tarjeta del desenlace. Puedes consultar el diario y la colección sin cambiar las cifras. Un guardado antiguo señala si carece del historial de combates anterior a esta versión.
+
 ## Comenzar y leer
 
-Ejecuta `./ejecutar.ps1` con LÖVE 11.5 instalado y elige Nueva partida. El juego comienza en el sueño de Hitogami. Enter, Espacio o clic completan el texto y permiten avanzar. Al despertar, pulsa **Examinar carta**, haz clic en el sobre o usa E/Enter/Espacio. Lee todas las páginas y cierra la carta: después Rudy descubre que no puede hablar ni canalizar magia.
+Ejecuta `./ejecutar.ps1` con LÖVE 11.5 instalado y elige Nueva partida. El juego comienza en el sueño de Hitogami. Enter, Espacio o clic completan el texto y permiten avanzar. Al despertar controlas a Rudy junto a la cama de Eris. Camina con WASD o flechas (80 píxeles por segundo); mantén Shift izquierdo o derecho para correr (150 píxeles por segundo). Al soltarlo vuelves a caminar. Correr está disponible desde el inicio, no consume recursos y se pausa durante diálogos, menús y transiciones. Saluda con E; estos saludos son gratuitos. La cuarta puerta del segundo piso conduce al estudio. Acércate al escritorio y pulsa **E — Examinar carta**. Enter abre y avanza la lectura. Confirma la firma **—H** para descubrir lo ocurrido; Escape conserva la lectura pendiente sin completar el objetivo.
 
-En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibió de Orsted: su magia almacenada permite emitir respuestas sin utilizar el maná de Rudy. El regalo contiene cinco cartas sociales y cinco físicas, presentadas en dos grupos. Completa la prueba social y el combate de la anomalía para abrir la agenda del primer día.
+M abre el minimapa, I el inventario, J el diario, Tab las relaciones y Escape la pausa. Después de leer, camina al jardín, sal a Sharia y usa el punto **T — Traslado** para llegar a la universidad. La tercera puerta lleva a Nanahoshi: pulsa E cerca de ella para pedir ayuda. La carta queda disponible para releer en el diario. Tras el tutorial, busca físicamente a cada personaje. G no abre menús ni avanza la historia. [Controles y capturas de exploración](EXPLORACION_SOCIAL.md).
+
+En el laboratorio se comunica con notas. Nanahoshi adapta las cartas que recibió de Orsted: su magia almacenada permite emitir respuestas sin utilizar el maná de Rudy. El regalo contiene cinco cartas sociales y cinco físicas. Puedes verlas una por una o recibirlas todas en páginas de cuatro. Completa la prueba social y el combate de la anomalía para habilitar las actividades del primer día.
+
+En las entregas múltiples, **1** elige «Ver una por una» y **2**, «Recibir todas»; también puedes usar el mouse, Tab y Enter. **S / Esc** omite las animaciones y abre el resumen, **M** cambia la modalidad y **R** consulta la siguiente reacción. Las flechas izquierda/derecha recorren las páginas del resumen. **F5** guarda. Las cartas ya están en la colección al empezar la presentación; omitir o cargar no las pierde ni duplica. Las repetidas añaden copias para mejorar y conservan el nivel actual. [Más detalles](ENTREGA_CARTAS.md).
 
 ## Organizar la jornada
 
-La cabecera de la agenda muestra día y oro; la franja inferior muestra espacios libres, encargo, cartas y misiones. **Cartas** abre los patrones recibidos hoy y sus copias disponibles; **Misiones** muestra objetivo, promesas y entregas pendientes. El incremento de cartas cuenta tipos recibidos, incluidos duplicados. Los tres personajes y la colección siguen accesibles mientras resuelves una actividad: consultar otra esposa permite leer sus opciones sin consumir otro espacio; **Volver a la actividad** retoma la decisión pendiente.
+Eris está en el patio de entrenamiento, Roxy en la biblioteca y Sylphie en la sala de la casa. Acércate y pulsa **E — Hablar con...**. La conversación pausa el movimiento, orienta a los personajes y muestra tres propuestas horizontales de su banco de quince. Selecciona con el ratón, flechas o 1–3 y confirma con Enter. Escape permite despedirte sin gastar una interacción. No existe catálogo global ni botón para cambiar de esposa.
 
-Dispones de tres actividades libres al día. **Elegir actividad** reserva exactamente un espacio y abre una decisión con su recompensa visible. Puedes repetir esposa: tres visitas a Roxy, por ejemplo, son válidas. La cuarta actividad queda bloqueada. Las escenas obligatorias y las acciones internas de los encuentros con cartas no consumen estos espacios.
+Cada día hay tres interacciones compartidas. Puedes distribuirlas como quieras. Elegir una actividad válida reserva su lugar; se cuenta como utilizada cuando termina. Los gastos propios de una actividad se aplican al confirmarla. La selección de propuestas filtra requisitos y cartas equipadas. Entrenar con Eris permanece disponible los días 1–5 mientras falte ese entrenamiento; la investigación de Roxy se fija cuando corresponde.
 
-En **Encargos**, elige un trabajo de Cliff o Zanoba. Comparten un espacio diario independiente de las actividades y entregan al comenzar mañana. No puedes repetir el ID de ayer cambiando de encargado. **Ayudar hoy** muestra una advertencia: gasta una interacción, sin visita matrimonial, para recibir la recompensa hoy. El día 7 solo se aceptan encargos con ayuda inmediata. Una carta ya adquirida entrega copias para mejorarla.
+Una actividad social permite jugar hasta tres cartas con **seis puntos de energía**. Las cinco cartas iniciales sirven en todas las actividades. El reverso original se baraja, tres cartas llegan a la mano y dos quedan en el mazo. Tras cada una de las dos primeras respuestas se toma otra carta distinta; siempre hay tres opciones antes de cada turno. Las cartas que no puedes pagar indican SIN ENERGÍA. Cada marco muestra categoría, icono, nombre y coste para esa persona. Selecciona para leer la frase exacta de Rudy y confirma con Enter. Escape cambia de carta sin gastar; P termina la conversación antes de agotar la mano. Las reacciones y los puntos reales aparecen después de jugar. Las compras, desafíos y combates continúan tras esta conversación y conservan sus mecánicas.
 
-Eris ofrece práctica física, cacerías, duelos reales y coordinación; Sylphiette, hogar, recados de vuestra hija, Zenith, Lilia y conversaciones; Roxy, magia, cartas encantadas, libros e investigación. **Reparar un compromiso** facilita recuperar una relación negativa. La tercera visita recibe una reacción propia sobre las responsabilidades con las demás. La librería cobra oro y vende cada título una vez; las recetas reducen un 20% el oro de una mejora y se consumen.
+**Escuchar** cuesta 3 con Sylphie, 1 con Roxy y 2 con Eris. En un contexto favorable de nivel 1 puede aportar respectivamente 5, 1 y 2 de amor. El contexto puede producir una penalización; el coste no garantiza una respuesta favorable. Los niveles, las relaciones y el límite diario siguen modificando el resultado.
 
-**Continuar historia** permite resolver los eventos obligatorios. Después puedes **Finalizar día** aunque sobren interacciones: se pierden al avanzar. Haber visitado a una esposa concede +1 confianza al cierre; no visitarla cuesta 20 de amor y 20 de confianza. El resumen muestra visitas, relaciones, decisiones y cartas recibidas; **Ayer** permite volver a consultarlo.
+Al cerrar la tercera actividad, todas las esposas activas regresan a sus dormitorios. Termina la conversación antes de verlas cambiar de lugar. El minimapa y el objetivo se actualizan. No hay cuarta actividad. La investigación obligatoria continúa hablando con Nanahoshi en el laboratorio, incluso después de usar las interacciones. En el día 7, esa conversación cierra el tiempo libre para afrontar el desenlace.
 
-El Día 7 anuncia que continuar la historia cierra el tiempo libre antes de resolver los acuerdos matrimoniales. Realiza las actividades y solicita el encargo que quieras antes de pulsar ese botón. [Reglas y guardado de la agenda](FASE_1_ACTIVIDADES.md).
+Cliff y Zanoba ofrecen encargos al hablar con ellos en el taller. Conservan inversión, ptomabilidad de fracaso, entrega mañana y prohibición de repetir la tarea de ayer. Ayudar personalmente gasta una interacción y requiere seguir junto al encargado. El diario muestra encargos pendientes, pero no permite contratarlos.
+
+Vuelve al segundo piso para descansar con una esposa presente. Confirma la conversación nocturna o regresa al mapa. El descanso aporta hasta +10 amor/+10 confianza, fuera del límite diurno, una sola vez. No visitar a una esposa durante el día mantiene la penalización de −20/−20 aunque duermas con ella. Una separación impide el descanso romántico. El jergón permite dormir solo. Los días 1–6 exigen tres interacciones totales y la historia obligatoria; si todas las esposas están separadas, el diario explica la dispensa de actividades. Las visitas individuales son recomendaciones, no requisitos.
+
+Después de la transición nocturna se guarda y aparece el resumen. Rudy despierta donde descansó; las esposas vuelven a sus lugares diurnos. F5 conserva mapa, posición, mano, descarte, energía y resultados pendientes. Cargar no vuelve a repartir ni entrega premios otra vez.
 
 ## Conversar mediante cartas
 
-Cada esposa puede ganar hasta **+10 amor y +10 confianza por jornada**, sumando cartas, actividades, combates y eventos. El juego muestra los puntos realmente aplicados. Las pérdidas no restituyen el margen de ganancias del día.
+En el mapa, los saludos breves son gratuitos y no dan amor ni confianza. La familia recuerda su última reacción incluso al cargar. Acércate a Zenith y pulsa E: **1** saluda a Zenith y **2** a Lucy, que permanece en sus brazos. Zenith responde con gestos; Lucy con movimientos y balbuceos. Rudy saluda mediante pensamientos y gestos mientras tiene la voz sellada.
+
+Los hallazgos aparecen después del tutorial inicial: entre uno y tres por día. Pulsa E para examinarlos; el inventario I muestra cantidades y oro. **F**, dentro del inventario, usa un fragmento (+2 energía externa, máximo 30); no recupera la voz ni el maná natural. Los libros comunes se usan desde la colección/mejoras; los títulos de Roxy se compran una sola vez. La carta —H nunca se vende ni se consume. Las tumbas de Paul y Oldeus permiten reflexionar sin gastar interacciones ni obtener botín.
+
+Después de saludar a Roxy, sus opciones permiten reservar una visita para comprar libros o materiales, investigar o consultar mejoras. Reservar una visita no entrega artículos: confirma la compra y paga el precio en la librería o tienda. Si solo comparas precios, no recibes objetos.
+
+Cada esposa puede ganar hasta **+10 amor y +10 confianza durante el día**, sumando cartas, actividades, combates y eventos. El descanso tiene su bonificación separada. El juego muestra los puntos realmente aplicados, respetando también el máximo de 100. Las pérdidas no restituyen el margen de ganancias del día.
 
 ## Mejorar cartas y comprar suministros
 
-Abre **M → Mejorar**. Selecciona una carta para ver imagen, nivel, efectos actuales y siguientes, copias y oro. La primera copia desbloquea nivel 1; cada mejora desde nivel L consume `2 × L` duplicados más oro. Llegar a nivel 10 requiere 91 copias en total. **Mejorar** se deshabilita si falta algún recurso. La carta se eleva, aparece el destello y se confirma una sola mejora; pulsa **Continuar** para otra. La carta equipada permanece en tu mazo.
+En exploración abre **I → C → Mejorar**, o solicita la mejora al hablar con Roxy. Desde la preparación de combate puedes abrir **M → Mejorar**. Selecciona una carta para ver imagen, nivel, efectos actuales y siguientes, copias y oro. La primera copia desbloquea nivel 1; cada mejora desde nivel L consume `2 × L` duplicados más oro. Llegar a nivel 10 requiere 91 copias en total. **Mejorar** se deshabilita si falta algún recurso. La carta se eleva, aparece el destello y se confirma una sola mejora; pulsa **Continuar** para otra. La carta equipada permanece en tu mazo.
 
 La **Tienda** vende copias de cartas que ya tienes, libros (+3 copias sociales al usarlos), materiales (+4 energía externa, máximo 30) y preparación (+4 escudo al comenzar la siguiente batalla). Las existencias se renuevan al cambiar de día. Actividades, encargos, misiones, entrenamientos y combates entregan oro. Elegir algunas cartas para especializar es suficiente; no necesitas mejorar las cuarenta.
 
-El Libro de estudio cuesta **5 oro**, con un máximo de cuatro compras por día. Es un consumible diferente de los títulos únicos de la librería de Roxy. Cada actividad completada también entrega **15 oro al cerrar** por su misión; la agenda anuncia ese pago diferido. La colección y **MEJORAR CARTAS** muestran si la carta está desbloqueada y equipada, el efecto actual/siguiente y ambos requisitos. Movimiento reducido muestra el resultado estático de la mejora.
+El Libro de estudio cuesta **5 oro**, con un máximo de cuatro compras por día. Es un consumible diferente de los títulos únicos de la librería de Roxy. Cada actividad completada también entrega **15 oro al cerrar** por su misión; el resumen registra ese pago diferido. La colección y **MEJORAR CARTAS** muestran si la carta está desbloqueada y equipada, el efecto actual/siguiente y ambos requisitos. Movimiento reducido muestra el resultado estático de la mejora.
 
-**¡CARTA REPETIDA!** indica cuántas copias se añadieron al inventario. Las mejoras sociales aumentan solo las bonificaciones propias de cada carta: Escuchar sigue dando confianza y Coqueteo sutil sigue dando amor. Las penalizaciones dependen de la respuesta y la situación. Las técnicas de combate tienen curvas distintas; las más potentes también imponen costes y límites de uso. [Tabla completa de costes](FASE_2_PROGRESION.md).
+**¡CARTA REPETIDA!** indica cuántas copias se añadieron al inventario. Las mejoras sociales multiplican las bonificaciones positivas de la carta y su afinidad con el interlocutor; una consecuencia negativa conserva su valor contextual. Las penalizaciones dependen de la respuesta y la situación. Las técnicas de combate tienen curvas distintas; las más potentes también imponen costes y límites de uso. [Tabla completa de costes](FASE_2_PROGRESION.md).
 
 ## Elegir una respuesta
 
-Escuchar, Broma ligera, Hablar con honestidad, Dar ánimo y Coqueteo sutil representan intenciones; las frases cambian según personaje y situación. La mano muestra tres cartas, con tres acciones y cuatro puntos de energía social. Selecciona para inspeccionar y confirma para jugar. El color identifica categoría; el detalle muestra coste, tono, contexto y efectos. P ofrece el respiro social disponible en el encuentro.
+Escuchar, Broma ligera, Hablar con honestidad, Dar ánimo y Coqueteo sutil representan intenciones; las frases cambian según personaje y situación. La mano muestra tres cartas, con tres acciones y seis puntos de energía social. Selecciona para inspeccionar y confirma para jugar. El marco identifica la categoría; el detalle muestra el coste real y la frase exacta de Rudy. La reacción y los puntos aparecen después de confirmar. P ofrece el respiro social disponible en el encuentro.
 
 Los ocho tonos son empático, gracioso, feliz, coqueto, atrevido, sincero, enojado y evasivo. Una frase puede ayudar en un contexto y molestar en otro. Observa el rostro, la respuesta y los cambios de amor/confianza. Las cartas no autorizan revelar el secreto prohibido. Después del antídoto Rudy puede hablar directamente.
 
@@ -58,7 +78,7 @@ J abre el diario desde la historia. Consulta Historial y el botón Carta —H pa
 
 ## Preparar los mazos
 
-M abre la colección desde la historia; elige Social o Combate. Consulta obtención, efectos y requisitos antes de cambiar el borrador. Ambos mazos admiten entre cinco y diez cartas distintas que hayas adquirido. El social debe seguir siendo viable con las tres esposas; el de combate necesita al menos dos ataques. Las exclusivas requieren a su compañera. No se edita durante un encuentro; tras una derrota puedes volver a preparación.
+En exploración, I y C abren la colección; desde la historia o la preparación de combate se usa M. Elige Social o Combate. Consulta obtención, efectos y requisitos antes de cambiar el borrador. Ambos mazos admiten entre cinco y diez cartas distintas que hayas adquirido. El social debe seguir siendo viable con las tres esposas; el de combate necesita al menos dos ataques. Las exclusivas requieren a su compañera. No se edita durante un encuentro; tras una derrota puedes volver a preparación.
 
 ## Combatir
 
@@ -72,7 +92,7 @@ Rudy tiene 30 PV y tres acciones por turno. Sus ataques físicos iniciales no co
 | V | Esquiva: tres de escudo físico, una acción, una vez por turno. |
 | C | Contraataque contra Eris tras bloquear o esquivar efectivamente: una acción. |
 | T | Elegir compañera y habilidad de apoyo. |
-| E | Terminar turno y robar una nueva mano después de la acción enemiga. |
+| E | Terminar turno y tomar una nueva mano después de la acción enemiga. |
 | H | Consultar historial de daños, bloqueos y acciones. |
 | B | Neutralizar un anclaje del sello de Badigadi cuando esté expuesto. |
 
@@ -100,4 +120,12 @@ Orsted aparece el Día 6 si se cumple la condición. Su demostración anuncia un
 
 El séptimo día usas el antídoto y resuelves las conversaciones pendientes. Los cinco desenlaces posibles conservan a las tres esposas, solamente a Roxy, solamente a Eris, solamente a Sylphiette o a ninguna. Cuando quedan varias relaciones viables sin unión completa, una conversación explícita resuelve los proyectos compartidos. Después Rudy devuelve las cartas a Nanahoshi, conservando el catálogo y los niveles, y se muestra la escena del epílogo correspondiente.
 
-F5 guarda, Esc abre pausa y F11 cambia pantalla completa. Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-v8.json`; importar v1/v2/v3 conserva los archivos originales y comienza la nueva progresión diaria. [Detalles del guardado](GUARDADO.md).
+F5 guarda, Esc abre pausa y F11 cambia pantalla completa. En las pantallas de campaña, Tab/Arriba/Abajo recorren botones; Enter confirma. Opciones ofrece texto instantáneo o velocidad de escritura, movimiento reducido, silencio y volúmenes independientes. El menú permite práctica sin alterar tu campaña. La continuación usa `campaign-exploration-v1.json` y recupera campañas v8 anteriores sin sobrescribir sus archivos. Importar v1/v2/v3 conserva los originales y comienza una nueva campaña. [Detalles del guardado](GUARDADO.md).
+
+## Objetivos del día — J
+
+Pulsa **J** desde cualquier mapa explorable. El diario muestra día, capítulo, historia principal, interacciones, actividades opcionales y objetivos completados con **[X] HECHO** en verde. Las tareas pendientes incluyen progreso y destino. Usa flechas verticales, RePág/AvPág o rueda para desplazarte; ←/→ consulta jornadas anteriores y H abre recuerdos y decisiones. El contenido se actualiza sin cerrar la pantalla.
+
+Después del sueño, el único objetivo es ir al estudio y leer la carta hasta **—H**. Entrar o levantarla no basta. Luego habla con Nanahoshi, recibe cinco cartas sociales y cinco físicas y completa las prácticas social y de combate. Se habilitan tres interacciones: cualquier distribución sirve, incluidas tres con una misma esposa. El diario puede mostrar **Sylphie 0/1, Roxy 0/1, Eris 3/1**; el denominador es una recomendación.
+
+La carta permanece sobre el escritorio. **E — Volver a leer la carta** permite consultarla sin repetir el descubrimiento ni sus efectos. El descanso indica la tarea exacta pendiente o el número de interacciones que falta, usando los mismos objetivos del diario. [Reglas completas](MISIONES.md).

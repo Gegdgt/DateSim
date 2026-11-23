@@ -44,7 +44,12 @@ function Suite.run()
         end
         local function settle()
             if app.manager.transition>0 then app:update(app.manager.transition) end
-            app:update(2); draw()
+            app:update(2)
+            while app.manager.current.enc and app.manager.current.enc.dealComplete==false do app:update(.1) end
+            if app.manager.current.enc and not app.manager.current.enc.dealComplete and app.manager.current.enc.narrativeVersion then
+                while not app.manager.current.enc.dealComplete do app:update(.1) end
+            end
+            draw()
         end
         local function prepare(checkpoint,cardId,prior,seed)
             local session=prior and clone(prior) or Fixtures.fixture(checkpoint)
@@ -142,8 +147,8 @@ function Suite.run()
 
         local eris={
             {card="light_joke",name="eris-joke",love=-5,trust=-2,expression="angry",next="eris_training_argument",flag="eris_disliked_training_joke"},
-            {card="encourage",name="eris-support",love=1,trust=1,expression="happy",next="eris_training_together",flag="eris_training_supported"},
-            {card="subtle_flirt",name="eris-flirt",love=1,trust=0,expression="happy",next="eris_training_challenge",flag="eris_romantic_training"},
+            {card="encourage",name="eris-support",love=4,trust=2,expression="happy",next="eris_training_together",flag="eris_training_supported"},
+            {card="subtle_flirt",name="eris-flirt",love=4,trust=1,expression="happy",next="eris_training_challenge",flag="eris_romantic_training"},
         }
         local distinct={}
         for _,case in ipairs(eris) do
@@ -153,9 +158,9 @@ function Suite.run()
         local count=0; for _ in pairs(distinct) do count=count+1 end
         check(count==3,"Prueba A: tres fixtures independientes, tres consecuencias y tres ramas")
         for _,case in ipairs({
-            {card="listen",name="roxy-listen",love=0,trust=1,expression="happy",next="roxy_formula_check"},
+            {card="listen",name="roxy-listen",love=1,trust=1,expression="happy",next="roxy_formula_check"},
             {card="light_joke",name="roxy-joke",love=-2,trust=-1,expression="worried",next="roxy_formula_boundaries"},
-            {card="be_honest",name="roxy-honest",love=1,trust=1,expression="happy",next="roxy_formula_equals"},
+            {card="be_honest",name="roxy-honest",love=3,trust=3,expression="happy",next="roxy_formula_equals"},
         }) do playCase("encounter_roxy",case.card,case.name,case) end
 
         local promised=playCase("encounter_sylphiette","encourage","sylphiette-promise")

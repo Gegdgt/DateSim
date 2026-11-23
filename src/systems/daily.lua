@@ -21,7 +21,10 @@ function Daily.new(day,session)
         favor_used=false,activities_completed={},events={},rewards_granted={},ending_processed=false,baseline=snapshot(session)}
 end
 function Daily.ensure(session)
-    if not session.daily or session.daily.day~=session.day then session.daily=Daily.new(session.day,session) end
+    if not session.daily or session.daily.day~=session.day then
+        session.daily=Daily.new(session.day,session)
+        if session.worldContent then require("src.systems.world_content").generate(session) end
+    end
     session.daily_history=session.daily_history or {}
     session.pending_favors=session.pending_favors or {}
     return session.daily
@@ -40,19 +43,33 @@ local function available(session)
     if d.active_activity then return false,"Termina la actividad pendiente." end
     return true
 end
-function Daily.startActivity(session,id)
+function Daily.reserveActivity(session,id)
+    if session.prologue and not require("src.systems.wife_activities").ready(session) then return nil,"Completa la introducción con Nanahoshi." end
     local ok,err=available(session); if not ok then return nil,err end
     local def=Catalog.byId[id]
     if not def or def.cost~=1 then return nil,"Actividad desconocida o coste inválido." end
+    if session.exploration and not def.wifeActivity and not require("src.systems.exploration").nearCharacter(session,def.character) then return nil,"Busca a la persona para iniciar esa actividad." end
+    if def.wifeActivity then
+        local allowed,reason=require("src.systems.wife_activities").available(session,id,true)
+        if not allowed then return nil,reason end
+    end
     if session.relationships[def.character].marriageState=="separated" then return nil,"Este matrimonio ya está separado." end
     if Daily.remaining(session)<1 then return nil,"No quedan interacciones libres hoy." end
     if def.requires and not require("src.systems.conditions").evaluate(session,def.requires) then return nil,"Actividad todavía no disponible." end
     local d=session.daily
-    d.interactions_used=d.interactions_used+1
-    d.visits[def.character]=d.visits[def.character]+1
-    d.active_activity={id=id,instance_id=Daily.key(session,"activity_"..d.interactions_used),visit=d.visits[def.character]}
+    local index=d.interactions_used+1
+    local visit=d.visits[def.character]+1
+    if not def.wifeActivity then d.interactions_used=index;d.visits[def.character]=visit end
+    d.active_activity={id=id,instance_id=Daily.key(session,"activity_"..index),visit=visit,pendingReservation=def.wifeActivity or nil}
     d.events[d.active_activity.instance_id.."_started"]=true
     return d.active_activity
+end
+function Daily.startActivity(session,id)
+    local def=Catalog.byId[id]
+    if def and def.wifeActivity then
+        return require("src.systems.wife_activities").start(session,id,require("src.systems.economy").ensure(session).revision)
+    end
+    return Daily.reserveActivity(session,id)
 end
 function Daily.activityEffect(session,effect)
     local out=copy(effect)
@@ -69,19 +86,27 @@ local function completeActivity(session,choiceId,effect,text)
     local delta=require("src.systems.relationship_budget").preview(session,def.character,effect)
     local applied,err=Events.apply(session,active.instance_id,effect)
     if not applied and err then return nil,err end
+    if active.pendingReservation then
+        d.interactions_used=d.interactions_used+1
+        d.visits[def.character]=d.visits[def.character]+1
+    end
     d.activities_completed[#d.activities_completed+1]={id=active.id,instance_id=active.instance_id,choice=choiceId,character=def.character}
     local prefix=(active.visit or 1)>1 and ((active.visit==3 and "Antes de despedirse: " or "Al volver a encontrarse: ")) or ""
-    Family.notice(session,active.instance_id.."_result",def.character,prefix..text,delta.love<0 and "angry" or "happy",
+    if not def.wifeActivity then Family.notice(session,active.instance_id.."_result",def.character,prefix..text,delta.love<0 and "angry" or "happy",
         "Resultado: "..string.format("%+d amor / %+d confianza",delta.love,delta.trust)..". Oro: "..(effect.gold or 0)..". Recompensas guardadas.")
+    end
     Family.activityFinished(session,def,active.instance_id)
     d.active_activity=nil;session.combat=nil
+    require("src.systems.objectives").sync(session)
     return text
 end
+Daily.completeActivity=completeActivity
 function Daily.resolveActivity(session,choiceId)
     local d=Daily.ensure(session)
     local active=d.active_activity
     if not active or d.ending_processed or not Daily.atAgenda(session) then return nil,"No hay una actividad pendiente." end
     local def=Catalog.byId[active.id]
+    if def.wifeActivity then return require("src.systems.wife_activities").choose(session,choiceId) end
     for _,choice in ipairs(def.choices) do
         if choice.id==choiceId then
             if active.battle then return nil,"Termina el combate reservado." end
@@ -95,6 +120,7 @@ function Daily.battleDefinition(session)
     local active=Daily.ensure(session).active_activity
     local def=active and Catalog.byId[active.id]
     if not def or not active.battle then return nil end
+    if def.wifeActivity then return require("src.systems.wife_activities").battleDefinition(session) end
     return {kind="magic",title=def.title,background=def.background,activity=true,training=def.battle=="duel",
         enemyId=def.battle=="duel" and "eris_training" or def.battle=="monsters" and ((Family.ensure(session).progress.monster_hunts or 0)>=2 and "ruins_guardian" or "forest_beast") or "mana_anomaly",
         character=def.battle=="monsters" and active.choice=="together" and "eris" or nil,
@@ -103,6 +129,10 @@ end
 function Daily.finishBattle(session,enc)
     local def=Daily.battleDefinition(session)
     if not def or session.combat~=enc or not enc.finished then return nil,"El encuentro aún no ha terminado." end
+    require("src.systems.campaign_stats").finishBattle(session,enc)
+    if Catalog.byId[session.daily.active_activity.id].wifeActivity then
+        return require("src.systems.wife_activities").finishBattle(session,enc)
+    end
     require("src.systems.companions").record(session,enc)
     local activity=Catalog.byId[session.daily.active_activity.id]
     local won=enc.outcome=="victory"
@@ -127,16 +157,29 @@ function Daily.completeBookVisit(session)
     local active=Daily.ensure(session).active_activity
     if active and active.id=="roxy_books" then return completeActivity(session,"purchase",{love=3,trust=2,familyProgress={research=1}},"Roxy revisa contigo el libro comprado. Elegís una técnica que practicaréis juntos.") end
 end
+function Daily.completeTradeVisit(session)
+    local active=Daily.ensure(session).active_activity
+    if active and active.id=="roxy_supplies" then
+        return completeActivity(session,"purchase",{love=2,trust=3,familyProgress={research=1}},"Roxy revisa contigo los materiales pagados. Guardáis el recibo antes de salir.")
+    end
+end
 function Daily.favorAvailable(session,id,provider,accelerate)
     local ok,err=available(session); if not ok then return nil,err end
     local d=session.daily
     if d.favor_used then return nil,"Ya solicitaste el encargo de hoy." end
     local def=Catalog.favorsById[id]
     if not def then return nil,"Encargo desconocido." end
+    if session.prologue and not require("src.systems.world_content").ready(session) then return nil,"Completa la introducción con Nanahoshi." end
+    if session.prologue and not def.investment then return nil,"Consulta los encargos de inversión de Cliff o Zanoba." end
+    if def.investment and session.gold<def.cost then return nil,"Oro insuficiente para la inversión." end
     provider=provider or def.character
+    if session.exploration and not require("src.systems.exploration").nearCharacter(session,provider) then
+        return nil,"Habla con el encargado en el taller."
+    end
     local valid=false;for _,p in ipairs(def.providers) do if p==provider then valid=true end end
     if not valid then return nil,"Ese encargado no realiza esta tarea." end
     for _,favor in ipairs(session.pending_favors) do
+        if favor.status=="pending" and favor.id==id then return nil,"Ya hay una tarea de ese tipo pendiente." end
         if favor.requested_day==session.day-1 and favor.id==id then return nil,"No puedes repetir la tarea de ayer, aunque cambies de encargado." end
     end
     if accelerate and Daily.remaining(session)<1 then return nil,"Ayudar requiere una interacción libre." end
@@ -148,7 +191,12 @@ function Daily.deliverFavors(session)
     for _,favor in ipairs(session.pending_favors) do
         if favor.status=="pending" and favor.due_day<=session.day then
             local def=Catalog.favorsById[favor.id];local effect=copy(def.effects)
+            if favor.investment then effect=require("src.systems.commissions").effect(favor) end
             effect.presenter=favor.provider or def.character;effect.context="favor";effect.text="Entrega de "..def.title..": "..def.reward
+            if favor.investment then
+                local view=copy(favor);view.status="delivered"
+                effect.text=def.title.." · "..require("src.systems.commissions").result(view)
+            end
             local key=favor.instance_id.."_delivered"
             local applied,err=Events.apply(session,key,effect);if not applied and err then return nil,err end
             session.rewards[key]=true;favor.status="delivered";favor.delivered_day=session.day
@@ -162,22 +210,34 @@ function Daily.accelerateFavor(session,instance)
     if Daily.remaining(session)<1 then return nil,"Ayudar requiere una interacción libre." end
     for _,favor in ipairs(session.pending_favors) do
         if favor.instance_id==instance and favor.requested_day==session.day and favor.status=="pending" and not favor.accelerated then
+            if session.exploration and not require("src.systems.exploration").nearCharacter(session,favor.provider) then return nil,"Habla con el encargado en el taller." end
             local d=session.daily;d.interactions_used=d.interactions_used+1
             local key=Daily.key(session,"activity_"..d.interactions_used)
             Events.apply(session,key,{context="favor_help",text="Ayudaste a "..(favor.provider or Catalog.favorsById[favor.id].character).."; consumiste una interacción libre."})
             d.activities_completed[#d.activities_completed+1]={id="help_favor",instance_id=key,choice=favor.id,favor=instance}
             favor.accelerated=true;favor.due_day=session.day
+            require("src.systems.objectives").sync(session)
             return Daily.deliverFavors(session)
         end
     end
     return nil,"Ese encargo no está pendiente."
 end
-function Daily.requestFavor(session,id,provider,accelerate)
+function Daily.requestFavor(session,id,provider,accelerate,revision)
     local ok,err=Daily.favorAvailable(session,id,provider,accelerate);if not ok then return nil,err end
     local d=session.daily;local def=Catalog.favorsById[id]
     local key=Daily.key(session,"favor_"..id)
+    local investment
+    if def.investment then
+        local Economy=require("src.systems.economy")
+        if revision and revision~=Economy.ensure(session).revision then return nil,"El saldo cambió. Revisa de nuevo la inversión." end
+        investment=require("src.systems.commissions").prepare(session,def,key)
+        local receipt,reason=Economy.spend(session,def.cost,Economy.ensure(session).revision,"commission_"..id)
+        if not receipt then return nil,reason end
+        investment.receipt_id=receipt.id
+    end
     Events.apply(session,key,{context="favor",text="Encargo solicitado: "..def.title})
     local favor={id=id,provider=provider or def.character,instance_id=key,requested_day=session.day,due_day=session.day+1,status="pending"}
+    for field,value in pairs(investment or {}) do favor[field]=value end
     session.pending_favors[#session.pending_favors+1]=favor
     d.favor_used=true; d.favor_requested=copy(favor)
     if accelerate then Daily.accelerateFavor(session,key) end
@@ -185,6 +245,7 @@ function Daily.requestFavor(session,id,provider,accelerate)
 end
 -- Efectos acotados por día/persona; el abandono nunca separa por una cifra sola.
 function Daily.applyAttention(session)
+    if session.prologue and not require("src.systems.wife_activities").ready(session) then return end
     local d=Daily.ensure(session)
     Family.resolveCommitments(session)
     for _,id in ipairs(Characters.romanceIds) do
@@ -203,8 +264,12 @@ function Daily.finish(session)
     local d=Daily.ensure(session)
     if d.ending_processed then return session.daily_history[tostring(session.day)] end
     if not Daily.atAgenda(session) then return nil,"El día se cierra desde la agenda." end
-    if not Daily.storyComplete(session) then return nil,"Completa primero la historia obligatoria de hoy." end
+    if session.prologue then
+        local ok,reason=require("src.systems.objectives").requirements(session)
+        if not ok then return nil,reason end
+    elseif not Daily.storyComplete(session) then return nil,"Completa primero la historia obligatoria de hoy." end
     if d.active_activity then return nil,"Termina la actividad pendiente antes de dormir." end
+    if session.prologue and session.day<7 and not require("src.systems.rest").completed(session) then return nil,"Vuelve a casa y confirma el descanso junto a una cama." end
     Events.apply(session,Daily.key(session,"interactions_recorded"),{context="daily",text="Interacciones utilizadas: "..d.interactions_used.." de 3."})
     Daily.applyAttention(session)
     local delivered,deliveryError=Daily.deliverFavors(session);if not delivered then return nil,deliveryError end
@@ -213,7 +278,7 @@ function Daily.finish(session)
     end
     for _,favor in ipairs(session.pending_favors) do
         if favor.status=="delivered" then
-            Events.apply(session,favor.instance_id.."_mission",{mission=favor.instance_id,hidden=true,context="daily"})
+            Events.apply(session,favor.instance_id.."_mission",{mission=favor.instance_id,gold=favor.investment and 0 or nil,hidden=true,context="daily"})
         end
     end
     -- Las separaciones siguen las decisiones explícitas de las escenas existentes.
@@ -256,19 +321,22 @@ function Daily.restore(session,input)
     local function reserve(record,completed)
         if type(record)~="table" or (not Catalog.byId[record.id] and record.id~="help_favor") then return false end
         local index=type(record.instance_id)=="string" and tonumber(record.instance_id:match("^day"..session.day.."_activity_(%d)$"))
-        if not index or index<1 or index>d.interactions_used or seen[index] then return false end
+        local pending=not completed and record.pendingReservation and Catalog.byId[record.id] and Catalog.byId[record.id].wifeActivity
+        if not index or index<1 or index>(d.interactions_used+(pending and 1 or 0)) or index>3 or seen[index] then return false end
+        if pending and index~=d.interactions_used+1 then return false end
         if completed then
-            local valid=record.id=="help_favor" and Catalog.favorsById[record.choice]~=nil
-                or record.id=="roxy_books" and record.choice=="purchase"
+            local valid=Catalog.byId[record.id] and Catalog.byId[record.id].wifeActivity and record.choice=="pass"
+                or record.id=="help_favor" and Catalog.favorsById[record.choice]~=nil
+                or (record.id=="roxy_books" or record.id=="roxy_supplies") and record.choice=="purchase"
             for _,choice in ipairs(Catalog.byId[record.id] and Catalog.byId[record.id].choices or {}) do if record.choice==choice.id then valid=true end end
             if not valid or not session.events[record.instance_id] then return false end
         end
         seen[index]=true
         if record.id=="help_favor" then return completed end
-        local id=Catalog.byId[record.id].character; visits[id]=visits[id]+1
+        local id=Catalog.byId[record.id].character; if not pending then visits[id]=visits[id]+1 end
         if record.battle then
             if not Catalog.byId[record.id].battle then return false end
-            local valid=false
+            local valid=Catalog.byId[record.id].wifeActivity and record.choice=="pass"
             for _,choice in ipairs(Catalog.byId[record.id].choices) do if record.choice==choice.id then valid=true end end
             if not valid then return false end
         end
@@ -295,7 +363,7 @@ function Daily.restore(session,input)
     end
     session.daily=clean(d,0); session.daily.events=session.daily.events or {}
     if session.daily.active_activity then
-        session.daily.active_activity.visit=visits[Catalog.byId[session.daily.active_activity.id].character]
+        session.daily.active_activity.visit=visits[Catalog.byId[session.daily.active_activity.id].character]+(session.daily.active_activity.pendingReservation and 1 or 0)
     end
     local function validSnapshot(value)
         if type(value)~="table" then return false end
@@ -338,6 +406,7 @@ function Daily.restore(session,input)
         local provider=favor.provider or def.character
         local allowed=false;for _,id in ipairs(def.providers) do if id==provider then allowed=true end end
         if not allowed then return nil,"Encargado guardado inválido." end
+        if def.investment and not require("src.systems.commissions").validate(session,favor) then return nil,"Resultado o coste del encargo inválido." end
         favors[day]=true;byInstance[favor.instance_id]=favor;session.pending_favors[#session.pending_favors+1]=clean(favor,0)
         if day==session.day then session.daily.favor_requested=clean(favor,0) end
     end

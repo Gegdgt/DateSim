@@ -1,5 +1,8 @@
 -- Todos los atajos del motor se editan aquí.
 return {
+    movement = {up={"w","up"},down={"s","down"},left={"a","left"},right={"d","right"}},
+    run = {"lshift","rshift"},
+    interact = {"e"}, minimap = {"m"}, inventory = {"i"}, dailyStatus = {"tab"},
     advance = { "return", "space", "kpenter" },
     back = { "escape" },
     journal = { "j" },

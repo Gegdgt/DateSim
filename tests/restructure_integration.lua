@@ -30,6 +30,8 @@ function Suite.run()
     local function settle()
         app:update(2)
         if app.manager.transition>0 then app:update(2) end
+        local screen=app.manager.current
+        if screen.enc and screen.enc.narrativeVersion then while not screen.enc.dealComplete do app:update(.1) end end
         app:draw()
     end
     local function capture(name)
@@ -50,13 +52,35 @@ function Suite.run()
     check(app.session.checkpoint=="intro" and #app.session.deck==0,"Inicio casado sin cartas antes de Nanahoshi")
     local steps=0
     while app.session.checkpoint~="campaign_complete" do
-        steps=steps+1; check(steps<1000,"Campaña jugable sin bloqueo: "..app.session.checkpoint)
+        steps=steps+1; check(steps<1800,"Campaña jugable sin bloqueo: "..app.session.checkpoint.." / "..tostring(app.manager.current.kind).." / "..tostring(app.manager.current.mode).." / usadas "..app.session.daily.interactions_used)
         settle()
         local s=app.manager.current
         local cp=app.session.checkpoint
         local node=Chapters.get(cp)
         if cp=="campaign_complete" then break end
-        if s.kind=="orsted_reward" then
+        if s.kind=="exploration" or s.kind=="exploration_letter" then
+            require("tests.exploration_driver").step(app)
+        elseif s.kind=="wife_activities" then
+            local Wife=require("src.systems.wife_activities")
+            if s.mode=="offers" then s:keypressed("return")
+            elseif s.mode=="hand" then
+                local active=Wife.current(app.session);local chosen,best
+                for i,id in ipairs(active.hand) do if Wife.canPlay(app.session,id) then
+                    local r=Wife.response(app.session,id)
+                    if not best or r.love+r.trust>best then chosen,best=i,r.love+r.trust end
+                end end
+                if chosen then s:keypressed(tostring(chosen));s:keypressed("return") else s:keypressed("p") end
+            elseif s.mode=="service" then Wife.finish(app.session,"no_purchase");app:resume()
+            elseif s.mode=="challenge" then Wife.current(app.session).challenge.elapsed=.8;s:keypressed("space")
+            elseif s.mode~="deal" and s.mode~="playing" then s:keypressed("return") end
+        elseif app.session.daily.active_activity and s.enc and s.enc.type=="combat" then
+            require("tests.combat_visual").drive(s)
+        elseif s.kind=="rest" then
+            if s.preview then click("Confirmar descanso")
+            else
+                for _,b in ipairs(s.buttons) do if not b.disabled and b.x==187 then click(b.label);break end end
+            end
+        elseif s.kind=="orsted_reward" then
             capture("orsted-gift-"..s.category)
             if s.reward.pending then s:acknowledge()
             elseif require("src.systems.finale").rewardComplete(app.session)then click("Continuar historia")
@@ -91,7 +115,7 @@ function Suite.run()
                 local id=({"sylphiette","roxy","eris"})[app.session.daily.interactions_used+1]
                 check(Daily.startActivity(app.session,"time_"..id)~=nil,"Agenda permite repetir actividades")
                 app:save();app:resume()
-            elseif Daily.storyComplete(app.session) then click("Finalizar día")
+            elseif Daily.storyComplete(app.session) then click(app.session.prologue and "Volver a casa para descansar" or "Finalizar día")
             else click(app.session.day==7 and "Cerrar tiempo libre e ir a la historia" or "Continuar historia") end
         elseif node.kind=="hub" then
             local companions=Progression.availableCompanions(app.session)
@@ -127,7 +151,7 @@ function Suite.run()
         else error("Pantalla sin manejador "..cp) end
     end
     settle(); capture("ending-family")
-    check(Progression.summary(app.session).endingId=="family_united","Recorrido gráfico completo llega al final familiar")
+    check(Progression.summary(app.session).endingId=="family_united","Recorrido gráfico completo llega al final familiar: "..tostring(Progression.summary(app.session).endingId))
     app:save(); local roundtrip=assert(Save.load())
     check(Json.encode(roundtrip.relationships)==Json.encode(app.session.relationships),"Matrimonios exactos después del epílogo")
     check(Json.encode(roundtrip.unlocked)==Json.encode(app.session.unlocked),"Colección exacta después del epílogo")

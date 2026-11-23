@@ -77,7 +77,10 @@ function Suite.run()
         end
         local function settle()
             if app.manager.transition>0 then app:update(app.manager.transition) end
-            app:update(2); draw()
+            app:update(2)
+            local screen=app.manager.current
+            if screen.enc and screen.enc.narrativeVersion then while not screen.enc.dealComplete do app:update(.1) end end
+            draw()
         end
         -- Componente dibujado por LÖVE: signos exactos y términos adecuados.
         love.graphics.setCanvas(app.canvas); rendered={}

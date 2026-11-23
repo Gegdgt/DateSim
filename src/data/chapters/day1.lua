@@ -51,7 +51,7 @@ return {
    {speaker="narrator",text="Rudy toma papel y pluma. Todavía le tiembla un poco la mano."},
    {speaker="rudeus",delivery="note",expression="worried",text="No puedo hablar. Tampoco puedo utilizar magia."},
    {speaker="nanahoshi",expression="worried",animation="surprised_jump",text="¿Cómo que no puedes utilizar magia? Tú ni siquiera necesitas recitar conjuros."},
-   {speaker="rudeus",delivery="note",expression="worried",text="Creo que Hitogami está detrás de esto. Encontré esta carta al despertar; la firma es suya."},
+   {speaker="rudeus",delivery="note",expression="worried",text="Creo que Hitogami está detrás de esto. Encontré esta carta en mi estudio; la firma es suya."},
    {speaker="nanahoshi",expression="neutral",animation="expression_change",text="Déjame verla. Siete días... Una amenaza sobre tus esposas, y dos bloqueos distintos. No probaremos sus límites con ellas."},
    {speaker="nanahoshi",expression="worried",text="Puede que tenga algo que nos ayude. No es una cura, pero te permitirá comunicarte mientras investigamos."},
   }},
@@ -73,10 +73,10 @@ return {
   }},
   day1_close={title="Día 1 · Regresar con palabras prestadas",background="home",music="home",lines={
    {speaker="rudeus",delivery="thought",expression="worried",text="Sigo sin voz y sin magia. Las cartas no eliminan el peligro, pero me permiten volver a casa. Todavía puedo reservar tiempo para mi familia."},
-   {speaker="narrator",text="La carta firmada por —H permanece en el diario. La familia aún desconoce el secreto. Rudy decidirá en su agenda cuándo dar por terminada la jornada."},
+   {speaker="narrator",text="La carta firmada por —H permanece en el escritorio de Rudy y puede consultarse también desde el diario. La familia aún desconoce el secreto. Quedan tres interacciones antes del descanso."},
   }},
  },
- encounters={day1_tutorial={title="Anomalía de maná",kind="magic",enemyId="mana_anomaly",background="laboratory",targetScore=5,tutorial=true,music="combat",intro="Una chispa de Rudy se apaga: su magia sigue bloqueada. Nanahoshi le pide recurrir a ataques físicos."}},
+ encounters={day1_tutorial={title="Anomalía de maná",kind="magic",enemyId="mana_anomaly",background="laboratory",targetScore=5,tutorial=true,requiresVictory=true,music="combat",intro="Una chispa de Rudy se apaga: su magia sigue bloqueada. Nanahoshi le pide recurrir a ataques físicos."}},
  locations={},hubs={},summaries={},
  transitions={
   intro={{to="day1_wake"}}, day1_wake={{to="day1_letter"}}, day1_letter={{to="day1_signature"}},

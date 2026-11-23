@@ -5,16 +5,16 @@ local Tutorial={}
 local stages={hand=0,energy=0,select=0,ready=0,result=1,draw=1,second=1,
     second_result=2,free_demo=2,free=2,summary=3,complete=3}
 Tutorial.instructions={
-    hand={step=1,title="MAZO Y MANO",text="Nanahoshi: recibes 5 cartas sociales y robas 3 a tu mano. Su magia almacenada reproduce tu voz. Verde: Empatía; naranja: Humor; azul: Sinceridad; violeta: Magia e iniciativa. Cada color indica una intención.",button="Ver la energía"},
-    energy={step=2,title="ENERGÍA SOCIAL",text="Tienes 4 de energía para 3 acciones sociales. El coste se paga al jugar; no recuperas energía. La energía permite actuar, no es vida. En combate se recarga a 3 cada turno.",button="Elegir una carta"},
-    select={step=3,title="PRIMERO, CONSULTA LA CARTA",text="Selecciona una carta con clic, 1/2/3 o flechas. Lee su nombre completo, coste y efecto a la derecha. Después confirma con Enter o Jugar."},
+    hand={step=1,title="MAZO Y MANO",text="Nanahoshi: recibes 5 cartas sociales y tomas 3 a tu mano. Su magia almacenada reproduce tu voz. Verde: Empatía; naranja: Humor; azul: Sinceridad; violeta: Magia e iniciativa. Cada color indica una intención.",button="Ver la energía"},
+    energy={step=2,title="ENERGÍA SOCIAL",text="Tienes 6 de energía para 3 acciones sociales. El coste se paga al jugar; no recuperas energía. La energía permite actuar, no es vida. En combate se recarga a 3 cada turno.",button="Elegir una carta"},
+    select={step=3,title="PRIMERO, CONSULTA LA CARTA",text="Selecciona una carta con clic, 1/2/3 o flechas. Lee su nombre completo, coste y frase a la derecha. Después confirma con Enter o Jugar."},
     ready={step=3,title="DECIDE CON EL CONTEXTO",text="Nanahoshi: amor mide cercanía; confianza, seguridad en tus actos. Una broma en mal momento puede reducirlos. Aquí prueba una respuesta: necesito que acordemos cómo investigar."},
-    result={step=5,title="LEE LO QUE OCURRIÓ",text="Nanahoshi: has reproducido la voz con magia almacenada, sin gastar tu maná. Mira mi reacción. No soy una relación romántica; tus esposas sí valoran el tono y el contexto.",button="Ver el robo"},
-    draw={step=6,title="DESCARTA Y ROBA",text="La carta usada fue al descarte. Has robado otra del mazo y vuelves a tener 3. El robo no cuesta energía. Ahora juega tu segundo turno.",button="Jugar el segundo turno"},
+    result={step=5,title="LEE LO QUE OCURRIÓ",text="Nanahoshi: has reproducido la voz con magia almacenada, sin gastar tu maná. Mira mi reacción. No soy una relación romántica; tus esposas sí valoran el tono y el contexto.",button="Tomar otra carta"},
+    draw={step=6,title="DESCARTA Y TOMA",text="La carta usada fue al descarte. Has tomado otra del mazo y vuelves a tener 3. Tomar no cuesta energía. Ahora juega tu segundo turno.",button="Jugar el segundo turno"},
     second={step=6,title="PONLO EN PRÁCTICA",text="Selecciona otra carta y confirma su uso. Compara categorías y contexto. Una carta barata también puede ser útil."},
     second_result={step=6,title="SEGUNDA ACCIÓN",text="El registro conserva ambos resultados. La energía restante depende de lo que pagaste. Falta un turno: aprenderás la acción gratuita.",button="Aprender la acción gratuita"},
     free_demo={step=7,title="EJEMPLO: SIN ENERGÍA",text="Probemos en una simulación: Escuchar cuesta 1. Con 0 energía no puede jugarse. Tu energía real NO cambia. Comprueba el coste para continuar.",button="Probar carta con 0 energía"},
-    free={step=7,title="TOMAR UN RESPIRO",text="Sin energía puedes usar cartas de coste 0 o Tomar un respiro [P]. El respiro gasta un turno, no roba ni descarta. Úsalo ahora para cerrar la práctica."},
+    free={step=7,title="TOMAR UN RESPIRO",text="Sin energía puedes Tomar un respiro [P]. El respiro gasta un turno, no toma cartas ni descarta. Úsalo ahora para cerrar la práctica."},
     summary={step=8,title="EL RESULTADO SOCIAL",text="Al alcanzar la meta: ENCUENTRO EXITOSO. Si falta avance: ENCUENTRO DESFAVORABLE. Cambian la respuesta y los vínculos, pero la historia sigue. Tu voz y maná siguen sellados. Continúa para practicar ataques físicos, vida y escudo."},
     complete={step=8,title="PRÁCTICA COMPLETADA",text="Ya puedes continuar la historia."},
 }

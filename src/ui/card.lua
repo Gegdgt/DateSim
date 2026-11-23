@@ -10,8 +10,8 @@ Card.regions = {
     cost={x=10,y=95,w=60,h=11},
 }
 
-function Card.labels(card)
-    return {name=card.shortName or card.name,cost="Energía "..card.cost}
+function Card.labels(card,cost)
+    return {name=card.shortName or card.name,cost="Energía "..(cost or card.cost)}
 end
 
 function Card.draw(resources,card,x,y,opts)
@@ -23,12 +23,14 @@ function Card.draw(resources,card,x,y,opts)
     end
     resources:cardBase(x,y,1)
     resources:cardFrame(card.category,x,y,1)
-    local labels=Card.labels(card)
+    local labels=Card.labels(card,opts.cost)
     local function label(key)
         local box=Card.regions[key]
         Font.draw(labels[key],x+box.x,y+box.y,{maxWidth=box.w,align="center",color=ink})
     end
     label("name")
+    Font.draw(({empathy="Empatía",humor="Humor",sincerity="Sincero",initiative="Iniciativa"})[card.category] or card.category,
+        x+8,y+44,{maxWidth=64,align="center",color=ink})
     if card.icon and card.icon:match("^procedural") then
         love.graphics.setColor(card.element=="water" and {.2,.6,.9,1} or {.5,.35,.2,1})
         love.graphics.polygon("fill",x+40,y+62,x+50,y+77,x+40,y+88,x+30,y+77)

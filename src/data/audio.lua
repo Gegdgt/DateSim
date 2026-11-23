@@ -4,6 +4,7 @@
 return {
     fadeDuration=.45,
     music={
+        card_reward={loop=false,synth={notes={60,67,72,76,79,76,84},beat=.15}},
         orsted={synth={notes={38,45,50,57,38,44,51,62},beat=.44}},
         separation={synth={notes={57,52,55,50,48,52,47,45},beat=.9}},
         final_victory={loop=false,synth={notes={60,64,67,72,67,72,76,79,84},beat=.3}},
@@ -26,6 +27,10 @@ return {
         defeat={loop=false,synth={notes={57,55,52,48,45},beat=.42}},
     },
     effects={
+        card_reveal={notes={67,74,79},duration=.22,gain=.14},
+        card_duplicate={notes={67,72,67},duration=.18,gain=.13},
+        card_shuffle={notes={82,74,85,76,89,79,83,72},duration=.55,gain=.10},
+        enchanted_voice={notes={52,64,67,76,64},duration=.48,gain=.14},
         gold={notes={84,91,88},duration=.18,gain=.12},
         training={notes={55,62,67},duration=.22,gain=.16},
         separation={notes={64,59,52,45},duration=.65,gain=.12},

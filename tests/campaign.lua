@@ -65,6 +65,22 @@ function Suite.run(simulations)
   check(Progression.next(s,s.checkpoint,result)~=nil,"Salida social incluso con resultado parcial")
  end
  local function battle(s,def,config)
+  if def.tutorial and not s.events.tutorial_completed then
+   local Tutorial=require("src.systems.tutorial")
+   local context=require("src.systems.dialogue_resolver").context(s,{kind="conversation",character="nanahoshi",targetScore=4,tutorial=true},"nanahoshi_test")
+   context.socialTutorial=true
+   s.encounter=Cards.new(s.deck,context,function(n)return n end);s.tutorial={stage="hand"}
+   Tutorial.advance(s.tutorial);Tutorial.advance(s.tutorial);Tutorial.select(s.tutorial)
+   for turn=1,2 do
+    local _,index=bestSocial(s.encounter)
+    check(index~=0 and Cards.play(s.encounter,index),"Acción real del tutorial social")
+    Tutorial.action(s.tutorial,s.encounter);Tutorial.advance(s.tutorial);Tutorial.advance(s.tutorial)
+   end
+   check(Cards.pass(s.encounter),"Respiro obligatorio de la práctica")
+   Tutorial.action(s.tutorial,s.encounter)
+   check(Tutorial.complete(s,{}),"Tutorial social completo antes del combate")
+   s.encounter=nil;s.tutorial=nil
+  end
   -- Preparation uses earned gold and ordinary shop stock, including solo routes.
   if not config.specialize and config.spending~="none" then
    for _,id in ipairs({"staff_strike","water_projectile","arcane_guard","simple_cut"}) do
@@ -91,7 +107,9 @@ function Suite.run(simulations)
   local support=require("src.systems.companions").context(s,def)
   local enc=Combat.new(s.deck,{relationships=s.relationships,team=support.team,character=def.character,enemyId=def.enemyId,day=s.day,difficulty=def.difficulty,tutorial=def.tutorial,tacticalContext=def.tacticalContext,combatDeck=s.combatDeck,unlocked=s.unlocked,curse=s.curse,externalEnergy=s.externalEnergy,cardLevels=Collection.levels(s)},rng(config.seed or 37))
   s.combat=enc
+  require("src.systems.campaign_stats").beginBattle(s,enc)
   require("tests.war_balance").solve(enc)
+  require("src.systems.campaign_stats").finishBattle(s,enc)
   if config.metrics then
    require("tests.campaign_metrics").battle(s,enc,config.metrics)
    if enc.outcome~="victory" and not enc.narrativeDefeat and not def.training and not def.activity then
@@ -115,6 +133,7 @@ function Suite.run(simulations)
  end
  local function run(config)
   local s=Save.newSession();local visited={};local steps=0
+  if config.exploration then require("tests.campaign_world_driver").initialize(s,config) end
   local metrics=config.metrics
   while true do
    Progression.skipUnavailable(s)
@@ -124,8 +143,15 @@ function Suite.run(simulations)
    local checkpoint=s.checkpoint;visited[checkpoint]=true
    local node=assert(Chapters.get(checkpoint))
    if node.kind=="summary" and node.definition.terminal then break end
-   if node.kind=="scene" then
+   if config.exploration and require("tests.campaign_world_driver").prologue(s) then
+    -- Explicitly read the desk letter and walk to Nanahoshi before any scene.
+   elseif node.kind=="scene" then
     local scene=Progression.scene(s,checkpoint)
+    if checkpoint=="day7_plans" and config.expectViable~=nil then
+     local viable=#Relationships.viable(s.relationships)
+     check(viable==config.expectViable,"Vínculos viables antes de decidir el proyecto final: "..viable)
+     if metrics then metrics.viableBeforePlan=viable end
+    end
     if scene.document then
      check(not Progression.next(s),"El diario narrativo exige interacción antes de avanzar")
      check(Events.apply(s,"hitogami_letter_read",{clue="hitogami_letter"}),"La carta se registra como pista")
@@ -186,7 +212,8 @@ function Suite.run(simulations)
       while Collection.canUpgrade(s,id) do check(Collection.upgrade(s,id,s.economy.revision),"Especialización financiada durante la campaña") end
      end
     end
-    while not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
+    if config.exploration then s=require("tests.campaign_world_driver").activities(s,config,round,battle) end
+    while not config.exploration and not config.skipActivities and Daily.remaining(s)>0 and not s.daily.activities_locked do
      local id=config.dailyWife or wives[s.daily.interactions_used+1]
      if not id or s.relationships[id].marriageState=="separated" then break end
      if config.favors and config.accelerateFinal~=false and s.day==7 and Daily.remaining(s)==1 and not s.daily.favor_used then break end
@@ -204,9 +231,12 @@ function Suite.run(simulations)
      check(Daily.requestFavor(s,s.day%2==1 and "cliff_notes" or "zanoba_artifact",nil,s.day==7)~=nil,"Encargo alternado; último día acelerado")
     end
     if Daily.storyComplete(s) then
+     if config.exploration and s.day<7 then require("tests.campaign_world_driver").rest(s,config) end
      check(Progression.endDay(s)~=nil,"Cierre diario explícito")
      if metrics then require("tests.campaign_metrics").day(s,metrics)end
-    else check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
+    else
+     if config.exploration then require("tests.campaign_world_driver").greet(s,"nanahoshi") end
+     check(Progression.continueStory(s)~=nil,"Historia obligatoria accesible") end
    elseif node.definition.orstedReward then
     local Finale=require("src.systems.finale")
     for _,kind in ipairs({"combat","social"})do
@@ -222,7 +252,7 @@ function Suite.run(simulations)
     local available=Progression.availableCompanions(s)
     if #available>0 then
      local preferred=config.companion or config.preferred or "roxy"
-     if s.relationships[preferred].marriageState=="separated" then preferred=available[1] end
+     if preferred~="solo" and s.relationships[preferred].marriageState=="separated" then preferred=available[1] end
      check(Progression.selectCompanion(s,preferred)~=nil,"Compañía disponible elegida")
     else
      local selected
@@ -246,6 +276,17 @@ function Suite.run(simulations)
   if config.skipErisTraining then check(not visited.day6_orsted_arrival and not s.events.orsted_collection_gift,"Campaña completa sin recompensa de Orsted") end
   check(Relationships.ending(round(s).relationships)==ending,"Final persiste al guardar/cargar")
   Suite.completed[ending]=copy(s)
+  if config.exploration then
+   check(s.prologue.letter_read and s.prologue.nanahoshi_visited and s.rest.nights["6"] and not s.rest.nights["7"],"Prólogo, seis noches y cierre por desenlace")
+   check(#require("src.systems.objectives").pending(s,true)==0,"Siete días sin objetivos obligatorios pendientes")
+   check(config.expected==nil or ending==config.expected,"Final de estrategia "..config.id..": "..tostring(config.expected).." / "..ending)
+   if config.expectOrsted~=nil then check((s.events.orsted_collection_gift==true)==config.expectOrsted,"Orsted según entrenamientos diarios") end
+   local report=require("src.systems.campaign_stats").snapshot(s)
+   check(report.general.battleHistoryComplete and report.general.enemiesDefeated>0,"Estadísticas de combates reales completas")
+   check(Json.encode(report)==Json.encode(require("src.systems.campaign_stats").snapshot(round(s))),"Resumen completo persiste")
+   local file=assert(io.open(love.filesystem.getSource().."/tests/artifacts/campaign-"..config.id..".json","wb"))
+   file:write(assert(Json.encode({strategy=config.id,seed=config.seed,statistics=report,session=s})));file:close()
+  end
   if config.specialize then
    check(s.collection.staff_strike.level==10 and s.collection.encourage.level==10,"Los ingresos reales permiten especializar dos cartas en siete días")
    local income=120;for _,receipt in pairs(s.economy.transactions) do income=income+math.max(0,receipt.gold or 0) end

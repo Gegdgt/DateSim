@@ -6,7 +6,7 @@ Hitogami es el manipulador principal. Badigadi custodia el antídoto por una pro
 
 ## Orden y contenido jugable
 
-Cada capítulo incluye además una agenda con tres actividades libres repetibles y un encargo independiente. El Día 1 la abre después del tutorial; los siguientes empiezan en ella. La historia de la tabla conserva sus encuentros obligatorios con coste cero. El jugador cierra la jornada desde la agenda, revisa el resumen y confirma el avance. El Día 7 fija el tiempo libre antes de sus acuerdos finales. [Ciclo diario](FASE_1_ACTIVIDADES.md).
+Cada capítulo incluye una agenda con tres actividades libres repetibles y un encargo independiente. En la campaña explorable se accede a las actividades hablando con el NPC presente; la continuación narrativa requiere hablar con Nanahoshi en su laboratorio. G no tiene acción. El Día 1 se habilitan después del tutorial; los siguientes comienzan en el dormitorio elegido. Los encuentros obligatorios tienen coste cero. Para cerrar la jornada se vuelve físicamente a una cama o al jergón, se confirma el descanso y se revisa el resumen. El Día 7 fija el tiempo libre antes de sus acuerdos finales; tras epílogo y descanso se presenta el resumen completo de la campaña. [Recorrido integrado](EXPLORACION_FASE_4.md).
 
 | Día | Historia y actividades | Progreso permanente |
 | --- | --- | --- |
@@ -51,3 +51,7 @@ Cuando dos relaciones siguen siendo viables, las conversaciones del día siete r
 `tests/campaign.lua` recorre 40 campañas reales variando los ocho conjuntos posibles de matrimonios conservados, las tres compañeras y decisiones de reparación. El recorrido registra la carta como pista, equipa exclusivamente técnicas adquiridas, ejecuta combates legales, neutraliza el sello de Badigadi mediante acciones explícitas, comprueba el consumo del antídoto y guarda/carga entre checkpoints. También prueba que una equivocación temprana o del quinto día puede repararse con antecedentes concretos.
 
 La suite recorre **40 campañas completas y los cinco finales**, incluyendo cinco recorridos explícitos sin la ayuda de Orsted y una especialización financiada con la economía ordinaria. Incluye el duelo real antes de continuar las misiones. La integración adicional verifica los cuatro resultados y la revancha reconciliadora. Es una verificación automatizada del flujo y las reglas; no sustituye una sesión larga de prueba narrativa con jugadores. Las cifras de la ejecución actual se mantienen en [VERIFICACION.md](VERIFICACION.md).
+
+## Objetivos visibles y cierre de jornada
+
+La progresión actual de exploración usa [objetivos declarativos](MISIONES.md) y el [registro de eventos por día](PROGRESION_DIARIA.md). El Día 1 conserva `day1_result → day1_close → day1_agenda`: el cierre ya no queda oculto tras otro viaje a Nanahoshi. La búsqueda del laboratorio termina al iniciar su conversación, y ambas prácticas son obligatorias. Orsted tiene una opción explícita de declinar. El Día 7 concluye por desenlace, sin una séptima noche ordinaria.

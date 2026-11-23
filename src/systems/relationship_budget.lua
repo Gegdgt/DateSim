@@ -13,7 +13,7 @@ function Budget.preview(session,id,effect)
     local allowed={love=effect.love or effect.chemistry or 0,trust=effect.trust or 0}
     local relationship=(session.relationships or {})[id]
     if relationship and relationship.marriageState=="separated" and not session.legacyAffinity then return {love=0,trust=0,chemistry=0} end
-    if relationship and not session.legacyAffinity and not session.legacyBudget and not effect.recovery then
+    if relationship and not session.legacyAffinity and not session.legacyBudget and not effect.recovery and not effect.nightRest then
         local config=require("src.data.family")
         for _,key in ipairs({"love","trust"}) do
             if allowed[key]>0 then
@@ -22,7 +22,7 @@ function Budget.preview(session,id,effect)
             end
         end
     end
-    if gains and not session.legacyBudget then
+    if gains and not session.legacyBudget and not effect.nightRest then
         for _,key in ipairs({"love","trust"}) do
             if allowed[key]>0 then allowed[key]=math.min(allowed[key],math.max(0,Budget.limit-gains[key])) end
         end
@@ -35,7 +35,7 @@ end
 function Budget.commit(session,id,effect)
     local delta=Budget.preview(session,id,effect)
     local gains=Budget.ensure(session)[id]
-    if gains then for _,key in ipairs({"love","trust"}) do gains[key]=math.min(Budget.limit,gains[key]+math.max(0,delta[key])) end end
+    if gains and not effect.nightRest then for _,key in ipairs({"love","trust"}) do gains[key]=math.min(Budget.limit,gains[key]+math.max(0,delta[key])) end end
     return delta
 end
 return Budget

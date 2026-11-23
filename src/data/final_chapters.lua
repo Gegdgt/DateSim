@@ -2,6 +2,7 @@
 local Final={}
 function Final.install(list)
  local four,five,six,seven=list[4],list[5],list[6],list[7]
+ six.title="La verdadera amenaza";seven.title="La verdadera voz"
  four.scenes.day4_intro.lines[1].text="Rudy se reúne en privado con Nanahoshi y Cliff. La carta firmada por —H permanece sobre la mesa; aún falta localizar a quien preparó la poción."
  four.scenes.day4_intro.lines[2]={speaker="nanahoshi",expression="worried",text="Las runas de la carta y de la poción comparten una firma. Las cartas parlantes contienen energía propia, pero no eliminan la amenaza de revelar el secreto."}
  four.scenes.day4_emissary.lines[5].text="¿Crees que llevo la cura en el bolsillo? Primero tendrás que encontrarme otra vez. Mi protector se encargará de que no leas el registro completo."
@@ -59,7 +60,11 @@ function Final.install(list)
   {speaker="orsted",expression="neutral",text="Puedo reforzar un artefacto. No puedo restaurar por ti un matrimonio que hayas perdido. Las técnicas compartidas seguirán necesitando a la persona que las hace posibles."},
  }}
  six.hubs.day6_orsted_gifts={title="LA AYUDA DE ORSTED",background="training",locations={},orstedReward=true,finaleAction="orsted_choices"}
- six.transitions.day6_orsted_arrival={{to="day6_orsted_demonstration"}}
+ six.scenes.day6_orsted_arrival.choices={
+  {id="accept",label="Aceptar la demostración opcional.",effects={decision="orsted_demonstration",value="accepted"}},
+  {id="rest",label="Agradecer la invitación y continuar hacia el descanso.",effects={decision="orsted_demonstration",value="declined"}},
+ }
+ six.transitions.day6_orsted_arrival={{to="day6_close",requires={decision="orsted_demonstration",equals="declined"}},{to="day6_orsted_demonstration"}}
  six.transitions.day6_orsted_demonstration={{to="day6_orsted_discovery",effects={{id="orsted_demonstration_completed",text="Orsted termina una demostración no letal. La derrota no modifica los matrimonios."}}}}
  six.transitions.day6_orsted_discovery={{to="day6_orsted_gifts"}}
  six.transitions.day6_orsted_gifts={{to="day6_close"}}

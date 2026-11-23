@@ -1,10 +1,20 @@
 # Sistemas de la maldición de Rudy
 
+## Exploración social presencial
+
+La entrada de actividades pasa por `Exploration.nearCharacter` y `WifeActivities.available`: la esposa debe estar presente y cerca. G y el catálogo global quedan fuera del mundo explorable. La misma regla protege los encargos de Cliff/Zanoba y la continuación de historia con Nanahoshi. El diario sólo consulta encargos.
+
+`social_rules` centraliza seis puntos de energía, tres cartas por actividad y las afinidades por persona. `wife_activities` mantiene las fases y eventos únicos; `daily` reserva al empezar y consume al terminar. `social_hand` dibuja cartas y animaciones compartidas. `exploration.syncPresence` calcula ubicaciones de día/noche y espera a cerrar el recibo de la tercera actividad antes del traslado. La edición del mazo y las mejoras se bloquean mientras hay una mano matrimonial activa; los servicios de mejora conservan su flujo.
+
+Los límites de relación siguen en el sistema existente: +10 amor/+10 confianza diurnos por esposa, con bonificaciones narrativas, efectos negativos y márgenes efectivos. La noche se contabiliza aparte, una vez, y las ausencias siguen aplicándose. [Configuración de cartas, frases, contexto y requisitos](CARTAS_SOCIALES.md) · [Colisiones y NPC](COLISIONES_NPC.md).
+
 La campaña usa `continuity="rudy_curse"` y esquema de guardado 8. `src/data/chapters.lua` registra los siete capítulos, sus escenas, encuentros, agendas y transiciones. `Progression` evalúa requisitos, resuelve acompañantes y aplica acontecimientos por identificadores estables.
+
+`App.resume` devuelve las actividades al mapa y prioriza las presentaciones pendientes sin reiniciar sus coordenadas. Las escenas principales usan checkpoints independientes de los NPC físicos. `CampaignStats` registra los resultados que no pueden reconstruirse a partir del inventario y deriva el resumen final de las fuentes persistidas. [Integración completa](EXPLORACION_FASE_4.md) · [Extensión de escenas, mapas, NPC, cartas y actividades](AMPLIAR_CONTENIDO.md).
 
 ## Actividades y cierre diario
 
-`Family` conserva progreso, promesas, advertencias, separaciones permanentes y escenas pendientes. El catálogo ofrece 16 actividades; los combates reservan el espacio antes de empezar y aplican premios por resultado una vez. Cero visitas cuesta −20 amor/−20 confianza; la separación por abandono requiere umbral, historial y advertencia anterior. `family_routes` permite continuar sin escenas matrimoniales de esposas separadas. Los encargos entregan mañana, o hoy al gastar una interacción con advertencia previa. [Reglas y archivos de la Fase 3](FASE_3_FAMILIA.md).
+`Family` conserva progreso, promesas, advertencias, separaciones permanentes y escenas pendientes. El catálogo explorable ofrece 45 actividades con 165 respuestas, además de conservar las actividades de campañas anteriores. Los combates reservan el espacio antes de empezar y aplican premios por resultado una vez. Cero visitas cuesta −20 amor/−20 confianza; la separación por abandono requiere umbral, historial y advertencia anterior. `family_routes` permite continuar sin escenas matrimoniales de esposas separadas. Los encargos entregan mañana, o hoy al gastar una interacción con advertencia previa. [Actividades y dormitorios](EXPLORACION_FASE_3.md).
 
 `CardCollection` mantiene una copia canónica por ID y deriva efectos y costes de `src/data/card_progression.lua`. `Economy` controla oro, stock por día y transacciones con revisión esperada; una confirmación antigua no puede volver a gastar. `Events.apply` acepta `copies={id=cantidad}` y `gold`, además de los desbloqueos existentes. `RelationshipBudget` limita las ganancias a diez por esposa y estadística, incluidas las decisiones narrativas ordinarias. [Contratos y fórmulas](FASE_2_PROGRESION.md).
 
@@ -71,3 +81,7 @@ Los dos mazos admiten 5–10 cartas distintas adquiridas. El social valida viabi
 `final_chapters.lua` extiende las transiciones sin reemplazar la máquina de estados: registro diario de entrenamiento, emisario, demostración controlada de Orsted, premios elegidos, devolución y cinco epílogos. `finale.lua` centraliza condiciones y operaciones únicas; `family.lua` y `training_result.lua` le notifican actividades completadas. `eris_training_days` se reconstruye desde eventos estables; `orsted_reward.pending` guarda sólo la presentación de una elección ya aplicada. La recuperación de voz y magia nunca restaura un matrimonio. [Arquitectura de Fase 5](FASE_5_CIERRE.md).
 
 La suite general y sus resultados reales se documentan en [VERIFICACION.md](VERIFICACION.md).
+
+## Registro central de objetivos
+
+`src/data/objectives.lua` define misiones y `src/systems/objectives.lua` calcula sus estados desde eventos y actividades terminadas. `src/ui/objective_journal.lua`, exploración, minimapa y descanso consultan ese registro. Las visitas `0/1` son recomendaciones, con numerador sin recorte. Sólo el total `3/3` bloquea el cierre de los días 1–6, junto a la narrativa visible; el desenlace cierra el Día 7. [Autoría y auditoría](MISIONES.md), [descanso](DESCANSO.md), [objeto permanente](OBJETOS_NARRATIVOS.md).

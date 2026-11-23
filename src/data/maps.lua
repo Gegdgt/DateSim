@@ -2,6 +2,7 @@
 local Assets=require("src.data.assets").exploration
 local Connections=require("src.data.map_connections")
 local Collisions=require("src.data.map_collisions")
+local World=require("src.data.exploration_world")
 local definitions={
     casa_planta_baja={"Casa Greyrat - Planta baja","hogar","home",320,304,{"aisha","lilia","norn","zenith","lucy"}},
     casa_segundo_piso={"Casa Greyrat - Segundo piso","hogar","home",256,208,{}},
@@ -26,9 +27,11 @@ for id,d in pairs(definitions) do
     maps[id]={id=id,name=d[1],image=asset.image,width=asset.width,height=asset.height,
         category=asset.category,tileSize=16,tileset=d[2],initialPosition=initial,
         spawnPoints={default=initial},collisions=Collisions[id],portals=Connections.byMap[id] or {},
-        npcs={available=d[6],placements={},status="pending_placement"},
-        objects={},objectPlacementStatus="not_authored",music=d[3],explorationReady=false}
+        npcs={available=d[6],placements=World.npcs[id] or {},status="placed"},
+        objects=World.objects[id] or {},objectPlacementStatus="authored",music=d[3],explorationReady=true}
 end
+maps.dormitorio_eris.initialPosition={x=World.start.x,y=World.start.y,facing=World.start.facing}
+maps.dormitorio_eris.spawnPoints.default=maps.dormitorio_eris.initialPosition
 
 for _,link in ipairs(Connections.links) do
     for _,endpoint in ipairs({link.a,link.b}) do

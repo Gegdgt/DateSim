@@ -207,7 +207,7 @@ function Suite.run()
         check(map.id==id and map.name and map.image==e.image and map.width==e.width and map.height==e.height,"Registro del mapa: "..id)
         check(Catalog.tilesets[map.tileset] and require("src.data.audio").music[map.music],"Tileset y música existentes: "..id)
         check(map.tileSize==16 and map.width%16==0 and map.height%16==0,"Cuadrícula del mapa: "..id)
-        check(map.collisions.status=="partial" and map.collisions.unknown=="blocked" and not map.explorationReady,"Colisión parcial explícita: "..id)
+        check(map.collisions.status=="routes_reviewed" and map.collisions.unknown=="blocked" and map.explorationReady,"Rutas revisadas; zonas desconocidas bloqueadas: "..id)
         for _,kind in ipairs({"walkable","walls","furniture","obstacles","doors","stairs","portals","interactive"}) do
             check(type(map.collisions[kind])=="table","Tipo de colisión separado: "..id.."/"..kind)
         end

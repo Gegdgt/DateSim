@@ -34,9 +34,8 @@ function Summary.new(app)
             self:button("Colección",314,286,132,35,function() app:overlay("deck") end)
             self:button("Menú principal",452,286,142,35,function() app:save(); app.session=nil; app:menu() end)
         else
-            self:button("Diario",46,290,156,27,function() app:overlay("journal") end)
-            self:button("Colección",214,290,170,27,function() app:overlay("deck") end)
-            self:button("Menú principal",396,290,198,27,function() app:save(); app.session=nil; app:menu() end)
+            self:button("Resumen de los siete días",46,290,270,27,function() app:switch(require("src.screens.campaign_summary").new(app)) end)
+            self:button("Menú principal",328,290,266,27,function() app:save(); app.session=nil; app:menu() end)
         end
         self:text(def.footer or "Tu progreso está guardado.",26,345,588,P.ink,1,"center")
     end

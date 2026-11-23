@@ -2,6 +2,11 @@ local Data=require("src.data.economy")
 local Collection=require("src.systems.card_collection")
 local Power=require("src.data.card_progression")
 local Economy={}
+local function presenter(session)
+    local active=session.daily and session.daily.active_activity
+    local def=active and require("src.data.activities").byId[active.id]
+    return def and def.character or "rudeus"
+end
 function Economy.ensure(session)
     session.gold=session.gold or Data.startingGold
     session.economy=session.economy or {revision=0,transactions={},purchases={},items={},nextBattleShield=0}
@@ -31,6 +36,7 @@ function Economy.rewardFor(id,effect)
     return 0
 end
 function Economy.quote(session,id)
+    if session.prologue and not require("src.systems.world_content").ready(session) then return nil,"Completa la introducción con Nanahoshi antes de comprar." end
     local e=Economy.ensure(session)
     local item=Data.items[id]
     local card=Collection.byId[id]
@@ -60,7 +66,7 @@ function Economy.buy(session,id,revision,quantity)
     local e=session.economy;e.purchases[quote.key]=(e.purchases[quote.key] or 0)+quantity
     if Collection.byId[id] then
         local grant=Collection.grant(session,id,quantity)
-        require("src.systems.events").queueCards(session,receipt.id,{grant},"nanahoshi")
+        require("src.systems.events").queueCards(session,receipt.id,{grant},presenter(session))
     elseif id=="battle_preparation" then e.nextBattleShield=Data.items[id].shield
     else e.items[id]=(e.items[id] or 0)+1 end
     return receipt
@@ -72,17 +78,19 @@ function Economy.use(session,itemId,cardId,revision)
     if itemId=="study_book" then
         local view=Collection.view(session,cardId)
         if not view or not view.unlocked or not view.effect or view.level==10 then return nil,"Elige una carta social adquirida de nivel menor a 10." end
-    elseif itemId=="magic_material" and (session.externalEnergy or 0)>=30 then return nil,"La energía externa ya está al máximo." end
+    elseif (itemId=="magic_material" or itemId=="mana_fragment") and (session.externalEnergy or 0)>=30 then return nil,"La energía externa ya está al máximo." end
+    if itemId=="flower" then return nil,"La flor es un recuerdo; no se consume." end
     local receipt,err=Economy.spend(session,0,revision,"use_"..itemId)
     if not receipt then return nil,err end
     e.items[itemId]=e.items[itemId]-1
     if itemId=="study_book" then
         local grant=Collection.grant(session,cardId,item.copies)
-        require("src.systems.events").queueCards(session,receipt.id,{grant},"nanahoshi")
-    elseif itemId=="magic_material" then session.externalEnergy=math.min(30,(session.externalEnergy or 0)+item.energy) end
+        require("src.systems.events").queueCards(session,receipt.id,{grant},presenter(session))
+    elseif itemId=="magic_material" or itemId=="mana_fragment" then session.externalEnergy=math.min(30,(session.externalEnergy or 0)+item.energy) end
     return receipt
 end
 function Economy.buyBook(session,id,revision)
+    if session.prologue and not require("src.systems.world_content").ready(session) then return nil,"Completa la introducción con Nanahoshi antes de comprar." end
     if session.combat or session.encounter then return nil,"Termina el encuentro antes de comprar." end
     local family=require("src.systems.family").ensure(session)
     if family.books[id] then return nil,"Ya adquiriste ese libro." end
@@ -90,7 +98,7 @@ function Economy.buyBook(session,id,revision)
         if book.id==id then
             local receipt,err=Economy.spend(session,book.price,revision,"book_"..id);if not receipt then return nil,err end
             local effect={};for key,value in pairs(book.effects) do effect[key]=value end
-            effect.book=id;effect.text="Libro adquirido: "..book.title
+            effect.book=id;effect.presenter=presenter(session);effect.text="Libro adquirido: "..book.title
             require("src.systems.events").apply(session,"book_"..id,effect)
             return receipt
         end

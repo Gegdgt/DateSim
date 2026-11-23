@@ -75,7 +75,7 @@ function Family.activityFinished(session,def,instance)
   Family.notice(session,"day"..session.day.."_third_"..def.character,def.character,line.text,line.expression,line.reply)
   Events.apply(session,instance.."_responsibility",{character=def.character,decision="family_reminder_"..def.character,value=session.day,text=line.text,context="activity"})
  end
- if def.id=="sylphiette_errands" then
+ if def.id=="sylphiette_errands" or def.id=="S03" then
   Events.apply(session,instance.."_kept",{character="sylphiette",promise={id="family_errand",status="kept"},reconcile="family_errand",context="activity",text="Recado familiar cumplido con hechos."})
  end
  if (f.progress.monster_hunts or 0)>=2 then
@@ -88,7 +88,9 @@ function Family.activityFinished(session,def,instance)
  }
  for _,m in ipairs(milestones) do
   local r=session.relationships[m.wife]
-  if (f.progress[m.id] or 0)>=3 and Family.active(session,m.wife) and r.love>=50 and r.trust>=50 and not session.events["activity_skill_"..m.id] then
+  local requirement=require("src.data.cards").byId[m.card].unlockRequirements
+  local narrativeReady=not session.prologue or (session.day>=requirement.day and session.events[requirement.event])
+  if narrativeReady and (f.progress[m.id] or 0)>=3 and Family.active(session,m.wife) and r.love>=50 and r.trust>=50 and not session.events["activity_skill_"..m.id] then
    Events.apply(session,"activity_skill_"..m.id,{character=m.wife,unlock={m.card},relationshipEvent="activity_skill",sharedMoment=m.id,context="activity",text=m.text})
    Family.notice(session,"skill_scene_"..m.id,m.wife,m.text,"happy","Rudy repasa el acuerdo. La habilidad seguirá requiriendo que ella pueda acompañarlo.")
   end

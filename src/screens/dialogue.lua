@@ -180,7 +180,10 @@ function DialogueScreen.new(app)
     function s:draw()
         self:begin()
         local line=self.dialogue:current()
-        app.resources:background(self.presentation.background)
+        if app.session.prologue and (app.session.checkpoint=="day1_signature" or app.session.checkpoint=="day1_silence") then
+            app.worldScreen=app.worldScreen or require("src.screens.exploration").new(app)
+            app.worldScreen:drawWorld()
+        else app.resources:background(self.presentation.background) end
         self:header(self.scene.title)
         local char=Characters.byId[line.speaker]
         local hasBars=false

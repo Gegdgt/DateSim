@@ -77,6 +77,11 @@ function Suite.run()
  assert(Progression.finishCombat(orsted,e))
  check(encode(orsted.relationships)==relations and orsted.gold==gold,"Derrota de Orsted sin penalizaciones ni premio ordinario")
  check(orsted.checkpoint=="day6_orsted_discovery","Evaluación y reconocimiento después del duelo")
+ check(orsted.decisions.orsted_performance=="learning" and Progression.scene(orsted,orsted.checkpoint).lines[1].text:find("dudaste"),"La defensa sin ataque recibe una valoración contextual")
+ check(round(orsted).decisions.orsted_performance=="learning","La valoración persiste")
+ local prepared=fresh(6,"day6_orsted_demonstration");local trial=battle(prepared)
+ Sim.solve(trial);assert(Progression.finishCombat(prepared,trial))
+ check(prepared.decisions.orsted_performance=="prepared" and Progression.scene(prepared,prepared.checkpoint).lines[1].text:find("Alternaste"),"Ataque y protección cambian la valoración sin cambiar la derrota narrativa")
  -- Regalo real: dos cartas faltantes y el resto de niveles/cantidades intactos.
  orsted.unlocked.listen=nil;orsted.collection.listen.unlocked=false;orsted.unlocked.heal=nil;orsted.collection.heal.unlocked=false
  orsted.collection.staff_strike.copies=23;orsted.family.discounts=2

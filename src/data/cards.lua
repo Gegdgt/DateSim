@@ -111,7 +111,7 @@ local presentation = {
 -- Los valores sociales y los IDs originales siguen intactos. Los efectos de
 -- combate son otro contexto, con su propio coste y sin modificar relaciones.
 local combat={
-    propose_plan={cost=1,manaCost=0,effects={draw=1},description="Roba 1 carta del grimorio."},
+    propose_plan={cost=1,manaCost=0,effects={draw=1},description="Toma 1 carta del grimorio."},
     analyze_runes={cost=1,manaCost=1,effects={vulnerable=1},description="El enemigo recibe +2 daño por golpe hasta acabar tu turno."},
     earth_barrier={cost=1,manaCost=2,effects={shield=5},description="Gana 5 de escudo hasta tu próximo turno."},
     shared_magic={cost=1,manaCost=3,effects={damage=6,heal=4,shield=3},description="6 daño, 4 vida y 3 escudo. Requiere a Sylphiette."},
@@ -200,6 +200,7 @@ for _,card in ipairs(list) do
     card.rewardMessage="¡Nueva carta obtenida: "..card.name.."!"
     card.combat=combat[card.id]
     card.encounterTypes={social=true,combat=card.combat~=nil}
+    card.target_affinity=require("src.data.social_rules").affinities[card.id] or {}
     byId[card.id]=card
 end
 return {list=list,byId=byId,starterDeck=starterDeck,

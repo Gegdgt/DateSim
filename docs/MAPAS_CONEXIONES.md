@@ -1,14 +1,33 @@
 # Mapas explorables y conexiones
 
-Revisión visual de los 14 PNG originales: 22 de noviembre de 2026. Se prepara el mundo sobre el repositorio existente, sin añadir un motor de movimiento ni cambiar historia, combates o guardados.
+## Corrección social: colisiones y horarios
+
+La huella de pies es ahora 10 × 6. Se redujeron las mesas de la sala/comedor/biblioteca a su volumen real, se liberaron sillas, sillones y plantas pequeñas y los faroles conservan bases de 8 × 8. Las paredes, camas y demás sólidos siguen bloqueados; se validaron los portales existentes.
+
+Eris aparece de día en `patio_eris` (360,216), Roxy en `biblioteca_ranoa` (200,216) y Sylphie en `casa_planta_baja` (196,172). Tras cerrar tres actividades pasan a sus dormitorios; no hay duplicados y el minimapa usa la presencia actual. [Datos exactos, excepciones del prólogo y guardado](COLISIONES_NPC.md).
+
+Revisión visual de los 14 PNG originales: 22 de noviembre de 2026. La fase de exploración 1 reutiliza este registro e incorpora movimiento, cámara, interacción y prólogo. Los PNG y ASE originales se conservan.
+
+La integración de exploración 4 utiliza este mismo grafo. Sus simulaciones caminan sobre las colisiones reales hacia el estudio, Nanahoshi, los NPC, hallazgos y camas; recorren el traslado de ida y vuelta. Las escenas de expedición a bosque/ruinas utilizan los fondos y encuentros narrativos existentes, sin añadir mapas ni mover permanentemente los NPC de sus ubicaciones habituales. [Pruebas y guía de extensión](EXPLORACION_FASE_4.md).
 
 ## Estado del mundo
 
 **14 mapas, 13 conexiones bidireccionales, 26 portales dirigidos.** Todos los mapas son alcanzables desde `casa_planta_baja` en el grafo previsto. Se calibraron 25 extremos de acceso; 12 enlaces completos (24 portales) están marcados como calibrados. Un enlace y sus dos portales están desactivados por calibración pendiente.
 
-**Incidencia visual:** el borde izquierdo de `universidad_exterior_map.png` presenta un muro y postes continuos; el camino horizontal termina contra ellos. No se identifica una abertura. `sharia_universidad.b` usa `status="pending_calibration"`, `trigger=false`, `spawn=false`. La conexión requerida se conserva en el grafo, sin inventar coordenadas ni una salida alternativa. Su extremo de Sharia sí está identificado, pero ambos sentidos del enlace permanecen desactivados. El grafo de enlaces habilitados sólo permite llegar a 10 mapas desde casa; la universidad y sus tres interiores esperan esa calibración.
+**Incidencia visual:** el borde izquierdo de `universidad_exterior_map.png` presenta un muro y postes continuos; el camino horizontal termina contra ellos. No se identifica una abertura. `sharia_universidad.b` usa `status="pending_calibration"`, `trigger=false`, `spawn=false`. Su extremo de Sharia sí está identificado, pero ambos sentidos del enlace físico permanecen desactivados. La fase 1 incorpora el traslado explícito descrito a continuación para llegar a la universidad y sus tres interiores.
 
-Los mapas tienen `explorationReady=false`: las colisiones son parciales y todavía no existe movimiento libre. “Calibrado” significa posición visual revisada y validada contra los rectángulos de autoría, no una certificación de navegación jugable completa.
+Los mapas tienen `explorationReady=true` y colisiones `routes_reviewed`. Las rutas de los accesos, los NPC y los objetos se prueban mediante búsqueda sobre la huella de pies real, incluyendo sólidos de NPC. El suelo no revisado sigue bloqueado.
+
+### Solución provisional Sharia–Universidad
+
+El enlace físico `sharia_universidad` y sus dos portales siguen desactivados, sin alterar sus coordenadas originales. El grafo de portales habilitados conserva diez mapas alcanzables desde casa. `src/data/exploration_world.lua` añade dos **puntos de traslado interactivos**, identificados con una T en el mundo y en lila en el minimapa:
+
+| Origen y punto | Llegada | Interacción |
+| --- | --- | --- |
+| Sharia `(672,160)` | Universidad `(80,164)`, mirando a la derecha | E, luego Enter para viajar |
+| Universidad `(64,164)` | Sharia `(648,160)`, mirando a la izquierda | E, luego Enter para viajar |
+
+Ambos puntos y sus llegadas están sobre el camino revisado; el viaje usa un fundido. La ruta combinada alcanza los 14 mapas. No hay una puerta en el muro ni un teletransporte narrativo al laboratorio. La solución definitiva requiere editar gráficamente el acceso y recalibrarlo en una fase futura.
 
 ## Los catorce mapas
 
@@ -106,14 +125,14 @@ Los nombres de puertas y sus colores fijan el orden, sin deducirlo de coordenada
 
 | Campo | Significado |
 | --- | --- |
-| `walkable` | Suelo/corredor revisado; debe contener toda la huella |
+| `walkable` | La unión del suelo revisado debe cubrir toda la huella; no produce barreras entre rectángulos adyacentes |
 | `walls` | Pared y límites sólidos |
 | `furniture` | Muebles: cama, mesa, armario, estantería |
 | `obstacles` | Plantas, pilares, elementos del terreno |
 | `doors` | Umbrales y pasos físicos revisados; incluye `kind` |
 | `stairs` | Accesos de escalera entre pisos |
 | `portals` | Activaciones de enlaces habilitados |
-| `interactive` | Zonas de interacción; vacías hasta su autoría |
+| `interactive` | Reservado para regiones; las posiciones de NPC y objetos se consultan desde `maps.npcs.placements` y `maps.objects` |
 
 Pared/mueble/obstáculo prevalecen sobre suelo. Las puertas, escaleras y portales son etiquetas de regiones, no una autorización automática para ignorar sólidos. `maps.lua` deriva estas etiquetas de los mismos extremos del grafo y registra `spawnPoints.default` más los puntos de cada acceso calibrado; el acceso pendiente no crea spawn.
 

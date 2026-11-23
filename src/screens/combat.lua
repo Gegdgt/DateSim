@@ -76,6 +76,13 @@ end
 
 function CombatScreen.new(app,definition)
     local s=Screen.new(app)
+    function s:text(value,...)
+        -- Los historiales antiguos conservan sus bytes para validar el replay.
+        -- La terminología del jugador se adapta únicamente al dibujarlos.
+        local display=tostring(value or "")
+        display=display:gsub("%f[%a]roba%f[%A]","toma"):gsub("%f[%a]Roba%f[%A]","Toma")
+        return Screen.text(self,display,...)
+    end
     s.definition=definition or Progression.encounter(app.session,app.session.checkpoint) or {}
     local supportContext=require("src.systems.companions").context(app.session,s.definition)
     local context={character=s.definition.character,tutorial=s.definition.tutorial,enemyId=s.definition.enemyId,
@@ -91,6 +98,10 @@ function CombatScreen.new(app,definition)
         app.session.economy.nextBattleShield=0
     end
     app.session.combat=s.enc
+    if not app.practice then
+        require("src.systems.campaign_stats").beginBattle(app.session,s.enc)
+        require("src.systems.campaign_stats").finishBattle(app.session,s.enc)
+    end
     s.selected,s.confirmReady,s.age,s.historyPage=1,false,0,1
     s.briefingOpen=s.enc.context.warVersion==1 and not s.definition.tutorial and s.enc.revision==0
     s.supportWife=s.enc.companion and s.enc.companion.id
@@ -153,6 +164,7 @@ function CombatScreen.new(app,definition)
         self.confirmReady=false;self.keyboardFocus=nil;self.selected=math.min(self.selected,math.max(1,#self.enc.hand))
         if self.enc.finished and self.tutorial then self.tutorial.stage="complete" end
         self.enc.tutorial=self.tutorial
+        if not app.practice then require("src.systems.campaign_stats").finishBattle(app.session,self.enc) end
         app:save()
     end
     function s:play()
@@ -215,6 +227,7 @@ function CombatScreen.new(app,definition)
         if self.enc.training and self.enc.finished then return self:continue() end
         local restored=Combat.retry(self.enc)
         if not restored then return end
+        if not app.practice then require("src.systems.campaign_stats").finishBattle(app.session,self.enc) end
         app.session.combat=restored
         app:save()
         app:switch(CombatScreen.new(app,self.definition),{type="magic",duration=.35})
@@ -441,7 +454,7 @@ function CombatScreen.new(app,definition)
             local text=not ok and reason or self.confirmReady and "Inspección: confirma Jugar para aplicar." or "Clic / 1-3 / flechas: inspeccionar carta."
             self:text(text,293,282,329,ok and P.muted or P.rose)
         else
-            self:text("Mano agotada. Termina el turno para robar.",293,235,329,P.muted)
+            self:text("Mano agotada. Termina el turno para tomar cartas.",293,235,329,P.muted)
         end
         local allowed=self:canPlay(self.selected)
         self:button("Jugar [Enter]",283,318,132,27,function() self:play() end,locked or not self.confirmReady or not allowed)
@@ -498,7 +511,7 @@ function CombatScreen.new(app,definition)
         if self.definition.activity and not self.enc.training then
             self:text(won and "ACTIVIDAD COMPLETADA" or "RETIRADA A TIEMPO",90,52,460,P.gold,2,"center")
             self:text(self.definition.title,94,101,452,P.ink)
-            self:text("Eris revisará los ataques, bloqueos y decisiones del encuentro. La actividad ya consumió su espacio; la recompensa se registra una vez.",94,142,452,P.ink)
+            self:text("Eris revisará los ataques, bloqueos y decisiones del encuentro. Al cerrar el resultado se registra una interacción y se entrega la recompensa una sola vez.",94,142,452,P.ink)
             self:button("Volver a la agenda",138,253,364,28,function()self:continue()end)
             return
         end

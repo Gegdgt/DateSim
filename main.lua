@@ -37,4 +37,5 @@ function love.keypressed(key,scancode,isrepeat)
     if app and not isrepeat then app:keypressed(key) end
 end
 function love.resize() if app then app:resize() end end
+function love.wheelmoved(x,y) if app and app.wheelmoved then app:wheelmoved(x,y) end end
 function love.quit() if app then app:save() end end

@@ -11,7 +11,7 @@ function Cycle.install(list)
         if day==1 then
             chapter.summaries[summary]={title="EL PRIMER DÍA",subtitle="DÍA 1 COMPLETADO",background="home",body="Las cartas permiten seguir adelante. La agenda conserva cómo empleaste el tiempo de hoy."}
             chapter.transitions[summary]={{to="day2_agenda"}}
-            chapter.transitions.day1_result[1].to=agenda
+            chapter.transitions.day1_result[1].to="day1_close"
             chapter.transitions.day1_close[1].to=agenda
         elseif day==7 then
             chapter.summaries[summary]={title="LA ÚLTIMA JORNADA",subtitle="DÍA 7 COMPLETADO",background="home",body="La voz ha regresado. Las decisiones y los acuerdos de la familia quedan registrados.",continueLabel="Ver epílogo"}

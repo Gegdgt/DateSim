@@ -35,7 +35,7 @@ function Agenda.new(app)
    self:button(active and "Volver a la actividad" or finalLock and "Cerrar tiempo libre e ir a la historia" or "Continuar historia",18,311,330,27,function()
     if active then self.inspect=nil else commit(Progression.continueStory(session))end
    end,not active and Daily.storyComplete(session))
-   self:button("Finalizar día",358,311,264,27,function()app:endDay()end,active~=nil or not Daily.storyComplete(session))
+   self:button(session.prologue and "Volver a casa para descansar" or "Finalizar día",358,311,264,27,function()app:endDay()end,active~=nil or not Daily.storyComplete(session))
    W.panel(18,341,604,17)
    self:text(active and "Termina la actividad reservada antes de dormir. Puedes consultar los tres personajes." or "Puedes dormir sin agotar los tres espacios. Sin visita: -20 amor y -20 confianza.",24,345,592,P.muted)
   end
@@ -69,13 +69,39 @@ function Agenda.new(app)
     self:button(label,190,225+(i-1)*39,410,32,function()commit(Daily.resolveActivity(session,choice.id))end)
    end
    if def.books then self:button("Entrar a la librería",190,264,410,32,function()app:switch(require("src.screens.books").new(app))end) end
+   if def.shop then self:button("Entrar a la tienda",190,264,410,32,function()
+    app:switch(require("src.screens.shop").new(app,"listen",function()app:resume()end))
+   end) end
    return
   end
   W.panel(18,101,604,23)
   Hud.relationship(self,session,self.tab,24,108,418)
+  if session.prologue and self.tab~="favors" then
+   W.panel(18,128,604,176)
+   local separated=not Family.active(session,self.tab)
+   app.resources:portrait(self.tab,separated and "worried" or "happy",35,164,2,separated)
+   self:text(separated and "El matrimonio está separado. Su retrato y sus recuerdos permanecen en el registro." or "Habla con ella en su dormitorio para elegir una actividad.",190,149,411,P.gold)
+   self:text(separated and "Las actividades y el descanso romántico están bloqueados. Puedes consultar el catálogo y volver a explorar." or "Quince actividades por esposa. Los saludos son gratuitos; una actividad confirmada consume un espacio.",190,184,411,P.ink)
+   self:button("Consultar catálogo",190,245,200,32,function()
+    app:switch(require("src.screens.wife_activities").new(app,self.tab,true))
+   end)
+   self:button("Volver al mapa [G]",400,245,204,32,function()app:explore()end)
+   return
+  end
+  if self.tab=="favors" and session.prologue then
+   W.panel(18,128,604,176)
+   self:text("ENCARGOS DE INVERSIÓN",30,141,570,P.gold)
+   self:text("Un encargo total por día. Coste y riesgo visibles antes de confirmar.\nEntrega mañana; ayudar consume una interacción matrimonial.",30,166,570,P.ink)
+   for i,id in ipairs({"cliff","zanoba"}) do
+    self:button(id=="cliff" and "Consultar a Cliff" or "Consultar a Zanoba",30+(i-1)*292,225,278,32,function()
+     app:switch(require("src.screens.commissions").new(app,id,function()app:switch(self)end))
+    end)
+   end
+   return
+  end
   local list={}
   if self.tab=="favors" then
-   for _,def in ipairs(Catalog.favors) do for _,provider in ipairs(def.providers) do if provider==self.provider then list[#list+1]=def end end end
+   for _,def in ipairs(Catalog.favors) do if not def.investment then for _,provider in ipairs(def.providers) do if provider==self.provider then list[#list+1]=def end end end end
   else for _,def in ipairs(Catalog.list) do if def.character==self.tab then list[#list+1]=def end end end
   local perPage=self.tab=="favors" and 2 or 3;local pages=math.max(1,math.ceil(#list/perPage))
   self:button("<",450,101,35,22,function()self.page=self.page-1 end,self.page==1)
@@ -121,6 +147,7 @@ function Agenda.new(app)
 
  end
  function s:keypressed(key)
+  if key=="g" and app.session.exploration then app:explore();return end
   if self:navigate(key) then return end
   if key=="escape" then if self.confirmHelp then self.confirmHelp=nil else app:overlay("pause") end
   elseif key=="j" then app:overlay("journal") elseif key=="m" then app:overlay("deck") end

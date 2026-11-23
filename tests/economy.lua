@@ -122,7 +122,7 @@ function Suite.run()
     social.encounter=Cards.new(social.deck,Resolver.context(social,definition),function(n)return n end)
     local function indexOf(enc,id) for i,value in ipairs(enc.hand) do if value==id then return i end end end
     local action=assert(Cards.play(social.encounter,assert(indexOf(social.encounter,"encourage"))))
-    check(action.chemistry==5 and action.trust==5 and action.projectedLove==3 and action.projectedTrust==2,"Carta mejorada respeta el presupuesto compartido con actividades")
+    check(action.chemistry==20 and action.trust==10 and action.projectedLove==3 and action.projectedTrust==2,"Afinidad y nivel respetan el presupuesto compartido con actividades")
     social.encounterReview=true
     local pending=assert(Save.validate(clone(social)))
     check(pending.encounter and pending.encounter.log[1].projectedLove==3,"Carga de reacción pendiente conserva nivel y límite")

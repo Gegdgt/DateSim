@@ -168,12 +168,14 @@ function Suite.run()
         check(app.session.checkpoint=="day1_wake" and app.manager.effect.type=="dream","El sueño termina en blanco y entra en el despertar")
         white("dream-white-out")
         settle()
-        local awake=app.manager.current.presentation
-        check(awake.background=="home" and actor(awake,"rudeus").portrait=="rudeus","Despertar restaura casa y Rudy rubio")
+        local awake=app.session.exploration
+        check(app.manager.current.kind=="exploration" and awake.map=="dormitorio_eris"
+            and require("src.data.exploration_assets").overworld.rudeus.image:match("Rudeus_walk"),"Despertar restaura dormitorio y sprite rubio")
         capture("wake")
         check(app:save(),"Guardar después del despertar")
         app:continueGame(); settle()
-        check(appearance(app.manager.current.presentation)==appearance(awake),"Cargar después del despertar nunca conserva la apariencia japonesa")
+        check(app.manager.current.kind=="exploration" and app.session.exploration.map==awake.map
+            and app.session.exploration.x==awake.x and app.session.exploration.y==awake.y,"Cargar restaura dormitorio sin apariencia japonesa")
         check(encode(app.session.relationships)==relations,"El cambio de apariencia y de escena no altera relaciones")
         check(app.session.portrait==nil and app.session.appearance==nil and Save.version==8,"Sin apariencia global persistida en el formato de progresión")
 

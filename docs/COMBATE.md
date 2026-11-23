@@ -2,6 +2,8 @@
 
 Rudy tiene 30 PV, tres acciones por turno y magia natural bloqueada hasta beber el antídoto. Las cartas físicas iniciales causan entre 1 y 3 puntos; después mejora cartas y canaliza magia mediante energía externa. Cada compañera disponible tiene una acción propia por turno. [Configuración, fórmulas, habilidades y balance de la Fase 4](FASE_4_COMBATE.md).
 
+La integración explorable conserva la posición de regreso tras los combates de actividades. Las esposas separadas quedan fuera del equipo y el desafío final puede terminarse solo. Orsted sigue siendo una derrota narrativa no letal; su comentario distingue entre resistir y combinar daño con protección. `campaign_stats.lua` cuenta intentos concluidos y compañeras presentes, separa entrenamiento y derrota narrativa de enemigos vencidos, y conserva las derrotas reales después de reintentar. [Partidas reproducibles y resultados](EXPLORACION_FASE_4.md).
+
 ## Preparación y controles
 
 Antes de luchar se muestran enemigo, PV, equipo, afinidad y potencia. **T** permite revisar habilidades, costes, cargas y recargas; **M** vuelve a preparar el mazo y comprar mejoras. El mazo admite entre cinco y diez cartas distintas adquiridas y al menos dos ataques. Las exclusivas requieren a su esposa presente y con matrimonio activo. Comenzar habilita las acciones.

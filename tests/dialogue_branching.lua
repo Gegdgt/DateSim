@@ -255,7 +255,7 @@ function Suite.run()
     check(#empty.hand==0 and #empty.reserve==5 and empty.notice,"Un mazo sin respuestas compatibles explica por qué no hay cartas")
     check(not Cards.canPlay(empty,1),"No se puede jugar una opción ausente")
     for _=1,3 do check(Cards.pass(empty)~=nil,"Escuchar permite salir del encuentro sin cartas") end
-    check(empty.finished and empty.energy==4,"La pausa termina un encuentro sin gastar energía")
+    check(empty.finished and empty.energy==6,"La pausa termina un encuentro sin gastar energía")
     check(Cards.restore(clone(empty),emptySession.deck,emptyContext)~=nil,"También se restaura el encuentro sin cartas compatibles")
 
     -- Una colección importada podía jugar estas cartas antes del catálogo.

@@ -1,4 +1,182 @@
-# Verificación de integración y balance — Fase 6
+# Verificación — exploración y cartas sociales
+
+## Entrega de cartas y celebración
+
+**22 de noviembre de 2026 · Windows, LÖVE 11.5 / LuaJIT.** La entrega renovada pasó **289 comprobaciones específicas** y el grupo integrado `regression`, ambos con **ALL TESTS PASSED, salida 0**. Se generaron 12 capturas específicas y se inspeccionaron la elección con cuatro retratos, la revelación individual, el resumen grupal y las copias de Bala de Agua con Roxy.
+
+| Área | Resultado |
+| --- | --- |
+| Una carta / varias cartas | Revelación directa / elección por teclado y mouse; varios ejemplares del mismo tipo también permiten elegir. |
+| Individual / grupal / omitir / cambiar | Mismo inventario final; cada tipo aparece individualmente y todas las cartas están en el resumen paginado. Omitir y cambiar modo no vuelven a conceder. |
+| Duplicados e idempotencia | Evento y cola únicos; +3 copias de una carta de nivel 2 con dos disponibles deja cinco, sin crear otra carta independiente. |
+| Guardado en disco | Escritura y lectura real durante elección, individual, grupal y resumen; conserva cantidades, participantes, modo, índice, página, reacción y tiempo. Compatible con la antigua `presentationPage`. |
+| Reparto narrativo | Ocho personajes, entre uno y cuatro participantes; investigación real del cuarto día con Nanahoshi, Cliff y Zanoba; compra con Roxy, técnica con Eris y hallazgo de Rudy solo. |
+| Regreso al juego | Cargar una entrega dentro de un servicio de Roxy reanuda la entrega y después el servicio. La compra vuelve a su tienda. No cambian las posiciones de los NPC. |
+| Voz, magia y presentación | Rudy piensa antes de recuperar la voz; no se altera maná ni desbloqueos. Cuadros de expresión existentes, `nearest`, movimiento reducido y textos medidos para evitar superposición. |
+| Audio | **111 comprobaciones**: 21 contextos musicales, fanfarria sin repetición, sonidos nuevos, volúmenes y preferencias. |
+| Economía e interfaz | **25 comprobaciones** y siete capturas de compras, copias y mejoras sin doble gasto. |
+| Nanahoshi y campaña | Introducción: 34; afinidad: 260; diálogos: 2.788; interfaz de diálogos: 277. Campaña por pantallas: **1.775 comprobaciones y 1.175 pasos**, hasta el final familiar. |
+| Sistemas anteriores | Incluye exploración, carrera, actividades, mano social (2.160 comprobaciones), combate, familia, Orsted y migraciones. |
+
+Los **257 archivos PNG/ASE originales** conservaron sus hashes SHA-256. [Registro de hashes](../tests/artifacts/reward-source-hashes.json). No se añadieron sprites. Los avisos de archivos inválidos en las pruebas de recursos son fallos deliberadamente inyectados.
+
+Registros: [prueba específica](../tests/artifacts/rewards-tests.log), [regresión final](../tests/artifacts/rewards-regression-final.log). [Diseño, archivos, controles y capturas](ENTREGA_CARTAS.md). Estas comprobaciones usan el renderer real y archivos de prueba aislados; no se repitió en esta entrega el conjunto extenso de 40 campañas simuladas y nueve recorridos explorables.
+
+## Mano social de tres cartas
+
+**22 de noviembre de 2026 · Windows, LÖVE 11.5 / LuaJIT.** La corrección pasó el grupo `regression` con **ALL TESTS PASSED, salida 0**. Tras ajustar la etiqueta de falta de energía y añadir la persistencia real en disco se repitió la suite específica, también con salida 0, y se inspeccionaron las capturas de los tres turnos, la reposición y la mano sin energía. Las pruebas usan guardados aislados; no constituyen una partida manual de teclado. En esta corrección no se repitió el conjunto extenso de 40 campañas y nueve recorridos explorables.
+
+| Prueba | Resultado |
+| --- | --- |
+| Mano social | **2.160 comprobaciones**, 36 encuentros con distintas semillas y tres adicionales con escritura/lectura real en disco; Eris, Roxy y Sylphie, 45 actividades y 11 capturas. |
+| Actividades | **3.749 comprobaciones**, 45 actividades y **255 respuestas contextuales**. |
+| Exploración social | **904 comprobaciones** y 31 capturas; textos, costes, reacciones, variantes y guardado. |
+| Nanahoshi y diálogos | Afinidad: 260; introducción: 34; diálogo ramificado: 2.788; interfaz: 277 y 41 capturas. |
+| Campaña por interfaz | **1.720 comprobaciones y 1.120 pasos**, hasta el final familiar. |
+| Exploración y carrera | 773 comprobaciones de exploración y 76 de Shift; 14 mapas. |
+
+Registros: [mano](../tests/artifacts/hand-cycle.log), [actividades](../tests/artifacts/hand-activities.log), [exploración social](../tests/artifacts/hand-social.log) y [regresión integrada](../tests/artifacts/hand-regression.log). La regresión también incluye recursos, animación, economía, combate, familia y migraciones. Su registro contiene las 2.070 comprobaciones originales de la mano; la ejecución específica final añade 90 comprobaciones de persistencia real en disco. Los avisos de recursos inválidos son fallos deliberadamente inyectados por sus pruebas.
+
+| Casos solicitados | Evidencia |
+| --- | --- |
+| 1–3: cinco iniciales, mano de tres y dos restantes | Identidades y desbloqueos exactos; todas las actividades admiten las cinco. |
+| 4–12: descarte, reposición, tres turnos, siguiente encuentro | Ciclo mano/mazo/descarte **3/2/0 → 3/1/1 → 3/0/2 → 2/0/3**, sin reciclar ni consumir la colección. También se prueba un mazo ampliado de seis. |
+| 13–15: inspeccionar, cancelar, confirmar una sola vez | Estado intacto al inspeccionar/cancelar; doble Enter no duplica el registro ni los efectos. |
+| 16–17: energía y cartas deshabilitadas | Costes reales por personaje; dos cartas de coste 3 dejan tres visibles a energía 0, con confirmación bloqueada y salida P disponible. |
+| 18: guardar y cargar | Comparación exacta de mano, orden, descarte, energía y registros durante animación, reacción y reposición, tanto en JSON como mediante `Save.write` / `Save.load` en disco; recuperación idempotente de reservas antiguas tras 0, 1 y 2 usos. |
+| 19–20: las tres esposas y Nanahoshi | 12 semillas por esposa; tutorial y diálogos existentes incluidos en la regresión. |
+| 21–22: recursos y respuestas de la carta elegida | Renderer real de cartas con marcos e iconos; tres capturas por esposa y validación de las 255 respuestas, incluidas variantes por carta anterior. |
+
+La causa y los archivos modificados están en [CARTAS_SOCIALES.md](CARTAS_SOCIALES.md#causa-y-verificación-de-la-mano-completa). El [registro del ciclo](../tests/artifacts/hand-cycle-traces.json) contiene los contadores observados con las tres esposas. [Detalles de persistencia](GUARDADO.md).
+
+Para reproducir:
+
+```powershell
+$env:DATESIM_TEST_MODULE='social_hand_cycle'
+./probar.ps1
+Remove-Item Env:DATESIM_TEST_MODULE
+$env:DATESIM_TEST_GROUP='regression'
+./probar.ps1
+Remove-Item Env:DATESIM_TEST_GROUP
+```
+
+## Carrera con Shift
+
+La ampliación de carrera pasó **76 comprobaciones** específicas: 80/150 px/s, ambas teclas Shift, liberación inmediata, 14 mapas, diagonal normalizada, independencia de FPS, sólidos con `dt` grande, asientos transitables, animación acelerada, reposo, diálogos, menús, transiciones y carga sin carrera persistente. Se inspeccionó la [captura de controles](../tests/artifacts/exploration-running-controls.png).
+
+También pasaron las pruebas existentes de exploración (**773**), exploración social (**724**) y campaña por interfaz (**1.697 comprobaciones, 1.099 pasos**). Registros: [exploración](../tests/artifacts/running-exploration.log), [interacciones sociales](../tests/artifacts/running-social.log) y [campaña por interfaz](../tests/artifacts/running-campaign-ui.log). Estas verificaciones son automatizadas; no constituyen una sesión manual de teclado.
+
+Los cambios de esta ampliación están en `src/config/controls.lua`, `src/systems/exploration.lua`, `src/screens/exploration.lua`, `tests/exploration_running.lua`, `tests/run.lua` y la documentación de controles y animaciones. [Configuración](COLISIONES_NPC.md#caminar-y-correr-con-shift).
+
+## Regresión de la corrección social anterior
+
+**22 de noviembre de 2026 · Windows, LÖVE 11.5 / LuaJIT.** La suite completa terminó con **ALL TESTS PASSED, salida 0**: 40 campañas y nueve recorridos explorables, además de los módulos de reglas, interfaz y persistencia. Después de los últimos ajustes de presentación y descanso se verificó de nuevo el grupo `regression`, también con salida 0.
+
+Registros: [suite completa](../tests/artifacts/social-full-final.log), [regresión final](../tests/artifacts/social-regression-final.log), [exploración social](../tests/artifacts/social-visual-final.log) y [descanso por interfaz](../tests/artifacts/social-rest-final.log).
+
+| Área | Resultado |
+| --- | --- |
+| Recursos | 654 comprobaciones de recursos generales y 3.728 de exploración. Verificador de hashes: 109 archivos migrados y 157 existentes intactos; ASE sin cambios. |
+| Exploración | 773 comprobaciones; 14 mapas, caminos de ida/vuelta, portales, prólogo y guardado; 12 capturas. |
+| Mundo y encargos | 5.420 comprobaciones; 48 semillas × 7 días; 14 capturas. |
+| Actividades | 2.941 comprobaciones de 45 actividades y 167 respuestas; 110 de interfaz y 12 capturas. |
+| Nueva exploración social | **724 comprobaciones y 28 capturas** en la ejecución final: propuestas reales, controles, tres cartas, costes/efectos por esposa, contexto negativo, guardado durante animaciones, reserva antigua, horarios y descanso. Incluye dimensiones de texto de todas las frases y cierres. |
+| Diálogos | 2.788 comprobaciones narrativas; 277 de interfaz y 41 capturas. Tutorial y afinidad de Nanahoshi conservados. |
+| Barras | 138 comprobaciones y nueve capturas; deltas reales, límite diario y aplicación única. |
+| Combate | 1.620 comprobaciones del núcleo y 956 de balance; 300/300 victorias legales en la simulación de balance. Migración de combate antiguo aprobada. |
+| Campañas | 28.595 comprobaciones en 40 campañas con los cinco finales; 7.348 en nueve recorridos explorables A–I y 14 capturas. |
+| Campaña por interfaz | 1.697 comprobaciones y 1.099 pasos de pantallas reales hasta completar el final familiar. |
+
+La ejecución completa inicial contiene 292 comprobaciones del módulo social; la ejecución final de `regression` y la focal incluyen además la revisión de tamaño de los textos, para un total de 724. Los avisos de recursos falsos y audio inválido al principio del registro pertenecen a pruebas deliberadas de recuperación.
+
+La matriz de los **48 casos solicitados**, los recorridos A–F de esta corrección, la lista de archivos y las capturas se encuentran en [EXPLORACION_SOCIAL.md](EXPLORACION_SOCIAL.md). Las pruebas A–I de campaña y A–F de interacción son conjuntos diferentes.
+
+Se inspeccionaron capturas del renderer real; no se certifica una partida manual de Windows ni una escucha humana. El control del equipo requerido no estaba disponible. Continúan el traslado T en lugar del portal cerrado Sharia–universidad y las 18 advertencias originales de capas ASE. [Detalles y motivo de la limitación manual](EXPLORACION_SOCIAL.md#pendiente-y-límites-conocidos).
+
+---
+
+# Verificación — Exploración 4
+
+**22 de noviembre de 2026 · Windows, LÖVE 11.5 / LuaJIT.** La suite completa terminó con **ALL TESTS PASSED, salida 0**. Ejecutó las **40 campañas existentes** y **nueve campañas explorables A–I**, con los cinco finales, rutas con/sin Orsted y una partida sin esposas. Registro completo: [campaign-final-full.log](../tests/artifacts/campaign-final-full.log).
+
+| Área | Resultado de la ejecución completa |
+|---|---|
+| Recursos registrados | 654 comprobaciones de PNG/retratos y 3.724 de recursos de exploración |
+| Exploración y prólogo | 770 comprobaciones; 14 mapas, puertas de regreso, colisiones, carta, guardado, saludos y Nanahoshi; 12 capturas |
+| NPC, botín e inversiones | 5.420 comprobaciones; 48 semillas × 7 días; 14 capturas |
+| Actividades | 2.567 comprobaciones; 45 actividades, 165 respuestas; 124 de interfaz y 13 capturas |
+| Audio | 116 comprobaciones de síntesis, transiciones, fuentes y preferencias |
+| Economía | 398 comprobaciones; 25 de interfaz; costes, stock, copias, diez niveles y doble confirmación |
+| Relaciones, diario y familia | 100 de matrimonio/guardado; 235 de familia; 2.400 de interfaz; 1.028 de ciclo diario |
+| Combate | 1.620 comprobaciones y 120 victorias; 956 de balance y 300 victorias; 576 simulaciones de jefes con ocho composiciones familiares |
+| Orsted y cierre | 387 comprobaciones; 32 calendarios, 24 demostraciones controladas, dos mejoras, misterio, antídoto, devolución y migración |
+| Campañas anteriores | 40 recorridos completos, 28.848 comprobaciones |
+| Campañas explorables A–I | Nueve recorridos completos, 7.064 comprobaciones y 13 capturas del resumen en esta ejecución |
+| Campaña por pantallas | 1.487 comprobaciones en 856 pasos del renderizador real |
+
+Después de esa ejecución, se comprobó también el fragmento narrativo instalado del Día 3 en el total del resumen: [campaign-stats.log](../tests/artifacts/campaign-stats.log), **22 comprobaciones**, salida 0. La prueba distingue ingresos del capital inicial, copias obtenidas de stock restante, consumos de fragmentos, reconciliaciones reales, pérdidas/reintentos, derrota narrativa y migración sin inventar historial. La última ejecución de A–I y sus capturas se registra en [campaign-integration-latest.log](../tests/artifacts/campaign-integration-latest.log).
+
+**Comprobación final de A–I: 7.067 comprobaciones, 14 capturas, ALL TESTS PASSED y salida 0.** Añade las aserciones de dos vínculos viables en E, uno en F y ninguno en G antes de resolver los proyectos finales. Las nueve sesiones y las capturas se regeneraron con el conteo final de fragmentos y la interfaz revisada. La interfaz de cierre y el manual también pasaron sus [22 comprobaciones](../tests/artifacts/campaign-finale-ui-latest.log).
+
+Las simulaciones pasan por la carta mediante su pantalla, recorren las colisiones para ir al laboratorio y a los NPC, eligen cartas de manos legales, recogen botín fijado por semilla y regresan a camas reales. Validan el guardado entre pasos, sin inyectar afinidad para conseguir finales. Los detalles por estrategia, las sesiones JSON y las capturas están en el [informe de exploración 4](EXPLORACION_FASE_4.md).
+
+El verificador de assets confirmó **109 archivos migrados y 157 anteriores**, con PNG/ASE intactos. Permanecen **18 avisos anteriores de cabeceras ASE** y el acceso físico cerrado Sharia–Universidad, resuelto de forma jugable mediante traslado explícito bidireccional. `git diff --check` terminó sin errores; sólo mostró avisos de normalización LF/CRLF.
+
+Las capturas son del juego en ejecución, inspeccionadas visualmente; las partidas extensas son automatizadas. No se afirma una medición de rendimiento en otros equipos ni una revisión humana de cada combinación de decisiones.
+
+## Registro anterior — Exploración 3
+
+**22 de noviembre de 2026 · LÖVE 11.5 / LuaJIT.** Implementación y pruebas sobre el repositorio existente. La suite completa terminó con **ALL TESTS PASSED, salida 0**: **40 campañas completas, 28.848 comprobaciones**, cinco finales y 576 simulaciones de jefes. Tras los ajustes finales de validación, presencia de NPC y requisitos de cartas especiales, la regresión volvió a terminar con **ALL TESTS PASSED, salida 0**.
+
+| Comprobación final | Resultado |
+|---|---|
+| Actividades y descanso | **2.567** comprobaciones; 45 actividades, 165 respuestas, 21 cartas sociales compatibles |
+| Interfaz de actividades | **124** comprobaciones, **13 capturas** del renderizador real |
+| Movimiento y prólogo | **770** comprobaciones, 12 capturas |
+| Familia, objetos y encargos | **5.420** comprobaciones, 48 semillas × 7 días, 14 capturas |
+| Integración de campaña por pantallas | **1.482** comprobaciones en **856 pasos** |
+| Campañas simuladas | **40 recorridos**, cinco desenlaces, carga y mejoras hasta nivel 10 |
+| Recursos | 109 archivos migrados y 157 anteriores verificados; bytes PNG/ASE conservados |
+
+La prueba nueva recorre los cuatro resultados de duelo con combates reales, variantes positivas y negativas, recibos de compras/mejoras, manos persistentes, experimentos con éxito y fracaso, rotación de ofertas, recompensas únicas y límites de relación. Cinco jornadas con E01, visitas a las otras esposas y descanso demuestran que la ruta a Orsted sigue disponible. Se prueban también camas accesibles mediante el controlador, descanso solo con tres separaciones, ausencia diurna, bonus nocturno separado, despertar y carga en el dormitorio elegido. Los hitos no adelantan las cartas personales.
+
+[Informe de implementación y capturas](EXPLORACION_FASE_3.md) · [Cobertura por actividad](COBERTURA_ACTIVIDADES.md) · [Suite completa](../tests/artifacts/wives-full-suite.log) · [Regresión final](../tests/artifacts/wives-regression-latest.log).
+
+Ejecución reproducible desde PowerShell:
+
+~~~powershell
+$env:DATESIM_TEST_MODULE=$null
+$env:DATESIM_TEST_GROUP=$null
+& 'C:/Program Files/LOVE/lovec.exe' . --test
+
+# Sólo lógica nueva o pantallas nuevas:
+$env:DATESIM_TEST_MODULE='wife_activities'
+& 'C:/Program Files/LOVE/lovec.exe' . --test
+$env:DATESIM_TEST_MODULE='wife_activities_ui'
+& 'C:/Program Files/LOVE/lovec.exe' . --test
+~~~
+
+Las identidades de guardado de pruebas son independientes de la partida del jugador. Se mantienen dos incidencias heredadas: los 18 avisos de capas ASE y el muro Sharia–Universidad, con traslado bidireccional funcional y portal físico desactivado.
+
+## Registro anterior — Exploración 2
+
+**22 de noviembre de 2026 · LÖVE 11.5 / LuaJIT.** La suite completa terminó con `ALL TESTS PASSED`, salida 0. La campaña simulada pasó **28.848 comprobaciones en 40 recorridos**, con cinco finales; la integración por pantallas pasó **1.473 comprobaciones en 836 pasos**. También se ejecutaron las 576 simulaciones de jefes y los módulos anteriores de economía, familia, cartas, diálogo, guardado, prólogo y combate.
+
+La verificación focalizada final de esta fase pasó **5.420 comprobaciones**, con 48 semillas durante siete días y 14 capturas. Tras revisar las imágenes se ajustaron dos obstáculos de la zona familiar y se comprobó nuevamente el movimiento y prólogo: **770 comprobaciones aprobadas**. Las pruebas verifican la presencia compartida de Zenith/Lucy, variación y persistencia de frases, protección narrativa, inventario, rutas de objetos, recogidas únicas, costes, fracasos, ayuda confirmada, contratos persistentes, restricciones diarias, compras reales y reflexiones del cementerio.
+
+[Informe y ejemplos visuales](EXPLORACION_FASE_2.md) · [Suite completa](../tests/artifacts/world2-full-suite.log) · [Prueba final de contenido](../tests/artifacts/world2-focused.log) · [Regresión final de movimiento](../tests/artifacts/world2-movement-regression.log).
+
+El verificador de recursos confirmó 109 archivos migrados y 157 previos conservados, incluidos los bytes ASE. Se mantienen los 18 avisos preexistentes de capas y la solución provisional de traslado Sharia–Universidad. Las pruebas usan identidades de guardado aisladas; no modifican la partida del jugador.
+
+## Registro anterior — Exploración 1
+
+**22 de noviembre de 2026 · LÖVE 11.5 / LuaJIT.** La suite completa terminó con `ALL TESTS PASSED`, salida 0. Incluyó 40 campañas completas, cinco finales, 576 simulaciones de jefes y 835 pasos de integración por pantallas desde el nuevo prólogo. Tras los últimos ajustes de objetivo y mensaje del despertar, la suite focalizada de exploración pasó **770 comprobaciones**, generando 12 capturas del renderer real.
+
+[Informe de exploración, archivos, controles, estados y evidencias](EXPLORACION_FASE_1.md) · [Registro completo](../tests/artifacts/exploration-full-suite.log) · [Registro focalizado final](../tests/artifacts/exploration-focused.log).
+
+Los 14 mapas tienen rutas verificadas a sus accesos y objetos con colisiones reales. El enlace físico Sharia–Universidad continúa desactivado; un traslado interactivo reversible permite llegar a Nanahoshi. El verificador de migración confirmó 109 archivos migrados y 157 previos conservados, con los bytes ASE intactos. Quedan pendientes la abertura gráfica definitiva de la universidad y una sesión manual prolongada de juego/escucha.
+
+## Registro anterior — Fase 6
 
 Fecha: **21 de noviembre de 2026**. Ejecutado con **LÖVE 11.5 / LuaJIT** y guardados aislados. La suite general terminó en una ejecución completa: **44 545 comprobaciones**, `ALL TESTS PASSED`, salida 0. Después se verificó una ampliación de la prueba visual del manual: **323 comprobaciones focalizadas**, sin sumar de nuevo las 322 que ya estaban en la suite.
 
@@ -378,3 +556,12 @@ Se inspeccionaron visualmente los 14 mapas originales y las 14 capturas con zona
 `assets/New` quedó fuera del árbol de ejecución: la revisión automática rechazó el borrado recursivo (`blocked by policy`) y se eligió trasladar todos los originales, sin eliminarlos, a `.asset_backups/original-delivery/`. También se conserva `.asset_backups/exploration-originals.zip`, SHA-256 `d0203de646979369b682b6332060dd1c4f248d918f818a9792cacc2a63a809a4`. Ambos respaldos son locales e ignorados por Git. Tras el traslado se repitieron con éxito las suites de recursos nuevos y anteriores. Totales definitivos, incluyendo anteriores: **130 PNG en assets y 127 ASE en sprite_sources**.
 
 Detalle: [inventario](ASSETS_INVENTORY.md), [conexiones y coordenadas](MAPAS_CONEXIONES.md).
+# Objetivos diarios y descanso — 22 de noviembre de 2026
+
+La prueba nueva `tests/objectives.lua` pasa **311 comprobaciones** y genera **9 capturas** con LÖVE 11.5. Cubre lectura real hasta la firma, conversación física con Nanahoshi, tutorial obligatorio, contadores sin recorte, diario actualizado, traslado tras cerrar actividades, descanso en Roxy, ausencia/bono idempotentes, carga, carta permanente y Orsted opcional. Incluye el regreso directo del taller tras la tercera interacción y la dispensa persistente si todas las esposas se separaron.
+
+`tests/campaign_integration.lua` completa **9 rutas, 7.602 comprobaciones y 14 capturas**, con los cinco finales y las variantes con/sin Orsted. El piloto ejecuta ambas prácticas y cierra el Día 7 por desenlace, sin exigir una séptima noche. La suite general de regresión también terminó con `ALL TESTS PASSED`; no se modificaron los recursos originales.
+
+La ejecución completa posterior terminó con **ALL TESTS PASSED**: **40 campañas / 28.691 comprobaciones**, **9 rutas de exploración / 7.602 comprobaciones** y la integración de interfaz con **1.771 comprobaciones / 1.164 pasos por pantallas**. [Registro completo](../tests/artifacts/objectives-full-suite.log). La comprobación focalizada más reciente de objetivos también pasó sus 311 aserciones.
+
+La matriz de los 30 casos solicitados, archivos intervenidos y capturas están en [OBJETIVOS_ENTREGA.md](OBJETIVOS_ENTREGA.md). La causa exacta y la migración de partidas afectadas se documentan en [MISIONES.md](MISIONES.md).

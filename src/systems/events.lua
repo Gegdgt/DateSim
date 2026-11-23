@@ -13,10 +13,13 @@ function Events.mark(session,id)
     session.events_by_day[dayKey]=session.events_by_day[dayKey] or {}
     session.events_by_day[dayKey][id]=true
     if session.daily and session.daily.day==session.day then session.daily.events[id]=true end
+    if session.objectives then require("src.systems.objectives").sync(session) end
 end
-function Events.queueCards(session,id,grants,presenter)
+function Events.queueCards(session,id,grants,presenter,celebration)
     if #grants==0 then return end
-    local reward={id="reward_"..id,eventId=id,presenter=presenter or "nanahoshi",cards={},counts={},newCards={}}
+    if session.rewards and session.rewards[id] then return false end
+    local reward={id="reward_"..id,eventId=id,presenter=presenter or "rudeus",cards={},counts={},newCards={},
+        celebration=require("src.systems.card_rewards").context(id,presenter,celebration)}
     for _,grant in ipairs(grants) do
         local cardId=grant.cardId
         if not reward.counts[cardId] then reward.cards[#reward.cards+1]=cardId;reward.counts[cardId]=0 end
@@ -26,6 +29,7 @@ function Events.queueCards(session,id,grants,presenter)
     session.rewardQueue=session.rewardQueue or {};session.rewardQueue[#session.rewardQueue+1]=reward
     session.rewards=session.rewards or {};session.rewards[id]=true
     Events.mark(session,id)
+    return reward
 end
 local states={pending=true,kept=true,broken=true}
 local function knownCard(id)
@@ -34,6 +38,7 @@ end
 local function validate(effect,depth)
     if type(effect)~="table" or (depth or 0)>4 then return false,"Efecto narrativo inválido." end
     if effect.character and not Characters.byId[effect.character] then return false,"Personaje desconocido." end
+    if effect.celebration and not require("src.systems.card_rewards").validContext(effect.celebration) then return false,"Participantes de recompensa inválidos." end
     if effect.clue and not require("src.data.documents")[effect.clue] then return false,"Documento desconocido." end
     if effect.promise and (type(effect.promise)~="table" or type(effect.promise.id)~="string"
         or not states[effect.promise.status]) then return false,"Promesa inválida." end
@@ -151,9 +156,9 @@ function Events.apply(session,id,effects)
             session.daily.rewards_granted=session.daily.rewards_granted or {}
             for _,grant in ipairs(grants) do session.daily.rewards_granted[#session.daily.rewards_granted+1]=grant.cardId end
         end
-        local presenter=effects.presenter or effects.character or "nanahoshi"
-        if not Characters.byId[presenter] then presenter="nanahoshi" end
-        Events.queueCards(session,id,grants,presenter)
+        local presenter=effects.presenter or effects.character
+        if not Characters.byId[presenter] then presenter=nil end
+        Events.queueCards(session,id,grants,presenter,effects.celebration)
     end
     return true
 end

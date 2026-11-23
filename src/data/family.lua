@@ -4,7 +4,7 @@ return {
  repetition={1,.9,.8},discountPercent=20,
  repeated={
   eris={expression="angry",text="¡Otra vez conmigo! Me gusta tenerte aquí, pero no voy a pelear con una cesta de ropa por tu atención. Ve a ver qué necesitan las demás.",reply="Rudy anota las tareas pendientes. Eris le da un empujón hacia la puerta, sin soltar todavía su mano."},
-  sylphiette={expression="worried",text="Hoy hemos tenido tres ratos juntos. Me alegra, Rudy, pero también quiero que Roxy y Eris puedan contar contigo. Compartir la casa incluye compartir tu tiempo.",reply="Sylphiette señala el horario familiar. Rudy añade un recordatorio para hablar con ambas."},
+  sylphiette={expression="happy",text="Hoy hemos tenido tres ratos juntos. Me alegra, Rudy, pero también quiero que Roxy y Eris puedan contar contigo. Compartir la casa incluye compartir tu tiempo.",reply="Sylphiette señala el horario familiar. Rudy añade un recordatorio para hablar con ambas."},
   roxy={expression="worried",text="¿Ya se ha hecho tan tarde? He reservado otra silla para ti sin pensarlo... No quisiera que Sylphiette y Eris sintieran que las dejamos fuera.",reply="Roxy baja la mirada y cierra el libro. Acuerdan revisar las responsabilidades de casa."},
  },
  warnings={

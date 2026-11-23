@@ -1,7 +1,7 @@
 local Collection=require("src.systems.card_collection")
 local Social=require("src.data.cards")
 local Techniques=require("src.data.combat_cards")
-local Finale={trainingIds={time_eris=true,eris_physical=true,eris_duel=true}}
+local Finale={trainingIds={time_eris=true,eris_physical=true,eris_duel=true,E01=true,E02=true,E15=true}}
 
 function Finale.ensure(s)
  s.eris_training_days=s.eris_training_days or {}
@@ -84,6 +84,7 @@ function Finale.advance(s,action)
  elseif action=="return_cards" then
   if not s.inventory.antidoteUsed then return nil,"Todavía necesitas las cartas para comunicarte." end
   if not require("src.systems.relationships").ending(s.relationships) then return nil,"Resuelve primero los compromisos matrimoniales pendientes." end
+  require("src.systems.events").mark(s,"relationships_resolved")
   require("src.systems.events").apply(s,"enchanted_cards_returned",{context="closure",text="Rudy devuelve a Nanahoshi las cartas encantadas. El registro de colección, niveles y duplicados permanece en la galería."})
   s.inventory.enchantedCardsReturned=true
  end
@@ -123,6 +124,7 @@ function Finale.restore(s,input)
   reward.pending={kind=pending.kind,id=pending.id,before=math.max(1,math.min(10,math.floor(before==before and before or 1))),elapsed=math.max(0,math.min(2,elapsed==elapsed and elapsed or 0))}
  end
  s.orsted_reward=reward
+ if s.events.enchanted_cards_returned then require("src.systems.events").mark(s,"relationships_resolved") end
  if s.events.enchanted_cards_returned then s.inventory.enchantedCardsReturned=true end
 end
 return Finale

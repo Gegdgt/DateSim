@@ -10,7 +10,7 @@ local Options=require("src.systems.options")
 local Daily=require("src.systems.daily")
 local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
-local Save={version=8,maxBytes=2097152,filename="campaign-v8.json",backup="campaign-v8.backup.json",optionsFile="options.json",
+local Save={version=8,maxBytes=2097152,filename="campaign-exploration-v1.json",backup="campaign-exploration-v1.backup.json",optionsFile="options.json",
     legacyFilename="save.json",legacyBackup="save.backup.json"}
 
 local function number(value,default,min,max)
@@ -55,6 +55,7 @@ function Save.newSession(config)
     Collection.ensure(s);Economy.ensure(s)
     require("src.systems.family").ensure(s)
     require("src.systems.finale").ensure(s)
+    s.campaignStats=require("src.systems.campaign_stats").new(s,true)
     return s
 end
 
@@ -133,7 +134,7 @@ function Save.validate(input)
         s.curse.chantlessBlocked=false
     end
     if type(input.documentState)=="table" and require("src.data.documents")[input.documentState.id] then
-        local phases={resting=true,lifting=true,opening=true,reading=true,signature=true}
+        local phases={resting=true,lifting=true,sealed=true,opening=true,reading=true,signature=true}
         s.documentState={id=input.documentState.id,phase=phases[input.documentState.phase] and input.documentState.phase or "resting",
             page=math.floor(number(input.documentState.page,1,1,100)),elapsed=number(input.documentState.elapsed,0,0,3600)}
     end
@@ -259,7 +260,11 @@ function Save.validate(input)
                 end
             end
             if #entry.cards>0 then
-                entry.presentationPage=math.floor(number(reward.presentationPage,1,1,#entry.cards))
+                local Presentation=require("src.systems.card_rewards")
+                local context=type(reward.celebration)=="table" and Presentation.validContext(reward.celebration) and reward.celebration or nil
+                entry.celebration=Presentation.context(entry.eventId,entry.presenter,context)
+                if reward.presentationPage then entry.presentationPage=math.floor(number(reward.presentationPage,1,1,#entry.cards)) end
+                if reward.presentation then Presentation.restore(entry,reward.presentation) end
                 s.rewardQueue[#s.rewardQueue+1]=entry; queued[entry.id]=true
             end
         end
@@ -350,6 +355,16 @@ function Save.validate(input)
             s.trainingReview={line=math.floor(number(review.line,1,1,#data.lines))}
         end
     end
+    require("src.systems.prologue").restore(s,input)
+    local worldOk,worldError=require("src.systems.world_content").restore(s,input)
+    if not worldOk then return nil,worldError end
+    local wifeOk,wifeError=require("src.systems.wife_activities").restore(s,input)
+    if not wifeOk then return nil,wifeError end
+    local restOk,restError=require("src.systems.rest").restore(s,input)
+    if not restOk then return nil,restError end
+    local statsOk,statsError=require("src.systems.campaign_stats").restore(s,input)
+    if not statsOk then return nil,statsError end
+    require("src.systems.objectives").restore(s,input)
     return s
 end
 
@@ -383,7 +398,7 @@ function Save.write(session)
     local data; data,err=Json.encode(clean)
     if not data then return false,err end
     if #data>Save.maxBytes then return false,"El progreso supera el tamaño máximo de guardado." end
-    local ok; ok,err=writeFile("campaign-v8.tmp.json",data)
+    local ok; ok,err=writeFile("campaign-exploration-v1.tmp.json",data)
     if not ok then return false,err end
     if old and decodeSession(old) then
         ok,err=writeFile(Save.backup,old)
@@ -391,7 +406,7 @@ function Save.write(session)
     end
     ok,err=writeFile(Save.filename,data)
     if not ok then return false,err end
-    pcall(love.filesystem.remove,"campaign-v8.tmp.json")
+    pcall(love.filesystem.remove,"campaign-exploration-v1.tmp.json")
     return true
 end
 
@@ -406,12 +421,12 @@ function Save.load()
         local session=decodeSession(backup)
         if session then return session,"Se recuperó la copia anterior del guardado." end
     end
-    for _,path in ipairs({"campaign-v7.json","campaign-v7.backup.json","campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
+    for _,path in ipairs({"campaign-v8.json","campaign-v8.backup.json","campaign-v7.json","campaign-v7.backup.json","campaign-v6.json","campaign-v6.backup.json","campaign-v5.json","campaign-v5.backup.json","campaign-v4.json","campaign-v4.backup.json"}) do
         local previous=readFile(path)
         local decoded=previous and Json.decode(previous)
-        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6 or decoded.version==7) then
+        if type(decoded)=="table" and (decoded.version==4 or decoded.version==5 or decoded.version==6 or decoded.version==7 or decoded.version==8) then
             local session=Save.validate(decoded)
-            if session then return session,"Campaña recuperada. El archivo original se conserva; se guardará en v8." end
+            if session then return session,"Campaña recuperada. El original se conserva; se guardará en campaign-exploration-v1.json." end
         end
     end
     return nil,err or "No hay guardado válido disponible."

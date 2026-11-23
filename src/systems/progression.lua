@@ -59,12 +59,19 @@ local function move(session,checkpoint)
     end
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Destino narrativo desconocido: "..tostring(checkpoint) end
+    local previousDay=session.day
     session.checkpoint,session.day=checkpoint,node.day
     Daily.ensure(session)
     Daily.deliverFavors(session)
     session.dialogueIndex,session.encounter=1,nil
     session.encounterReview,session.tutorial=nil,nil
     session.combat,session.combatPreparation,session.trainingReview=nil,nil,nil
+    if checkpoint=="day7_return_cards" and require("src.systems.relationships").ending(session.relationships) then
+        Events.mark(session,"relationships_resolved")
+    end
+    if session.prologue and node.definition.agenda then session.exploration.active=true end
+    if session.prologue and previousDay~=session.day then require("src.systems.rest").wake(session,previousDay) end
+    if session.objectives then require("src.systems.objectives").sync(session) end
     return checkpoint
 end
 function Progression.skipUnavailable(session)
@@ -93,14 +100,17 @@ function Progression.continueStory(session)
     if not Daily.atAgenda(session) or Daily.storyComplete(session) then return nil,"No hay historia pendiente en esta agenda." end
     local d=Daily.ensure(session)
     if d.active_activity or d.ending_processed then return nil,"Termina la actividad pendiente antes de continuar." end
+    if session.exploration and not require("src.systems.exploration").nearCharacter(session,"nanahoshi") then return nil,"Busca a Nanahoshi en su laboratorio." end
+    if session.rest then session.rest.waking=false end
     local config=Daily.config(session)
     if config.lockBeforeStory then
         local ok,err=Daily.lockActivities(session); if not ok then return nil,err end
     end
+    if session.exploration then session.exploration.active=false end
     return move(session,session.day==7 and session.events.antidote_obtained and "day7_intro" or config.story)
 end
 function Progression.endDay(session)
-    if not Daily.atAgenda(session) then return nil,"Vuelve a la agenda para finalizar el día." end
+    if not Daily.atAgenda(session) then return nil,"Termina la escena actual para finalizar el día." end
     local report,err=Daily.finish(session)
     if not report then return nil,err end
     return move(session,Daily.config(session).summary)
@@ -207,6 +217,11 @@ function Progression.scene(session,id)
     if id=="day7_voice" and next(require("src.systems.family").ensure(session).departures) then
         for _,line in ipairs(scene.lines) do if line.speaker=="narrator" and line.text:find("las tres",1,true) then line.text="Rudy explica la maldición a quienes siguen a su lado. La recuperación de su voz no revoca ninguna separación." end end
     end
+    if id=="day6_orsted_discovery" and session.decisions.orsted_performance then
+        scene.lines[1].text=session.decisions.orsted_performance=="prepared"
+            and "Basta. Alternaste golpes y protección sin abandonar la guardia. Ahora déjame ver esa carta: reconozco el sello de los artefactos que entregué a Nanahoshi."
+            or "Basta. Has resistido, pero dudaste al pasar de la guardia al ataque. Podemos trabajar eso. Déjame ver esa carta: reconozco el sello de los artefactos que entregué a Nanahoshi."
+    end
     return scene
 end
 function Progression.encounter(session,id)
@@ -278,6 +293,19 @@ end
 function Progression.next(session,checkpoint,result)
     checkpoint=checkpoint or session.checkpoint
     if session.checkpoint~=checkpoint then return nil,"La pantalla de origen ya cambió." end
+    if session.prologue then
+        local p=session.prologue
+        if checkpoint=="intro" then
+            require("src.systems.prologue").wake(session)
+            return session.checkpoint
+        end
+        if (checkpoint=="day1_wake" or checkpoint=="day1_letter") and not p.letter_read then
+            return nil,"Explora el estudio y termina de leer la carta."
+        end
+        if checkpoint=="day1_warning" and not p.nanahoshi_visited then
+            return nil,"Busca a Nanahoshi y habla con ella en su laboratorio."
+        end
+    end
     local node=Chapters.checkpoints[checkpoint]
     if not node then return nil,"Punto de historia desconocido: "..tostring(checkpoint) end
     if node.definition.agenda then
@@ -312,6 +340,14 @@ function Progression.next(session,checkpoint,result)
         if meets(session,transition.requires,checkpoint) then
             if not Chapters.checkpoints[transition.to] then return nil,"Destino narrativo no disponible." end
             applyEffects(session,transition.effects,checkpoint)
+            if session.prologue then
+                require("src.systems.world_content").generate(session)
+                if checkpoint=="day1_silence" then
+                    session.prologue.curse_discovered=true;session.exploration.active=true
+                elseif checkpoint=="day1_cards" then session.prologue.starting_cards_received=true
+                elseif checkpoint=="day1_close" then session.exploration.active=true end
+                require("src.systems.prologue").objective(session)
+            end
             return move(session,transition.to)
         end
     end
@@ -322,9 +358,17 @@ end
 -- Solo una victoria real entrega el premio, con una clave por checkpoint.
 -- Los vínculos sociales jamás reciben deltas por infligir daño mágico.
 function Progression.finishCombat(session,enc)
+    if session.combat==enc and enc.finished then require("src.systems.campaign_stats").finishBattle(session,enc) end
     local def=Progression.encounter(session,session.checkpoint)
     if def and def.enemyId=="orsted_demonstration" then
         if session.combat~=enc or not enc.finished or enc.narrativeDefeat~="orsted_demonstration" then return nil,"Orsted todavía no ha terminado la demostración." end
+        local damage,guard=0,0
+        for _,action in ipairs(enc.log or {}) do for _,effect in ipairs(action.events or {}) do
+            if effect.kind=="damage" and effect.target=="enemy" then damage=damage+(effect.hpLost or 0) end
+            if effect.kind=="shield" and effect.target=="player" then guard=guard+(effect.amount or 0) end
+        end end
+        Events.apply(session,"orsted_performance_recorded",{context="orsted",decision="orsted_performance",
+            value=damage>=30 and guard>0 and "prepared" or "learning",text="Orsted valora las respuestas y la guardia durante su demostración."})
         return Progression.next(session,session.checkpoint,{score=def.targetScore,trust=0,chemistry=0})
     end
     if def and def.enemyId=="orsted_trial" and session.combat==enc and enc.finished and enc.outcome=="defeat" then
@@ -348,6 +392,7 @@ function Progression.finishCombat(session,enc)
     local key="combat_reward_"..checkpoint
     if not session.events[key] then
         Events.apply(session,key,{gold=require("src.data.economy").rewards.combat[session.day],
+            presenter=Progression.companion(session,checkpoint) or (checkpoint=="day1_tutorial" and "nanahoshi" or "rudeus"),
             copies={[session.combatDeck[1] or "staff_strike"]=2},text="Recompensa del combate: oro y dos copias de tu primera técnica equipada."})
         Events.mark(session,"mirror_defeated_"..checkpoint)
         if enemy and enemy.narrativeEvent then Events.mark(session,enemy.narrativeEvent) end
@@ -360,7 +405,7 @@ function Progression.finishCombat(session,enc)
             Events.apply(session,"tactic_"..checkpoint.."_"..effect.id,resolved)
         end
         if checkpoint=="day1_tutorial" then
-            Events.apply(session,"first_anomaly",{unlock={"self_joke"}})
+            Events.apply(session,"first_anomaly",{unlock={"self_joke"},presenter="nanahoshi"})
             Events.mark(session,"combat_tutorial_completed")
         end
         -- Una recompensa narrativa persiste por encuentro, sin multiplicarse

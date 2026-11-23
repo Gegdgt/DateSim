@@ -1,19 +1,21 @@
 -- Rectángulos revisados visualmente; NO se infieren colisiones de colores/tilesets.
 -- Sólo estas zonas transitables están autorizadas. El resto queda bloqueado.
--- Cobertura parcial: accesos y corredores; ampliar antes de habilitar exploración.
+-- Rutas principales y zonas de interacción revisadas. Lo no revisado se bloquea.
 local function rect(x,y,w,h) return {x=x,y=y,w=w,h=h} end
 local function layout(walkable,walls,furniture,obstacles)
-    return {status="partial",tileSize=16,unknown="blocked",anchor="feet_center",
-        footprint={w=12,h=8},walkable=walkable,walls=walls or {},
+    return {status="routes_reviewed",tileSize=16,unknown="blocked",anchor="feet_center",
+        footprint={w=10,h=6},walkable=walkable,walls=walls or {},
         furniture=furniture or {},obstacles=obstacles or {},doors={},stairs={},portals={},interactive={}}
 end
 local r=rect
 return {
     casa_planta_baja=layout(
-        {r(240,128,160,192),r(288,320,64,48),r(352,96,40,64)},
-        {r(220,192,16,84),r(404,192,16,84),r(224,304,16,48),r(404,304,16,48)},
-        {r(64,96,144,88),r(448,228,120,88),r(460,116,104,48),r(80,228,104,76)},
-        {r(240,304,40,40),r(368,304,32,40)}),
+        {r(24,96,592,240),r(288,320,64,48),r(352,96,40,64)},
+        {r(232,16,12,128),r(392,16,16,128),r(24,192,76,20),r(168,192,68,20),
+         r(404,192,68,20),r(540,192,76,20),r(220,208,16,68),r(404,208,16,68),r(224,304,16,48),r(404,304,16,48)},
+        -- Sólo las mesas y la estantería: sillones, sillas y alfombras son suelo.
+        {r(105,142,54,26),r(464,250,86,33),r(463,120,94,26),r(123,245,23,20),r(32,224,32,52)},
+        {}),
     casa_segundo_piso=layout(
         {r(48,112,416,120),r(232,224,48,80)},
         {r(24,32,464,80),r(152,232,72,32),r(288,232,72,32)},
@@ -35,7 +37,7 @@ return {
         {r(8,8,304,32),r(8,40,16,136),r(296,40,16,136)},
         {r(120,40,80,64),r(48,32,40,48),r(232,32,40,48),r(264,96,32,48)}),
     jardin_casa=layout(
-        {r(216,72,40,248),r(0,184,264,56)},
+        {r(216,72,40,248),r(0,184,264,56),r(248,232,40,56)},
         {r(0,0,208,72),r(256,0,240,72),r(496,64,16,240)},
         {r(288,136,56,40)}, {r(120,248,80,40),r(272,88,80,40),r(312,240,56,40)}),
     patio_eris=layout(
@@ -43,11 +45,12 @@ return {
         {r(16,24,448,16),r(464,0,176,72),r(16,344,624,16)},
         {r(40,136,64,56),r(40,232,64,40)}, {r(40,56,48,64),r(24,272,88,56)}),
     camino_sharia=layout(
-        {r(208,0,40,144),r(24,136,744,48),r(360,176,48,144)},
+        {r(208,0,40,144),r(24,128,744,64),r(360,176,48,144)},
         {r(0,0,16,320),r(16,296,344,24),r(408,296,360,24)},
-        {}, {r(168,152,32,56),r(536,152,32,56),r(712,104,24,40),r(712,168,24,32)}),
+        -- Faroles: base de 8x8; el brazo y la lámpara no son colisión.
+        {}, {r(173,198,8,8),r(539,198,8,8),r(716,138,8,7),r(716,193,8,7)}),
     cementerio_ranoa=layout(
-        {r(232,0,48,192),r(192,192,48,48),r(272,192,48,48)},
+        {r(232,0,48,192),r(192,176,128,16),r(192,176,40,64),r(280,176,40,64)},
         {r(0,24,224,16),r(288,24,224,16)},
         {r(400,240,48,32)}, {r(232,192,48,48)}),
     universidad_exterior=layout(
@@ -55,9 +58,9 @@ return {
         {r(0,0,24,384),r(616,0,24,384),r(0,344,640,40)},
         {r(144,208,48,40),r(456,208,48,40)}, {r(144,272,40,48),r(472,272,32,48)}),
     biblioteca_ranoa=layout(
-        {r(224,104,64,184),r(240,280,32,40)},
+        {r(48,104,416,184),r(240,280,32,40)},
         {r(8,0,496,104),r(8,104,40,184),r(464,104,40,184)},
-        {r(64,128,112,40),r(88,232,80,56),r(344,232,80,56)}),
+        {r(64,128,112,40),r(88,238,77,28),r(347,238,77,28)}),
     taller_cliff_zanoba=layout(
         {r(208,80,96,208),r(240,280,32,40)},
         {r(8,0,496,72),r(8,72,16,216),r(488,72,16,216)},

@@ -91,6 +91,8 @@ function Collection.canUpgrade(session,id)
     if not view or not view.unlocked then return false,"Primero adquiere la carta." end
     if view.level==10 then return false,"Nivel máximo." end
     if session.combat or session.encounter then return false,"Termina el encuentro antes de mejorar." end
+    local activity=session.daily and session.daily.active_activity
+    if activity and activity.socialVersion and activity.phase~="service" then return false,"Termina la conversación antes de mejorar." end
     if view.copies<view.copiesRequired then return false,"Faltan "..(view.copiesRequired-view.copies).." copias." end
     if (session.gold or 0)<view.goldRequired then return false,"Faltan "..(view.goldRequired-(session.gold or 0)).." de oro." end
     return true

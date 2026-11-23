@@ -29,6 +29,16 @@ return function()
     end
     require("tests.resources").run()
     require("tests.exploration_assets").run()
+    require("tests.exploration").run()
+    require("tests.objectives").run()
+    require("tests.exploration_running").run()
+    require("tests.world_content").run()
+    require("tests.wife_activities").run()
+    require("tests.wife_activities_ui").run()
+    require("tests.social_exploration").run()
+    require("tests.social_hand_cycle").run()
+    require("tests.card_rewards").run()
+    require("tests.campaign_stats").run()
     require("tests.motion").run()
     require("tests.portraits").run()
     require("tests.audio_options").run()
@@ -56,5 +66,6 @@ return function()
     require("tests.dialogue_branching").run()
     require("tests.dialogue_visual").run()
     if group~="regression" then require("tests.campaign").run() end
+    if group~="regression" then require("tests.campaign_integration").run() end
     require("tests.restructure_integration").run()
 end

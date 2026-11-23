@@ -22,7 +22,24 @@ function V.isWalkable(map,point)
         for _,r in ipairs(c[kind]) do if overlaps(foot,r) then return false end end
     end
     for _,r in ipairs(c.walkable) do if contains(r,foot) then return true end end
-    return false
+    -- A footprint may straddle two adjacent reviewed rectangles. Subtract
+    -- their union exactly; accepting only a single rectangle creates seams.
+    local uncovered={foot}
+    for _,r in ipairs(c.walkable) do
+        local rest={}
+        for _,a in ipairs(uncovered) do
+            if not overlaps(a,r) then rest[#rest+1]=a else
+                local x1,y1=math.max(a.x,r.x),math.max(a.y,r.y)
+                local x2,y2=math.min(a.x+a.w,r.x+r.w),math.min(a.y+a.h,r.y+r.h)
+                local function part(x,y,w,h) if w>0 and h>0 then rest[#rest+1]={x=x,y=y,w=w,h=h} end end
+                part(a.x,a.y,a.w,y1-a.y);part(a.x,y2,a.w,a.y+a.h-y2)
+                part(a.x,y1,x1-a.x,y2-y1);part(x2,y1,a.x+a.w-x2,y2-y1)
+            end
+        end
+        uncovered=rest
+        if #uncovered==0 then return true end
+    end
+    return #uncovered==0
 end
 function V.reachable(maps,connections,start,enabledOnly)
     local seen,queue={[start]=true},{start}

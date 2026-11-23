@@ -8,6 +8,11 @@ local favors={
  {id="craft_materials",character="zanoba",providers={"zanoba"},title="Fabricar y reunir recursos",reward="1 material; 1 libro; 20 oro",effects={gold=20,items={magic_material=1,study_book=1}}},
 }
 local catalog={list=list,byId={},favors=favors,favorsById={}}
+for _,favor in ipairs(require("src.data.commissions")) do
+    favor.investment=true;favor.effects={};favors[#favors+1]=favor
+end
 for _,activity in ipairs(list) do catalog.byId[activity.id]=activity end
+catalog.wifeList=require("src.data.wife_activities").list
+for _,activity in ipairs(catalog.wifeList) do catalog.byId[activity.id]=activity end
 for _,favor in ipairs(favors) do favor.delay=1;favor.description="Entrega al comenzar mañana.";catalog.favorsById[favor.id]=favor end
 return catalog

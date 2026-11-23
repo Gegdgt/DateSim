@@ -5,17 +5,23 @@ local Collection=require("src.systems.card_collection")
 local Economy=require("src.systems.economy")
 local Data=require("src.data.economy")
 local Shop={}
-function Shop.new(app,cardId)
+function Shop.new(app,cardId,returnTo)
     local s=Screen.new(app);s.kind="shop";s.cardId=cardId or "listen"
+    s.returnTo=returnTo or function() app:switch(require("src.screens.upgrades").new(app,s.cardId)) end
     function s:purchase(id,revision,quantity)
         local receipt,err=Economy.buy(app.session,id,revision,quantity)
         self.message=err or (Collection.byId[id] and "¡CARTA REPETIDA! +"..(quantity or 1).." copias a la colección." or "Compra guardada en el inventario.")
-        if receipt then app:save() end
+        if receipt then
+            local completed=require("src.systems.daily").completeTradeVisit(app.session)
+            app:save()
+            if completed then app:resume()
+            else app:presentRewards(function()app:switch(self)end) end
+        end
     end
     function s:draw()
         self:begin();app.resources:background("library");W.panel(12,12,616,336)
         self:text("TIENDA · ORO: "..app.session.gold,26,25,438,P.gold,2)
-        self:button("Volver",516,21,98,26,function() app:switch(require("src.screens.upgrades").new(app,self.cardId)) end)
+        self:button("Volver",516,21,98,26,self.returnTo)
         self:button("Libros",406,21,100,26,function() app:switch(require("src.screens.books").new(app,function()app:switch(self)end)) end)
         local quote,err=Economy.quote(app.session,self.cardId)
         self:text("COPIAS: "..Collection.byId[self.cardId].name,26,67,580,P.teal)
@@ -27,7 +33,7 @@ function Shop.new(app,cardId)
             local item=Data.items[id];local q=Economy.quote(app.session,id);local y=150+(i-1)*45
             self:text(item.name.." · "..item.price.." oro",26,y,418,P.gold)
             self:text(item.description,26,y+14,418,P.ink)
-            self:button("Comprar",468,y,146,29,function() self:purchase(id,q.revision) end,q.reason~=nil)
+            self:button("Comprar",468,y,146,29,function() self:purchase(id,q.revision) end,not q or q.reason~=nil)
         end
         self:button("Usar material (+4 energía)",26,289,280,27,function()
             local receipt,reason=Economy.use(app.session,"magic_material",nil,Economy.ensure(app.session).revision)
@@ -37,7 +43,7 @@ function Shop.new(app,cardId)
         self:text(self.message or (quote and quote.reason) or "Los libros se usan sobre la carta elegida en Mejorar cartas.",26,328,588,P.ink)
     end
     function s:keypressed(key)
-        if key=="escape" then app:switch(require("src.screens.upgrades").new(app,self.cardId)) else self:navigate(key) end
+        if key=="escape" then self.returnTo() else self:navigate(key) end
     end
     return s
 end

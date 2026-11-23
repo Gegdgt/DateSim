@@ -78,8 +78,10 @@ function App:save()
 end
 
 function App:newGame(importLegacy)
+    self.worldScreen=nil;self.wakeNotified=nil
     self.session=importLegacy and Save.migrateLegacy(true) or Save.newSession()
     if not self.session then self:notify("No se pudo importar el guardado anterior."); return end
+    require("src.systems.prologue").start(self.session)
     self.session.options=self.options
     self:save()
     self:resume()
@@ -89,6 +91,7 @@ function App:continueGame()
     local session,err=Save.load()
     if not session then self:notify(err or "No hay una partida válida."); return end
     self.session=session
+    self.worldScreen=nil;self.wakeNotified=nil
     -- Las preferencias elegidas en el menú son globales y más recientes que
     -- las incluidas en una partida antigua.
     self.session.options=self.options
@@ -103,13 +106,28 @@ function App:menu()
     self:switch(require("src.screens.menu").new(self))
 end
 
+function App:presentRewards(returnTo)
+    if not self.session or not self.session.rewardQueue or #self.session.rewardQueue==0 then return false end
+    self:switch(require("src.screens.reward").new(self,returnTo),{type="fade_in",duration=.2})
+    return true
+end
+
 function App:resume(transition)
     if not self.session then self:menu(); return end
+    -- Una entrega ya iniciada tiene prioridad al cargar, incluso si proviene
+    -- de una tienda o servicio dentro de una actividad todavía abierta.
+    local pending=self.session.rewardQueue and self.session.rewardQueue[1]
+    if pending and pending.presentation then self:presentRewards();return end
+    local Wife=require("src.systems.wife_activities")
+    local active=Wife.current(self.session)
+    if (active and not active.battle) or (self.session.wifeActivities and self.session.wifeActivities.review) then
+        self:switch(require("src.screens.wife_activities").new(self));return
+    end
     Progression.skipUnavailable(self.session)
     require("src.systems.daily").deliverFavors(self.session)
     if #require("src.systems.family").ensure(self.session).queue>0 then
         local phase=self.session.family.queue[1].phase
-        self:switch(require("src.screens.family_scene").new(self),{type=phase==4 and "horizontal" or "fade_in",duration=.3});return
+        self:switch(require("src.screens.family_scene").new(self),transition or {type=phase==4 and "horizontal" or "fade_in",duration=.3});return
     end
     if self.session.rewardQueue and #self.session.rewardQueue>0 and not (self.session.combat and self.session.combat.training) then
         self:switch(require("src.screens.reward").new(self),{type="fade_in",duration=.2})
@@ -117,6 +135,13 @@ function App:resume(transition)
     end
     local activityBattle=require("src.systems.daily").battleDefinition(self.session)
     if activityBattle then self:switch(require("src.screens.combat").new(self,activityBattle));return end
+    if require("src.systems.prologue").shouldExplore(self.session) then
+        if require("src.systems.daily").atAgenda(self.session) and
+            (self.session.day==7 and self.session.events.campaign_complete or require("src.systems.rest").completed(self.session)) then
+            self:endDay(transition);return
+        end
+        self:explore(transition);return
+    end
     local checkpoint=self.session.checkpoint
     local node=Chapters.get(checkpoint)
     if not node then self:notify("Punto de historia desconocido."); return end
@@ -143,7 +168,9 @@ function App:resume(transition)
         self:switch(require("src.screens.hub").new(self),transition)
     elseif node and node.kind=="summary" then
         local config=require("src.systems.daily").config(self.session)
-        if checkpoint==config.summary then
+        if node.definition.ending then
+            self:switch(require("src.screens.campaign_summary").new(self),transition)
+        elseif checkpoint==config.summary then
             self:switch(require("src.screens.day_report").new(self,self.session.daily_history[tostring(self.session.day)]),transition)
         else self:switch(require("src.screens.summary").new(self),transition) end
     elseif node and node.kind=="encounter" then
@@ -165,15 +192,37 @@ function App:resume(transition)
     end
 end
 
-function App:endDay()
+function App:explore(transition)
+    local night=require("src.systems.exploration").syncPresence(self.session)
+    require("src.systems.daily").deliverFavors(self.session)
+    local Content=require("src.systems.world_content")
+    local created=not self.session.worldContent
+    Content.ensure(self.session)
+    local generated=Content.generate(self.session)
+    if created or generated then self:save() end
+    self.session.exploration.active=true
+    self.worldScreen=require("src.screens.exploration").new(self)
+    self.audio:setContext(require("src.data.maps")[self.session.exploration.map].music)
+    self:switch(self.worldScreen,transition or {type="fade_in",duration=.3})
+    if night then self:save();self:notify("La jornada está terminando. Las chicas han regresado a sus habitaciones.") end
+    if self.session.checkpoint=="day1_wake" and transition and transition.type=="dream" and not self.wakeNotified then
+        self.wakeNotified=true;self:notify("Un nuevo día comienza en la casa Greyrat")
+    end
+end
+
+function App:endDay(transition)
     local Daily=require("src.systems.daily")
+    if self.session.prologue and self.session.day<7 and not require("src.systems.rest").completed(self.session) then
+        self:notify("Vuelve al segundo piso y acércate a una cama. También puedes preparar un jergón para dormir solo.")
+        self:explore();return false
+    end
     if self.session.checkpoint~=Daily.config(self.session).summary then
         local nextId,err=Progression.endDay(self.session)
         if not nextId then self:notify(err); return false end
     end
     -- No se presenta el resumen ni se avanza si el guardado falló.
     if not self:save() then return false end
-    self:resume()
+    self:resume(transition)
     return true
 end
 
@@ -255,6 +304,10 @@ function App:update(dt)
     self.toastTime=math.max(0,self.toastTime-dt)
     self.audio:update(dt)
     self.manager:update(dt)
+    if self.session and self.toastTime==0 then
+        local notice=require("src.systems.objectives").popNotice(self.session)
+        if notice then self:notify("¡OBJETIVO COMPLETADO! "..notice) end
+    end
 end
 
 function App:draw()
@@ -275,6 +328,10 @@ end
 function App:mousepressed(x,y,button)
     x,y=self:logical(x,y)
     if x then self.manager:mousepressed(x,y,button) end
+end
+function App:wheelmoved(x,y)
+    local screen=self.manager.current
+    if self.manager.transition<=0 and screen and screen.wheelmoved then screen:wheelmoved(x,y) end
 end
 
 function App:keypressed(key)

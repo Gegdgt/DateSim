@@ -37,7 +37,7 @@ return {
    {id="blast_lenses",label="Romper las lentes sin escuchar el análisis.",effects={character="companion",trust=-5,decision="observatory_research",value="rushed"}},
   }},
   day4_return={title="Día 4 · Una cura, no una absolución",background="laboratory",lines={
-   {speaker="narrator",text="Su compañera lleva las provisiones a casa. Rudy se queda a solas con Nanahoshi y Cliff para analizar el registro de entrega."},
+   {speaker="narrator",text="Su compañera lleva las provisiones a casa. Rudy se reúne con Nanahoshi, Cliff y Zanoba para analizar el registro y los patrones recuperados."},
    {speaker="nanahoshi",expression="happy",text="El registro confirma la entrega. La fórmula necesita madurar durante una noche después de retirar el sello. Si consigues el frasco el sexto día, podrás beberlo al amanecer del séptimo."},
    {speaker="cliff",expression="neutral",text="He estabilizado más energía externa y dos patrones: Bala de Agua y Proyectil de Piedra. Tu reserva natural sigue bloqueada. Revisa el mazo antes de salir."},
    {speaker="rudeus",delivery="note",expression="worried",text="Recuperar mi voz no reparará las decisiones que tomé. Necesito cumplir mis promesas antes del desafío."},
@@ -70,7 +70,7 @@ return {
  transitions={
   day4_intro={{to="day4_nanahoshi_research"}},day4_nanahoshi_research={{to="day4_emissary"}},day4_emissary={{to="day4_council",effects={{id="potion_memory",clue="potion_origin"}}}},
   day4_council={{to="day4_companion"}},day4_observatory={{to="day4_encounter"}},
-  day4_encounter={{to="day4_return",effects={{id="seal_will",externalEnergy=16,unlock={"magic_bolt","ice_lance","angry_reply","sincere_apology","change_subject"},presenter="cliff"},{id="observatory_discovery",requires={decision="observatory_research",equals="tested"},unlock={"swamp"},presenter="companion"}}}},
+  day4_encounter={{to="day4_return",effects={{id="seal_will",celebration={participants={"rudeus","nanahoshi","cliff","zanoba"},background="laboratory",important=true},externalEnergy=16,unlock={"magic_bolt","ice_lance","angry_reply","sincere_apology","change_subject"},presenter="cliff"},{id="observatory_discovery",requires={decision="observatory_research",equals="tested"},unlock={"swamp"},presenter="companion"}}}},
   day4_return={{to="day4_badigadi"}},
   day4_badigadi={{to="day4_training",requires={decision="badigadi_offer",equals="accepted"}},{to="day4_complete",effects={{id="day4_complete"}}}},
   day4_training={{to="day4_training_end",effects={{id="training_complete",mission="friendly_duel"}}}},

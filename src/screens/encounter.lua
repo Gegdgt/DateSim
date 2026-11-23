@@ -7,6 +7,7 @@ local Cards=require("src.systems.cards")
 local Progression=require("src.systems.progression")
 local Controls=require("src.config.controls")
 local CardView=require("src.ui.card")
+local Hand=require("src.ui.social_hand")
 local Animation=require("src.systems.animation")
 local Tutorial=require("src.systems.tutorial")
 local Save=require("src.systems.save")
@@ -54,7 +55,7 @@ function Encounter.new(app)
     if s.tutorial and s.enc.finished then s.historyOpen=true end
     s.age,s.selected=0,1
     s.lifts={0,0,0}
-    s.feedback=#s.enc.log>0 and s.enc.log[#s.enc.log].text or "Selecciona una carta para consultar su efecto."
+    s.feedback=#s.enc.log>0 and s.enc.log[#s.enc.log].text or "Selecciona una carta para consultar su frase y coste."
     s.relationshipBars=RelationshipBars.new(app.session,s.definition.character,{reducedMotion=app.options.reducedMotion,audio=app.audio})
     s.relationVisual=s.relationshipBars and s.relationshipBars.value or {trust=0,love=0}
     s.portraitExpression=conversation and Characters.expressions[conversation.emotion] and conversation.emotion or "neutral"
@@ -69,9 +70,13 @@ function Encounter.new(app)
         return RelationshipBars.read(app.session,self.definition.character) or self.relationVisual
     end
     app:save()
-    function s:busy() return self.motion and not self.motion.done end
+    function s:busy() return not self.enc.dealComplete or self.motion and not self.motion.done end
     function s:update(dt)
         self.age=self.age+dt
+        if not self.enc.dealComplete then
+            if Hand.updateDeal(self.enc,dt,app.audio,app.options.reducedMotion) then app:save() end
+            return
+        end
         if self.motion then self.motion:update(dt) end
         if self.relationshipBars then
             self.relationshipBars:sync(app.session); self.relationshipBars:update(dt)
@@ -161,6 +166,7 @@ function Encounter.new(app)
         self.actor=Animation.actor("expression_change",{reducedMotion=app.options.reducedMotion})
         if app.audio then
             app.audio:effect(index and "card_play" or "confirm")
+            if index then app.audio:effect("enchanted_voice") end
         end
         self.selected=math.min(self.selected,#self.enc.hand); self.age=0
         app:save() -- Guardar antes de animar: restaurar no vuelve a ejecutar la carta.
@@ -317,7 +323,7 @@ function Encounter.new(app)
         local card=Data.byId[self.enc.hand[self.selected]]
         if not card then return end
         self:text(card.name,439,146,173,P.gold)
-        self:text(Data.categories[card.category].." / coste "..card.cost,439,173,173,P.teal)
+        self:text(Data.categories[card.category].." / coste "..Cards.cost(self.enc,card.id),439,173,173,P.teal)
         if self.enc.narrativeVersion then
             local preview=Cards.preview(self.enc,self.selected)
             local can,reason=Cards.canPlay(self.enc,self.selected)
@@ -339,6 +345,7 @@ function Encounter.new(app)
         end
     end
     function s:drawAnimation()
+        if not self.enc.dealComplete then Hand.drawDeal(self,self.enc,function(id)return Cards.cost(self.enc,id)end);return end
         if not self:busy() or not self.animation or app.options.reducedMotion then return end
         local a,t=self.animation,self.motion.value.t
         if a.cardId=="pass" then return end
@@ -396,31 +403,21 @@ function Encounter.new(app)
         if not instruction and self.phase~="result" then self:text("Contexto: "..contexts[def.kind].." · H: historial · M: colección",147,111,462,P.teal) end
         W.panel(18,166,110,157)
         self:text(enc.finished and "COMPLETADO" or "TURNO "..enc.turn.." / 3",28,177,90,P.gold)
-        self:text("ENERGÍA SOCIAL\n"..enc.energy.."/4",28,198,90,P.ink)
-        for i=1,4 do love.graphics.setColor(i<=enc.energy and P.teal or P.border); love.graphics.rectangle("fill",28+(i-1)*21,220,15,8) end
+        self:text("ENERGÍA SOCIAL\n"..enc.energy.."/"..(enc.maxEnergy or 4),28,198,90,P.ink)
+        for i=1,(enc.maxEnergy or 4) do love.graphics.setColor(i<=enc.energy and P.teal or P.border); love.graphics.rectangle("fill",28+(i-1)*14,220,10,8) end
         self:text("AVANCE\n"..enc.score.." / "..def.targetScore,28,237,90,P.ink)
         W.bar(28,265,90,6,enc.score,def.targetScore,P.gold)
-        self:text("Robo "..#enc.drawPile.." / D "..#enc.discard,28,281,90,P.muted)
+        self:text("Mazo "..#enc.drawPile.." / D "..#enc.discard,28,281,90,P.muted)
         if def.character=="nanahoshi" then self:text("Vínculo de\ninvestigación",28,299,90,P.muted) end
         if self.historyOpen then self:drawHistory()
         elseif self.phase=="result" then self:drawResult()
         else
             self:text("MANO / CLIC O 1-3 PARA CONSULTAR",143,148,278,P.muted)
-            local mx,my=app:mouse()
-            local moved=mx~=self.lastMouseX or my~=self.lastMouseY
-            self.lastMouseX,self.lastMouseY=mx,my
-            for i,id in ipairs(enc.hand) do
-                local x,y=143+(i-1)*94,187+math.floor(self.lifts[i])
-                local can=Cards.canPlay(enc,i)
-                if not self:busy() and mx and moved and mx>=x and mx<x+80 and my>=y and my<y+112 then
-                    if self.selected~=i then self.confirmReady=false; self.armedTurn=nil end
-                    self.selected=i; self.keyboardFocus=nil
-                end
-                CardView.draw(app.resources,Data.byId[id],x,y,{selected=self.selected==i,disabled=not can,
-                    status="["..i.."] "..(can and (self.selected==i and "ELEGIDA" or "ELEGIR") or "NO DISP.")})
-                self.buttons[#self.buttons+1]={x=x,y=y,w=80,h=112,cardIndex=i,action=function() self:select(i) end}
-            end
-            self:drawDetails()
+            Hand.draw(self,enc,{selected=self.selected,busy=self:busy(),
+                cost=function(id)return Cards.cost(enc,id)end,
+                canPlay=function(id,i)return Cards.canPlay(enc,i)end,
+                phrase=function(id,i)local p=Cards.preview(enc,i);return p and p.phrase end,
+                select=function(i)self:select(i)end})
         end
         self:button(self.historyOpen and "Cerrar historial [H]" or "Historial [H]",18,331,195,23,function() self:history() end)
         if self.tutorial and (app.options.tutorialCompleted or app.session.events.tutorial_completed) then

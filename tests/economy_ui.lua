@@ -50,6 +50,7 @@ function Suite.run()
         check(app.session.rewardQueue[1].counts.listen==5,"Tienda genera recompensa de cinco duplicados")
         app:resume();settle();capture("duplicate")
         check(app.manager.current.kind=="reward" and not app.manager.current:isNew(),"Repetida tiene presentación independiente")
+        app.manager.current:choose("individual");app.manager.current:update(1.1)
         local originalFont=Font.draw;local rendered={}
         Font.draw=function(text,...) rendered[#rendered+1]=tostring(text);return originalFont(text,...) end
         draw();Font.draw=originalFont

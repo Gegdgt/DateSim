@@ -10,11 +10,11 @@ function Upgrades.effects(view)
     if view.effect then parts[#parts+1]="Amor "..string.format("%+d",view.effect.love).." / Conf. "..string.format("%+d",view.effect.trust) end
     for _,key in ipairs({"damage","shield","heal","draw","mana"}) do
         local value=view.combatEffect and view.combatEffect[key]
-        if value then parts[#parts+1]=({damage="Daño ",shield="Escudo ",heal="Cura ",draw="Roba ",mana="Recupera maná "})[key]..value end
+        if value then parts[#parts+1]=({damage="Daño ",shield="Escudo ",heal="Cura ",draw="Toma ",mana="Recupera maná "})[key]..value end
     end
     return table.concat(parts," · ")
 end
-function Upgrades.new(app,selected)
+function Upgrades.new(app,selected,returnTo)
     local s=Screen.new(app);s.kind="upgrades";s.index=1;s.page=1
     for i,card in ipairs(Collection.list) do if card.id==selected then s.index=i;s.page=math.ceil(i/9) end end
     function s:improve()
@@ -33,7 +33,10 @@ function Upgrades.new(app,selected)
             local result,err=Collection.upgrade(app.session,pending.id,pending.revision)
             pending.result=result
             self.message=err or ("¡Mejora completada! -"..result.receipt.copies.." copias / "..result.receipt.gold.." oro.")
-            if result then app.audio:effect("upgrade");app:save() end
+            if result then
+                require("src.systems.wife_activities").upgraded(app.session,result.receipt)
+                app.audio:effect("upgrade");app:save()
+            end
         end
     end
     function s:draw()
@@ -41,8 +44,8 @@ function Upgrades.new(app,selected)
         W.panel(8,7,624,30)
         self:text("MEJORAR CARTAS",18,18,205,P.gold)
         self:text("ORO: "..app.session.gold,231,18,170,P.teal)
-        self:button("Tienda",424,12,90,20,function() app:switch(require("src.screens.shop").new(app,Collection.list[self.index].id)) end,self.pending~=nil)
-        self:button("Volver",524,12,100,20,function() app:overlay("deck") end,self.pending~=nil)
+        self:button("Tienda",424,12,90,20,function() app:switch(require("src.screens.shop").new(app,Collection.list[self.index].id)) end,self.pending~=nil or returnTo~=nil)
+        self:button("Volver",524,12,100,20,function() if returnTo then returnTo() else app:overlay("deck") end end,self.pending~=nil)
         W.panel(14,46,192,293);W.panel(216,46,410,293)
         for row=1,9 do
             local index=(self.page-1)*9+row;local card=Collection.list[index]
@@ -79,12 +82,17 @@ function Upgrades.new(app,selected)
         elseif view.perBattle then self:text("Límite: "..view.perBattle.." uso(s) por combate.",228,262,386,P.gold) end
         local ok,reason=Collection.canUpgrade(app.session,card.id)
         if self.pending then
-            self:button("Continuar",228,280,386,27,function() self.pending=nil;self.message=nil;self.keyboardFocus=nil end,self.pending.age<.9)
+            self:button("Continuar",228,280,386,27,function()
+                local completed=self.pending.result~=nil
+                self.pending=nil;self.message=nil;self.keyboardFocus=nil
+                if completed and returnTo then returnTo() end
+            end,self.pending.age<.9)
         else
             self:button(view.level==10 and "Nivel máximo" or "Mejorar",228,280,182,27,function() self:improve() end,not ok)
             self:button("Usar libro (+3 copias)",418,280,196,27,function()
                 local receipt,err=Economy.use(app.session,"study_book",card.id,Economy.ensure(app.session).revision)
-                self.message=err or "Libro aplicado: +3 copias.";if receipt then app:save() end
+                self.message=err or "Libro aplicado: +3 copias."
+                if receipt then app:save();app:presentRewards(function()app:switch(self)end) end
             end,not view.effect or not view.unlocked or view.level==10 or (Economy.ensure(app.session).items.study_book or 0)<1)
         end
         self:text(self.message or reason or (view.discount and "Receta activa: ahorro del 20%; se consume al mejorar.") or "Los efectos negativos dependen de la situación.",228,315,386,P.muted)
@@ -92,7 +100,7 @@ function Upgrades.new(app,selected)
         self:text("Tab y Enter: botones · Las mejoras no cambian los mazos equipados.",18,347,604,P.ink)
     end
     function s:keypressed(key)
-        if key=="escape" and not self.pending then app:overlay("deck") else self:navigate(key) end
+        if key=="escape" and not self.pending then if returnTo then returnTo() else app:overlay("deck") end else self:navigate(key) end
     end
     return s
 end

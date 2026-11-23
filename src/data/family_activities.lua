@@ -38,5 +38,8 @@ local list={
 for _,id in ipairs({"sylphiette","roxy","eris"}) do
  list[#list+1]={id="reconcile_"..id,character=id,title="Reparar un compromiso",background="home",description="Reconocer el daño y cumplir una responsabilidad concreta. No revierte una separación definitiva.",reward="Recuperación: hasta +8 amor y +8 confianza",recovery=true,choices={choice("repair","Escuchar y reparar con hechos","Rudy reconoce el daño sin exigir perdón. Cumple la tarea acordada y deja espacio para volver a hablar.",8,8,{recovery=true,reconcile="daily_neglect",familyProgress={reconciliation=1}})}}
 end
+list[#list+1]={id="roxy_supplies",character="roxy",title="Comprar materiales",background="library",shop=true,
+ description="Roxy compara contigo materiales y patrones. Reservar la visita no incluye ninguna compra.",reward="Comercio; inventario; estudio compartido",
+ choices={choice("browse","Comparar precios y volver","Revisáis los precios y decidís esperar. No se compra ni se entrega ningún objeto.",1,2,{})}}
 for _,activity in ipairs(list) do activity.cost=1 end
 return list

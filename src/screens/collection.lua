@@ -26,7 +26,7 @@ function Collection.combatDetail(card)
     end
     local e=card.combat.effects or {}
     local rules=require("src.data.combat_cards").rules
-    if e.draw then effects[#effects+1]="roba "..e.draw end
+    if e.draw then effects[#effects+1]="toma "..e.draw end
     if e.weak then effects[#effects+1]="debilita (-"..rules.weakReduction.." daño en su próximo turno)" end
     if e.vulnerable then effects[#effects+1]="vulnerable (+"..rules.vulnerableBonus.." daño recibido por golpe este turno)" end
     local condition=card.conditions and card.conditions.character
@@ -37,7 +37,7 @@ end
 function Collection.canEdit(session)
     if not session then return false,"Inicia o continúa una campaña para editar su mazo." end
     if #session.deck<5 then return false,"Nanahoshi entregará el mazo durante el tutorial." end
-    if session.encounter or session.combat then return false,"Termina el encuentro antes de editar el mazo." end
+    if session.encounter or session.combat or session.daily and session.daily.active_activity then return false,"Termina el encuentro antes de editar el mazo." end
     return true
 end
 

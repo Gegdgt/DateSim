@@ -1,7 +1,7 @@
 local Font=require("src.ui.font")
 local Manager={}
 Manager.__index=Manager
-Manager.transitionTypes={dream=true,fade=true,fade_in=true,horizontal=true,new_day=true,magic=true,["return"]=true}
+Manager.transitionTypes={dream=true,fade=true,fade_in=true,horizontal=true,new_day=true,night=true,magic=true,["return"]=true}
 
 function Manager.new(app)
     return setmetatable({app=app,current=nil,transition=0,activationCount=0},Manager)
@@ -69,6 +69,8 @@ function Manager:draw()
         if effect.type=="new_day" then
             Font.draw("DÍA "..tostring(effect.day or ""),0,148,{maxWidth=640,align="center",scale=2,color={1,.83,.48,alpha}})
             Font.draw(effect.title or "Un nuevo camino",60,187,{maxWidth=520,align="center",color={.9,.88,.82,alpha}})
+        elseif effect.type=="night" then
+            Font.draw("LA CASA DESCANSA",0,174,{maxWidth=640,align="center",scale=2,color={.86,.88,1,alpha}})
         elseif effect.type=="magic" then
             love.graphics.setColor(.55,.68,.72,.28*alpha)
             for i=1,8 do
