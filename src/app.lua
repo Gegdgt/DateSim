@@ -10,12 +10,13 @@ local Audio = require("src.systems.audio")
 local App = {}
 App.__index = App
 
-function App.new()
+function App.new(demoMenu)
     -- Los errores de autoría bloquean el inicio; un PNG ausente conserva el
     -- respaldo y diagnóstico del cargador, como en la Fase 1.
     require("src.systems.narrative_validator").assertValid(nil,{checkFiles=false})
     require("src.systems.dialogue_validator").assertValid()
     local self = setmetatable({},App)
+    self.demoMenu=demoMenu
     self.canvas=love.graphics.newCanvas(640,360)
     self.canvas:setFilter("nearest","nearest")
     self.resources=Resources.new():preload()
@@ -69,7 +70,7 @@ function App:switch(screen,transition)
 end
 
 function App:save()
-    if self.practice then return true end
+    if self.demoMenu or self.practice then return true end
     if not self.session then return true end
     self.session.options=self.options
     local ok,err=Save.write(self.session)
@@ -103,6 +104,7 @@ end
 function App:menu()
     if self.practice then return self:endPractice() end
     self.audio:setContext("menu")
+    if self.demoMenu then return self:demoMenu() end
     self:switch(require("src.screens.menu").new(self))
 end
 
@@ -335,6 +337,10 @@ function App:wheelmoved(x,y)
 end
 
 function App:keypressed(key)
+    if self.demoMenu and key=="f9" then
+        self:menu()
+        return
+    end
     if Controls.matches(Controls.fullscreen,key) then
         self.options.fullscreen=not love.window.getFullscreen()
         self:applyOptions()
@@ -344,7 +350,8 @@ function App:keypressed(key)
     if self.manager.transition>0 then return end
     if Controls.matches(Controls.back,key) then self.audio:effect("cancel") end
     if self.session and Controls.matches(Controls.save,key) then
-        if self:save() then self:notify("Partida guardada.") end
+        if self.demoMenu then self:notify("Sesión temporal. F9 abre el menú de demostración.")
+        elseif self:save() then self:notify("Partida guardada.") end
         return
     end
     self.manager:keypressed(key)

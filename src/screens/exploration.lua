@@ -253,7 +253,9 @@ function Exploration.new(app)
             text("ENTER: viajar · ESC: cancelar",82,273,476,gold)
         elseif mode=="pause" then
             text("PAUSA",82,86,470,gold,2)
-            text("ENTER / ESC: volver\nF5: guardar partida\nO: opciones\nQ: guardar y volver al menú",82,130,470)
+            local controls=app.demoMenu and "ENTER / ESC: volver\nO: opciones\nF9: menú de demostración"
+                or "ENTER / ESC: volver\nF5: guardar partida\nO: opciones\nQ: guardar y volver al menú"
+            text(controls,82,130,470)
         elseif mode=="inventory" then
             text("INVENTARIO",82,86,470,gold,2)
             text(session.prologue.letter_collected and "Carta de Hitogami · ENTER para abrir" or "Aún no has recogido ningún documento.",82,126,470)
