@@ -10,12 +10,13 @@ local Audio = require("src.systems.audio")
 local App = {}
 App.__index = App
 
-function App.new()
+function App.new(demoMenu)
     -- Los errores de autoría bloquean el inicio; un PNG ausente conserva el
     -- respaldo y diagnóstico del cargador, como en la Fase 1.
     require("src.systems.narrative_validator").assertValid(nil,{checkFiles=false})
     require("src.systems.dialogue_validator").assertValid()
     local self = setmetatable({},App)
+    self.demoMenu=demoMenu
     self.canvas=love.graphics.newCanvas(640,360)
     self.canvas:setFilter("nearest","nearest")
     self.resources=Resources.new():preload()
@@ -103,6 +104,7 @@ end
 function App:menu()
     if self.practice then return self:endPractice() end
     self.audio:setContext("menu")
+    if self.demoMenu then return self:demoMenu() end
     self:switch(require("src.screens.menu").new(self))
 end
 
@@ -135,6 +137,7 @@ function App:resume(transition)
     end
     local activityBattle=require("src.systems.daily").battleDefinition(self.session)
     if activityBattle then self:switch(require("src.screens.combat").new(self,activityBattle));return end
+    if self.demoMenu then self:menu();return end
     if require("src.systems.prologue").shouldExplore(self.session) then
         if require("src.systems.daily").atAgenda(self.session) and
             (self.session.day==7 and self.session.events.campaign_complete or require("src.systems.rest").completed(self.session)) then
@@ -335,6 +338,10 @@ function App:wheelmoved(x,y)
 end
 
 function App:keypressed(key)
+    if self.demoMenu and key=="f9" then
+        if self:save() then self:menu() end
+        return
+    end
     if Controls.matches(Controls.fullscreen,key) then
         self.options.fullscreen=not love.window.getFullscreen()
         self:applyOptions()

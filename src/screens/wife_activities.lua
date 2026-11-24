@@ -99,7 +99,8 @@ function View.new(app,wife)
   local def=a and Bank.byId[a.id] or r and Bank.byId[r.id]
   if self.world then self.world:drawWorld() else app.resources:background(def and def.background or "home") end
   Panel.panel(8,7,624,29)
-  self:text(Names[self.wife].." · "..Daily.remaining(session).."/3 interacciones disponibles",19,17,606,P.gold)
+  local day=app.demoMenu and ("Día "..session.day.." · ") or ""
+  self:text(day..Names[self.wife].." · "..Daily.remaining(session).."/3 interacciones disponibles",19,17,606,P.gold)
   if self.mode=="offers" then self:drawMenu();return end
   if self.mode=="unavailable" then
    Panel.panel(20,235,600,104);self:text("Busca a "..Names[self.wife].." para conversar.",35,254,565,P.ink)
@@ -166,7 +167,8 @@ function View.new(app,wife)
    if r.purchase then rewards[#rewards+1]=r.purchase.title end
    self:text(table.concat(rewards," · "),147,248,462,P.teal)
    self:text(string.format("Total: %+d amor / %+d confianza",r.delta.love,r.delta.trust),147,296,462,P.teal)
-   self:button("Volver a explorar",147,332,475,23,function()self:back()end)
+   local nextLabel=app.demoMenu and (#session.rewardQueue>0 and "Ver recompensa" or "Volver al menú") or "Volver a explorar"
+   self:button(nextLabel,147,332,475,23,function()self:back()end)
   elseif self.mode=="service" or self.mode=="purchase" then
    Panel.panel(135,45,487,285);self:text(def.title,147,55,462,P.gold)
    if def.service=="upgrade" then

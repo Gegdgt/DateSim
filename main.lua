@@ -7,6 +7,10 @@ function love.load(args)
     love.keyboard.setKeyRepeat(false)
     love.math.setRandomSeed(os.time())
     for _, value in ipairs(args or {}) do
+        if value == "--demo-progression" then
+            app = require("src.demos.progression").new()
+            return app
+        end
         if value == "--qa-campaign" then
             app=require("tests.manual_campaign").new(17)
             return

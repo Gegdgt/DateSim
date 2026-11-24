@@ -1,5 +1,23 @@
 # Mushoku Tensei: Las Cartas del Destino
 
+- **Rama** `entrega/progression-cycle`
+- **Entrega** Progression Cycles
+- **Objetivo** Conectar actividades matrimoniales, estadísticas, eventos, adquisición de cartas y colección en un perfil académico persistente.
+
+**Ejecución con LÖVE 11.5 / LuaJIT** desde la raíz de esta rama en PowerShell
+
+```powershell
+& 'C:\Program Files\LOVE\love.exe' . --demo-progression
+```
+
+- **Archivos principales** [actividades](src/systems/wife_activities.lua), [progresión diaria](src/systems/daily.lua), [eventos](src/systems/events.lua), [recompensa](src/screens/reward.lua) y [colección](src/systems/card_collection.lua).
+- **Pruebas** `./probar.ps1` ejecuta la suite general. Usa `DATESIM_TEST_MODULE=demo_progression` para seleccionar la prueba de la demostración.
+- **Repositorio** [Abrir la rama en GitHub](https://github.com/Gegdgt/DateSim/tree/entrega/progression-cycle)
+
+[Guía de la entrega con recorrido, arquitectura y resultados de pruebas](docs/ENTREGA_PROGRESSION_CYCLE.md)
+
+El resto del README describe la campaña, que se abre al ejecutar LÖVE sin argumentos.
+
 Juego narrativo de cartas en español para **LÖVE 11.5 / LuaJIT**. En esta continuidad alternativa, Rudy, Sylphiette, Roxy y Eris son adultos y ya están casados. Una poción vinculada a Hitogami sella la voz y el maná de Rudy; tiene siete días para conseguir el antídoto sin destruir sus matrimonios.
 
 La campaña explorable incorpora **45 actividades matrimoniales**, **255 respuestas contextuales** y descanso en los dormitorios. Se habilitan después de leer la carta de Hitogami y completar la introducción de Nanahoshi. [Informe de exploración 3](docs/EXPLORACION_FASE_3.md) · [Cobertura de diálogos y recompensas](docs/COBERTURA_ACTIVIDADES.md).

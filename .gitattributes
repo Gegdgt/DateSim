@@ -1,0 +1,9 @@
+# El inventario de recursos verifica los SHA-256 de estos archivos.
+/assets/tilesets/LEEME.txt text eol=lf
+/assets/objects/atlases/objetos_atlas.csv text eol=crlf
+/assets/objects/atlases/objetos_atlas.json text eol=lf
+/assets/backgrounds/.gitkeep text eol=lf
+/assets/cards/.gitkeep text eol=lf
+/assets/characters/.gitkeep text eol=lf
+/assets/cards/extras/*.json text eol=lf
+/assets/cards/extras/ejemplo_love2d.lua text eol=lf
